@@ -1,6 +1,6 @@
 require("./config/config.js");
 const express = require('express');
-const {User} = require('./database/models/user');
+const {User} = require('./database/models/User');
 
 const app = express();
 const port = process.env.PORT;
