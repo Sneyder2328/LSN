@@ -1,18 +1,20 @@
 require("./config/config.js");
-const {connection}  = require("./database/database");
 const express = require('express');
+const {User} = require('./database/models/user');
 
 const app = express();
 const port = process.env.PORT;
 
-connection.connect((err) => {
-    if(err) throw err;
-    console.log("Connected!");
-});
 
-
-app.get('/', (req, res) => {
-    res.send("Hello DB");
+app.get('/', async (req, res) => {
+    try {
+        const users = await User.findAll();
+        console.log("Users:", JSON.stringify(users));
+        res.send(JSON.stringify(users))
+    } catch (e) {
+        console.log("this just crashed!");
+        res.status(400).send(e);
+    }
 });
 
 app.listen(port, () => {

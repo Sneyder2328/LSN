@@ -23,6 +23,7 @@
   "homepage": "https://github.com/Sneyder2328/LSNBackend#readme",
   "dependencies": {
     "express": "^4.17.1",
-    "mysql": "^2.17.1"
+    "mariadb": "^2.1.4",
+    "sequelize": "^5.21.2"
   }
 }
