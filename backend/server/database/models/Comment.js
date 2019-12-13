@@ -1,5 +1,6 @@
 const {sequelize} = require('../database');
 const {DataTypes} = require('sequelize');
+const {User} = require('./User');
 
 const Comment = sequelize.define('Comment',
     {
@@ -11,6 +12,10 @@ const Comment = sequelize.define('Comment',
         userId: {
             type: DataTypes.BLOB,
             allowNull: false,
+            references: {
+                model: User,
+                key: 'id'
+            }
         },
         postId: {
             type: DataTypes.BLOB,

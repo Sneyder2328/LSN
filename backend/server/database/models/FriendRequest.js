@@ -10,11 +10,13 @@ const FriendRequest = sequelize.define('FriendRequest',
         },
         senderId: {
             type: DataTypes.BLOB,
-            allowNull: false
+            allowNull: false,
+            unique: 'user'
         },
         receiverId: {
             type: DataTypes.BLOB,
-            allowNull: false
+            allowNull: false,
+            unique: 'user'
         },
         accepted: {
             type: DataTypes.TINYINT,

@@ -17,6 +17,15 @@ app.get('/', async (req, res) => {
     }
 });
 
+app.get('/profile/:username', async (req, res) => {
+    try {
+        User.find()
+    } catch (e) {
+        console.log("this just crashed!");
+        res.status(400).send(e);
+    }
+});
+
 app.listen(port, () => {
     console.log(`Started on port ${port}`);
 });

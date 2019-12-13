@@ -1,11 +1,17 @@
 const {sequelize} = require('../database');
 const {DataTypes} = require('sequelize');
+const {User} = require('./User');
 
 const Profile = sequelize.define('Profile',
     {
         username: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            unique: true,
+            references: {
+                model: User,
+                key: 'username'
+            }
         },
         fullname: {
             type: DataTypes.STRING,

@@ -1,11 +1,20 @@
 const {sequelize} = require('../database');
 const {DataTypes} = require('sequelize');
+const {User} = require('./User');
 
 const Post = sequelize.define('Post', {
     id: {
         primaryKey: true,
         type: DataTypes.BLOB,
         allowNull: false
+    },
+    userId: {
+        type: DataTypes.BLOB,
+        allowNull: false,
+        references: {
+            model: User,
+            key: 'id'
+        }
     },
     likes: {
         type: DataTypes.INTEGER,
