@@ -7,7 +7,7 @@ const Profile = sequelize.define('Profile',
         username: {
             type: DataTypes.STRING,
             allowNull: false,
-            unique: true,
+            primaryKey: true,
             references: {
                 model: User,
                 key: 'username'
@@ -19,15 +19,15 @@ const Profile = sequelize.define('Profile',
         },
         coverPhotoUrl: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         profilePhotoUrl: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         description: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         }
     }
 );

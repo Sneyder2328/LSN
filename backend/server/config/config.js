@@ -1,10 +1,13 @@
 const env = (process.env.NODE_ENV || 'development').trim();
-//console.log("config starting");
+
+const Config = {};
 if (env === 'development' || env === 'test') {
     const config = require('./config.json');
     const envConfig = config[env];
-
     Object.keys(envConfig).forEach(key => {
         process.env[key] = envConfig[key];
+        Config[key] = envConfig[key];
     });
 }
+
+module.exports = {Config};

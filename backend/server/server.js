@@ -1,33 +1,16 @@
-require("./config/config.js");
 const express = require('express');
-const {User} = require('./database/models/User');
+const bodyParser = require('body-parser');
+const router = require('./routes/index');
+
 
 const app = express();
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
 
-
-app.get('/', async (req, res) => {
-    try {
-        const users = await User.findAll();
-        console.log("Users:", JSON.stringify(users));
-        res.send(JSON.stringify(users))
-    } catch (e) {
-        console.log("this just crashed!");
-        res.status(400).send(e);
-    }
-});
-
-app.get('/profile/:username', async (req, res) => {
-    try {
-        User.find()
-    } catch (e) {
-        console.log("this just crashed!");
-        res.status(400).send(e);
-    }
-});
+app.use(bodyParser.json());
+app.use('/', router);
 
 app.listen(port, () => {
-    console.log(`Started on port ${port}`);
+    console.log(`Started on port  ${port}`);
 });
 
 module.exports = {app};

@@ -18,15 +18,18 @@ const Post = sequelize.define('Post', {
     },
     likes: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
+        defaultValue: 0
     },
     comments: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
+        defaultValue: 0
     },
     createdAt: {
         type: DataTypes.DATE,
-        allowNull: false
+        allowNull: false,
+        defaultValue: DataTypes.NOW
     },
     type: {
         type: DataTypes.ENUM('text', 'img'),
@@ -34,11 +37,11 @@ const Post = sequelize.define('Post', {
     },
     text: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     },
     img: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     }
 });
 

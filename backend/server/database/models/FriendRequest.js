@@ -19,7 +19,7 @@ const FriendRequest = sequelize.define('FriendRequest',
             unique: 'user'
         },
         accepted: {
-            type: DataTypes.TINYINT,
+            type: DataTypes.BOOLEAN,
             allowNull: false
         }
     }

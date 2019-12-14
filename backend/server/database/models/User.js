@@ -1,5 +1,10 @@
 const {sequelize} = require('../database');
 const {DataTypes} = require('sequelize');
+const {getJWTFromId} = require('../../middleware/authenticate');
+
+const ENUM_EMAIL = 'email';
+const ENUM_FACEBOOK = 'facebook';
+const ENUM_GOOGLE = 'google';
 
 const User = sequelize.define('User',
     {
@@ -17,7 +22,7 @@ const User = sequelize.define('User',
             allowNull: false
         },
         typeLogin: {
-            type: DataTypes.ENUM('email', 'facebook', 'google'),
+            type: DataTypes.ENUM(ENUM_EMAIL, ENUM_FACEBOOK, ENUM_GOOGLE),
             allowNull: false
         },
         password: {
@@ -26,17 +31,25 @@ const User = sequelize.define('User',
         },
         createdAt: {
             type: DataTypes.TIME,
-            allowNull: false
+            allowNull: false,
+            defaultValue: DataTypes.NOW
         },
         lastConnection: {
             type: DataTypes.TIME,
-            allowNull: false
+            allowNull: false,
+            defaultValue: DataTypes.NOW
         },
         language: {
             type: DataTypes.ENUM('en', 'es', 'fr'),
-            allowNull: false
+            allowNull: false,
+            defaultValue: 'en'
         }
     }
 );
+
+User.prototype.generateAccessToken = function () {
+    const id = this.dataValues.id;
+    return getJWTFromId(id);
+};
 
 module.exports = {User};
