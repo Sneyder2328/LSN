@@ -1,18 +1,26 @@
 const express = require('express');
 const uuid = require('uuid');
-const router = express.Router();
-const {User} = require('../database/models/User');
-const {Post} = require('../database/models/Post');
-const {Profile} = require('../database/models/Profile');
-const {Token} = require('../database/models/Token');
 const bcrypt = require('bcryptjs');
-const {authenticate, AUTH_ACCESS_TOKEN, AUTH_REFRESH_TOKEN, getJWTFromId} = require('../middleware/authenticate');
+const router = express.Router();
+const {
+    Token,
+    User,
+    Profile,
+    FriendRequest,
+    Post,
+    PostLike,
+    Comment,
+    CommentLike
+} = require('../database/database');
+const {authenticate, AUTH_ACCESS_TOKEN, AUTH_REFRESH_TOKEN} = require('../middleware/authenticate');
+const {verifyJWT, signJWT} = require('.././helpers/JWTHelper');
+const {genUUID, hashPassword} = require('.././helpers/utils');
 
 router.get('/profile/:username', async (req, res) => {
     const username = req.params.username; // sanitize
     try {
         console.log("Fetching ", username);
-        const user = await Profile.findByPk(username);
+        const user = await Profile.findOne({where: {username}});
         console.log("User:", JSON.stringify(user));
         res.json(user);
     } catch (e) {
@@ -20,11 +28,6 @@ router.get('/profile/:username', async (req, res) => {
     }
 });
 
-function genUUID() {
-    let userId = [];
-    uuid.v4(null, userId); // gen hex(uuid) for user,post,comment,etc
-    return userId;
-}
 
 router.post('/signUp', async (req, res) => {
     try {
@@ -38,6 +41,7 @@ router.post('/signUp', async (req, res) => {
             password
         });
         await Profile.create({
+            userId,
             username: req.body.username,
             fullname: req.body.fullname,
             description: req.body.description,
@@ -79,7 +83,6 @@ router.post('/logIn', async (req, res) => {
             userId: user.dataValues.id,
             token: refreshToken
         });
-
         res.header(AUTH_ACCESS_TOKEN, accessToken)
             .header(AUTH_REFRESH_TOKEN, refreshToken)
             .send({access: true});
@@ -96,7 +99,7 @@ router.get('/refreshToken', async (req, res) => {
         const bufferId = token.dataValues.userId;
         const userId = [...bufferId];
         console.log("token userId", userId);
-        const accessToken = getJWTFromId(userId);
+        const accessToken = signJWT(userId);
         res.header(AUTH_ACCESS_TOKEN, accessToken).send({status: 'New access token issued'});
     } catch (e) {
         console.log(e);
@@ -113,20 +116,23 @@ router.post('/createPost', authenticate, async (req, res) => {
             text: req.body.text,
             img: req.body.img
         });
-        res.send(post.dataValues);
+        res.status(201).send(post.dataValues);
     } catch (e) {
         console.log(e);
         res.status(400).send();
     }
 });
 
+router.get('/getPosts', async (req, res) => {
+    try {
+        const posts = await Post.findAll({include: [Profile]});
+        if (!posts) res.status(200).send([]);
+        res.status(200).send(posts.map(post => post.dataValues));
+    } catch (e) {
+        console.log(e);
+        res.status(400).send({status: "Error fetching posts"})
+    }
+});
+
 module.exports = router;
 
-async function hashPassword(saltRounds = 10, password) {
-    return await new Promise((resolve, reject) => {
-        bcrypt.hash(password, saltRounds, (err, hash) => {
-            if (err) reject(err);
-            resolve(hash)
-        });
-    });
-}

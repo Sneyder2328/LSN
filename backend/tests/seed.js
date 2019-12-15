@@ -1,0 +1,70 @@
+const {genUUID} = require('../server/helpers/utils');
+
+const users = [
+    {
+        id: genUUID(),
+        username: 'usernametest',
+        typeLogin: 'email',
+        email: 'usertest@mail.com',
+        password: 'somesecrettest'
+    },
+    {
+        id: genUUID(),
+        username: 'usernametest2',
+        typeLogin: 'email',
+        email: 'usertest2@mail.com',
+        password: 'somesecrettest2'
+    }
+];
+
+const profiles = [
+    {
+        userId: users[0].id,
+        username: users[0].username,
+        fullname: 'User Test',
+        description: 'Some nice description',
+        coverPhotoUrl: 'coverPhoto.jpg',
+        profilePhotoUrl: 'profilePhoto.png'
+    },
+    {
+        userId: users[1].id,
+        username: users[1].username,
+        fullname: 'User Test 2',
+        description: 'o inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur au',
+        coverPhotoUrl: 'consequatur.jpg',
+        profilePhotoUrl: 'inventore.png'
+    }
+];
+
+const posts = [
+    {
+        id: genUUID(),
+        userId: users[0].id,
+        text: "Hello world and welcome to La Social Network",
+        type: "text",
+        img: ""
+    },
+    {
+        id: genUUID(),
+        userId: users[1].id,
+        text: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis",
+        type: "text",
+        img: ""
+    },
+    {
+        id: genUUID(),
+        userId: users[0].id,
+        text: "m ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea",
+        type: "text",
+        img: ""
+    }
+];
+
+const tokens = [
+    {
+        token: "1e64765a-3538-4816-9b42-541e8999d45c",
+        userId: users[0].id
+    }
+];
+
+module.exports = {users, profiles, posts, tokens};
