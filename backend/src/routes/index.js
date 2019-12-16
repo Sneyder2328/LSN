@@ -1,21 +1,25 @@
-const express = require('express');
-const uuid = require('uuid');
-const bcrypt = require('bcryptjs');
-const router = express.Router();
-const {
-    Token,
-    User,
-    Profile,
-    FriendRequest,
-    Post,
-    PostLike,
-    Comment,
-    CommentLike
-} = require('../database/database');
-const {authenticate, AUTH_ACCESS_TOKEN, AUTH_REFRESH_TOKEN} = require('../middleware/authenticate');
-const {verifyJWT, signJWT} = require('.././helpers/JWTHelper');
-const {genUUID, hashPassword} = require('.././helpers/utils');
+const {Router} = require('express');
 
+const errorHandler = require('../middlewares/errorHandler');
+const AppError = require('../utils/AppError');
+const userRouter = require('../controllers/user');
+const postRouter = require('../controllers/post');
+const authRouter = require('../controllers/auth');
+
+const router = Router();
+router.use('/', userRouter);
+router.use('/', postRouter);
+router.use('/', authRouter);
+
+// handle undefined Routes
+router.use('*', (req, res, next) => {
+    const err = new AppError(404, 'fail', 'undefined route');
+    next(err, req, res, next);
+});
+router.use(errorHandler);
+
+module.exports = router;
+/*
 router.get('/profile/:username', async (req, res) => {
     const username = req.params.username; // sanitize
     try {
@@ -27,8 +31,8 @@ router.get('/profile/:username', async (req, res) => {
         res.status(200).send(e);
     }
 });
-
-
+*/
+/*
 router.post('/signUp', async (req, res) => {
     try {
         let userId = genUUID();
@@ -62,7 +66,9 @@ router.post('/signUp', async (req, res) => {
         res.status(400).send(e);
     }
 });
+*/
 
+/*
 router.post('/logIn', async (req, res) => {
     const username = req.body.username; //needs satinize
     const password = req.body.password; //needs satinize
@@ -88,7 +94,9 @@ router.post('/logIn', async (req, res) => {
             .send({access: true});
     });
 });
+*/
 
+/*
 router.get('/refreshToken', async (req, res) => {
     try {
         const refreshToken = req.header(AUTH_REFRESH_TOKEN); // need to satinize
@@ -106,7 +114,8 @@ router.get('/refreshToken', async (req, res) => {
         res.status(401).send({status: 'Error generating new access token'});
     }
 });
-
+ */
+/*
 router.post('/createPost', authenticate, async (req, res) => {
     try {
         const post = await Post.create({
@@ -133,6 +142,6 @@ router.get('/getPosts', async (req, res) => {
         res.status(400).send({status: "Error fetching posts"})
     }
 });
+ */
 
-module.exports = router;
 

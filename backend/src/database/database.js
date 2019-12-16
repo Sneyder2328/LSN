@@ -1,11 +1,11 @@
-const {Config} = require('../config/config');
+const {config} = require('../config/config');
 const Sequelize = require('sequelize');
-console.log("creating new sequelize from database");
-const sequelize = new Sequelize(Config.MYSQL_DATABASE, Config.MYSQL_USER, Config.MYSQL_PASSWORD, {
-    host: Config.MYSQL_HOST,
-    dialect: 'mariadb',
+
+const sequelize = new Sequelize(config.orm.database, config.orm.user, config.orm.password, {
+    host: config.orm.host,
+    dialect: config.orm.dialect,
     dialectOptions: {
-        timezone: Config.DB_TIMEZONE
+        timezone: config.orm.timeZone
     },
     define: {
         timestamps: false,

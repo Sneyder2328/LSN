@@ -16,4 +16,13 @@ async function hashPassword(saltRounds = 10, password) {
     });
 }
 
-module.exports = {genUUID, hashPassword};
+async function verifyPassword(password, hashedPassword){
+    return await new Promise(((resolve, reject) => {
+        bcrypt.compare(password, hashedPassword, (err, success) => {
+            if (err || !success) resolve(false);
+            resolve(true);
+        });
+    }));
+}
+
+module.exports = {genUUID, hashPassword, verifyPassword};

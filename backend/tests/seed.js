@@ -1,4 +1,4 @@
-const {genUUID} = require('../server/helpers/utils');
+const {genUUID} = require('../src/utils/utils');
 
 const users = [
     {

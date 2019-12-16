@@ -1,5 +1,5 @@
 const request = require('supertest');
-const {app} = require('./../server/server');
+const {app} = require('../src/app');
 const {
     sequelize,
     Token,
@@ -10,12 +10,9 @@ const {
     PostLike,
     Comment,
     CommentLike
-} = require('./../server/database/database');
-const {AUTH_ACCESS_TOKEN, AUTH_REFRESH_TOKEN} = require('../server/middleware/authenticate');
+} = require('../src/database/database');
 const {users, profiles, posts, tokens} = require('./seed');
-
-const JWT_REGEX = /^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/;
-const UUID_V4_REGEX = /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;
+const {config} = require('../src/config/config');
 
 async function wipeOutDatabase() {
     const destroyOptions = {
@@ -68,8 +65,8 @@ describe('POST /signUp', () => {
             })
             .expect(200)
             .expect((res) => {
-                expect(res.headers[AUTH_ACCESS_TOKEN]).toMatch(JWT_REGEX);
-                expect(res.headers[AUTH_REFRESH_TOKEN]).toMatch(UUID_V4_REGEX);
+                expect(res.headers[config.headers.accessToken]).toMatch(config.regex.jwt);
+                expect(res.headers[config.headers.refreshToken]).toMatch(config.regex.uuidV4);
                 expect(res.body.access).toBe(true);
             })
             .end(done);
@@ -82,12 +79,12 @@ describe('POST /createPost', () => {
         await wipeOutDatabase();
         const user = await User.create({...users[0]});
         await Profile.create({...profiles[0]});
-        accessToken = user.generateAccessToken();
+        accessToken = await user.generateAccessToken();
     });
     it('should create a new post with text', (done) => {
         request(app)
             .post('/createPost')
-            .set(AUTH_ACCESS_TOKEN, accessToken)
+            .set(config.headers.accessToken, accessToken)
             .send({
                 ...posts[0]
             })
@@ -106,7 +103,7 @@ describe('POST /createPost', () => {
     it('should not create a new post for an unauthenticated user', (done) => {
         request(app)
             .post('/createPost')
-            .set(AUTH_ACCESS_TOKEN, accessToken + "fd")
+            .set(config.headers.accessToken, accessToken + "fd")
             .send({
                 ...posts[0]
             })

@@ -46,9 +46,9 @@ module.exports = (sequelize, DataTypes) => {
         }
     );
 
-    User.prototype.generateAccessToken = function () {
+    User.prototype.generateAccessToken = async function () {
         const id = this.dataValues.id;
-        return signJWT(id);
+        return await signJWT(id);
     };
 
     return User;
