@@ -6,14 +6,14 @@ const users = [
         username: 'usernametest',
         typeLogin: 'email',
         email: 'usertest@mail.com',
-        password: 'somesecrettest'
+        password: 'somesecggjrettest'
     },
     {
         id: genUUID(),
         username: 'usernametest2',
         typeLogin: 'email',
         email: 'usertest2@mail.com',
-        password: 'somesecrettest2'
+        password: 'somesecretjgjgtest2'
     }
 ];
 

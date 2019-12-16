@@ -1,16 +1,6 @@
 const request = require('supertest');
 const {app} = require('../src/app');
-const {
-    sequelize,
-    Token,
-    User,
-    Profile,
-    FriendRequest,
-    Post,
-    PostLike,
-    Comment,
-    CommentLike
-} = require('../src/database/database');
+const {sequelize, Token, User, Profile, FriendRequest, Post, PostLike, Comment, CommentLike} = require('../src/database/database');
 const {users, profiles, posts, tokens} = require('./seed');
 const {config} = require('../src/config/config');
 
@@ -109,7 +99,7 @@ describe('POST /createPost', () => {
             })
             .expect(401)
             .expect((res) => {
-                expect(res.body.status).toBe("Access token not valid");
+                expect(res.body.message).toBe("Access token not valid");
             })
             .end(done)
     });

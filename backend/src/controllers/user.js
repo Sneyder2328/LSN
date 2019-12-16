@@ -1,10 +1,11 @@
 const {Router} = require('express');
 const {getProfile} = require('../services/user');
+const {getProfileValidationRules, validate} = require('../middlewares/validate');
 
 const router = Router();
 
-router.get('/profile/:username', async (req, res) => {
-    const username = req.params.username; // validate, if not valid throw some validation error
+router.get('/profile/:username', getProfileValidationRules, validate, async (req, res) => {
+    const username = req.params.username;
     const user = await getProfile(username);
     res.json(user);
 });
