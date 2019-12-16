@@ -7,8 +7,8 @@ const port = process.env.PORT || 3000;
 
 app.get('/test', (req, res) => {
     const {config} = require('../src/config/config');
-    console.log("Hello tetst", config.orm.dialect);
-    res.send("Hello tetst " + config.orm.dialect);
+    console.log("Hello tetst", config.orm.database);
+    res.send("Hello tetst " + config.orm.database);
 });
 
 app.use(bodyParser.json());
