@@ -3,8 +3,8 @@ const httpCodes = require('../constants/httpResponseCodes');
 const error = require('../constants/errors');
 
 class UserNotFoundError extends AppError {
-    constructor(message) {
-        super(httpCodes.NOT_FOUND, error.USER_NOT_FOUND_ERROR, message | error.USER_NOT_FOUND_ERROR);
+    constructor(message = error.USER_NOT_FOUND_ERROR) {
+        super(httpCodes.NOT_FOUND, error.USER_NOT_FOUND_ERROR, message);
     }
 }
 

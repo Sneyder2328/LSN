@@ -3,18 +3,20 @@ const {createPost, getPosts} = require('../services/post');
 const authenticate = require('../middlewares/authenticate');
 const {createPostValidationRules, validate} = require('../middlewares/validate');
 const handleErrorAsync = require('../middlewares/handleErrorAsync');
+const httpCodes = require('../utils/constants/httpResponseCodes');
+const endpoints = require('../utils/constants/endpoints');
 
 const router = Router();
 
-router.post('/createPost', authenticate, createPostValidationRules, validate, handleErrorAsync(async (req, res) => {
+router.post(endpoints.post.CREATE_POST, authenticate, createPostValidationRules, validate, handleErrorAsync(async (req, res) => {
     const content = req.body;
     const post = await createPost(req.userId, content.type, content.text, content.img);
-    res.status(201).send(post);
+    res.status(httpCodes.CREATED).send(post);
 }));
 
-router.get('/getPosts', handleErrorAsync(async (req, res) => {
+router.get(endpoints.post.GET_POSTS, handleErrorAsync(async (req, res) => {
     const posts = await getPosts();
-    res.status(200).send(posts);
+    res.status(httpCodes.OK).send(posts);
 }));
 
 module.exports = router;

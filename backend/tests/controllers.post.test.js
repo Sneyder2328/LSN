@@ -2,6 +2,7 @@ const request = require('supertest');
 
 const {app, server} = require('../src/app');
 const httpCodes = require('../src/utils/constants/httpResponseCodes');
+const endpoints = require('../src/utils/constants/endpoints');
 const {users, profiles, posts} = require('./seed');
 const {wipeOutDatabase, createUserAndProfile} = require('./index');
 const {User, Profile, Post} = require('../src/database/database');
@@ -16,7 +17,7 @@ describe('POST /createPost', () => {
     });
     it('should create a new post with text', (done) => {
         request(app)
-            .post('/createPost')
+            .post(endpoints.post.CREATE_POST)
             .set(config.headers.accessToken, accessToken)
             .send({
                 ...posts[0]
@@ -35,7 +36,7 @@ describe('POST /createPost', () => {
     });
     it('should not create a new post for an unauthenticated user', (done) => {
         request(app)
-            .post('/createPost')
+            .post(endpoints.post.CREATE_POST)
             .set(config.headers.accessToken, accessToken + "fd")
             .send({
                 ...posts[0]
@@ -60,7 +61,7 @@ describe('GET /getPosts', () => {
 
     it('should return text posts with author metadata', (done) => {
         request(app)
-            .get('/getPosts')
+            .get(endpoints.post.GET_POSTS)
             .expect(httpCodes.OK)
             .expect((res) => {
                 expect(res.body.length).toBe(posts.length);
