@@ -48,6 +48,13 @@ async function logInUser({username, password}) {
     return {accessToken, refreshToken};
 }
 
+async function logOutUser(refreshToken) {
+    const rowsDeleted = await Token.destroy({where: {token: refreshToken}});
+    if (rowsDeleted === 0)
+        throw AppError(httpCodes.BAD_REQUEST, 'Log out error', 'Log out error');
+    return true;
+}
+
 async function genNewAccessToken(refreshToken) {
     const token = await Token.findByPk(refreshToken);
     if (!token) throw new AuthError(error.message.REFRESH_TOKEN_NOT_FOUND);
@@ -56,4 +63,4 @@ async function genNewAccessToken(refreshToken) {
     return await signJWT(userId);
 }
 
-module.exports = {signUpUser, logInUser, genNewAccessToken};
+module.exports = {signUpUser, logInUser, logOutUser, genNewAccessToken};

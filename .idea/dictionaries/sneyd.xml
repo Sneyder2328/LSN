@@ -1,6 +1,7 @@
 <component name="ProjectDictionaryState">
   <dictionary name="sneyd">
     <words>
+      <w>bcrypt</w>
       <w>fullname</w>
       <w>sequelize</w>
     </words>

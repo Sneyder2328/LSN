@@ -5,6 +5,7 @@ const {users, profiles} = require('./seed');
 
 const httpCodes = require('../src/utils/constants/httpResponseCodes');
 const {wipeOutDatabase, createUserAndProfile} = require('./index');
+const {Token} = require('../src/database/database');
 const {config} = require('../src/config/config');
 const error = require('../src/utils/constants/errors');
 const endpoints = require('../src/utils/constants/endpoints');
@@ -137,7 +138,6 @@ describe('POST /logIn', () => {
     });
 });
 
-
 describe('POST /refreshToken', () => {
     let refreshToken;
     beforeEach(async () => {
@@ -156,6 +156,43 @@ describe('POST /refreshToken', () => {
             })
             .end(done);
     });
+});
+
+describe('POST /logOut', () => {
+    let refreshToken;
+    beforeEach(async () => {
+        await wipeOutDatabase();
+        const {token} = await createUserAndProfile({...users[0]}, {...profiles[0]}, true);
+        refreshToken = token.dataValues.token;
+    });
+
+    it('should log out and delete token from the db', (done) => {
+        request(app)
+            .post(endpoints.auth.LOG_OUT)
+            .set(config.headers.refreshToken, refreshToken)
+            .expect(httpCodes.OK)
+            .expect((res) => {
+                expect(res.body.loggedOut).toBe(true);
+            })
+            .end(async () => {
+                const tokenInDb = await Token.findOne({where: {token: refreshToken}});
+                expect(tokenInDb).toBeNull();
+                done();
+            });
+    });
+
+    it('should not log out nor delete token from the db', (done) => {
+        request(app)
+            .post(endpoints.auth.LOG_OUT)
+            .set(config.headers.refreshToken, refreshToken + "hkjhk")
+            .expect(httpCodes.BAD_REQUEST)
+            .end(async () => {
+                const tokenInDb = await Token.findOne({where: {token: refreshToken}});
+                expect(tokenInDb).toBeDefined();
+                done();
+            });
+    });
+
 });
 
 

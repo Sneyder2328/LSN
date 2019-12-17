@@ -19,10 +19,10 @@ async function wipeOutDatabase() {
     await sequelize.query('SET FOREIGN_KEY_CHECKS = 1', null);
 }
 
-async function createUserAndProfile(userData, profileData, includeToken = false) {
+async function createUserAndProfile(userData, profileData, includeRefreshToken = false) {
     const user = await User.create(userData);
     const profile = await Profile.create(profileData);
-    if (includeToken) {
+    if (includeRefreshToken) {
         const token = await Token.create({userId: userData.id, token: uuid.v4()});
         return {user, profile, token};
     }
