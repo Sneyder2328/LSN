@@ -9,7 +9,7 @@
   "scripts": {
     "start": "node src/app.js",
     "start-dev": "nodemon src/app.js",
-    "test": "export NODE_ENV=test || SET NODE_ENV=test && jest --testTimeout=10000",
+    "test": "export NODE_ENV=test || SET NODE_ENV=test && jest --testTimeout=10000 --runInBand",
     "test-watch": "nodemon --exec \"npm test\""
   },
   "jest": {

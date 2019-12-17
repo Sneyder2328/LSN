@@ -1,7 +1,7 @@
 const {Router} = require('express');
 
 const errorHandler = require('../middlewares/errorHandler');
-const AppError = require('../utils/AppError');
+const undefRoutesHandler = require('../middlewares/undefRoutesHandler');
 const userRouter = require('../controllers/user');
 const postRouter = require('../controllers/post');
 const authRouter = require('../controllers/auth');
@@ -11,11 +11,7 @@ router.use('/', userRouter);
 router.use('/', postRouter);
 router.use('/', authRouter);
 
-// handle undefined Routes
-router.use('*', (req, res, next) => {
-    const err = new AppError(404, 'fail', 'undefined route');
-    next(err, req, res, next);
-});
+router.use('*', undefRoutesHandler);
 router.use(errorHandler);
 
 module.exports = router;

@@ -1,4 +1,5 @@
 const {signJWT} = require('../../helpers/JWTHelper');
+const {hashPassword} = require('../../utils/utils');
 
 const ENUM_EMAIL = 'email';
 const ENUM_FACEBOOK = 'facebook';
@@ -45,6 +46,14 @@ module.exports = (sequelize, DataTypes) => {
             }
         }
     );
+
+    User.beforeSave(async (user, options) =>{
+        //user.password = await hashPassword(10, user.password);
+        console.log("hashes password");
+        return hashPassword(10, user.password).then(hashedPw => {
+            user.password = hashedPw;
+        });
+    });
 
     User.prototype.generateAccessToken = async function () {
         const id = this.dataValues.id;

@@ -1,22 +1,19 @@
 const {config} = require('../config/config');
+const AuthError = require('../utils/errors/AuthError');
+const error = require('../utils/constants/errors');
 const {verifyJWT} = require('.././helpers/JWTHelper');
-const AppError = require('../utils/AppError');
 const jwt = require('jsonwebtoken');
 
 module.exports = async (req, res, next) => {
     const accessToken = req.header(config.headers.accessToken);
-    console.log("accessToken here=", accessToken);
     if (!config.regex.jwt.test(accessToken))
-        next(new AppError(401, 0, "Access token not valid"), req, res, next);
+        return next(new AuthError(error.message.ACCESS_TOKEN_INVALID), req, res, next);
     try {
         const decodedPayload = await verifyJWT(accessToken);
-        console.log("decodedPayload=", decodedPayload);
         req.userId = decodedPayload.id;
         next();
     } catch (e) {
         const isTokenExpiredError = e instanceof jwt.TokenExpiredError;
-        console.log(isTokenExpiredError);
-        console.log("error=", e);
-        next(new AppError(401, 0, isTokenExpiredError ? "Access token expired" : "Access token not valid"), req, res, next);
+        return next(new AuthError(isTokenExpiredError ? error.message.ACCESS_TOKEN_EXPIRED : error.message.ACCESS_TOKEN_INVALID), req, res, next);
     }
 };

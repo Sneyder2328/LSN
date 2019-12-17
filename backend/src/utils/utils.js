@@ -1,9 +1,12 @@
 const uuid = require('uuid');
 const bcrypt = require('bcryptjs');
 
+/**
+ * gen hex(uuid) for user,post,comment,etc
+ */
 function genUUID() {
     let userId = [];
-    uuid.v4(null, userId); // gen hex(uuid) for user,post,comment,etc
+    uuid.v4(null, userId);
     return userId;
 }
 

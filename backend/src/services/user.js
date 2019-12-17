@@ -1,9 +1,9 @@
 const {Profile} = require('../database/database');
-const AppError = require('../utils/AppError');
+const UserNotFoundError = require('../utils/errors/UserNotFoundError');
 
 async function getProfile(username) {
     const user = await Profile.findOne({where: {username}});
-    if (!user) throw new AppError(404, 0, 'User profile not found');
+    if (!user) throw new UserNotFoundError();
     return user.dataValues;
 }
 

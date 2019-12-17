@@ -1,74 +1,17 @@
 const request = require('supertest');
-const {app} = require('../src/app');
-const {sequelize, Token, User, Profile, FriendRequest, Post, PostLike, Comment, CommentLike} = require('../src/database/database');
-const {users, profiles, posts, tokens} = require('./seed');
+
+const {app, server} = require('../src/app');
+const httpCodes = require('../src/utils/constants/httpResponseCodes');
+const {users, profiles, posts} = require('./seed');
+const {wipeOutDatabase, createUserAndProfile} = require('./index');
+const {User, Profile, Post} = require('../src/database/database');
 const {config} = require('../src/config/config');
-
-async function wipeOutDatabase() {
-    const destroyOptions = {
-        truncate: true,
-        cascade: true
-    };
-    await sequelize.query('SET FOREIGN_KEY_CHECKS = 0', null); // Important to avoid error(see https://stackoverflow.com/questions/253849/cannot-truncate-table-because-it-is-being-referenced-by-a-foreign-key-constraint)
-    await Comment.destroy(destroyOptions);
-    await Post.destroy(destroyOptions);
-    await Token.destroy(destroyOptions);
-    await FriendRequest.destroy(destroyOptions);
-    await CommentLike.destroy(destroyOptions);
-    await PostLike.destroy(destroyOptions);
-    await Profile.destroy(destroyOptions);
-    await User.destroy(destroyOptions);
-    await sequelize.query('SET FOREIGN_KEY_CHECKS = 1', null);
-}
-
-describe('GET /profile/:username', () => {
-    beforeAll(async () => {
-        await wipeOutDatabase();
-        await User.create({...users[0]});
-        await Profile.create({...profiles[0]});
-    });
-    it('should return a profile', (done) => {
-        request(app)
-            .get(`/profile/${users[0].username}`)
-            .expect(200)
-            .expect((res) => {
-                expect(res.body.username).toBe(users[0].username);
-                expect(res.body.fullname).toBe(profiles[0].fullname);
-                expect(res.body.description).toBe(profiles[0].description);
-                expect(res.body.coverPhotoUrl).toBe(profiles[0].coverPhotoUrl);
-                expect(res.body.profilePhotoUrl).toBe(profiles[0].profilePhotoUrl);
-            })
-            .end(done);
-    });
-});
-
-describe('POST /signUp', () => {
-    beforeEach(async () => {
-        await wipeOutDatabase();
-    });
-
-    it('should create a new User and Profile', (done) => {
-        request(app)
-            .post('/signUp')
-            .send({
-                ...users[0], ...profiles[0]
-            })
-            .expect(200)
-            .expect((res) => {
-                expect(res.headers[config.headers.accessToken]).toMatch(config.regex.jwt);
-                expect(res.headers[config.headers.refreshToken]).toMatch(config.regex.uuidV4);
-                expect(res.body.access).toBe(true);
-            })
-            .end(done);
-    });
-});
 
 describe('POST /createPost', () => {
     let accessToken;
     beforeEach(async () => {
         await wipeOutDatabase();
-        const user = await User.create({...users[0]});
-        await Profile.create({...profiles[0]});
+        const {user} = await createUserAndProfile({...users[0]}, {...profiles[0]});
         accessToken = await user.generateAccessToken();
     });
     it('should create a new post with text', (done) => {
@@ -78,7 +21,7 @@ describe('POST /createPost', () => {
             .send({
                 ...posts[0]
             })
-            .expect(201)
+            .expect(httpCodes.CREATED)
             .expect((res) => {
                 expect(res.body.comments).toBe(0);
                 expect(res.body.likes).toBe(0);
@@ -97,7 +40,7 @@ describe('POST /createPost', () => {
             .send({
                 ...posts[0]
             })
-            .expect(401)
+            .expect(httpCodes.UNAUTHORIZED)
             .expect((res) => {
                 expect(res.body.message).toBe("Access token not valid");
             })
@@ -118,7 +61,7 @@ describe('GET /getPosts', () => {
     it('should return text posts with author metadata', (done) => {
         request(app)
             .get('/getPosts')
-            .expect(200)
+            .expect(httpCodes.OK)
             .expect((res) => {
                 expect(res.body.length).toBe(posts.length);
                 res.body.forEach(post => {
@@ -138,4 +81,8 @@ describe('GET /getPosts', () => {
             })
             .end(done);
     });
+});
+
+afterAll((done) => {
+    server.close(done);
 });

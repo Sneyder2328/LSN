@@ -1,4 +1,4 @@
-const AppError = require('../utils/AppError');
+const AppError = require('../utils/errors/AppError');
 const {body, header, param, validationResult} = require('express-validator');
 const {config} = require('../config/config');
 
@@ -36,7 +36,6 @@ const createPostValidationRules = [
 
 function validate(req, res, next) {
     const errors = validationResult(req);
-    console.log("VALIDATEerrors=", errors);
     if (errors.isEmpty()) return next();
     const extractedErrors = [];
     errors.array().map(err => extractedErrors.push({[err.param]: err.msg}));
