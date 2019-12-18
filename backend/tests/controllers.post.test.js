@@ -15,6 +15,7 @@ describe('POST /createPost', () => {
         const {user} = await createUserAndProfile({...users[0]}, {...profiles[0]});
         accessToken = await user.generateAccessToken();
     });
+
     it('should create a new post with text', (done) => {
         request(app)
             .post(endpoints.post.CREATE_POST)
@@ -34,6 +35,7 @@ describe('POST /createPost', () => {
             })
             .end(done)
     });
+
     it('should not create a new post for an unauthenticated user', (done) => {
         request(app)
             .post(endpoints.post.CREATE_POST)

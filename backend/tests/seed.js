@@ -12,8 +12,15 @@ const users = [
         id: genUUID(),
         username: 'usernametest2',
         typeLogin: 'email',
-        email: 'usertest2@mail.com',
+        email: 'usertest2@hotmail.com',
         password: 'somesecretjgjgtest2'
+    },
+    {
+        id: genUUID(),
+        username: 'iamtheking007',
+        typeLogin: 'email',
+        email: 'thekingforever007@gmail.com',
+        password: 'somesecretjgjgtest54gjhjhj'
     }
 ];
 
@@ -33,6 +40,14 @@ const profiles = [
         description: 'o inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur au',
         coverPhotoUrl: 'consequatur.jpg',
         profilePhotoUrl: 'inventore.png'
+    },
+    {
+        userId: users[2].id,
+        username: users[2].username,
+        fullname: 'King Zero07',
+        description: 'o inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam vptas sit aspernatur au',
+        coverPhotoUrl: 'consequatur007.jpg',
+        profilePhotoUrl: 'inventore007.png'
     }
 ];
 

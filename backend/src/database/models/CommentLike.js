@@ -2,7 +2,7 @@ module.exports = (sequelize, DataTypes, User, Comment) => {
     return sequelize.define('Comment_Like',
         {
             commentId: {
-                type: DataTypes.BLOB,
+                type: DataTypes.UUID,
                 allowNull: false,
                 unique: 'commentId_userId',
                 references: {
@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes, User, Comment) => {
                 }
             },
             userId: {
-                type: DataTypes.BLOB,
+                type: DataTypes.UUID,
                 allowNull: false,
                 unique: 'commentId_userId',
                 references: {

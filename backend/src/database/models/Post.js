@@ -3,11 +3,11 @@ module.exports = (sequelize, DataTypes, User) => {
         {
             id: {
                 primaryKey: true,
-                type: DataTypes.BLOB,
+                type: DataTypes.UUID,
                 allowNull: false
             },
             userId: {
-                type: DataTypes.BLOB,
+                type: DataTypes.UUID,
                 allowNull: false,
                 references: {
                     model: User,

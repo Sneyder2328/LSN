@@ -1,7 +1,7 @@
 module.exports = (sequelize, DataTypes, User, Post) => {
     return sequelize.define('Post_Like', {
         postId: {
-            type: DataTypes.BLOB,
+            type: DataTypes.UUID,
             allowNull: false,
             unique: 'postId_userId',
             references: {
@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes, User, Post) => {
             }
         },
         userId: {
-            type: DataTypes.BLOB,
+            type: DataTypes.UUID,
             allowNull: false,
             unique: 'postId_userId',
             references: {

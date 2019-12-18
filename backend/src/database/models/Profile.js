@@ -2,7 +2,7 @@ module.exports = (sequelize, DataTypes, User) => {
     return sequelize.define('Profile',
         {
             userId: {
-                type: DataTypes.BLOB,
+                type: DataTypes.UUID,
                 allowNull: false,
                 primaryKey: true,
                 references: {

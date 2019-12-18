@@ -26,6 +26,16 @@ const getProfileValidationRules = [
     param('username').isAlphanumeric().exists()
 ];
 
+const sendFriendRequestValidationRules = [
+    body('senderId').exists(),
+    body('receiverId').exists()
+];
+
+const getFriendRequestValidationRules = [
+    param('userId').exists(),
+    header(config.headers.accessToken).isString().exists()
+];
+
 
 const createPostValidationRules = [
     body('type').isString().escape(),
@@ -50,5 +60,7 @@ module.exports = {
     logInValidationRules,
     refreshTokenValidationRules,
     getProfileValidationRules,
+    sendFriendRequestValidationRules,
+    getFriendRequestValidationRules,
     validate
 };

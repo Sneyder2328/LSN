@@ -5,9 +5,7 @@ const bcrypt = require('bcryptjs');
  * gen hex(uuid) for user,post,comment,etc
  */
 function genUUID() {
-    let userId = [];
-    uuid.v4(null, userId);
-    return userId;
+    return uuid.v4();
 }
 
 async function hashPassword(saltRounds = 10, password) {
@@ -19,7 +17,7 @@ async function hashPassword(saltRounds = 10, password) {
     });
 }
 
-async function verifyPassword(password, hashedPassword){
+async function verifyPassword(password, hashedPassword) {
     return await new Promise(((resolve, reject) => {
         bcrypt.compare(password, hashedPassword, (err, success) => {
             if (err || !success) resolve(false);

@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes, User) => {
                 primaryKey: true
             },
             userId: {
-                type: DataTypes.BLOB,
+                type: DataTypes.UUID,
                 allowNull: false,
                 references: {
                     model: User,

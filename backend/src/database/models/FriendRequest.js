@@ -2,12 +2,13 @@ module.exports = (sequelize, DataTypes) => {
     return sequelize.define('FriendRequest',
         {
             id: {
-                type: DataTypes.BLOB,
+                type: DataTypes.UUID,
                 primaryKey: true,
-                allowNull: false
+                allowNull: false,
+                defaultValue: DataTypes.UUIDV4
             },
             senderId: {
-                type: DataTypes.BLOB,
+                type: DataTypes.UUID,
                 allowNull: false,
                 unique: 'user'
             },
@@ -18,7 +19,8 @@ module.exports = (sequelize, DataTypes) => {
             },
             accepted: {
                 type: DataTypes.BOOLEAN,
-                allowNull: false
+                allowNull: false,
+                defaultValue: false
             }
         }
     );
