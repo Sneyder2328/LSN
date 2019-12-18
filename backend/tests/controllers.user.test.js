@@ -62,21 +62,6 @@ describe('POST /sendFriendRequest', () => {
             .end(done);
     });
 
-    it('should not send a friend request on other user"s behalf', (done) => {
-        request(app)
-            .post(endpoints.user.SEND_FRIEND_REQUEST)
-            .set(config.headers.accessToken, accessToken)
-            .send({
-                senderId: users[1].id,
-                receiverId: users[0].id
-            })
-            .expect(httpCodes.UNAUTHORIZED)
-            .expect((res) => {
-                expect(res.body.error).toBe(error.AUTH_ERROR);
-            })
-            .end(done);
-    });
-
     describe("should get user's friend requests", () => {
         let accessToken;
         beforeEach(async () => {
@@ -88,7 +73,7 @@ describe('POST /sendFriendRequest', () => {
 
         it("should get user's friend requests", (done) => {
             request(app)
-                .get(endpoints.user.GET_FRIEND_REQUESTS(users[2].id))
+                .get(endpoints.user.GET_FRIEND_REQUESTS)
                 .set(config.headers.accessToken, accessToken)
                 .expect(httpCodes.OK)
                 .expect((res) => {
@@ -97,17 +82,26 @@ describe('POST /sendFriendRequest', () => {
                 })
                 .end(done);
         });
+    });
+});
 
-        it("should not get other user's friend requests", (done) => {
-            request(app)
-                .get(endpoints.user.GET_FRIEND_REQUESTS(users[0].id))
-                .set(config.headers.accessToken, accessToken)
-                .expect(httpCodes.UNAUTHORIZED)
-                .expect((res) => {
-                    expect(res.body.error).toBe(error.AUTH_ERROR);
-                })
-                .end(done);
-        });
+describe('POST acceptFriendRequest', () => {
+    let accessToken;
+    beforeEach(async () => {
+        await wipeOutDatabase();
+        const {user} = await createUserAndProfile({...users[0]}, {...profiles[0]});
+        await createUserAndProfile({...users[1]}, {...profiles[1]});
+        accessToken = await user.generateAccessToken();
+        await FriendRequest.create({id: genUUID(), senderId: users[1].id, receiverId: users[0].id, accepted: false});
+    });
+
+    it('should accept a friend request', (done) => {
+        request(app)
+            .post(endpoints.user.ACCEPT_FRIEND_REQUEST)
+            .set(config.headers.accessToken, accessToken)
+            .send({senderId: users[1].id})
+            .expect(httpCodes.OK)
+            .end(done);
     });
 });
 

@@ -9,17 +9,19 @@ async function getProfile(username) {
 }
 
 async function sendFriendRequest({senderId, receiverId}) {
-    const fRequest = await FriendRequest.create({
-        id: genUUID(), senderId, receiverId, accepted: false
-    });
+    const fRequest = await FriendRequest.create({id: genUUID(), senderId, receiverId, accepted: false});
     console.log("sendFriendRequest", senderId, receiverId, fRequest);
     return fRequest !== null;
 }
 
-async function getFriendRequest(receiverId) {
-    const fRequest = await FriendRequest.findAll({where: {receiverId, accepted: false}});
+async function getFriendRequest(userId) {
+    const fRequest = await FriendRequest.findAll({where: {receiverId: userId, accepted: false}});
     return fRequest.map(it => it.dataValues);
 }
 
+async function acceptFriendRequest(receiverId, senderId) {
+    console.log("acceptFriendRequest", receiverId, senderId);
+    return await FriendRequest.update({accepted: true}, {where: {receiverId, senderId}});
+}
 
-module.exports = {getProfile, sendFriendRequest, getFriendRequest};
+module.exports = {getProfile, sendFriendRequest, getFriendRequest, acceptFriendRequest};

@@ -32,7 +32,6 @@ const sendFriendRequestValidationRules = [
 ];
 
 const getFriendRequestValidationRules = [
-    param('userId').exists(),
     header(config.headers.accessToken).isString().exists()
 ];
 
@@ -41,6 +40,10 @@ const createPostValidationRules = [
     body('type').isString().escape(),
     body('text').isLength({min: 1}).escape(),
     body('img').escape(),
+];
+
+const acceptFriendRequestValidationRules = [
+    body('senderId').exists().escape()
 ];
 
 
@@ -62,5 +65,6 @@ module.exports = {
     getProfileValidationRules,
     sendFriendRequestValidationRules,
     getFriendRequestValidationRules,
+    acceptFriendRequestValidationRules,
     validate
 };
