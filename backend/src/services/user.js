@@ -8,7 +8,7 @@ async function getProfile(username) {
     return user.dataValues;
 }
 
-async function sendFriendRequest({senderId, receiverId}) {
+async function sendFriendRequest(senderId, receiverId) {
     const fRequest = await FriendRequest.create({id: genUUID(), senderId, receiverId, accepted: false});
     console.log("sendFriendRequest", senderId, receiverId, fRequest);
     return fRequest !== null;

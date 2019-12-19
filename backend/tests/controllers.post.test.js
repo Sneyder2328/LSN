@@ -12,7 +12,7 @@ describe('POST /createPost', () => {
     let accessToken;
     beforeEach(async () => {
         await wipeOutDatabase();
-        const {user} = await createUserAndProfile({...users[0]}, {...profiles[0]});
+        const {user} = await createUserAndProfile(users[0], profiles[0]);
         accessToken = await user.generateAccessToken();
     });
 
@@ -20,9 +20,7 @@ describe('POST /createPost', () => {
         request(app)
             .post(endpoints.post.CREATE_POST)
             .set(config.headers.accessToken, accessToken)
-            .send({
-                ...posts[0]
-            })
+            .send(posts[0])
             .expect(httpCodes.CREATED)
             .expect((res) => {
                 expect(res.body.comments).toBe(0);
@@ -40,9 +38,7 @@ describe('POST /createPost', () => {
         request(app)
             .post(endpoints.post.CREATE_POST)
             .set(config.headers.accessToken, accessToken + "fd")
-            .send({
-                ...posts[0]
-            })
+            .send(posts[0])
             .expect(httpCodes.UNAUTHORIZED)
             .expect((res) => {
                 expect(res.body.message).toBe("Access token not valid");
@@ -54,11 +50,11 @@ describe('POST /createPost', () => {
 describe('GET /getPosts', () => {
     beforeEach(async () => {
         await wipeOutDatabase();
-        await User.create({...users[0]});
-        await User.create({...users[1]});
-        await Profile.create({...profiles[0]});
-        await Profile.create({...profiles[1]});
-        await Promise.all(posts.map((post) => Post.create({...post})));
+        await User.create(users[0]);
+        await User.create(users[1]);
+        await Profile.create(profiles[0]);
+        await Profile.create(profiles[1]);
+        await Promise.all(posts.map((post) => Post.create(post)));
     });
 
     it('should return text posts with author metadata', (done) => {
@@ -90,7 +86,7 @@ describe('POST /likePost', () => {
     let accessToken;
     beforeEach(async () => {
         await wipeOutDatabase();
-        const {user} = await createUserAndProfile({...users[0]}, {...profiles[0]});
+        const {user} = await createUserAndProfile(users[0], profiles[0]);
         accessToken = await user.generateAccessToken();
         await Post.create(posts[0]);
     });
@@ -101,7 +97,8 @@ describe('POST /likePost', () => {
             .set(config.headers.accessToken, accessToken)
             .send({postId: posts[0].id})
             .expect(httpCodes.OK)
-            .end(async () => {
+            .end(async (err, _) => {
+                if (err) return done(err);
                 const post = (await Post.findOne({where: {id: posts[0].id}})).dataValues;
                 expect(post.likes).toBe(posts[0].likes+1);
                 done();

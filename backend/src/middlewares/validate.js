@@ -31,25 +31,38 @@ const sendFriendRequestValidationRules = [
     body('receiverId').exists()
 ];
 
+const accessTokenIsValid = header(config.headers.accessToken).isString().exists();
+
 const getFriendRequestValidationRules = [
-    header(config.headers.accessToken).isString().exists()
+    accessTokenIsValid
 ];
 
 const likePostValidationRules = [
-    header(config.headers.accessToken).isString().exists()
+    accessTokenIsValid
 ];
 
+const likeCommentValidationRules = [
+    accessTokenIsValid,
+    body('commentId').exists()
+];
 
 const createPostValidationRules = [
     body('type').isString().escape(),
     body('text').isLength({min: 1}).escape(),
-    body('img').escape(),
+    body('img').escape()
 ];
 
 const acceptFriendRequestValidationRules = [
     body('senderId').exists().escape()
 ];
 
+const createCommentValidationRules = [
+    body('type').isString().escape(),
+    body('postId').exists().escape(),
+    body('id').exists().escape(),
+    body('text').isLength({min: 1}).escape(),
+    body('img').escape()
+];
 
 function validate(req, res, next) {
     const errors = validationResult(req);
@@ -71,5 +84,7 @@ module.exports = {
     getFriendRequestValidationRules,
     acceptFriendRequestValidationRules,
     likePostValidationRules,
+    createCommentValidationRules,
+    likeCommentValidationRules,
     validate
 };

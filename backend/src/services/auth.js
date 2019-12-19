@@ -50,8 +50,7 @@ async function logInUser({username, password}) {
 
 async function logOutUser(refreshToken) {
     const rowsDeleted = await Token.destroy({where: {token: refreshToken}});
-    if (rowsDeleted === 0)
-        throw AppError(httpCodes.BAD_REQUEST, 'Log out error', 'Log out error');
+    if (rowsDeleted === 0) throw new AppError(httpCodes.BAD_REQUEST, 'Log out error', 'Log out error');
     return true;
 }
 

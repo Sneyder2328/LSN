@@ -47,7 +47,7 @@ describe('POST /signUp', () => {
     describe('should not sign up an user', () => {
         beforeEach(async () => {
             await wipeOutDatabase();
-            await createUserAndProfile({...users[0]}, {...profiles[0]});
+            await createUserAndProfile(users[0], profiles[0]);
         });
         it('should not sign up an user with an existing username', (done) => {
             request(app)
@@ -88,7 +88,7 @@ describe('POST /signUp', () => {
 describe('POST /logIn', () => {
     beforeEach(async () => {
         await wipeOutDatabase();
-        await createUserAndProfile({...users[0]}, {...profiles[0]});
+        await createUserAndProfile(users[0], profiles[0]);
     });
 
     it('should login with valid credentials', (done) => {
@@ -142,7 +142,7 @@ describe('POST /refreshToken', () => {
     let refreshToken;
     beforeEach(async () => {
         await wipeOutDatabase();
-        const {token} = await createUserAndProfile({...users[0]}, {...profiles[0]}, true);
+        const {token} = await createUserAndProfile(users[0], profiles[0], true);
         refreshToken = token.dataValues.token;
     });
 
@@ -162,7 +162,7 @@ describe('POST /logOut', () => {
     let refreshToken;
     beforeEach(async () => {
         await wipeOutDatabase();
-        const {token} = await createUserAndProfile({...users[0]}, {...profiles[0]}, true);
+        const {token} = await createUserAndProfile(users[0], profiles[0], true);
         refreshToken = token.dataValues.token;
     });
 
@@ -174,7 +174,8 @@ describe('POST /logOut', () => {
             .expect((res) => {
                 expect(res.body.loggedOut).toBe(true);
             })
-            .end(async () => {
+            .end(async (err, _) => {
+                if (err) return done(err);
                 const tokenInDb = await Token.findOne({where: {token: refreshToken}});
                 expect(tokenInDb).toBeNull();
                 done();
@@ -186,7 +187,8 @@ describe('POST /logOut', () => {
             .post(endpoints.auth.LOG_OUT)
             .set(config.headers.refreshToken, refreshToken + "hkjhk")
             .expect(httpCodes.BAD_REQUEST)
-            .end(async () => {
+            .end(async (err, _) => {
+                if (err) return done(err);
                 const tokenInDb = await Token.findOne({where: {token: refreshToken}});
                 expect(tokenInDb).toBeDefined();
                 done();

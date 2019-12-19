@@ -76,11 +76,41 @@ const posts = [
     }
 ];
 
+const comments = [
+    {
+        id: genUUID(),
+        userId: posts[0].userId,
+        postId: posts[0].id,
+        text: "Hello world and welcome to La Social Network",
+        type: "text",
+        img: "",
+        likes: 0
+    },
+    {
+        id: genUUID(),
+        userId: posts[0].userId,
+        postId: posts[0].id,
+        text: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis",
+        type: "text",
+        img: "",
+        likes: 0
+    },
+    {
+        id: genUUID(),
+        userId: posts[1].userId,
+        postId: posts[1].id,
+        text: "m ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea",
+        type: "text",
+        img: "",
+        likes: 0
+    }
+];
+
 const tokens = [
     {
-        token: "1e64765a-3538-4816-9b42-541e8999d45c",
+        token: genUUID(),
         userId: users[0].id
     }
 ];
 
-module.exports = {users, profiles, posts, tokens};
+module.exports = {users, profiles, posts, comments, tokens};

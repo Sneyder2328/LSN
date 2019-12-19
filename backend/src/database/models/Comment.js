@@ -4,7 +4,8 @@ module.exports = (sequelize, DataTypes, User) => {
             id: {
                 primaryKey: true,
                 type: DataTypes.UUID,
-                allowNull: false
+                allowNull: false,
+                defaultValue: DataTypes.UUIDV4
             },
             userId: {
                 type: DataTypes.UUID,
@@ -32,11 +33,13 @@ module.exports = (sequelize, DataTypes, User) => {
             },
             createdAt: {
                 type: DataTypes.DATE,
-                allowNull: false
+                allowNull: false,
+                defaultValue: DataTypes.NOW
             },
             likes: {
                 type: DataTypes.INTEGER,
-                allowNull: false
+                allowNull: false,
+                defaultValue: 0
             }
         }
     );

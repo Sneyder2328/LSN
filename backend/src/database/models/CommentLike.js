@@ -1,24 +1,31 @@
 module.exports = (sequelize, DataTypes, User, Comment) => {
-    return sequelize.define('Comment_Like',
-        {
-            commentId: {
-                type: DataTypes.UUID,
-                allowNull: false,
-                unique: 'commentId_userId',
-                references: {
-                    model: Comment,
-                    key: 'id'
-                }
-            },
-            userId: {
-                type: DataTypes.UUID,
-                allowNull: false,
-                unique: 'commentId_userId',
-                references: {
-                    model: User,
-                    key: 'id'
-                }
+    const CommentLike = sequelize.define('Comment_Like', {
+        commentId: {
+            type: DataTypes.UUID,
+            allowNull: false,
+            unique: 'commentId_userId',
+            references: {
+                model: Comment,
+                key: 'id'
+            }
+        },
+        userId: {
+            type: DataTypes.UUID,
+            allowNull: false,
+            unique: 'commentId_userId',
+            references: {
+                model: User,
+                key: 'id'
             }
         }
-    );
+    });
+    CommentLike.removeAttribute('id');
+
+    CommentLike.beforeCreate(async (commentLike, _) => {
+        console.log("CommentLike.beforeCreate(");
+        const comment = await Comment.findByPk(commentLike.commentId);
+        await comment.increment('likes', {by: 1});
+    });
+
+    return CommentLike;
 };

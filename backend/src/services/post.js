@@ -15,8 +15,8 @@ async function getPosts() {
 }
 
 async function likePost(userId, postId) {
-    const post = await PostLike.create({userId, postId});
-    return post !== null;
+    const postLike = await PostLike.create({userId, postId});
+    return postLike !== null;
 }
 
 module.exports = {createPost, getPosts, likePost};

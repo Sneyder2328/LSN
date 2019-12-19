@@ -15,5 +15,10 @@ module.exports = {
         CREATE_POST: '/createPost',
         GET_POSTS: '/getPosts',
         LIKE_POST: '/likePost'
+    },
+    comment: {
+        CREATE_COMMENT: '/createComment',
+        LIKE_COMMENT: '/likeComment',
+        GET_COMMENTS: '/getCommentsByPost'
     }
 };

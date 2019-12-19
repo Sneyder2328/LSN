@@ -14,8 +14,7 @@ router.get(endpoints.user.GET_PROFILE(':username'), getProfileValidationRules, v
 }));
 
 router.post(endpoints.user.SEND_FRIEND_REQUEST, authenticate, sendFriendRequestValidationRules, validate, handleErrorAsync(async (req, res) => {
-    req.body.senderId = req.userId;
-    const fRequestSent = await sendFriendRequest(req.body);
+    const fRequestSent = await sendFriendRequest(req.userId, req.body.receiverId);
     res.status(httpCodes.CREATED).json(fRequestSent);
 }));
 
@@ -25,7 +24,6 @@ router.get(endpoints.user.GET_FRIEND_REQUESTS, authenticate, getFriendRequestVal
 }));
 
 router.post(endpoints.user.ACCEPT_FRIEND_REQUEST, authenticate, acceptFriendRequestValidationRules, validate, handleErrorAsync(async (req, res) => {
-    console.log("senderId", req.userId, req.body.senderId);
     const accepted = await acceptFriendRequest(req.userId, req.body.senderId);
     res.json(accepted);
 }));
