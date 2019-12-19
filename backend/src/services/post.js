@@ -1,4 +1,4 @@
-const {Post, Profile} = require('../database/database');
+const {Post, Profile, PostLike} = require('../database/database');
 const {genUUID} = require('../utils/utils');
 const PostNotCreatedError = require('../utils/errors/PostNotCreatedError');
 
@@ -14,4 +14,9 @@ async function getPosts() {
     return posts.map(post => post.dataValues);
 }
 
-module.exports = {createPost, getPosts};
+async function likePost(userId, postId) {
+    const post = await PostLike.create({userId, postId});
+    return post !== null;
+}
+
+module.exports = {createPost, getPosts, likePost};

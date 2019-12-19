@@ -86,6 +86,29 @@ describe('GET /getPosts', () => {
     });
 });
 
+describe('POST /likePost', () => {
+    let accessToken;
+    beforeEach(async () => {
+        await wipeOutDatabase();
+        const {user} = await createUserAndProfile({...users[0]}, {...profiles[0]});
+        accessToken = await user.generateAccessToken();
+        await Post.create(posts[0]);
+    });
+
+    it('should like a post', (done) => {
+        request(app)
+            .post(endpoints.post.LIKE_POST)
+            .set(config.headers.accessToken, accessToken)
+            .send({postId: posts[0].id})
+            .expect(httpCodes.OK)
+            .end(async () => {
+                const post = (await Post.findOne({where: {id: posts[0].id}})).dataValues;
+                expect(post.likes).toBe(posts[0].likes+1);
+                done();
+            });
+    });
+});
+
 afterAll((done) => {
     server.close(done);
 });

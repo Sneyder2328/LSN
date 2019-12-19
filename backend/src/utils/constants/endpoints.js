@@ -13,6 +13,7 @@ module.exports = {
     },
     post: {
         CREATE_POST: '/createPost',
-        GET_POSTS: '/getPosts'
+        GET_POSTS: '/getPosts',
+        LIKE_POST: '/likePost'
     }
 };

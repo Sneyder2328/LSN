@@ -57,7 +57,8 @@ const posts = [
         userId: users[0].id,
         text: "Hello world and welcome to La Social Network",
         type: "text",
-        img: ""
+        img: "",
+        likes: 0
     },
     {
         id: genUUID(),

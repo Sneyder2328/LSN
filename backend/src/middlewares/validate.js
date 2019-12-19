@@ -35,6 +35,10 @@ const getFriendRequestValidationRules = [
     header(config.headers.accessToken).isString().exists()
 ];
 
+const likePostValidationRules = [
+    header(config.headers.accessToken).isString().exists()
+];
+
 
 const createPostValidationRules = [
     body('type').isString().escape(),
@@ -66,5 +70,6 @@ module.exports = {
     sendFriendRequestValidationRules,
     getFriendRequestValidationRules,
     acceptFriendRequestValidationRules,
+    likePostValidationRules,
     validate
 };

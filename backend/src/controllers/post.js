@@ -1,7 +1,7 @@
 const {Router} = require('express');
-const {createPost, getPosts} = require('../services/post');
+const {createPost, getPosts, likePost} = require('../services/post');
 const authenticate = require('../middlewares/authenticate');
-const {createPostValidationRules, validate} = require('../middlewares/validate');
+const {createPostValidationRules, likePostValidationRules, validate} = require('../middlewares/validate');
 const handleErrorAsync = require('../middlewares/handleErrorAsync');
 const httpCodes = require('../utils/constants/httpResponseCodes');
 const endpoints = require('../utils/constants/endpoints');
@@ -17,6 +17,11 @@ router.post(endpoints.post.CREATE_POST, authenticate, createPostValidationRules,
 router.get(endpoints.post.GET_POSTS, handleErrorAsync(async (req, res) => {
     const posts = await getPosts();
     res.status(httpCodes.OK).send(posts);
+}));
+
+router.post(endpoints.post.LIKE_POST, authenticate, likePostValidationRules, validate, handleErrorAsync(async (req, res) => {
+    const postLiked = await likePost(req.userId, req.body.postId);
+    res.status(httpCodes.OK).send(postLiked);
 }));
 
 module.exports = router;

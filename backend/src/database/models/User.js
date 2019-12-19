@@ -48,9 +48,7 @@ module.exports = (sequelize, DataTypes) => {
         }
     );
 
-    User.beforeSave(async (user, options) =>{
-        //user.password = await hashPassword(10, user.password);
-        console.log("hashes password");
+    User.beforeSave(async (user, _) =>{
         return hashPassword(10, user.password).then(hashedPw => {
             user.password = hashedPw;
         });

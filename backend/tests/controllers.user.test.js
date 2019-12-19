@@ -101,7 +101,11 @@ describe('POST acceptFriendRequest', () => {
             .set(config.headers.accessToken, accessToken)
             .send({senderId: users[1].id})
             .expect(httpCodes.OK)
-            .end(done);
+            .end(async () => {
+                const fRequest = (await FriendRequest.findOne({where: {senderId: users[1].id, receiverId: users[0].id}})).dataValues;
+                expect(fRequest.accepted).toBe(true);
+                done();
+            });
     });
 });
 

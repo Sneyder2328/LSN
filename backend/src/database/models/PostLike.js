@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes, User, Post) => {
-    return sequelize.define('Post_Like', {
+    const PostLike = sequelize.define('Post_Like', {
         postId: {
             type: DataTypes.UUID,
             allowNull: false,
@@ -19,4 +19,12 @@ module.exports = (sequelize, DataTypes, User, Post) => {
             }
         }
     });
+    PostLike.removeAttribute('id');
+
+    PostLike.beforeCreate(async (postLike, _) => {
+        const post = await Post.findByPk(postLike.postId);
+        await post.increment('likes', {by: 1});
+    });
+
+    return PostLike;
 };
