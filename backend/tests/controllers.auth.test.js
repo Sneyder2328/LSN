@@ -182,11 +182,11 @@ describe('POST /logOut', () => {
             });
     });
 
-    it('should not log out nor delete token from the db', (done) => {
+    it('should not log out nor delete token from the db when haveinvalid token', (done) => {
         request(app)
             .delete(endpoints.auth.LOG_OUT)
             .set(config.headers.refreshToken, refreshToken + "hkjhk")
-            .expect(httpCodes.BAD_REQUEST)
+            .expect(httpCodes.UNPROCESSABLE_ENTITY)
             .end(async (err, _) => {
                 if (err) return done(err);
                 const tokenInDb = await Token.findOne({where: {token: refreshToken}});

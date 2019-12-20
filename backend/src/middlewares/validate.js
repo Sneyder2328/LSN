@@ -1,36 +1,40 @@
-const AppError = require('../utils/errors/AppError');
+const httpCodes = require('../utils/constants/httpResponseCodes');
 const {body, header, param, validationResult, query} = require('express-validator');
 const {config} = require('../config/config');
 
+function trimInside() {
+    return str => str.replace(/\s/g, '');
+}
+
 const signUpValidationRules = [
-    body('username').isAlphanumeric().isLength({min: 4}).escape(),
-    body('fullname').isString().isLength({min: 4}).escape(),
-    body('password').isLength({min: 8}).escape(),
-    body('typeLogin').isString().isLength({min: 4}),
-    body('email').isEmail(),
-    body('description').isString().escape(),
-    body('coverPhotoUrl').isString().escape(),
-    body('profilePhotoUrl').isString().escape()
+    body('username').trim().escape().isAlphanumeric().withMessage('Username can only contain alphanumeric characters(A-Z, 0-9)').isLength({min: 5}).withMessage('Username must be at least 5 characters long'),
+    body('fullname').customSanitizer(trimInside()).escape().isString().isLength({min: 5}).withMessage('Full name must be at least 5 characters long'),
+    body('password').isLength({min: 8}).withMessage('Password must be at least 8 characters long'),
+    body('typeLogin').trim().custom(val => val==='email' || val==='facebook' || val==='google').withMessage('You must provide a valid type of login(email,facebook,google)'),
+    body('email').isEmail().normalizeEmail().withMessage('You must enter a valid email address'),
+    body('description').trim().isString().escape(),
+    body('coverPhotoUrl').trim().isString().escape(),
+    body('profilePhotoUrl').trim().isString().escape()
 ];
 
 const logInValidationRules = [
-    body('username').isAlphanumeric().isLength({min: 4}).escape(),
-    body('password').isLength({min: 8}).escape()
+    body('username').trim().escape().isAlphanumeric().withMessage('Your username is not valid so it cannot be processed'),
+    body('password').isLength({min: 8})
 ];
 
 const refreshTokenValidationRules = [
-    header(config.headers.refreshToken).isString().exists()
+    header(config.headers.refreshToken).trim().matches(config.regex.uuidV4).withMessage('Refresh token provided is not an uuidV4 token')
 ];
 
 const getProfileValidationRules = [
-    param('username').isAlphanumeric().exists()
+    param('username').trim().escape().isAlphanumeric()
 ];
 
 const sendFriendRequestValidationRules = [
-    param('receiverId').exists()
+    param('receiverId').trim().matches(config.regex.uuidV4)
 ];
 
-const accessTokenIsValid = header(config.headers.accessToken).isString().exists();
+const accessTokenIsValid = header(config.headers.accessToken).trim().matches(config.regex.jwt).withMessage('Access token provided is not a valid JWT');
 
 const getFriendRequestValidationRules = [
     accessTokenIsValid
@@ -38,30 +42,30 @@ const getFriendRequestValidationRules = [
 
 const likePostValidationRules = [
     accessTokenIsValid,
-    param('postId').exists()
+    param('postId').trim().matches(config.regex.uuidV4)
 ];
 
 const likeCommentValidationRules = [
     accessTokenIsValid,
-    param('commentId').exists()
+    param('commentId').trim().matches(config.regex.uuidV4)
 ];
 
 const createPostValidationRules = [
     body('type').isString().escape(),
-    body('text').isLength({min: 1}).escape(),
+    body('text').not().isEmpty().trim().escape(),
     body('img').escape()
 ];
 
 const acceptFriendRequestValidationRules = [
-    param('senderId').exists().escape(),
-    query('action').exists()
+    param('senderId').trim().matches(config.regex.uuidV4),
+    query('action').custom(val => val==='confirm' || val==='deny').withMessage('Action field must be either confirm or deny')
 ];
 
 const createCommentValidationRules = [
-    body('type').isString().escape(),
+    body('type').custom(val => val==='text' || val==='img'),
     param('postId').exists().escape(),
     body('id').exists().escape(),
-    body('text').isLength({min: 1}).escape(),
+    body('text').not().isEmpty().trim().escape(),
     body('img').escape()
 ];
 
@@ -70,7 +74,7 @@ function validate(req, res, next) {
     if (errors.isEmpty()) return next();
     const extractedErrors = [];
     errors.array().map(err => extractedErrors.push({[err.param]: err.msg}));
-    return res.status(422).json({
+    return res.status(httpCodes.UNPROCESSABLE_ENTITY).json({
         errors: extractedErrors,
     })
 }
