@@ -22,7 +22,6 @@ module.exports = (sequelize, DataTypes, User, Comment) => {
     CommentLike.removeAttribute('id');
 
     CommentLike.beforeCreate(async (commentLike, _) => {
-        console.log("CommentLike.beforeCreate(");
         const comment = await Comment.findByPk(commentLike.commentId);
         await comment.increment('likes', {by: 1});
     });

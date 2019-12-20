@@ -29,7 +29,7 @@ router.get(endpoints.auth.REFRESH_TOKEN, refreshTokenValidationRules, validate, 
         .send({status: 'New access token issued'});
 }));
 
-router.post(endpoints.auth.LOG_OUT, refreshTokenValidationRules, validate, handleErrorAsync(async (req, res) => {
+router.delete(endpoints.auth.LOG_OUT, refreshTokenValidationRules, validate, handleErrorAsync(async (req, res) => {
     const refreshToken = req.header(config.headers.refreshToken);
     const loggedOut = await logOutUser(refreshToken);
     res.send({loggedOut})

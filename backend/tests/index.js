@@ -1,6 +1,6 @@
 const uuid = require('uuid');
 
-const {sequelize, Token, User, Profile, FriendRequest, Post, PostLike, Comment, CommentLike} = require('../src/database/database');
+const {sequelize, Token, User, Profile, UserRelationShip, Post, PostLike, Comment, CommentLike} = require('../src/database/database');
 
 async function wipeOutDatabase() {
     const destroyOptions = {
@@ -11,7 +11,7 @@ async function wipeOutDatabase() {
     await Comment.destroy(destroyOptions);
     await Post.destroy(destroyOptions);
     await Token.destroy(destroyOptions);
-    await FriendRequest.destroy(destroyOptions);
+    await UserRelationShip.destroy(destroyOptions);
     await CommentLike.destroy(destroyOptions);
     await PostLike.destroy(destroyOptions);
     await Profile.destroy(destroyOptions);

@@ -1,5 +1,5 @@
 const AppError = require('../utils/errors/AppError');
-const {body, header, param, validationResult} = require('express-validator');
+const {body, header, param, validationResult, query} = require('express-validator');
 const {config} = require('../config/config');
 
 const signUpValidationRules = [
@@ -27,8 +27,7 @@ const getProfileValidationRules = [
 ];
 
 const sendFriendRequestValidationRules = [
-    body('senderId').exists(),
-    body('receiverId').exists()
+    param('receiverId').exists()
 ];
 
 const accessTokenIsValid = header(config.headers.accessToken).isString().exists();
@@ -38,12 +37,13 @@ const getFriendRequestValidationRules = [
 ];
 
 const likePostValidationRules = [
-    accessTokenIsValid
+    accessTokenIsValid,
+    param('postId').exists()
 ];
 
 const likeCommentValidationRules = [
     accessTokenIsValid,
-    body('commentId').exists()
+    param('commentId').exists()
 ];
 
 const createPostValidationRules = [
@@ -53,12 +53,13 @@ const createPostValidationRules = [
 ];
 
 const acceptFriendRequestValidationRules = [
-    body('senderId').exists().escape()
+    param('senderId').exists().escape(),
+    query('action').exists()
 ];
 
 const createCommentValidationRules = [
     body('type').isString().escape(),
-    body('postId').exists().escape(),
+    param('postId').exists().escape(),
     body('id').exists().escape(),
     body('text').isLength({min: 1}).escape(),
     body('img').escape()

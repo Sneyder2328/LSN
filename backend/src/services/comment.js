@@ -1,7 +1,7 @@
 const {Comment, CommentLike} = require('../database/database');
 const CommentNotCreatedError = require('../utils/errors/CommentNotCreatedError');
 
-async function createComment(userId, {id, postId, type, text, img}) {
+async function createComment(userId, postId, {id, type, text, img}) {
     const comment = await Comment.create({id, userId, postId, type, text, img});
     if (!comment) throw new CommentNotCreatedError();
     return comment;

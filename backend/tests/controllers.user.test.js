@@ -5,9 +5,9 @@ const httpCodes = require('../src/utils/constants/httpResponseCodes');
 const error = require('../src/utils/constants/errors');
 const endpoints = require('../src/utils/constants/endpoints');
 const {config} = require('../src/config/config');
-const {genUUID} = require('../src/utils/utils');
+const userRelationship = require('../src/utils/constants/userRelationship');
 const {wipeOutDatabase, createUserAndProfile} = require('./index');
-const {FriendRequest} = require('../src/database/database');
+const {UserRelationShip} = require('../src/database/database');
 const {users, profiles} = require('./seed');
 
 describe('GET /profile/:username', () => {
@@ -52,12 +52,8 @@ describe('POST /sendFriendRequest', () => {
 
     it('should send a friend request', (done) => {
         request(app)
-            .post(endpoints.user.SEND_FRIEND_REQUEST)
+            .post(endpoints.user.SEND_FRIEND_REQUEST(users[1].id))
             .set(config.headers.accessToken, accessToken)
-            .send({
-                senderId: users[0].id,
-                receiverId: users[1].id
-            })
             .expect(httpCodes.CREATED)
             .end(done);
     });
@@ -67,8 +63,16 @@ describe('POST /sendFriendRequest', () => {
         beforeEach(async () => {
             const {user} = await createUserAndProfile({...users[2]}, {...profiles[2]});
             accessToken = await user.generateAccessToken();
-            await FriendRequest.create({id: genUUID(), senderId: users[0].id, receiverId: users[2].id});
-            await FriendRequest.create({id: genUUID(), senderId: users[1].id, receiverId: users[2].id});
+            await UserRelationShip.create({
+                senderId: users[0].id,
+                receiverId: users[2].id,
+                type: userRelationship.PENDING
+            });
+            await UserRelationShip.create({
+                senderId: users[1].id,
+                receiverId: users[2].id,
+                type: userRelationship.PENDING
+            });
         });
 
         it("should get user's friend requests", (done) => {
@@ -77,7 +81,7 @@ describe('POST /sendFriendRequest', () => {
                 .set(config.headers.accessToken, accessToken)
                 .expect(httpCodes.OK)
                 .expect((res) => {
-                    console.log("friend requests =  ", res.body);
+                    //console.log("friend requests =  ", res.body);
                     expect(res.body.length).toBe(2);
                 })
                 .end(done);
@@ -92,18 +96,31 @@ describe('POST acceptFriendRequest', () => {
         const {user} = await createUserAndProfile({...users[0]}, {...profiles[0]});
         await createUserAndProfile({...users[1]}, {...profiles[1]});
         accessToken = await user.generateAccessToken();
-        await FriendRequest.create({id: genUUID(), senderId: users[1].id, receiverId: users[0].id, accepted: false});
+        await UserRelationShip.create({senderId: users[1].id, receiverId: users[0].id, type: userRelationship.PENDING});
     });
 
     it('should accept a friend request', (done) => {
         request(app)
-            .post(endpoints.user.ACCEPT_FRIEND_REQUEST)
+            .put(endpoints.user.RESPOND_TO_FRIEND_REQUEST(users[1].id) + "?action=confirm")
             .set(config.headers.accessToken, accessToken)
-            .send({senderId: users[1].id})
             .expect(httpCodes.OK)
-            .end(async () => {
-                const fRequest = (await FriendRequest.findOne({where: {senderId: users[1].id, receiverId: users[0].id}})).dataValues;
-                expect(fRequest.accepted).toBe(true);
+            .end(async (err, _) => {
+                if (err) return done(err);
+                const fRequest = await UserRelationShip.findOne({where: {senderId: users[1].id, receiverId: users[0].id}});
+                expect(fRequest.type).toBe(userRelationship.FRIEND);
+                done();
+            });
+    });
+
+    it('should reject a friend request', (done) => {
+        request(app)
+            .put(endpoints.user.RESPOND_TO_FRIEND_REQUEST(users[1].id) + "?action=deny")
+            .set(config.headers.accessToken, accessToken)
+            .expect(httpCodes.OK)
+            .end(async (err, _) => {
+                if (err) return done(err);
+                const fRequest = await UserRelationShip.findOne({where: {senderId: users[1].id, receiverId: users[0].id}});
+                expect(fRequest).toBeFalsy();
                 done();
             });
     });

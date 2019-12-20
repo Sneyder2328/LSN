@@ -30,6 +30,5 @@ const config = {
     },
     jwtSecret: process.env.JWT_SECRET
 };
-//Object.freeze(config);
-//console.log("config=", config);
+Object.freeze(config);
 module.exports = {config};

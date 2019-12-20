@@ -19,7 +19,7 @@ describe('POST /createComment', () => {
 
     it('should create a new comment with plain text', (done) => {
         request(app)
-            .post(endpoints.comment.CREATE_COMMENT)
+            .post(endpoints.comment.CREATE_COMMENT(comments[0].postId))
             .set(config.headers.accessToken, accessToken)
             .send(comments[0])
             .expect(httpCodes.CREATED)
@@ -50,9 +50,8 @@ describe('POST /likeComment', () => {
 
     it('should like a comment', (done) => {
         request(app)
-            .post(endpoints.comment.LIKE_COMMENT)
+            .post(endpoints.comment.LIKE_COMMENT(comments[0].id))
             .set(config.headers.accessToken, accessToken)
-            .send({commentId: comments[0].id})
             .expect(httpCodes.OK)
             .end(async (err, _) => {
                 if (err) return done(err);

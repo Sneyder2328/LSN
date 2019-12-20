@@ -19,8 +19,8 @@ router.get(endpoints.post.GET_POSTS, handleErrorAsync(async (req, res) => {
     res.status(httpCodes.OK).send(posts);
 }));
 
-router.post(endpoints.post.LIKE_POST, authenticate, likePostValidationRules, validate, handleErrorAsync(async (req, res) => {
-    const postLiked = await likePost(req.userId, req.body.postId);
+router.post(endpoints.post.LIKE_POST(':postId'), authenticate, likePostValidationRules, validate, handleErrorAsync(async (req, res) => {
+    const postLiked = await likePost(req.userId, req.params.postId);
     res.status(httpCodes.OK).send(postLiked);
 }));
 

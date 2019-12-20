@@ -1,24 +1,24 @@
 module.exports = {
     auth: {
-        LOG_IN: '/logIn',
-        SIGN_UP: '/signUp',
-        LOG_OUT: '/logOut',
-        REFRESH_TOKEN: '/refreshToken'
+        LOG_IN: '/sessions',
+        SIGN_UP: '/users',
+        LOG_OUT: '/sessions',
+        REFRESH_TOKEN: '/tokens'
     },
     user: {
-        GET_PROFILE: (username) => `/profile/${username}`,
-        SEND_FRIEND_REQUEST: '/sendFriendRequest',
-        GET_FRIEND_REQUESTS: '/friendRequests',
-        ACCEPT_FRIEND_REQUEST: '/acceptFriendRequest'
+        GET_PROFILE: (username) => `/users/${username}`,
+        SEND_FRIEND_REQUEST: (receiverUserId) => `/users/${receiverUserId}/friends`,
+        GET_FRIEND_REQUESTS: '/me/friends/incoming',
+        RESPOND_TO_FRIEND_REQUEST: (senderUserId) => `/users/${senderUserId}/friends`
     },
     post: {
-        CREATE_POST: '/createPost',
-        GET_POSTS: '/getPosts',
-        LIKE_POST: '/likePost'
+        CREATE_POST: '/posts',
+        GET_POSTS: '/posts',
+        LIKE_POST: (postId) => `/posts/${postId}/likes`
     },
     comment: {
-        CREATE_COMMENT: '/createComment',
-        LIKE_COMMENT: '/likeComment',
-        GET_COMMENTS: '/getCommentsByPost'
+        CREATE_COMMENT: (postId) => `/posts/${postId}/comments`,
+        LIKE_COMMENT: (commentId) => `/comments/${commentId}/likes`,
+        GET_COMMENTS: (postId) => `/posts/${postId}/comments`
     }
 };

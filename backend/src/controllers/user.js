@@ -1,5 +1,5 @@
 const {Router} = require('express');
-const {getProfile, sendFriendRequest, getFriendRequest, acceptFriendRequest} = require('../services/user');
+const {getProfile, sendFriendRequest, getFriendRequests, handleFriendRequest} = require('../services/user');
 const {getProfileValidationRules, sendFriendRequestValidationRules, getFriendRequestValidationRules, acceptFriendRequestValidationRules, validate} = require('../middlewares/validate');
 const handleErrorAsync = require('../middlewares/handleErrorAsync');
 const authenticate = require('../middlewares/authenticate');
@@ -13,18 +13,18 @@ router.get(endpoints.user.GET_PROFILE(':username'), getProfileValidationRules, v
     res.json(user);
 }));
 
-router.post(endpoints.user.SEND_FRIEND_REQUEST, authenticate, sendFriendRequestValidationRules, validate, handleErrorAsync(async (req, res) => {
-    const fRequestSent = await sendFriendRequest(req.userId, req.body.receiverId);
+router.post(endpoints.user.SEND_FRIEND_REQUEST(':receiverId'), authenticate, sendFriendRequestValidationRules, validate, handleErrorAsync(async (req, res) => {
+    const fRequestSent = await sendFriendRequest(req.userId, req.params.receiverId);
     res.status(httpCodes.CREATED).json(fRequestSent);
 }));
 
 router.get(endpoints.user.GET_FRIEND_REQUESTS, authenticate, getFriendRequestValidationRules, validate, handleErrorAsync(async (req, res) => {
-    const friendRequests = await getFriendRequest(req.userId);
+    const friendRequests = await getFriendRequests(req.userId);
     res.json(friendRequests);
 }));
 
-router.post(endpoints.user.ACCEPT_FRIEND_REQUEST, authenticate, acceptFriendRequestValidationRules, validate, handleErrorAsync(async (req, res) => {
-    const accepted = await acceptFriendRequest(req.userId, req.body.senderId);
+router.put(endpoints.user.RESPOND_TO_FRIEND_REQUEST(':senderId'), authenticate, acceptFriendRequestValidationRules, validate, handleErrorAsync(async (req, res) => {
+    const accepted = await handleFriendRequest(req.userId, req.params.senderId, req.query.action);
     res.json(accepted);
 }));
 

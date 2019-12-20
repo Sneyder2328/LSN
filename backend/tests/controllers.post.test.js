@@ -93,13 +93,12 @@ describe('POST /likePost', () => {
 
     it('should like a post', (done) => {
         request(app)
-            .post(endpoints.post.LIKE_POST)
+            .post(endpoints.post.LIKE_POST(posts[0].id))
             .set(config.headers.accessToken, accessToken)
-            .send({postId: posts[0].id})
             .expect(httpCodes.OK)
             .end(async (err, _) => {
                 if (err) return done(err);
-                const post = (await Post.findOne({where: {id: posts[0].id}})).dataValues;
+                const post = await Post.findOne({where: {id: posts[0].id}});
                 expect(post.likes).toBe(posts[0].likes+1);
                 done();
             });

@@ -168,7 +168,7 @@ describe('POST /logOut', () => {
 
     it('should log out and delete token from the db', (done) => {
         request(app)
-            .post(endpoints.auth.LOG_OUT)
+            .delete(endpoints.auth.LOG_OUT)
             .set(config.headers.refreshToken, refreshToken)
             .expect(httpCodes.OK)
             .expect((res) => {
@@ -184,7 +184,7 @@ describe('POST /logOut', () => {
 
     it('should not log out nor delete token from the db', (done) => {
         request(app)
-            .post(endpoints.auth.LOG_OUT)
+            .delete(endpoints.auth.LOG_OUT)
             .set(config.headers.refreshToken, refreshToken + "hkjhk")
             .expect(httpCodes.BAD_REQUEST)
             .end(async (err, _) => {
@@ -196,7 +196,6 @@ describe('POST /logOut', () => {
     });
 
 });
-
 
 afterAll((done) => {
     server.close(done);
