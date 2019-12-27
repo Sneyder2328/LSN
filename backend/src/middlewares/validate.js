@@ -7,10 +7,14 @@ function trimInside() {
 }
 
 const signUpValidationRules = [
-    body('username').trim().escape().isAlphanumeric().withMessage('Username can only contain alphanumeric characters(A-Z, 0-9)').isLength({min: 5}).withMessage('Username must be at least 5 characters long'),
-    body('fullname').customSanitizer(trimInside()).escape().isString().isLength({min: 5}).withMessage('Full name must be at least 5 characters long'),
-    body('password').isLength({min: 8}).withMessage('Password must be at least 8 characters long'),
-    body('typeLogin').trim().custom(val => val==='email' || val==='facebook' || val==='google').withMessage('You must provide a valid type of login(email,facebook,google)'),
+    body('username').trim().escape()
+        .isAlphanumeric().withMessage('Username can only contain alphanumeric characters(A-Z, 0-9)')
+        .isLength({min: 5}).withMessage('Username must be at least 5 characters long'),
+    body('fullname').customSanitizer(trimInside()).escape().isString()
+        .isLength({min: 5}).withMessage('Full name must be at least 5 characters long'),
+    body('password').escape().isLength({min: 8}).withMessage('Password must be at least 8 characters long'),
+    body('typeLogin').trim()
+        .custom(val => val === 'email' || val === 'facebook' || val === 'google').withMessage('You must provide a valid type of login(email,facebook,google)'),
     body('email').isEmail().normalizeEmail().withMessage('You must enter a valid email address'),
     body('description').trim().isString().escape(),
     body('coverPhotoUrl').trim().isString().escape(),
@@ -18,8 +22,8 @@ const signUpValidationRules = [
 ];
 
 const logInValidationRules = [
-    body('username').trim().escape().isAlphanumeric().withMessage('Your username is not valid so it cannot be processed'),
-    body('password').isLength({min: 8})
+    body('username').trim().escape(),
+    body('password').escape()
 ];
 
 const refreshTokenValidationRules = [
@@ -58,11 +62,11 @@ const createPostValidationRules = [
 
 const acceptFriendRequestValidationRules = [
     param('senderId').trim().matches(config.regex.uuidV4),
-    query('action').custom(val => val==='confirm' || val==='deny').withMessage('Action field must be either confirm or deny')
+    query('action').custom(val => val === 'confirm' || val === 'deny').withMessage('Action field must be either confirm or deny')
 ];
 
 const createCommentValidationRules = [
-    body('type').custom(val => val==='text' || val==='img'),
+    body('type').custom(val => val === 'text' || val === 'img'),
     param('postId').exists().escape(),
     body('id').exists().escape(),
     body('text').not().isEmpty().trim().escape(),

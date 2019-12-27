@@ -60,7 +60,7 @@ describe('POST /signUp', () => {
                     expect(res.headers[config.headers.accessToken]).toBeFalsy();
                     expect(res.headers[config.headers.refreshToken]).toBeFalsy();
                     expect(res.body.message).toBe(error.message.USERNAME_TAKEN);
-                    expect(res.body.error).toBe(error.CONFLICT_ERROR);
+                    expect(res.body.error).toBe(error.USERNAME);
                 })
                 .end(done);
         });
@@ -76,7 +76,7 @@ describe('POST /signUp', () => {
                     expect(res.headers[config.headers.accessToken]).toBeFalsy();
                     expect(res.headers[config.headers.refreshToken]).toBeFalsy();
                     expect(res.body.message).toBe(error.message.EMAIL_TAKEN);
-                    expect(res.body.error).toBe(error.CONFLICT_ERROR);
+                    expect(res.body.error).toBe(error.EMAIL);
                 })
                 .end(done);
         });
@@ -116,7 +116,7 @@ describe('POST /logIn', () => {
             })
             .expect(httpCodes.UNAUTHORIZED)
             .expect((res) => {
-                expect(res.body.error).toBe(error.AUTH_ERROR);
+                expect(res.body.error).toBe(error.PASSWORD);
                 expect(res.body.message).toBe(error.message.INCORRECT_PASSWORD);
             })
             .end(done);
@@ -131,7 +131,7 @@ describe('POST /logIn', () => {
             })
             .expect(httpCodes.UNAUTHORIZED)
             .expect((res) => {
-                expect(res.body.error).toBe(error.AUTH_ERROR);
+                expect(res.body.error).toBe(error.USERNAME);
                 expect(res.body.message).toBe(error.message.INCORRECT_USERNAME);
             })
             .end(done);

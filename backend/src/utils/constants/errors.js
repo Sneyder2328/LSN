@@ -1,8 +1,9 @@
 module.exports = {
     NOT_FOUND : 'Not found error',
-    CONFLICT_ERROR : 'Conflict error',
+    USERNAME : 'username',
+    EMAIL : 'email',
     DEFAULT_ERROR: 'Error',
-    AUTH_ERROR: 'Authentication error',
+    PASSWORD: 'password',
     USER_NOT_FOUND_ERROR: 'User not found error',
     POST_NOT_CREATED: 'Post not created error',
     message: {

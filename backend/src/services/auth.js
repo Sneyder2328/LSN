@@ -9,9 +9,9 @@ const {genUUID, verifyPassword} = require('../utils/utils');
 
 async function signUpUser({username, fullname, password, typeLogin, email, description, coverPhotoUrl, profilePhotoUrl}) {
     const currentUserWithUsername = await User.findOne({where: {username}});
-    if (currentUserWithUsername) throw new AppError(httpCodes.CONFLICT, error.CONFLICT_ERROR, error.message.USERNAME_TAKEN);
+    if (currentUserWithUsername) throw new AppError(httpCodes.CONFLICT, error.USERNAME, error.message.USERNAME_TAKEN);
     const currentUserWithEmail = await User.findOne({where: {email}});
-    if (currentUserWithEmail) throw new AppError(httpCodes.CONFLICT, error.CONFLICT_ERROR, error.message.EMAIL_TAKEN);
+    if (currentUserWithEmail) throw new AppError(httpCodes.CONFLICT, error.EMAIL, error.message.EMAIL_TAKEN);
 
     let userId = genUUID();
     const user = await User.create({
@@ -37,14 +37,14 @@ async function signUpUser({username, fullname, password, typeLogin, email, descr
 
 async function logInUser({username, password}) {
     const user = await User.findOne({where: {username}});
-    if (!user) throw new AuthError(error.message.INCORRECT_USERNAME);
+    if (!user) throw new AuthError(error.USERNAME, error.message.INCORRECT_USERNAME);
 
-    const loggedIn = await verifyPassword(password, user.dataValues.password);
-    if (!loggedIn) throw new AuthError(error.message.INCORRECT_PASSWORD);
+    const loggedIn = await verifyPassword(password, user.password);
+    if (!loggedIn) throw new AuthError(error.PASSWORD, error.message.INCORRECT_PASSWORD);
 
     const accessToken = await user.generateAccessToken();
     const refreshToken = uuid.v4();
-    await Token.create({userId: user.dataValues.id, token: refreshToken});
+    await Token.create({userId: user.id, token: refreshToken});
     return {accessToken, refreshToken};
 }
 
@@ -57,7 +57,7 @@ async function logOutUser(refreshToken) {
 async function genNewAccessToken(refreshToken) {
     const token = await Token.findByPk(refreshToken);
     if (!token) throw new AuthError(error.message.REFRESH_TOKEN_NOT_FOUND);
-    const bufferId = token.dataValues.userId;
+    const bufferId = token.userId;
     const userId = [...bufferId];
     return await signJWT(userId);
 }
