@@ -9,13 +9,6 @@ const port = process.env.PORT || 3030;
 
 //app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors(corsOptions));
-/*
-app.use((req, res, next) => {
-    res.set('Access-Control-Allow-Origin', '*');
-    res.set('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS,PATCH');
-    res.set('Access-Control-Allow-Headers', 'Content-Type, Access-Control-Allow-Headers, authorization, authorization-refresh-token, X-Requested-With, Accept');
-    next()
-});*/
 app.use(bodyParser.json());
 app.use('/', router);
 
