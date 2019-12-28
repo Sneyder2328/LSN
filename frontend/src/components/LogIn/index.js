@@ -1,26 +1,19 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {useForm} from "react-hook-form";
-import axios from "axios";
-import ErrorMessage from "../Shared/ErrorMessage";
+import ErrorMessage from "../commons/ErrorMessage";
+import {useStateValue} from "../../contexts/StateContext";
+import {logInUser} from "../../actions/authActions";
 
 function LogIn() {
     const {register, handleSubmit, errors, setError} = useForm();
-    const onSubmit = async (data) => {
-        console.log(data);
-        try {
-            const response = await axios.post('/sessions/', {
-                username: data.username,
-                password: data.password
-            });
-            console.log("response=", response);
-            if (response.status === 200 && response.data.access === true) {
-                console.log("Logged in successfully!");
-            }
-        } catch (err) {
-            console.log("error:", err.response.data);
-            setError(err.response.data.error, err.response.data.error, err.response.data.message);
-        }
-    };
+    const [{logInError}, dispatch] = useStateValue();
+
+    useEffect(() => {
+        if (logInError) setError(logInError.fieldName, logInError.fieldName, logInError.message);
+    }, [logInError]);
+
+
+    const onSubmit = async (data) => dispatch(await logInUser(data));
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <p>Welcome Back!</p>

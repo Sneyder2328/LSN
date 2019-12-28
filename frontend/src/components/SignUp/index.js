@@ -1,42 +1,24 @@
-import React, {useState} from "react";
-import axios from 'axios';
+import React, {useEffect} from "react";
 import classnames from 'classnames';
 import {useForm} from 'react-hook-form'
-import ErrorMessage from "../Shared/ErrorMessage";
-
-const splitInTwo = {
-    width: '48%'
-};
-
+import ErrorMessage from "../commons/ErrorMessage";
+import {useStateValue} from "../../contexts/StateContext";
+import {signUpUser} from "../../actions/authActions";
 
 function SignUp() {
     const {register, handleSubmit, errors, setError} = useForm();
-    const onSubmit = async (data) => {
-        console.log(data);
-        try {
-            const response = await axios.post('/users/', {
-                username: data.username,
-                fullname: data.fullname,
-                password: data.password,
-                typeLogin: 'email',
-                email: data.email,
-                description: '',
-                profilePhotoUrl: '',
-                coverPhotoUrl: ''
-            });
-            console.log("response=", response);
-            if (response.status === 200 && response.data.access === true) {
-                console.log("Signed up successfully!");
-            }
-        } catch (err) {
-            console.log("error:", err.response.data);
-            setError(err.response.data.error, err.response.data.error, err.response.data.message);
-        }
-    };
+    const [{signUpError}, dispatch] = useStateValue();
+
+    useEffect(() => {
+        if (signUpError) setError(signUpError.fieldName, signUpError.fieldName, signUpError.message);
+    }, [signUpError]);
+
+    const onSubmit = async (data) => dispatch(await signUpUser(data));
+
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <p>Sign up to LaSocialNetwork</p>
-            <div style={{...splitInTwo, float: 'left'}}>
+            <div style={{width: '48%', float: 'left'}}>
                 <input name="fullname" type="text" placeholder='Full name'
                        className={classnames({'invalid-input': errors.fullname})} ref={register({
                     required: {value: true, message: 'Please enter your full name'},
@@ -44,7 +26,7 @@ function SignUp() {
                 })}/>
                 <ErrorMessage message={errors.fullname}/>
             </div>
-            <div style={{...splitInTwo, float: 'right'}}>
+            <div style={{width: '48%', float: 'right'}}>
                 <input name="username" type="text" placeholder='Username'
                        className={classnames({'invalid-input': errors.username})} ref={register({
                     required: {value: true, message: 'Please enter a username'},

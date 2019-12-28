@@ -7,5 +7,6 @@
     <orderEntry type="library" name="@types/sequelize" level="application" />
     <orderEntry type="library" name="@types/supertest" level="application" />
     <orderEntry type="library" name="@types/jest" level="application" />
+    <orderEntry type="module" module-name="www" />
   </component>
 </module>
