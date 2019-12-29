@@ -3,19 +3,20 @@ export const initialState = {
 };
 
 export const TYPES = {
-    SIGN_UP: 'signUp',
-    LOG_IN: 'logIn',
     SIGN_UP_ERROR: 'signUpError',
-    LOG_IN_ERROR: 'logInError'
+    LOG_IN_ERROR: 'logInError',
+    SET_CURRENT_USER: 'setCurrentUser',
+    SUBMITTING_POST: 'submittingPost',
+    POST_CREATED: 'postCreated'
 };
 
 export const authReducer = (state = initialState, action) => {
     switch (action.type) {
-        case TYPES.SIGN_UP:
-        case TYPES.LOG_IN:
+        case TYPES.SET_CURRENT_USER:
             return {
                 ...state,
-                isLoggedIn: true
+                isLoggedIn: true,
+                userId: action.payload
             };
         case TYPES.SIGN_UP_ERROR:
             return {
@@ -26,6 +27,12 @@ export const authReducer = (state = initialState, action) => {
             return {
                 ...state,
                 logInError: action.payload
+            };
+        case TYPES.SUBMITTING_POST:
+        case TYPES.POST_CREATED:
+            return {
+                ...state,
+                newPostStatus: action.type
             };
         default:
             return state;

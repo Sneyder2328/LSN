@@ -3,7 +3,7 @@ const {body, header, param, validationResult, query} = require('express-validato
 const {config} = require('../config/config');
 
 function trimInside() {
-    return str => str.replace(/\s/g, '');
+    return str => str.replace(/\s\s/g, ' ');
 }
 
 const signUpValidationRules = [
