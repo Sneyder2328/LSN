@@ -1,6 +1,6 @@
-import {Post} from "../components/Home/Post";
+import {Post} from "../components/Home/NewsFeed/Post";
 import {PostApi} from "../api/post";
-import {TYPES} from "../reducers/authReducer";
+import {TYPES} from "../reducers";
 
 export const createPost = async (dispatch: any, postData: Post) => {
     try {

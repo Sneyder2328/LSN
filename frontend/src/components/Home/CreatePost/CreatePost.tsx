@@ -1,14 +1,14 @@
 import React, {FormEvent, useEffect, useRef, useState} from "react";
 // @ts-ignore
 import classnames from 'classnames';
-import {useStateValue} from "../../contexts/StateContext";
-import {createPost} from "../../actions/postActions";
-import {TYPES} from "../../reducers/authReducer";
+import {useStateValue} from "../../../contexts/StateContext";
+import {createPost} from "../../../actions/postActions";
+import {TYPES} from "../../../reducers";
 
 export const CreatePost = () => {
     const [text, setText] = useState('');
     // @ts-ignore
-    const [{newPostStatus}, dispatch] = useStateValue();
+    const [{post}, dispatch] = useStateValue();
     const editorRef: any = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -22,10 +22,10 @@ export const CreatePost = () => {
     };
 
     useEffect(() => {
-        if (newPostStatus === TYPES.POST_CREATED) {
+        if (post.newPostStatus === TYPES.POST_CREATED) {
             cleanUpTextEditor();
         }
-    }, [newPostStatus]);
+    }, [post.newPostStatus]);
 
     const handleClick = async () => {
         const newPost = {

@@ -4,12 +4,17 @@ import AuthForm from "./AuthForm";
 import {StateProvider} from "../contexts/StateContext";
 import {Home} from "./Home";
 import {AuthRoute} from "./commons/AuthRoute";
-import {initialState, authReducer} from "../reducers/authReducer";
 import {PageNotFound} from "./commons/PageNotFound";
+import {AppState, mainReducer} from "../reducers";
 
-function App() {
+const initialState = {
+    auth: {},
+    post: {}
+} as AppState;
+
+const App = () => {
     return (
-        <StateProvider initialState={initialState} reducer={authReducer}>
+        <StateProvider initialState={initialState} reducer={mainReducer}>
             <BrowserRouter>
                 <Switch>
                     <Route exact path='/login' component={AuthForm}/>
@@ -19,6 +24,6 @@ function App() {
             </BrowserRouter>
         </StateProvider>
     );
-}
+};
 
 export default App;

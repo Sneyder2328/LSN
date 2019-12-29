@@ -1,19 +1,20 @@
 import React, {useEffect} from "react";
 import {useForm} from "react-hook-form";
-import ErrorMessage from "../commons/ErrorMessage";
-import {useStateValue} from "../../contexts/StateContext";
-import {logInUser} from "../../actions/authActions";
+import {ErrorMessage} from "../../commons/ErrorMessage";
+import {useStateValue} from "../../../contexts/StateContext";
+import {logInUser} from "../../../actions/authActions";
 
 function LogIn() {
     const {register, handleSubmit, errors, setError} = useForm();
-    const [{logInError}, dispatch] = useStateValue();
+    // @ts-ignore
+    const [{auth}, dispatch] = useStateValue();
 
     useEffect(() => {
-        if (logInError) setError(logInError.fieldName, logInError.fieldName, logInError.message);
-    }, [logInError]);
+        if (auth.logInError) setError(auth.logInError.fieldName, auth.logInError.fieldName, auth.logInError.message);
+    }, [auth.logInError]);
 
 
-    const onSubmit = async (data) => dispatch(await logInUser(data));
+    const onSubmit = async (data: any) => dispatch(await logInUser(data));
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <p>Welcome Back!</p>

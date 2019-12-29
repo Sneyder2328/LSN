@@ -1,16 +1,22 @@
-export const initialState = {
-    isLoggedIn: false
-};
+import {TYPES} from "./index";
 
-export const TYPES = {
-    SIGN_UP_ERROR: 'signUpError',
-    LOG_IN_ERROR: 'logInError',
-    SET_CURRENT_USER: 'setCurrentUser',
-    SUBMITTING_POST: 'submittingPost',
-    POST_CREATED: 'postCreated'
-};
+interface AuthState {
+    isLoggedIn: boolean;
+    userId: string;
+    signUpError: string;
+    logInError: string;
+    newPostStatus: string | number;
+}
 
-export const authReducer = (state = initialState, action) => {
+const initialState = {
+    isLoggedIn: false,
+    userId: '',
+    signUpError: '',
+    logInError: '',
+    newPostStatus: ''
+} as AuthState;
+
+export const authReducer = (state: AuthState = initialState, action: any) => {
     switch (action.type) {
         case TYPES.SET_CURRENT_USER:
             return {

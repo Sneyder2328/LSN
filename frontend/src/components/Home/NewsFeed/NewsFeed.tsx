@@ -1,11 +1,10 @@
 import React, {useEffect, useState} from "react";
-import {PostApi} from "../../api/post";
-import {Post} from "./Post";
+import {PostApi} from "../../../api/post";
+import {Post, PostDetails} from "./Post";
 
 export const NewsFeed = () => {
-    const [posts, setPosts] = useState([]);
+    const [posts, setPosts] = useState<Array<PostDetails>>([]);
     useEffect(() => {
-        console.log('fetching posts');
         const getPosts = () => {
             PostApi.getPosts().then(response => {
                 setPosts(response.data);

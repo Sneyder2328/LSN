@@ -15,7 +15,7 @@ export interface Post {
     img: string;
 }
 
-interface PostDetails extends Post {
+export interface PostDetails extends Post {
     comments: number;
     likes: number;
     userId: string;

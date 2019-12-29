@@ -1,8 +1,8 @@
 import React from "react";
-import {NewsFeed} from "./NewsFeed";
-import {CreatePost} from "./CreatePost";
+import {NewsFeed} from "./NewsFeed/NewsFeed";
+import {CreatePost} from "./CreatePost/CreatePost";
 import './styles.scss'
-import {NavBar} from "./NavBar";
+import {NavBar} from "./NavBar/NavBar";
 
 export const Home = () => {
     return (

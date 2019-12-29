@@ -1,19 +1,20 @@
 import React, {useEffect} from "react";
 import classnames from 'classnames';
 import {useForm} from 'react-hook-form'
-import ErrorMessage from "../commons/ErrorMessage";
-import {useStateValue} from "../../contexts/StateContext";
-import {signUpUser} from "../../actions/authActions";
+import {ErrorMessage} from "../../commons/ErrorMessage";
+import {useStateValue} from "../../../contexts/StateContext";
+import {signUpUser} from "../../../actions/authActions";
 
 function SignUp() {
     const {register, handleSubmit, errors, setError} = useForm();
-    const [{signUpError}, dispatch] = useStateValue();
+    // @ts-ignore
+    const [{auth}, dispatch] = useStateValue();
 
     useEffect(() => {
-        if (signUpError) setError(signUpError.fieldName, signUpError.fieldName, signUpError.message);
-    }, [signUpError]);
+        if (auth.signUpError) setError(auth.signUpError.fieldName, auth.signUpError.fieldName, auth.signUpError.message);
+    }, [auth.signUpError]);
 
-    const onSubmit = async (data) => dispatch(await signUpUser(data));
+    const onSubmit = async (data: any) => dispatch(await signUpUser(data));
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>

@@ -1,18 +1,19 @@
 import React, {useEffect, useState} from 'react';
 import "./styles.scss"
 import classnames from 'classnames';
-import SignUp from "../SignUp";
-import LogIn from "../LogIn";
+import SignUp from "./SignUp";
+import LogIn from "./LogIn";
 import {useStateValue} from "../../contexts/StateContext";
 import {useHistory} from "react-router";
 
 function AuthForm() {
-    const [{isLoggedIn}] = useStateValue();
+    // @ts-ignore
+    const [{auth}] = useStateValue();
 
     const history = useHistory();
     useEffect(() => {
-        if (isLoggedIn === true) history.push('/');
-    }, [isLoggedIn]);
+        if (auth.isLoggedIn) history.push('/');
+    }, [auth]);
 
     const [isLoginSelected, setLoginSelected] = useState(false);
     const Content = isLoginSelected ? <LogIn/> : <SignUp/>;

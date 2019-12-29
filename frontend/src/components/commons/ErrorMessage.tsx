@@ -1,6 +1,6 @@
 import React from "react";
 
-function ErrorMessage(props) {
+export const ErrorMessage = (props: any) => {
     if (props.message) return (
         <div className='error-message'>
             <i className="fas fa-exclamation-triangle"/>
@@ -8,6 +8,4 @@ function ErrorMessage(props) {
         </div>
     );
     return (<div className='error-message'/>);
-}
-
-export default ErrorMessage;
+};

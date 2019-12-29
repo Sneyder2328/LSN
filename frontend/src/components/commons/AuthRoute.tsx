@@ -10,7 +10,7 @@ const isUserAuth = () => {
     const expiryDate = dateRefreshTokenIssued + oneWeekInMillis;
     const currentDate = new Date().getTime();
     const tokensExist = accessToken && refreshToken && dateRefreshTokenIssued;
-    if(!tokensExist) return false;
+    if (!tokensExist) return false;
     const isTokenExpired = (expiryDate <= currentDate);
     if (isTokenExpired) {
         removeAuthTokenHeaders();
@@ -21,8 +21,9 @@ const isUserAuth = () => {
     return !isTokenExpired;
 };
 
+// @ts-ignore
 export const AuthRoute = ({component: Component, ...rest}) => {
-    return <Route {...rest} render={(props) => (
+    return <Route {...rest} render={(props: any) => (
         isUserAuth() ? <Component {...props}/>
             : <Redirect to={
                 {

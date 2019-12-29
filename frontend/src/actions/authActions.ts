@@ -1,4 +1,4 @@
-import {TYPES} from "../reducers/authReducer";
+import {TYPES} from "../reducers";
 import {AuthApi} from "../api/auth";
 import {ACCESS_TOKEN, REFRESH_TOKEN} from "../utils/constants";
 import {removeAuthTokenHeaders, setAccessTokenHeaders, setRefreshTokenHeaders} from "../utils/setAccessTokenHeaders";
@@ -25,7 +25,9 @@ export const signUpUser = async (userData: { username: string; fullname: string;
     }
 };
 
-export const logInUser = async (credentials: { username: string; password: string; }) => {
+export type LoginCredentials = { username: string; password: string; };
+
+export const logInUser = async (credentials: LoginCredentials) => {
     try {
         const response = await AuthApi.logIn(credentials);
         if (response.data.access === true) {

@@ -1,11 +1,17 @@
 import {ACCESS_TOKEN, REFRESH_TOKEN, REFRESH_TOKEN_ISSUED_AT} from "./constants";
 
+interface Tokens {
+    accessToken: string;
+    refreshToken: string;
+    dateRefreshTokenIssued: number;
+}
+
 export const getTokens = () => {
     return {
         accessToken: localStorage.getItem(ACCESS_TOKEN),
         refreshToken: localStorage.getItem(REFRESH_TOKEN),
         dateRefreshTokenIssued: parseInt(localStorage.getItem(REFRESH_TOKEN_ISSUED_AT) as string)
-    };
+    } as Tokens;
 };
 
 export const setTokens = (accessToken: string, refreshToken: string) => {
