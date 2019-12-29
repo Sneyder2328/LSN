@@ -4,7 +4,9 @@
       <w>axios</w>
       <w>bcrypt</w>
       <w>classnames</w>
+      <w>dimen</w>
       <w>fullname</w>
+      <w>navbar</w>
       <w>sequelize</w>
     </words>
   </dictionary>

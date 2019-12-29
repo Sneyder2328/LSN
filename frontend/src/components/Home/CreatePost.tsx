@@ -36,6 +36,20 @@ export const CreatePost = () => {
         await createPost(dispatch, newPost);
     };
 
+    /**
+     * Paste text with plain/text format in the text editor, important to avoid
+     * @param e
+     */
+    const pastePlainText = (e: FormEvent) => {
+        e.preventDefault();
+        // get text representation of clipboard
+        let text = ((e as any).originalEvent || e).clipboardData.getData('text/plain');
+        // replace line breaks with <br> for proper formatting in html
+        text = text.replace(/\n/g, '<br>');
+        // insert text manually
+        document.execCommand("insertHTML", false, text);
+    };
+
     return (
         <div className='create-post'>
             <span className='title'>Create post</span>
@@ -44,6 +58,7 @@ export const CreatePost = () => {
                      alt='profile picture'/>
                 <div id='editor' ref={editorRef} contentEditable="true"
                      onInput={(e: FormEvent) => setText((e.target as HTMLDivElement).innerText)}
+                     onPaste={pastePlainText}
                      placeholder="What's happening?" className={
                     classnames(
                         {'medium': text.length > 35 || text.includes('\n')},

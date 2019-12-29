@@ -1,13 +1,13 @@
 import React from "react";
 import {NewsFeed} from "./NewsFeed";
 import {CreatePost} from "./CreatePost";
-import {SearchBar} from "./SearchBar";
 import './styles.scss'
+import {NavBar} from "./NavBar";
 
 export const Home = () => {
     return (
         <div>
-            <SearchBar/>
+            <NavBar/>
             <div id='main'>
                 <CreatePost/>
                 <NewsFeed/>
