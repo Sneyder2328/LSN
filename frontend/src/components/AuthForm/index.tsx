@@ -8,14 +8,14 @@ import {useHistory} from "react-router";
 
 function AuthForm() {
     // @ts-ignore
-    const [{auth}] = useStateValue();
+    const {state: {auth}} = useStateValue();
 
     const history = useHistory();
     useEffect(() => {
         if (auth.isLoggedIn) history.push('/');
     }, [auth]);
 
-    const [isLoginSelected, setLoginSelected] = useState(false);
+    const [isLoginSelected, setLoginSelected] = useState<boolean>(false);
     const Content = isLoginSelected ? <LogIn/> : <SignUp/>;
     return (
         <div className='auth-form'>

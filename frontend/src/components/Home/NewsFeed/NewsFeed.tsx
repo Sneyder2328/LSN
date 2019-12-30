@@ -5,14 +5,14 @@ import {Post, PostDetails} from "./Post";
 export const NewsFeed = () => {
     const [posts, setPosts] = useState<Array<PostDetails>>([]);
     useEffect(() => {
-        const getPosts = () => {
+        const fetchPosts = () => {
             PostApi.getPosts().then(response => {
                 setPosts(response.data);
             }).catch(err => {
                 console.log(err);
             });
         };
-        getPosts();
+        fetchPosts();
     }, []);
     return (
         <div className='news-feed'>

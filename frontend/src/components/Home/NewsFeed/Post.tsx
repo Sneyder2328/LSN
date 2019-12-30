@@ -24,13 +24,8 @@ export interface PostDetails extends Post {
     Profile: Profile;
 }
 
-interface Props {
-    post: PostDetails
-}
-
-export const Post: React.FC<Props> = ({post}) => {
-    console.log(post.createdAt);
-    let timePublished = moment(new Date(post.createdAt).getTime()).fromNow();
+export const Post: React.FC<{ post: PostDetails }> = ({post}) => {
+    const timePublished = moment(new Date(post.createdAt).getTime()).fromNow();
     return (
         <div className='post'>
             <div className='userProfile'>

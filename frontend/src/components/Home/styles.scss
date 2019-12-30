@@ -21,7 +21,8 @@ $btnHoveredColor: #2c80d0;
     display: block;
     box-sizing: border-box;
     font-size: 0.85rem;
-    font-weight: bold;
+    font-weight: 600;
+    color: #313741;
     border-top-left-radius: $radius;
     border-top-right-radius: $radius;
   }
@@ -33,7 +34,7 @@ $btnHoveredColor: #2c80d0;
     #avatar {
       width: $thumbnailImgDimen;
       height: $thumbnailImgDimen;
-      padding: 6px;
+      padding: 6px 6px 6px 0;
     }
 
     #editor {
@@ -96,6 +97,7 @@ $btnHoveredColor: #2c80d0;
     background-color: #fff;
     margin-top: 10px;
     border-radius: $radius;
+    padding: 4px;
 
     .userProfile {
       display: flex;

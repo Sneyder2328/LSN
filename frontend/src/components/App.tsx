@@ -1,20 +1,15 @@
 import React from 'react';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import AuthForm from "./AuthForm";
-import {StateProvider} from "../contexts/StateContext";
+import {initState, StateProvider} from "../contexts/StateContext";
 import {Home} from "./Home";
 import {AuthRoute} from "./commons/AuthRoute";
 import {PageNotFound} from "./commons/PageNotFound";
-import {AppState, mainReducer} from "../reducers";
-
-const initialState = {
-    auth: {},
-    post: {}
-} as AppState;
+import {mainReducer} from "../reducers";
 
 const App = () => {
     return (
-        <StateProvider initialState={initialState} reducer={mainReducer}>
+        <StateProvider initialState={initState} reducer={mainReducer}>
             <BrowserRouter>
                 <Switch>
                     <Route exact path='/login' component={AuthForm}/>
