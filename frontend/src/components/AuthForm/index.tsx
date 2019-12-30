@@ -7,9 +7,7 @@ import {useStateValue} from "../../contexts/StateContext";
 import {useHistory} from "react-router";
 
 function AuthForm() {
-    // @ts-ignore
     const {state: {auth}} = useStateValue();
-
     const history = useHistory();
     useEffect(() => {
         if (auth.isLoggedIn) history.push('/');

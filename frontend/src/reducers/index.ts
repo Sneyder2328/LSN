@@ -6,7 +6,9 @@ export const TYPES = {
     LOG_IN_ERROR: 'logInError',
     SET_CURRENT_USER: 'setCurrentUser',
     SUBMITTING_POST: 'submittingPost',
-    POST_CREATED: 'postCreated'
+    POST_CREATED: 'postCreated',
+    LOGGING_OUT: 'loggingOut',
+    LOGGED_OUT: 'loggedOut'
 };
 
 export type AppState = {

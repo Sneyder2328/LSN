@@ -172,6 +172,10 @@ $btnHoveredColor: #2c80d0;
     #log-out-button:hover {
       background-color: $btnHoveredColor;
     }
+
+    #log-out-button:disabled {
+      background-color: $btnColorOpaque;
+    }
   }
 }
 

@@ -6,7 +6,8 @@ import {removeAuthTokenHeaders, setAccessTokenHeaders, setRefreshTokenHeaders} f
 import * as jwt_decode from 'jwt-decode';
 import {getTokens, removeTokens, setTokens} from "../utils/tokensManager";
 
-export const signUpUser = async (userData: { username: string; fullname: string; password: string; email: string; }) => {
+export type SignUpCredentials = { username: string; fullname: string; password: string; email: string; };
+export const signUpUser = async (userData: SignUpCredentials) => {
     try {
         const response = await AuthApi.signUp(userData);
         if (response.data.access === true) {
@@ -55,15 +56,17 @@ export const setCurrentUser = (decoded: any) => {
 };
 
 // Log user out
-export const logOut = async () => {
+export const logOut = async (dispatch: Function) => {
     try {
+        dispatch({type: TYPES.LOGGING_OUT});
         const {refreshToken} = getTokens();
-        setRefreshTokenHeaders(refreshToken as string);
+        setRefreshTokenHeaders(refreshToken);
         await AuthApi.logOut();
         removeAuthTokenHeaders();
         removeTokens();
+        dispatch({type: TYPES.LOGGED_OUT});
     } catch (err) {
-
+        console.log("error logging out", err);
     }
     return setCurrentUser({});
 };

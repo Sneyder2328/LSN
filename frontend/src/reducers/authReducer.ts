@@ -10,6 +10,7 @@ interface AuthState {
 
 const initialState = {
     isLoggedIn: false,
+    isLoggingOut: false,
     userId: '',
     signUpError: '',
     logInError: '',
@@ -22,7 +23,18 @@ export const authReducer = (state: AuthState = initialState, action: any) => {
             return {
                 ...state,
                 isLoggedIn: true,
+                isLoggingOut: false,
                 userId: action.payload
+            };
+        case TYPES.LOGGING_OUT:
+            return {
+                ...state,
+                isLoggingOut: true
+            };
+        case TYPES.LOGGED_OUT:
+            return {
+                ...state,
+                isLoggedIn: false
             };
         case TYPES.SIGN_UP_ERROR:
             return {
@@ -33,12 +45,6 @@ export const authReducer = (state: AuthState = initialState, action: any) => {
             return {
                 ...state,
                 logInError: action.payload
-            };
-        case TYPES.SUBMITTING_POST:
-        case TYPES.POST_CREATED:
-            return {
-                ...state,
-                newPostStatus: action.type
             };
         default:
             return state;

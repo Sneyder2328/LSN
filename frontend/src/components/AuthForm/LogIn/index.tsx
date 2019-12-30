@@ -6,14 +6,14 @@ import {logInUser} from "../../../actions/authActions";
 
 function LogIn() {
     const {register, handleSubmit, errors, setError} = useForm();
-    // @ts-ignore
-    const [{auth}, dispatch] = useStateValue();
+
+    const {state: {auth}, dispatch} = useStateValue();
 
     useEffect(() => {
         if (auth.logInError) setError(auth.logInError.fieldName, auth.logInError.fieldName, auth.logInError.message);
     }, [auth.logInError]);
 
-
+    // @ts-ignore
     const onSubmit = async (data: any) => dispatch(await logInUser(data));
     return (
         <form onSubmit={handleSubmit(onSubmit)}>

@@ -7,13 +7,13 @@ import {signUpUser} from "../../../actions/authActions";
 
 function SignUp() {
     const {register, handleSubmit, errors, setError} = useForm();
-    // @ts-ignore
-    const [{auth}, dispatch] = useStateValue();
+    const {state: {auth}, dispatch} = useStateValue();
 
     useEffect(() => {
         if (auth.signUpError) setError(auth.signUpError.fieldName, auth.signUpError.fieldName, auth.signUpError.message);
     }, [auth.signUpError]);
 
+    // @ts-ignore
     const onSubmit = async (data: any) => dispatch(await signUpUser(data));
 
     return (
