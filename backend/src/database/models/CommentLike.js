@@ -17,13 +17,30 @@ module.exports = (sequelize, DataTypes, User, Comment) => {
                 model: User,
                 key: 'id'
             }
+        },
+        isLike: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: true
         }
     });
     CommentLike.removeAttribute('id');
 
-    CommentLike.beforeCreate(async (commentLike, _) => {
+    CommentLike.beforeUpsert(async (commentLike, _) => {
         const comment = await Comment.findByPk(commentLike.commentId);
-        await comment.increment('likes', {by: 1});
+        if (commentLike.isLike)
+            await comment.increment('likesCount', {by: 1});
+        else
+            await comment.increment('dislikesCount', {by: 1});
+    });
+
+    CommentLike.beforeDestroy(async (commentLike, _) => {
+        console.log('beforeDestroy');
+        const comment = await Comment.findByPk(commentLike.commentId);
+        if (commentLike.isLike)
+            await comment.decrement('likesCount', {by: 1});
+        else
+            await comment.decrement('dislikesCount', {by: 1});
     });
 
     return CommentLike;

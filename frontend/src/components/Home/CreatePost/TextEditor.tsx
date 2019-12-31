@@ -1,25 +1,19 @@
-import React, {FormEvent, useEffect, useRef, useState} from "react";
+import React, {FormEvent, KeyboardEvent, useEffect, useRef, useState} from "react";
 import classnames from "classnames";
-import {useStateValue} from "../../../contexts/StateContext";
-import {TYPES} from "../../../reducers";
 
 type Props = {
     onChange: (text: string) => void;
+    placeholder: string;
+    cleanUpWhen?: boolean;
+    onEnterCleanUp?: boolean;
+    className?: string;
+    onEnter?: () => any;
 };
 
-export const TextEditor: React.FC<Props> = ({onChange}) => {
+export const TextEditor: React.FC<Props> = ({onChange, placeholder, cleanUpWhen, className, onEnter, onEnterCleanUp}) => {
     const [text, setText] = useState<string>('');
 
     const editorRef: any = useRef<HTMLDivElement>(null);
-
-    // @ts-ignore
-    const {state: {post}} = useStateValue();
-
-    useEffect(() => {
-        if (post.newPostStatus === TYPES.POST_CREATED) {
-            cleanUpTextEditor();
-        }
-    }, [post.newPostStatus]);
 
     useEffect(() => {
         onChange(text);
@@ -28,9 +22,16 @@ export const TextEditor: React.FC<Props> = ({onChange}) => {
     }, [text]);
 
     const cleanUpTextEditor = () => {
-        editorRef.current.innerText = '';
-        setText('');
+        if (editorRef.current.innerText !== '') {
+            editorRef.current.innerHTML = '';
+            setText('');
+            console.log('cleaning it up', editorRef.current);
+            //console.log('cleaning it up x', editorRef.current.r);
+            console.log('cleaning it up done', editorRef.current);
+        }
     };
+
+    if (cleanUpWhen) cleanUpTextEditor();
 
     /**
      * Paste text with plain/text format in the text editor, important to avoid
@@ -46,14 +47,37 @@ export const TextEditor: React.FC<Props> = ({onChange}) => {
         document.execCommand("insertHTML", false, text);
     };
 
+    const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+        if (onEnter && e.keyCode === 13) {
+            onEnter();
+            if (onEnterCleanUp) {
+                e.preventDefault();
+                //document.execCommand("selectAll", false);
+                //document.execCommand("cut", false);
+                cleanUpTextEditor();
+            }
+        }
+    };
+
     return (
-        <div id='editor' ref={editorRef} contentEditable="true"
-             onInput={(e: FormEvent) => setText((e.target as HTMLDivElement).innerText)}
-             onPaste={pastePlainText}
-             placeholder="What's happening?" className={
-            classnames(
-                {'medium': text.length > 35 || text.includes('\n')},
-                {'small': text.length > 100}
-            )}/>
+        <div
+            id='editor' ref={editorRef}
+            contentEditable="true"
+            onInput={(e: FormEvent) => setText((e.target as HTMLDivElement).innerText)}
+            onPaste={pastePlainText}
+            onKeyDown={handleKeyDown}
+            placeholder={placeholder}
+            className={
+                classnames(className,
+                    {
+                        'medium': text.length > 35 || text.includes('\n')
+                    },
+                    {
+                        'small':
+                            text.length > 100
+                    }
+                )
+            }
+        />
     );
 };

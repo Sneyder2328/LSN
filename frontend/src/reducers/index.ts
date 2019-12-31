@@ -1,15 +1,6 @@
 import {authReducer} from "./authReducer";
 import {postReducer} from "./postReducer";
 
-export const TYPES = {
-    SIGN_UP_ERROR: 'signUpError',
-    LOG_IN_ERROR: 'logInError',
-    SET_CURRENT_USER: 'setCurrentUser',
-    SUBMITTING_POST: 'submittingPost',
-    POST_CREATED: 'postCreated',
-    LOGGING_OUT: 'loggingOut',
-    LOGGED_OUT: 'loggedOut'
-};
 
 export type AppState = {
     auth: any;

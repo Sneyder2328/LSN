@@ -54,6 +54,10 @@ const likeCommentValidationRules = [
     param('commentId').trim().matches(config.regex.uuidV4)
 ];
 
+const getCommentsValidationRules = [
+    param('postId').trim().matches(config.regex.uuidV4)
+];
+
 const createPostValidationRules = [
     body('type').isString().escape(),
     body('text').not().isEmpty().trim().escape(),
@@ -95,5 +99,6 @@ module.exports = {
     likePostValidationRules,
     createCommentValidationRules,
     likeCommentValidationRules,
+    getCommentsValidationRules,
     validate
 };

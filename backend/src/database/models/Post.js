@@ -14,12 +14,17 @@ module.exports = (sequelize, DataTypes, User) => {
                     key: 'id'
                 }
             },
-            likes: {
+            likesCount: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
                 defaultValue: 0
             },
-            comments: {
+            dislikesCount: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                defaultValue: 0
+            },
+            commentsCount: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
                 defaultValue: 0

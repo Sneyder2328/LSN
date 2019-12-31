@@ -14,11 +14,13 @@ module.exports = {
     post: {
         CREATE_POST: '/posts',
         GET_POSTS: '/posts',
-        LIKE_POST: (postId) => `/posts/${postId}/likes`
+        LIKE_POST: (postId) => `/posts/${postId}/likes`,
+        DISLIKE_POST: (postId) => `/posts/${postId}/dislikes`
     },
     comment: {
         CREATE_COMMENT: (postId) => `/posts/${postId}/comments`,
         LIKE_COMMENT: (commentId) => `/comments/${commentId}/likes`,
+        DISLIKE_COMMENT: (commentId) => `/comments/${commentId}/dislikes`,
         GET_COMMENTS: (postId) => `/posts/${postId}/comments`
     }
 };

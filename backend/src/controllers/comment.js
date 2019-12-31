@@ -1,7 +1,7 @@
 const {Router} = require('express');
-const {createComment, likeComment} = require('../services/comment');
+const {createComment, likeComment, dislikeComment, removeLikeOrDislikeComment, getComments} = require('../services/comment');
 const authenticate = require('../middlewares/authenticate');
-const {createCommentValidationRules, likeCommentValidationRules, validate} = require('../middlewares/validate');
+const {createCommentValidationRules, likeCommentValidationRules, getCommentsValidationRules, validate} = require('../middlewares/validate');
 const handleErrorAsync = require('../middlewares/handleErrorAsync');
 const httpCodes = require('../utils/constants/httpResponseCodes');
 const endpoints = require('../utils/constants/endpoints');
@@ -14,8 +14,28 @@ router.post(endpoints.comment.CREATE_COMMENT(':postId'), authenticate, createCom
 }));
 
 router.post(endpoints.comment.LIKE_COMMENT(':commentId'), authenticate, likeCommentValidationRules, validate, handleErrorAsync(async (req, res) => {
+    console.log('liking comment', req.userId, req.params.commentId);
     const response = await likeComment(req.userId, req.params.commentId);
     res.status(httpCodes.OK).send(response);
+}));
+
+router.delete(endpoints.comment.LIKE_COMMENT(':commentId'), authenticate, likeCommentValidationRules, validate, handleErrorAsync(async (req, res) => {
+    const response = await removeLikeOrDislikeComment(req.userId, req.params.commentId);
+    res.status(httpCodes.OK).send(response);
+}));
+
+router.post(endpoints.comment.DISLIKE_COMMENT(':commentId'), authenticate, likeCommentValidationRules, validate, handleErrorAsync(async (req, res) => {
+    const response = await dislikeComment(req.userId, req.params.commentId);
+    res.status(httpCodes.OK).send(response);
+}));
+
+router.delete(endpoints.comment.DISLIKE_COMMENT(':commentId'), authenticate, likeCommentValidationRules, validate, handleErrorAsync(async (req, res) => {
+    const response = await removeLikeOrDislikeComment(req.userId, req.params.commentId);
+    res.status(httpCodes.OK).send(response);
+}));
+
+router.get(endpoints.comment.GET_COMMENTS(':postId'), authenticate, getCommentsValidationRules, validate, handleErrorAsync(async (req, res) => {
+    const response = await getComments(req.params.postId);
 }));
 
 module.exports = router;

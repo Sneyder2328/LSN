@@ -1,12 +1,13 @@
 $radius: 8px;
-$thumbnailImgDimen: 44px;
+$thumbnailImgDimen: 46px;
 $navbarHeight: 56px;
 $btnColor: #5aa6fb;
 $btnColorOpaque: rgba(90, 166, 251, 0.71);
 $btnHoveredColor: #2c80d0;
+$width-page: 600px;
 #main {
   width: 90%;
-  max-width: 600px;
+  max-width: $width-page;
   margin: $navbarHeight+10px auto 0 auto;
 }
 
@@ -39,12 +40,19 @@ $btnHoveredColor: #2c80d0;
 
     #editor {
       width: 100%;
+      padding: 5px;
       border: none;
+      outline: none;
       min-height: 50px;
       overflow: hidden;
       line-height: 50px;
       font-size: 1.2rem;
       cursor: text;
+      border-radius: $radius;
+    }
+
+    #editor:focus {
+      border: 1px rgba(97, 218, 251, 0.23) solid;
     }
 
     #editor.medium {
@@ -101,33 +109,174 @@ $btnHoveredColor: #2c80d0;
 
     .userProfile {
       display: flex;
-      padding: 6px;
+      padding: 6px 6px 0 6px;
 
-      #avatar {
+      .avatar {
         width: $thumbnailImgDimen;
         height: $thumbnailImgDimen;
         margin-right: 6px;
         border-radius: 50%;
       }
 
-      #fullname {
+      .fullname {
         font-size: 0.9rem;
         padding-top: 3px;
         margin: 0;
+        display: inline;
       }
 
-      #time-published {
+      .username {
+        font-size: 0.86rem;
+        padding-top: 3px;
+        margin: 0 0 0 4px;
+        color: #9992a0;
+        display: inline;
+      }
+
+      .time-published {
         font-size: 0.75rem;
-        display: inline-block;
         color: #9992a0;
         padding: 0;
         margin: 3px 0 0 0;
+        display: block;
       }
     }
 
     .content {
+      margin: 0 0 0 50px;
+      padding: 0 10px 10px 10px;
+    }
+
+    .interact {
+      display: flex;
+      justify-content: space-evenly;
+      margin: 0 6px;
+      font-size: 1.04rem;
+      padding: 0 40px;
+
+      span {
+        cursor: pointer;
+        color: #8ce9fa;
+        width: 100%;
+        text-align: center;
+
+        i {
+          margin-right: 6px;
+        }
+      }
+
+      span:hover {
+        color: #244885;
+      }
+    }
+
+    .new-comment {
+      padding: 0;
       margin: 0;
-      padding: 10px;
+      min-height: $thumbnailImgDimen+2px;
+      display: flex;
+      justify-content: center;
+
+      .avatar {
+        width: $thumbnailImgDimen+2px;
+        height: $thumbnailImgDimen+2px;
+        box-sizing: border-box;
+        padding: 6px;
+        border-radius: 50%;
+      }
+
+      .comment-editor-container {
+        width: $width-page+-$thumbnailImgDimen+-18px;
+        min-height: $thumbnailImgDimen;
+        display: flex;
+        padding: 7px 2px;
+        box-sizing: border-box;
+
+        .comment-editor {
+          width: 100%;
+          font-size: 0.9rem;
+          box-sizing: border-box;
+          border-radius: 18px;
+          outline: none;
+          border: 1px #61dafb solid;
+          padding: 10px;
+          overflow: hidden;
+          cursor: text;
+        }
+
+        .comment-editor:empty:before {
+          content: attr(placeholder);
+          color: #a9a9a9;
+        }
+      }
+    }
+  }
+
+  .comments-container {
+    padding: 10px;
+
+    .comment {
+      display: flex;
+
+      .avatar {
+        width: $thumbnailImgDimen+-8px;
+        height: $thumbnailImgDimen+-8px;
+        margin-right: 6px;
+        border-radius: 50%;
+      }
+
+      .comment-box{
+        width: 100%;
+      }
+
+      .fullname {
+        font-size: 0.87rem;
+        padding-top: 3px;
+        margin: 0;
+        display: inline;
+      }
+
+      .username {
+        font-size: 0.84rem;
+        padding-top: 3px;
+        margin: 0 0 0 4px;
+        color: #9992a0;
+        display: inline;
+      }
+
+      .content {
+        margin: 0;
+        padding: 5px 0;
+        font-size: 0.9rem;
+      }
+
+      .interact-comment {
+        display: flex;
+        margin: 6px 0;
+        font-size: 1rem;
+
+        span {
+          cursor: pointer;
+          color: #8ce9fa;
+          text-align: center;
+          margin: 0 6px;
+
+          i {
+            margin-right: 6px;
+          }
+        }
+
+        span:hover {
+          color: #244885;
+        }
+        .time-published {
+          font-size: 0.75rem;
+          color: #9992a0;
+          padding: 0;
+          margin: 3px 0 0 0;
+          display: block;
+        }
+      }
     }
   }
 }

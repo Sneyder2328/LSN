@@ -1,4 +1,4 @@
-import {TYPES} from "./index";
+import {LOG_IN_ERROR, LOGGED_OUT, LOGGING_OUT, SET_CURRENT_USER, SIGN_UP_ERROR} from "../actions/types";
 
 interface AuthState {
     isLoggedIn: boolean;
@@ -19,29 +19,29 @@ const initialState = {
 
 export const authReducer = (state: AuthState = initialState, action: any) => {
     switch (action.type) {
-        case TYPES.SET_CURRENT_USER:
+        case SET_CURRENT_USER:
             return {
                 ...state,
                 isLoggedIn: true,
                 isLoggingOut: false,
                 userId: action.payload
             };
-        case TYPES.LOGGING_OUT:
+        case LOGGING_OUT:
             return {
                 ...state,
                 isLoggingOut: true
             };
-        case TYPES.LOGGED_OUT:
+        case LOGGED_OUT:
             return {
                 ...state,
                 isLoggedIn: false
             };
-        case TYPES.SIGN_UP_ERROR:
+        case SIGN_UP_ERROR:
             return {
                 ...state,
                 signUpError: action.payload
             };
-        case TYPES.LOG_IN_ERROR:
+        case LOG_IN_ERROR:
             return {
                 ...state,
                 logInError: action.payload

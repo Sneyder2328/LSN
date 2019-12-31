@@ -1,23 +1,70 @@
-import {TYPES} from "./index";
+import {
+    POST_CREATED_SUCCESS,
+    CREATING_POST,
+    POSTS_FETCHED,
+    FETCHING_POSTS,
+    POST_CREATED_ERROR
+} from "../actions/types";
+import {PostResponse} from "../components/Home/NewsFeed/Post";
+import {CommentActions, commentReducer} from "./commentReducer";
 
-interface PostStatus {
-    newPostStatus: string
+
+export interface PostState {
+    createPostStatus: 'CREATING_POST' | 'POST_CREATED_SUCCESS' | 'POST_CREATED_ERROR' | '';
+    fetchPostsStatus: 'FETCHING_POSTS' | 'POSTS_FETCHED' | '';
+    posts: Array<PostResponse>;
 }
 
-const initialState = {
-    newPostStatus: ''
-} as PostStatus;
+const initialState: PostState = {
+    createPostStatus: '',
+    fetchPostsStatus: '',
+    posts: []
+};
+
+type creatingPostAction = {
+    type: 'CREATING_POST'
+};
+type postCreatedAction = {
+    type: 'POST_CREATED_SUCCESS'
+};
+type postCreatedErrorAction = {
+    type: 'POST_CREATED_ERROR'
+};
+type fetchingPostsAction = {
+    type: 'FETCHING_POSTS'
+    posts?: Array<PostResponse>;
+};
+type postsFetchedAction = {
+    type: 'POSTS_FETCHED';
+    posts: Array<PostResponse>;
+};
+
+export type Actions =
+    creatingPostAction
+    | postCreatedAction
+    | postCreatedErrorAction
+    | fetchingPostsAction
+    | postsFetchedAction
+    | CommentActions;
 
 
-export const postReducer = (state: PostStatus = initialState, action: any) => {
+export const postReducer = (state: PostState = initialState, action: Actions): PostState => {
     switch (action.type) {
-        case TYPES.SUBMITTING_POST:
-        case TYPES.POST_CREATED:
+        case CREATING_POST:
+        case POST_CREATED_SUCCESS:
+        case POST_CREATED_ERROR:
             return {
                 ...state,
-                newPostStatus: action.type
+                createPostStatus: action.type
+            };
+        case FETCHING_POSTS:
+        case POSTS_FETCHED:
+            return {
+                ...state,
+                fetchPostsStatus: action.type,
+                posts: action.posts || []
             };
         default:
-            return state;
+            return commentReducer(state, action);
     }
 };

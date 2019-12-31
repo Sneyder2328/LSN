@@ -1,22 +1,23 @@
-import React, {useEffect, useState} from "react";
-import {PostApi} from "../../../api/post";
-import {Post, PostDetails} from "./Post";
+import React, {useEffect} from "react";
+import {Post, PostResponse} from "./Post";
+import {useStateValue} from "../../../contexts/StateContext";
+import {fetchPosts} from "../../../actions/postActions";
 
 export const NewsFeed = () => {
-    const [posts, setPosts] = useState<Array<PostDetails>>([]);
+    const {state: {post}, dispatch} = useStateValue();
+    //const [posts, setPosts] = useState<Array<PostResponse>>([]);
     useEffect(() => {
-        const fetchPosts = () => {
-            PostApi.getPosts().then(response => {
-                setPosts(response.data);
+        console.log('fetching posts ', post);
+        const loadPosts = () => {
+            fetchPosts(dispatch).then(res => {
             }).catch(err => {
-                console.log(err);
             });
         };
-        fetchPosts();
+        loadPosts();
     }, []);
     return (
         <div className='news-feed'>
-            {posts.map(post => <Post post={post} key={post.id}/>)}
+            {post.posts && post.posts.map((post: PostResponse) => <Post postResponse={post} key={post.id}/>)}
         </div>
     );
 };

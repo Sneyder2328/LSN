@@ -28,7 +28,7 @@ export const AuthRoute = ({component: Component, ...rest}) => {
     const {state: {auth}} = useStateValue();
     const history = useHistory();
     useEffect(() => {
-        if (!auth.isLoggedIn) history.push('/login');
+        if (!auth.isLoggedIn && !isUserAuth()) history.push('/login');
     }, [auth]);
     return <Route {...rest} render={(props: any) => (
         isUserAuth() ? <Component {...props}/>

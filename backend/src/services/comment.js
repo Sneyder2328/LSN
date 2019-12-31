@@ -8,8 +8,24 @@ async function createComment(userId, postId, {id, type, text, img}) {
 }
 
 async function likeComment(userId, commentId) {
-    const commentLike = await CommentLike.create({userId, commentId});
+    const commentLike = await CommentLike.upsert({userId, commentId, isLike: true});
     return commentLike !== null;
 }
 
-module.exports = {createComment, likeComment};
+async function removeLikeOrDislikeComment(userId, commentId) {
+    const commentLike = await CommentLike.findOne({where: {userId, commentId}});
+    return await commentLike.destroy() != null;
+}
+
+async function dislikeComment(userId, commentId) {
+    const commentLike = await CommentLike.upsert({userId, commentId, isLike: false});
+    return commentLike !== null;
+}
+
+async function getComments(postId) {
+    const comments = await Comment.findAll({where: {postId}});
+    if (!comments) return [];
+    return comments;
+}
+
+module.exports = {createComment, likeComment, dislikeComment, removeLikeOrDislikeComment, getComments};

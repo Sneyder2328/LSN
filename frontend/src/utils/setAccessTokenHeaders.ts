@@ -2,7 +2,7 @@ import {ACCESS_TOKEN, REFRESH_TOKEN} from "./constants";
 import {transport} from "../api";
 
 export const setAccessTokenHeaders = (accessToken: string) => {
-    console.log('setAccessTokenHeaders', accessToken);
+    // console.log('setAccessTokenHeaders', accessToken);  this can probably be optimized
     transport.defaults.headers.common[ACCESS_TOKEN] = accessToken;
 };
 
