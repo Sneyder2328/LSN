@@ -3,7 +3,7 @@ import {
     CREATING_POST,
     POSTS_FETCHED,
     FETCHING_POSTS,
-    POST_CREATED_ERROR
+    POST_CREATED_ERROR, CLEAN_POST_CREATED_STATUS
 } from "../actions/types";
 import {PostResponse} from "../components/Home/NewsFeed/Post";
 import {CommentActions, commentReducer} from "./commentReducer";
@@ -24,6 +24,9 @@ const initialState: PostState = {
 type creatingPostAction = {
     type: 'CREATING_POST'
 };
+type cleanPostCreatedStatus = {
+    type: 'CLEAN_POST_CREATED_STATUS'
+}
 type postCreatedAction = {
     type: 'POST_CREATED_SUCCESS';
     postResponse: PostResponse
@@ -42,6 +45,7 @@ type postsFetchedAction = {
 
 export type PostActions =
     creatingPostAction
+    | cleanPostCreatedStatus
     | postCreatedAction
     | postCreatedErrorAction
     | fetchingPostsAction
@@ -69,6 +73,11 @@ export const postReducer = (state: PostState = initialState, action: PostActions
                 ...state,
                 fetchPostsStatus: action.type,
                 posts: action.posts || []
+            };
+        case CLEAN_POST_CREATED_STATUS:
+            return {
+                ...state,
+                createPostStatus: ''
             };
         default:
             return commentReducer(state, action);

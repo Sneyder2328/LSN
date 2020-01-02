@@ -13,8 +13,6 @@ type Props = {
 const LogIn: React.FC<Props> = ({logInError, logInUser}) => {
     const {register, handleSubmit, errors, setError} = useForm();
 
-    //const {state: {auth}, dispatch} = useStateValue();
-
     useEffect(() => {
         if (logInError) setError(logInError.fieldName, logInError.fieldName, logInError.message);
     }, [logInError]);

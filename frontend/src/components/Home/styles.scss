@@ -5,6 +5,8 @@ $btnColor: #5aa6fb;
 $btnColorOpaque: rgba(90, 166, 251, 0.71);
 $btnHoveredColor: #2c80d0;
 $width-page: 600px;
+$interactColor: #8ce9fa;
+$interactHoveredColor: #469efa;
 #main {
   width: 90%;
   max-width: $width-page;
@@ -146,6 +148,7 @@ $width-page: 600px;
     .content {
       margin: 0 0 0 50px;
       padding: 0 10px 10px 10px;
+      white-space: pre-wrap;
     }
 
     .interact {
@@ -157,7 +160,7 @@ $width-page: 600px;
 
       span {
         cursor: pointer;
-        color: #8ce9fa;
+        color: $interactColor;
         width: 100%;
         text-align: center;
 
@@ -167,7 +170,7 @@ $width-page: 600px;
       }
 
       span:hover {
-        color: #244885;
+        color: $interactHoveredColor;
       }
     }
 
@@ -261,7 +264,7 @@ $width-page: 600px;
 
         span {
           cursor: pointer;
-          color: #8ce9fa;
+          color: $interactColor;
           text-align: center;
           margin: 0 6px;
 
@@ -271,7 +274,7 @@ $width-page: 600px;
         }
 
         span:hover {
-          color: #244885;
+          color: $interactHoveredColor;
         }
 
         .time-published {

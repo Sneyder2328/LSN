@@ -29,7 +29,7 @@ async function signUpUser({username, fullname, password, typeLogin, email, descr
         coverPhotoUrl: coverPhotoUrl,
         profilePhotoUrl: profilePhotoUrl
     });
-    const accessToken = await user.generateAccessToken();
+    const accessToken = await signJWT(user.id);
     const refreshToken = uuid.v4();
     await Token.create({userId, token: refreshToken});
     return {accessToken, refreshToken};
@@ -42,7 +42,7 @@ async function logInUser({username, password}) {
     const loggedIn = await verifyPassword(password, user.password);
     if (!loggedIn) throw new AuthError(error.PASSWORD, error.message.INCORRECT_PASSWORD);
 
-    const accessToken = await user.generateAccessToken();
+    const accessToken = await signJWT(user.id);
     const refreshToken = uuid.v4();
     await Token.create({userId: user.id, token: refreshToken});
     return {accessToken, refreshToken};
@@ -57,9 +57,7 @@ async function logOutUser(refreshToken) {
 async function genNewAccessToken(refreshToken) {
     const token = await Token.findByPk(refreshToken);
     if (!token) throw new AuthError(error.message.REFRESH_TOKEN_NOT_FOUND);
-    const bufferId = token.userId;
-    const userId = [...bufferId];
-    return await signJWT(userId);
+    return await signJWT(token.userId);
 }
 
 module.exports = {signUpUser, logInUser, logOutUser, genNewAccessToken};

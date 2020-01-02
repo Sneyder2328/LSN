@@ -1,6 +1,8 @@
+
 const request = require('supertest');
 
 const {app, server} = require('../src/app');
+const {signJWT} = require("../src/helpers/JWTHelper");
 const {wipeOutDatabase, createUserAndProfile} = require('./index');
 const endpoints = require('../src/utils/constants/endpoints');
 const {config} = require('../src/config/config');
@@ -14,7 +16,7 @@ describe('POST /createComment', () => {
         await wipeOutDatabase();
         const {user} = await createUserAndProfile(users[0], profiles[0]);
         await Post.create(posts[0]);
-        accessToken = await user.generateAccessToken();
+        accessToken = await signJWT(user.id);
     });
 
     it('should create a new comment with plain text', (done) => {
@@ -79,7 +81,7 @@ describe('POST /likeComment', () => {
         const {user} = await createUserAndProfile(users[0], profiles[0]);
         await Post.create(posts[0]);
         await Comment.create(comments[0]);
-        accessToken = await user.generateAccessToken();
+        accessToken = await signJWT(user.id);
     });
 
     it('should like a comment[without like nor dislike]', (done) => {

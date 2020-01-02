@@ -1,3 +1,5 @@
+const {signJWT} = require("../src/helpers/JWTHelper");
+
 const request = require('supertest');
 
 const {app, server} = require('../src/app');
@@ -47,7 +49,7 @@ describe('POST /sendFriendRequest', () => {
         await wipeOutDatabase();
         const {user} = await createUserAndProfile({...users[0]}, {...profiles[0]});
         await createUserAndProfile({...users[1]}, {...profiles[1]});
-        accessToken = await user.generateAccessToken();
+        accessToken = await signJWT(user.id);
     });
 
     it('should send a friend request', (done) => {
@@ -62,7 +64,7 @@ describe('POST /sendFriendRequest', () => {
         let accessToken;
         beforeEach(async () => {
             const {user} = await createUserAndProfile({...users[2]}, {...profiles[2]});
-            accessToken = await user.generateAccessToken();
+            accessToken = await signJWT(user.id);
             await UserRelationShip.create({
                 senderId: users[0].id,
                 receiverId: users[2].id,
@@ -95,7 +97,7 @@ describe('POST acceptFriendRequest', () => {
         await wipeOutDatabase();
         const {user} = await createUserAndProfile({...users[0]}, {...profiles[0]});
         await createUserAndProfile({...users[1]}, {...profiles[1]});
-        accessToken = await user.generateAccessToken();
+        accessToken = await signJWT(user.id);
         await UserRelationShip.create({senderId: users[1].id, receiverId: users[0].id, type: userRelationship.PENDING});
     });
 

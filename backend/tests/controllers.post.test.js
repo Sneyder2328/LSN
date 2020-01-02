@@ -1,5 +1,6 @@
 const request = require('supertest');
 
+const {signJWT} = require("../src/helpers/JWTHelper");
 const {app, server} = require('../src/app');
 const httpCodes = require('../src/utils/constants/httpResponseCodes');
 const endpoints = require('../src/utils/constants/endpoints');
@@ -13,7 +14,7 @@ describe('POST /createPost', () => {
     beforeEach(async () => {
         await wipeOutDatabase();
         const {user} = await createUserAndProfile(users[0], profiles[0]);
-        accessToken = await user.generateAccessToken();
+        accessToken = await signJWT(user.id);
     });
 
     it('should create a new post with text', (done) => {
@@ -142,7 +143,7 @@ describe('POST /likePost', () => {
     beforeEach(async () => {
         await wipeOutDatabase();
         const {user} = await createUserAndProfile(users[0], profiles[0]);
-        accessToken = await user.generateAccessToken();
+        accessToken = await signJWT(user.id);
         await Post.create(posts[0]);
     });
 

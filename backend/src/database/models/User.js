@@ -48,16 +48,11 @@ module.exports = (sequelize, DataTypes) => {
         }
     );
 
-    User.beforeSave(async (user, _) =>{
+    User.beforeSave(async (user, _) => {
         return hashPassword(10, user.password).then(hashedPw => {
             user.password = hashedPw;
         });
     });
-
-    User.prototype.generateAccessToken = async function () {
-        const id = this.dataValues.id;
-        return await signJWT(id);
-    };
 
     return User;
 };

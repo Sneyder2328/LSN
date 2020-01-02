@@ -1,20 +1,21 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import "./styles.scss"
 import classnames from 'classnames';
 import SignUp from "./SignUp";
 import LogIn from "./LogIn";
-import {useHistory} from "react-router";
 import {connect} from "react-redux";
+import {Redirect} from "react-router-dom";
 
 type Props = {
     isLoggedIn: boolean;
 }
 
 const AuthForm: React.FC<Props> = ({isLoggedIn}) => {
-    const history = useHistory();
-    if (isLoggedIn) history.push('/');
-
     const [isLoginSelected, setLoginSelected] = useState<boolean>(false);
+
+    if (isLoggedIn)
+        return (<Redirect to={{pathname: '/'}}/>);
+
     const Content = isLoginSelected ? <LogIn/> : <SignUp/>;
     return (
         <div className='auth-form'>

@@ -28,7 +28,9 @@ export const TextEditor: React.FC<Props> = ({onChange, placeholder, cleanUpWhen,
         }
     };
 
-    if (cleanUpWhen) cleanUpTextEditor();
+    if (cleanUpWhen) {
+        cleanUpTextEditor();
+    }
 
     /**
      * Paste text with plain/text format in the text editor, important to avoid

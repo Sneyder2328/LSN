@@ -7,28 +7,22 @@ import AuthRoute from "./commons/AuthRoute";
 import {PageNotFound} from "./commons/PageNotFound";
 import store from "../store";
 import jwt_decode from 'jwt-decode';
-import {getTokens, removeTokens} from "../utils/tokensManager";
+import {getTokens, removeTokens, isTokenExpired} from "../utils/tokensManager";
 import {removeAuthTokenHeaders, setAccessTokenHeaders} from "../utils/setAccessTokenHeaders";
 import {loggedOut, setCurrentUser} from "../actions/authActions";
-
-
-const oneWeekInMillis = 7 * 24 * 60 * 60 * 1000;
+import {ONE_WEEK_IN_MILLIS} from "../utils/constants";
 
 const {accessToken, refreshToken, dateRefreshTokenIssued} = getTokens();
-const expiryDate = dateRefreshTokenIssued + oneWeekInMillis;
-const currentDate = new Date().getTime();
 const tokensExist = accessToken && refreshToken && dateRefreshTokenIssued;
-const isTokenExpired = (expiryDate <= currentDate);
 
-if (!tokensExist || isTokenExpired) {
+if (!tokensExist || isTokenExpired(dateRefreshTokenIssued, ONE_WEEK_IN_MILLIS)) {
     removeAuthTokenHeaders();
     removeTokens();
     // clear current profile
     store.dispatch(loggedOut());
 } else {
     setAccessTokenHeaders(accessToken);
-    const decoded = jwt_decode(accessToken);
-    // @ts-ignore
+    const decoded = jwt_decode<{ id: string }>(accessToken);
     store.dispatch(setCurrentUser(decoded.id));
 }
 
