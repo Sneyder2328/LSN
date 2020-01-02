@@ -1,20 +1,26 @@
 import React, {useEffect} from "react";
 import {useForm} from "react-hook-form";
 import {ErrorMessage} from "../../commons/ErrorMessage";
-import {useStateValue} from "../../../contexts/StateContext";
-import {logInUser} from "../../../actions/authActions";
+import {connect} from "react-redux";
+import {LoginCredentials, logInUser} from "../../../actions/authActions";
+import {FormError} from "../../../reducers/authReducer";
 
-function LogIn() {
+type Props = {
+    logInError: FormError,
+    logInUser: (credentials: LoginCredentials) => any
+};
+
+const LogIn: React.FC<Props> = ({logInError, logInUser}) => {
     const {register, handleSubmit, errors, setError} = useForm();
 
-    const {state: {auth}, dispatch} = useStateValue();
+    //const {state: {auth}, dispatch} = useStateValue();
 
     useEffect(() => {
-        if (auth.logInError) setError(auth.logInError.fieldName, auth.logInError.fieldName, auth.logInError.message);
-    }, [auth.logInError]);
+        if (logInError) setError(logInError.fieldName, logInError.fieldName, logInError.message);
+    }, [logInError]);
 
     // @ts-ignore
-    const onSubmit = async (data: any) => dispatch(await logInUser(data));
+    const onSubmit = async (data: any) => logInUser(data);
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <p>Welcome Back!</p>
@@ -31,6 +37,10 @@ function LogIn() {
             <button>Log in</button>
         </form>
     );
-}
+};
 
-export default LogIn;
+const mapStateToProps = (state: any) => ({
+    logInError: state.auth.logInError
+});
+
+export default connect(mapStateToProps, {logInUser})(LogIn);

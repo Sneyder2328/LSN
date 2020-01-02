@@ -1,13 +1,12 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import moment from "moment";
 // @ts-ignore
 import uuidv4 from "uuid/v4";
 import {TextEditor} from "../CreatePost/TextEditor";
 import {CommentRequest} from "../../../api/comment";
 import {createComment} from "../../../actions/commentActions";
-import {useStateValue} from "../../../contexts/StateContext";
 import {Comment, CommentResponse} from "./Comment"
-import {COMMENT_CREATED_SUCCESS} from "../../../actions/types";
+import {connect} from "react-redux";
 
 export interface Profile {
     coverPhotoUrl: string;
@@ -36,12 +35,20 @@ export interface PostResponse extends Post {
     comments?: Array<CommentResponse>;
 }
 
-export const Post: React.FC<{ postResponse: PostResponse }> = ({postResponse}) => {
+type HasDate = {
+    createdAt: string;
+}
+const compareByDate = (one: HasDate, two: HasDate): number => new Date(one.createdAt).getTime() - new Date(two.createdAt).getTime();
+
+type Props = {
+    postResponse: PostResponse;
+    createComment: (commentData: CommentRequest) => any;
+};
+
+const Post: React.FC<Props> = ({postResponse, createComment}) => {
     const timePublished = moment(new Date(postResponse.createdAt).getTime()).fromNow();
     const [commentText, setCommentText] = useState<string>('');
-
-    const {state: {post}, dispatch} = useStateValue();
-
+    /*
     useEffect(() => {
         console.log('post changed', post);
         // @ts-ignore
@@ -50,6 +57,7 @@ export const Post: React.FC<{ postResponse: PostResponse }> = ({postResponse}) =
             console.log('comment created for', postResponse);
 
     }, [post]);
+     */
 
     const submitComment = async () => {
         if (commentText.trim() !== '') {
@@ -61,7 +69,7 @@ export const Post: React.FC<{ postResponse: PostResponse }> = ({postResponse}) =
                 postId: postResponse.id,
                 type: 'text'
             };
-            await createComment(dispatch, newComment)
+            createComment(newComment)
         }
     };
 
@@ -96,7 +104,8 @@ export const Post: React.FC<{ postResponse: PostResponse }> = ({postResponse}) =
                 </span>
             </div>
             <div className='comments-container'>
-                {postResponse.comments?.map(comment => (<Comment key={comment.id} comment={comment}/>))}
+                {postResponse.comments?.sort(compareByDate).map(comment => (
+                    <Comment key={comment.id} comment={comment}/>))}
             </div>
             <div className='new-comment'>
                 <img className='avatar'
@@ -111,3 +120,9 @@ export const Post: React.FC<{ postResponse: PostResponse }> = ({postResponse}) =
         </div>
     );
 };
+
+const mapStateToProps = (state: any) => ({
+    logInError: state.auth.logInError
+});
+
+export default connect(mapStateToProps, {createComment})(Post);

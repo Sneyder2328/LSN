@@ -4,6 +4,7 @@ import {removeAuthTokenHeaders, setAccessTokenHeaders} from "../../utils/setAcce
 import {getTokens, removeTokens} from "../../utils/tokensManager";
 import {useHistory} from "react-router";
 import {useStateValue} from "../../contexts/StateContext";
+import {connect} from "react-redux";
 
 const oneWeekInMillis = 7 * 24 * 60 * 60 * 1000;
 
@@ -24,12 +25,13 @@ const isUserAuth = () => {
 };
 
 // @ts-ignore
-export const AuthRoute = ({component: Component, ...rest}) => {
-    const {state: {auth}} = useStateValue();
+const AuthRoute = ({isLoggedIn, component: Component, ...rest}) => {
+    //const {state: {auth}} = useStateValue();
+
     const history = useHistory();
     useEffect(() => {
-        if (!auth.isLoggedIn && !isUserAuth()) history.push('/login');
-    }, [auth]);
+        if (!isLoggedIn && !isUserAuth()) history.push('/login');
+    }, [isLoggedIn]);
     return <Route {...rest} render={(props: any) => (
         isUserAuth() ? <Component {...props}/>
             : <Redirect to={
@@ -41,3 +43,9 @@ export const AuthRoute = ({component: Component, ...rest}) => {
     )}
     />
 };
+
+const mapStateToProps = (state: any) => ({
+    isLoggedIn: state.auth.isLoggedIn
+});
+
+export default connect(mapStateToProps)(AuthRoute);

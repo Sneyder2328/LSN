@@ -10,7 +10,7 @@ export interface CommentResponse {
     type: 'text' | 'img';
     text: string;
     img: string;
-    createdAt: any;
+    createdAt: string;
     likesCount: number;
     dislikesCount: number;
     authorProfile: Profile;

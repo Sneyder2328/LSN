@@ -1,23 +1,27 @@
 import React, {useEffect} from "react";
-import {Post, PostResponse} from "./Post";
-import {useStateValue} from "../../../contexts/StateContext";
 import {fetchPosts} from "../../../actions/postActions";
+import {connect} from "react-redux";
+import Post, {PostResponse} from "./Post";
 
-export const NewsFeed = () => {
-    const {state: {post}, dispatch} = useStateValue();
+const NewsFeed: React.FC<{ posts: Array<any>, fetchPosts: () => any }> = ({posts, fetchPosts}) => {
+    //const {state: {post}, dispatch} = useStateValue();
     //const [posts, setPosts] = useState<Array<PostResponse>>([]);
     useEffect(() => {
-        console.log('fetching posts ', post);
+        console.log('fetching posts!!');
         const loadPosts = () => {
-            fetchPosts(dispatch).then(res => {
-            }).catch(err => {
-            });
+            fetchPosts();
         };
         loadPosts();
     }, []);
     return (
         <div className='news-feed'>
-            {post.posts && post.posts.map((post: PostResponse) => <Post postResponse={post} key={post.id}/>)}
+            {posts && posts.map((post: PostResponse) => <Post postResponse={post} key={post.id}/>)}
         </div>
     );
 };
+
+const mapStateToProps = (state: any) => ({
+    posts: state.post.posts
+});
+
+export default connect(mapStateToProps, {fetchPosts})(NewsFeed);

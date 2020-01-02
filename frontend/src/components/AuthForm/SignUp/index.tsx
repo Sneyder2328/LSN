@@ -2,19 +2,26 @@ import React, {useEffect} from "react";
 import classnames from 'classnames';
 import {useForm} from 'react-hook-form'
 import {ErrorMessage} from "../../commons/ErrorMessage";
-import {useStateValue} from "../../../contexts/StateContext";
-import {signUpUser} from "../../../actions/authActions";
+import {connect} from "react-redux";
+import {FormError} from "../../../reducers/authReducer";
+import {SignUpCredentials, signUpUser} from "../../../actions/authActions";
 
-function SignUp() {
+type Props = {
+    signUpError: FormError,
+    signUpUser: (credentials: SignUpCredentials) => any
+};
+
+const SignUp: React.FC<Props> = ({signUpError, signUpUser}) => {
     const {register, handleSubmit, errors, setError} = useForm();
-    const {state: {auth}, dispatch} = useStateValue();
+
+    //const {state: {auth}, dispatch} = useStateValue();
 
     useEffect(() => {
-        if (auth.signUpError) setError(auth.signUpError.fieldName, auth.signUpError.fieldName, auth.signUpError.message);
-    }, [auth.signUpError]);
+        if (signUpError) setError(signUpError.fieldName, signUpError.fieldName, signUpError.message);
+    }, [signUpError]);
 
     // @ts-ignore
-    const onSubmit = async (data: any) => dispatch(await signUpUser(data));
+    const onSubmit = async (data: any) => signUpUser(data);
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -41,7 +48,7 @@ function SignUp() {
                        ref={register({
                            required: {value: true, message: 'Please enter your email address'},
                            pattern: {
-                               value: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+                               value: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
                                message: 'Please provide a properly formatted email address'
                            }
                        })}/>
@@ -58,6 +65,10 @@ function SignUp() {
             <button>Create account</button>
         </form>
     );
-}
+};
 
-export default SignUp;
+const mapStateToProps = (state: any) => ({
+    signUpError: state.auth.signUpError
+});
+
+export default connect(mapStateToProps, {signUpUser})(SignUp);

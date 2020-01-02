@@ -1,6 +1,6 @@
 import React from "react";
 
-export const SearchBar = ()=>{
+export const SearchBar = () => {
     return (
         <input id='search' placeholder='Search people'/>
     );

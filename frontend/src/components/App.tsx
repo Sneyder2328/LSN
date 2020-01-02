@@ -1,15 +1,15 @@
 import React from 'react';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import AuthForm from "./AuthForm";
-import {initState, StateProvider} from "../contexts/StateContext";
+import { Provider } from 'react-redux';
 import {Home} from "./Home";
-import {AuthRoute} from "./commons/AuthRoute";
+import AuthRoute from "./commons/AuthRoute";
 import {PageNotFound} from "./commons/PageNotFound";
-import {mainReducer} from "../reducers";
+import store from "../store";
 
 const App = () => {
     return (
-        <StateProvider initialState={initState} reducer={mainReducer}>
+        <Provider store={store}>
             <BrowserRouter>
                 <Switch>
                     <Route exact path='/login' component={AuthForm}/>
@@ -17,7 +17,7 @@ const App = () => {
                     <Route path='*' component={PageNotFound}/>
                 </Switch>
             </BrowserRouter>
-        </StateProvider>
+        </Provider>
     );
 };
 

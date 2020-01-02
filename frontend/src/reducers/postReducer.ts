@@ -39,7 +39,7 @@ type postsFetchedAction = {
     posts: Array<PostResponse>;
 };
 
-export type Actions =
+export type PostActions =
     creatingPostAction
     | postCreatedAction
     | postCreatedErrorAction
@@ -48,7 +48,7 @@ export type Actions =
     | CommentActions;
 
 
-export const postReducer = (state: PostState = initialState, action: Actions): PostState => {
+export const postReducer = (state: PostState = initialState, action: PostActions): PostState => {
     switch (action.type) {
         case CREATING_POST:
         case POST_CREATED_SUCCESS:

@@ -3,15 +3,20 @@ import "./styles.scss"
 import classnames from 'classnames';
 import SignUp from "./SignUp";
 import LogIn from "./LogIn";
-import {useStateValue} from "../../contexts/StateContext";
 import {useHistory} from "react-router";
+import {connect} from "react-redux";
 
-function AuthForm() {
-    const {state: {auth}} = useStateValue();
+type Props = {
+    isLoggedIn: boolean;
+}
+
+const AuthForm: React.FC<Props> = ({isLoggedIn}) => {
     const history = useHistory();
+
     useEffect(() => {
-        if (auth.isLoggedIn) history.push('/');
-    }, [auth]);
+        console.log('useEffect isLoggedIn=', isLoggedIn);
+        if (isLoggedIn) history.push('/');
+    }, [isLoggedIn]);
 
     const [isLoginSelected, setLoginSelected] = useState<boolean>(false);
     const Content = isLoginSelected ? <LogIn/> : <SignUp/>;
@@ -28,6 +33,10 @@ function AuthForm() {
             {Content}
         </div>
     );
-}
+};
 
-export default AuthForm;
+const mapStateToProps = (state: any) => ({
+    isLoggedIn: state.auth.isLoggedIn
+});
+
+export default connect(mapStateToProps)(AuthForm);

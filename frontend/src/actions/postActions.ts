@@ -1,9 +1,9 @@
 import {Post} from "../components/Home/NewsFeed/Post";
 import {PostApi} from "../api/post";
 import {CREATING_POST, FETCHING_POSTS, POST_CREATED_ERROR, POST_CREATED_SUCCESS, POSTS_FETCHED} from "./types";
-import {Actions} from "../reducers/postReducer";
+import {PostActions} from "../reducers/postReducer";
 
-export const createPost = async (dispatch: (actions: Actions) => any, postData: Post) => {
+export const createPost = (postData: Post) => async (dispatch: (actions: PostActions) => any) => {
     try {
         dispatch({type: CREATING_POST});
         const response = await PostApi.createPost(postData);
@@ -15,7 +15,7 @@ export const createPost = async (dispatch: (actions: Actions) => any, postData: 
     }
 };
 
-export const fetchPosts = async (dispatch: (actions: Actions) => any,) => {
+export const fetchPosts = () => async (dispatch: (actions: PostActions) => any) => {
     try {
         dispatch({type: FETCHING_POSTS});
         const response = await PostApi.getPosts();

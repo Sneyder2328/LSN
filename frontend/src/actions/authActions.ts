@@ -5,9 +5,11 @@ import {removeAuthTokenHeaders, setAccessTokenHeaders, setRefreshTokenHeaders} f
 import * as jwt_decode from 'jwt-decode';
 import {getTokens, removeTokens, setTokens} from "../utils/tokensManager";
 import {LOG_IN_ERROR, LOGGED_OUT, LOGGING_OUT, SET_CURRENT_USER, SIGN_UP_ERROR} from "./types";
+import {AuthActions, loginAction} from "../reducers/authReducer";
 
 export type SignUpCredentials = { username: string; fullname: string; password: string; email: string; };
-export const signUpUser = async (userData: SignUpCredentials) => {
+
+export const signUpUser = (userData: SignUpCredentials) => async (dispatch: (actions: AuthActions) => any) => {
     try {
         const response = await AuthApi.signUp(userData);
         if (response.data.access === true) {
@@ -15,20 +17,20 @@ export const signUpUser = async (userData: SignUpCredentials) => {
             const refreshToken = response.headers[REFRESH_TOKEN];
             setAccessTokenHeaders(accessToken);
             setTokens(accessToken, refreshToken);
-            return setCurrentUser(jwt_decode(accessToken));
+            dispatch(setCurrentUser(jwt_decode(accessToken)));
         }
     } catch (err) {
         console.log("error:", err);
-        return {
+        dispatch({
             type: SIGN_UP_ERROR,
             payload: {fieldName: err.response.data.error, message: err.response.data.message}
-        }
+        });
     }
 };
 
 export type LoginCredentials = { username: string; password: string; };
 
-export const logInUser = async (credentials: LoginCredentials) => {
+export const logInUser = (credentials: LoginCredentials) => async (dispatch: (actions: AuthActions) => any) => {
     try {
         const response = await AuthApi.logIn(credentials);
         if (response.data.access === true) {
@@ -36,19 +38,19 @@ export const logInUser = async (credentials: LoginCredentials) => {
             const refreshToken = response.headers[REFRESH_TOKEN];
             setAccessTokenHeaders(accessToken);
             setTokens(accessToken, refreshToken);
-            return setCurrentUser(jwt_decode(accessToken));
+            dispatch(setCurrentUser(jwt_decode(accessToken)));
         }
     } catch (err) {
         console.log("error:", err);
-        return {
+        dispatch({
             type: LOG_IN_ERROR,
             payload: {fieldName: err.response.data.error, message: err.response.data.message}
-        }
+        });
     }
 };
 
 // Set logged in user
-export const setCurrentUser = (decoded: any) => {
+export const setCurrentUser = (decoded: string): loginAction => {
     return {
         type: SET_CURRENT_USER,
         payload: decoded
@@ -56,7 +58,7 @@ export const setCurrentUser = (decoded: any) => {
 };
 
 // Log user out
-export const logOut = async (dispatch: Function) => {
+export const logOutUser = () => async (dispatch: Function) => {
     try {
         dispatch({type: LOGGING_OUT});
         const {refreshToken} = getTokens();
@@ -68,5 +70,5 @@ export const logOut = async (dispatch: Function) => {
     } catch (err) {
         console.log("error logging out", err);
     }
-    return setCurrentUser({});
+    dispatch(setCurrentUser(''));
 };

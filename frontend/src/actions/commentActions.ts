@@ -1,17 +1,13 @@
-
-import {Actions} from "../reducers/postReducer";
+import {PostActions} from "../reducers/postReducer";
 import {CommentApi, CommentRequest} from "../api/comment";
 import {COMMENT_CREATED_ERROR, COMMENT_CREATED_SUCCESS, CREATING_COMMENT} from "./types";
+
 /*
 export const fetchComments = async (dispatch: (actions: Actions) => any) => {
 
 };*/
 
-interface Comment {
-
-}
-
-export const createComment = async (dispatch: (actions: Actions) => any, commentData: CommentRequest) => {
+export const createComment = (commentData: CommentRequest) => async (dispatch: (actions: PostActions) => any) => {
     try {
         dispatch({
             type: CREATING_COMMENT,

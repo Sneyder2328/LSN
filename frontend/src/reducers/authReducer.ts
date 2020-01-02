@@ -1,10 +1,13 @@
 import {LOG_IN_ERROR, LOGGED_OUT, LOGGING_OUT, SET_CURRENT_USER, SIGN_UP_ERROR} from "../actions/types";
 
+export type FormError = { fieldName: string; message: string };
+
 interface AuthState {
     isLoggedIn: boolean;
+    isLoggingOut: boolean;
     userId: string;
-    signUpError: string;
-    logInError: string;
+    signUpError?: FormError;
+    logInError?: FormError;
     newPostStatus: string | number;
 }
 
@@ -12,12 +15,36 @@ const initialState = {
     isLoggedIn: false,
     isLoggingOut: false,
     userId: '',
-    signUpError: '',
-    logInError: '',
     newPostStatus: ''
 } as AuthState;
 
-export const authReducer = (state: AuthState = initialState, action: any) => {
+export type loginAction = {
+    type: 'SET_CURRENT_USER';
+    payload: string;
+};
+
+type logoutAction = {
+    type: 'LOGGING_OUT';
+};
+
+type loggedOutAction = {
+    type: 'LOGGED_OUT';
+};
+
+type loginErrorAction = {
+    type: 'LOG_IN_ERROR';
+    payload: FormError;
+};
+
+type signupErrorAction = {
+    type: 'SIGN_UP_ERROR';
+    payload: FormError;
+};
+
+export type AuthActions =
+    loginAction | logoutAction | loggedOutAction | loginErrorAction | signupErrorAction
+
+export const authReducer = (state: AuthState = initialState, action: AuthActions): AuthState => {
     switch (action.type) {
         case SET_CURRENT_USER:
             return {
