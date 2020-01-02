@@ -27,7 +27,7 @@ type logoutAction = {
     type: 'LOGGING_OUT';
 };
 
-type loggedOutAction = {
+export type loggedOutAction = {
     type: 'LOGGED_OUT';
 };
 
@@ -60,8 +60,7 @@ export const authReducer = (state: AuthState = initialState, action: AuthActions
             };
         case LOGGED_OUT:
             return {
-                ...state,
-                isLoggedIn: false
+                ...initialState
             };
         case SIGN_UP_ERROR:
             return {

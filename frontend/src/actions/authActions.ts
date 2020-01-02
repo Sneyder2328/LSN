@@ -1,11 +1,10 @@
 import {AuthApi} from "../api/auth";
 import {ACCESS_TOKEN, REFRESH_TOKEN} from "../utils/constants";
 import {removeAuthTokenHeaders, setAccessTokenHeaders, setRefreshTokenHeaders} from "../utils/setAccessTokenHeaders";
-// @ts-ignore
 import * as jwt_decode from 'jwt-decode';
 import {getTokens, removeTokens, setTokens} from "../utils/tokensManager";
 import {LOG_IN_ERROR, LOGGED_OUT, LOGGING_OUT, SET_CURRENT_USER, SIGN_UP_ERROR} from "./types";
-import {AuthActions, loginAction} from "../reducers/authReducer";
+import {AuthActions, loggedOutAction, loginAction} from "../reducers/authReducer";
 
 export type SignUpCredentials = { username: string; fullname: string; password: string; email: string; };
 
@@ -17,7 +16,8 @@ export const signUpUser = (userData: SignUpCredentials) => async (dispatch: (act
             const refreshToken = response.headers[REFRESH_TOKEN];
             setAccessTokenHeaders(accessToken);
             setTokens(accessToken, refreshToken);
-            dispatch(setCurrentUser(jwt_decode(accessToken)));
+            // @ts-ignore
+            dispatch(setCurrentUser(jwt_decode(accessToken.id)));
         }
     } catch (err) {
         console.log("error:", err);
@@ -38,7 +38,8 @@ export const logInUser = (credentials: LoginCredentials) => async (dispatch: (ac
             const refreshToken = response.headers[REFRESH_TOKEN];
             setAccessTokenHeaders(accessToken);
             setTokens(accessToken, refreshToken);
-            dispatch(setCurrentUser(jwt_decode(accessToken)));
+            // @ts-ignore
+            dispatch(setCurrentUser(jwt_decode(accessToken).id));
         }
     } catch (err) {
         console.log("error:", err);
@@ -57,6 +58,7 @@ export const setCurrentUser = (decoded: string): loginAction => {
     };
 };
 
+
 // Log user out
 export const logOutUser = () => async (dispatch: Function) => {
     try {
@@ -66,9 +68,12 @@ export const logOutUser = () => async (dispatch: Function) => {
         await AuthApi.logOut();
         removeAuthTokenHeaders();
         removeTokens();
-        dispatch({type: LOGGED_OUT});
+        dispatch(loggedOut());
     } catch (err) {
         console.log("error logging out", err);
     }
-    dispatch(setCurrentUser(''));
+};
+
+export const loggedOut = (): loggedOutAction => {
+    return {type: LOGGED_OUT};
 };

@@ -25,7 +25,8 @@ type creatingPostAction = {
     type: 'CREATING_POST'
 };
 type postCreatedAction = {
-    type: 'POST_CREATED_SUCCESS'
+    type: 'POST_CREATED_SUCCESS';
+    postResponse: PostResponse
 };
 type postCreatedErrorAction = {
     type: 'POST_CREATED_ERROR'
@@ -51,11 +52,16 @@ export type PostActions =
 export const postReducer = (state: PostState = initialState, action: PostActions): PostState => {
     switch (action.type) {
         case CREATING_POST:
-        case POST_CREATED_SUCCESS:
         case POST_CREATED_ERROR:
             return {
                 ...state,
                 createPostStatus: action.type
+            };
+        case POST_CREATED_SUCCESS:
+            return {
+                ...state,
+                createPostStatus: action.type,
+                posts: [...state.posts, action.postResponse]
             };
         case FETCHING_POSTS:
         case POSTS_FETCHED:

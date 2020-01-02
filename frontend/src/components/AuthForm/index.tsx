@@ -12,11 +12,7 @@ type Props = {
 
 const AuthForm: React.FC<Props> = ({isLoggedIn}) => {
     const history = useHistory();
-
-    useEffect(() => {
-        console.log('useEffect isLoggedIn=', isLoggedIn);
-        if (isLoggedIn) history.push('/');
-    }, [isLoggedIn]);
+    if (isLoggedIn) history.push('/');
 
     const [isLoginSelected, setLoginSelected] = useState<boolean>(false);
     const Content = isLoginSelected ? <LogIn/> : <SignUp/>;

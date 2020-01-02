@@ -7,6 +7,8 @@ import {CommentRequest} from "../../../api/comment";
 import {createComment} from "../../../actions/commentActions";
 import {Comment, CommentResponse} from "./Comment"
 import {connect} from "react-redux";
+import classNames from "classnames";
+import {compareByDateDesc} from "../../../utils/utils";
 
 export interface Profile {
     coverPhotoUrl: string;
@@ -32,13 +34,8 @@ export interface PostResponse extends Post {
     authorProfile: Profile;
     createCommentStatus?: 'CREATING_COMMENT' | 'COMMENT_CREATED_SUCCESS' | 'COMMENT_CREATED_ERROR';
     fetchCommentsStatus?: 'FETCHING_COMMENTS' | 'COMMENTS_FETCHED';
-    comments?: Array<CommentResponse>;
+    comments: Array<CommentResponse>;
 }
-
-type HasDate = {
-    createdAt: string;
-}
-const compareByDate = (one: HasDate, two: HasDate): number => new Date(one.createdAt).getTime() - new Date(two.createdAt).getTime();
 
 type Props = {
     postResponse: PostResponse;
@@ -48,20 +45,9 @@ type Props = {
 const Post: React.FC<Props> = ({postResponse, createComment}) => {
     const timePublished = moment(new Date(postResponse.createdAt).getTime()).fromNow();
     const [commentText, setCommentText] = useState<string>('');
-    /*
-    useEffect(() => {
-        console.log('post changed', post);
-        // @ts-ignore
-        const thing = post.posts.some(it => it.id === postResponse.id && it.createCommentStatus === COMMENT_CREATED_SUCCESS);
-        if (thing)
-            console.log('comment created for', postResponse);
-
-    }, [post]);
-     */
 
     const submitComment = async () => {
         if (commentText.trim() !== '') {
-            console.log('creating new comment');
             const newComment: CommentRequest = {
                 id: uuidv4(),
                 img: '',
@@ -72,9 +58,6 @@ const Post: React.FC<Props> = ({postResponse, createComment}) => {
             createComment(newComment)
         }
     };
-
-    // @ts-ignore
-    //const cleanUpCondition = post.posts.some(it => it.id === postResponse.id && it.createCommentStatus === COMMENT_CREATED_SUCCESS);
 
     return (
         <div className='post'>
@@ -103,8 +86,8 @@ const Post: React.FC<Props> = ({postResponse, createComment}) => {
                     <i className="fas fa-share"/>
                 </span>
             </div>
-            <div className='comments-container'>
-                {postResponse.comments?.sort(compareByDate).map(comment => (
+            <div className={classNames('comments-container', {'hide': postResponse.comments.length === 0})}>
+                {postResponse.comments.sort(compareByDateDesc).map(comment => (
                     <Comment key={comment.id} comment={comment}/>))}
             </div>
             <div className='new-comment'>

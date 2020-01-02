@@ -35,12 +35,12 @@ $width-page: 600px;
     #avatar {
       width: $thumbnailImgDimen;
       height: $thumbnailImgDimen;
-      padding: 6px 6px 6px 0;
+      margin: 4px 4px;
     }
 
     #editor {
       width: 100%;
-      padding: 5px;
+      padding: 2px 5px;
       border: none;
       outline: none;
       min-height: 50px;
@@ -52,11 +52,12 @@ $width-page: 600px;
     }
 
     #editor:focus {
-      border: 1px rgba(97, 218, 251, 0.23) solid;
+      outline: rgba(97, 218, 251, 0.23) solid 1px;
     }
 
     #editor.medium {
       line-height: normal;
+      padding: 5px 5px;
       font-size: 1.1rem;
     }
 
@@ -103,13 +104,13 @@ $width-page: 600px;
 
   .post {
     background-color: #fff;
-    margin-top: 10px;
+    margin-top: 12px;
     border-radius: $radius;
     padding: 4px;
 
     .userProfile {
       display: flex;
-      padding: 6px 6px 0 6px;
+      padding: 8px 8px 0 8px;
 
       .avatar {
         width: $thumbnailImgDimen;
@@ -172,7 +173,7 @@ $width-page: 600px;
 
     .new-comment {
       padding: 0;
-      margin: 0;
+      margin: 0 0 0 2px;
       min-height: $thumbnailImgDimen+2px;
       display: flex;
       justify-content: center;
@@ -213,10 +214,13 @@ $width-page: 600px;
   }
 
   .comments-container {
-    padding: 10px;
+    margin-top: 6px;
+    padding: 0 2px;
+    border-left: 2px #61dafb solid;
 
     .comment {
       display: flex;
+      padding: 4px 8px;
 
       .avatar {
         width: $thumbnailImgDimen+-8px;
@@ -225,7 +229,7 @@ $width-page: 600px;
         border-radius: 50%;
       }
 
-      .comment-box{
+      .comment-box {
         width: 100%;
       }
 
@@ -269,6 +273,7 @@ $width-page: 600px;
         span:hover {
           color: #244885;
         }
+
         .time-published {
           font-size: 0.75rem;
           color: #9992a0;
@@ -328,3 +333,6 @@ $width-page: 600px;
   }
 }
 
+.hide {
+  display: none;
+}

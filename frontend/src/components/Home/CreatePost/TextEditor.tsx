@@ -25,9 +25,6 @@ export const TextEditor: React.FC<Props> = ({onChange, placeholder, cleanUpWhen,
         if (editorRef.current.innerText !== '') {
             editorRef.current.innerHTML = '';
             setText('');
-            console.log('cleaning it up', editorRef.current);
-            //console.log('cleaning it up x', editorRef.current.r);
-            console.log('cleaning it up done', editorRef.current);
         }
     };
 

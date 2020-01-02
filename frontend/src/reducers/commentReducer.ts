@@ -6,6 +6,7 @@ import {
     FETCHING_COMMENTS
 } from "../actions/types";
 import {PostState} from "./postReducer";
+import {CommentResponse} from "../components/Home/NewsFeed/Comment";
 
 type creatingCommentAction = {
     type: 'CREATING_COMMENT';
@@ -14,6 +15,7 @@ type creatingCommentAction = {
 type commentCreatedAction = {
     type: 'COMMENT_CREATED_SUCCESS';
     postId: string;
+    commentResponse: CommentResponse;
 };
 type commentCreatedErrorAction = {
     type: 'COMMENT_CREATED_ERROR';
@@ -40,12 +42,25 @@ export type CommentActions =
 export const commentReducer = (state: PostState, action: CommentActions): PostState => {
     switch (action.type) {
         case CREATING_COMMENT:
-        case COMMENT_CREATED_SUCCESS:
         case COMMENT_CREATED_ERROR:
             return {
                 ...state,
                 posts: state.posts.map(post => {
                     if (post.id === action.postId) return {...post, createCommentStatus: action.type};
+                    return post;
+                })
+            };
+        case COMMENT_CREATED_SUCCESS:
+            return {
+                ...state,
+                posts: state.posts.map(post => {
+                    if (post.id === action.postId) {
+                        return {
+                            ...post,
+                            comments: [...post.comments, action.commentResponse],
+                            createCommentStatus: action.type
+                        };
+                    }
                     return post;
                 })
             };

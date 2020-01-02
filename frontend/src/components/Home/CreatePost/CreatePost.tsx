@@ -5,9 +5,9 @@ import {connect} from "react-redux";
 import {Post} from "../NewsFeed/Post";
 import {createPost} from "../../../actions/postActions";
 
-type Props = { newPostStatus: string; createPost: (post: Post) => any };
+type Props = { createPostStatus: string; createPost: (post: Post) => any };
 
-const CreatePost: React.FC<Props> = ({newPostStatus, createPost}) => {
+const CreatePost: React.FC<Props> = ({createPostStatus, createPost}) => {
 
     const [text, setText] = useState<string>('');
 
@@ -26,7 +26,7 @@ const CreatePost: React.FC<Props> = ({newPostStatus, createPost}) => {
             <div id='content'>
                 <img id='avatar' src='https://miro.medium.com/max/280/1*MccriYX-ciBniUzRKAUsAw.png'
                      alt='profile picture'/>
-                <TextEditor onChange={setText} cleanUpWhen={newPostStatus === POST_CREATED_SUCCESS}
+                <TextEditor onChange={setText} cleanUpWhen={createPostStatus === POST_CREATED_SUCCESS}
                             placeholder="What's happening?"/>
             </div>
             <div id='publish'>
@@ -37,7 +37,7 @@ const CreatePost: React.FC<Props> = ({newPostStatus, createPost}) => {
 };
 
 const mapStateToProps = (state: any) => ({
-    newPostStatus: state.post.newPostStatus,
+    createPostStatus: state.post.createPostStatus,
 });
 
 export default connect(mapStateToProps, {createPost})(CreatePost)

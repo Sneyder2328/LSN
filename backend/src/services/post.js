@@ -5,7 +5,10 @@ const PostNotCreatedError = require('../utils/errors/PostNotCreatedError');
 async function createPost(userId, type, text, img) {
     const post = await Post.create({id: genUUID(), userId, type, text, img});
     if (!post) throw new PostNotCreatedError();
-    return post;
+    const response = post.toJSON();
+    response.authorProfile = (await Profile.findByPk(userId)).toJSON();
+    response.comments = [];
+    return response;
 }
 
 async function getPosts() {
