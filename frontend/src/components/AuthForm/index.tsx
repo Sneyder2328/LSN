@@ -5,6 +5,7 @@ import SignUp from "./SignUp";
 import LogIn from "./LogIn";
 import {connect} from "react-redux";
 import {Redirect} from "react-router-dom";
+import {AppState} from "../../reducers";
 
 type Props = {
     isLoggedIn: boolean;
@@ -32,8 +33,8 @@ const AuthForm: React.FC<Props> = ({isLoggedIn}) => {
     );
 };
 
-const mapStateToProps = (state: any) => ({
-    isLoggedIn: state.auth.isLoggedIn
+const mapStateToProps = (state: AppState) => ({
+    isLoggedIn: state.auth.isAuthenticated
 });
 
 export default connect(mapStateToProps)(AuthForm);

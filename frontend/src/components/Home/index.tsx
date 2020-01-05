@@ -8,10 +8,10 @@ export const Home = () => {
     return (
         <div>
             <NavBar/>
-            <div id='main'>
+            <main>
                 <CreatePost/>
                 <NewsFeed/>
-            </div>
+            </main>
         </div>
     );
 };

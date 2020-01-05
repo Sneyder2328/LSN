@@ -4,11 +4,12 @@ import moment from "moment";
 import uuidv4 from "uuid/v4";
 import {TextEditor} from "../CreatePost/TextEditor";
 import {CommentRequest} from "../../../api/comment";
-import {createComment} from "../../../actions/commentActions";
+import {createComment, loadPreviousComments} from "../../../actions/commentActions";
 import {Comment, CommentResponse} from "./Comment"
 import {connect} from "react-redux";
 import classNames from "classnames";
 import {compareByDateDesc} from "../../../utils/utils";
+import {AppState} from "../../../reducers";
 
 export interface Profile {
     coverPhotoUrl: string;
@@ -32,8 +33,8 @@ export interface PostResponse extends Post {
     createdAt: any;
     id: string;
     authorProfile: Profile;
-    createCommentStatus?: 'CREATING_COMMENT' | 'COMMENT_CREATED_SUCCESS' | 'COMMENT_CREATED_ERROR';
-    fetchCommentsStatus?: 'FETCHING_COMMENTS' | 'COMMENTS_FETCHED';
+    createCommentStatus?: 'CREATE_COMMENT_REQUEST' | 'CREATE_COMMENT_SUCCESS' | 'CREATE_COMMENT_ERROR';
+    fetchCommentsStatus?: 'LOAD_COMMENTS_REQUEST' | 'LOAD_COMMENTS_SUCCESS' | 'LOAD_COMMENTS_ERROR';
     comments: Array<CommentResponse>;
 }
 
@@ -46,7 +47,7 @@ const Post: React.FC<Props> = ({postResponse, createComment}) => {
     const timePublished = moment(new Date(postResponse.createdAt).getTime()).fromNow();
     const [commentText, setCommentText] = useState<string>('');
 
-    const submitComment = async () => {
+    const submitComment = () => {
         if (commentText.trim() !== '') {
             const newComment: CommentRequest = {
                 id: uuidv4(),
@@ -57,6 +58,10 @@ const Post: React.FC<Props> = ({postResponse, createComment}) => {
             };
             createComment(newComment)
         }
+    };
+
+    const loadMoreComments = () => {
+        console.log('load comments for post ', postResponse.id);
     };
 
     return (
@@ -86,6 +91,9 @@ const Post: React.FC<Props> = ({postResponse, createComment}) => {
                     <i className="fas fa-share"/>
                 </span>
             </div>
+            <div className={classNames('load-previous-comments', {'hide': postResponse.commentsCount <= 3})}>
+                <span onClick={loadMoreComments}><i className="fas fa-angle-up"/>Load more comments</span>
+            </div>
             <div className={classNames('comments-container', {'hide': postResponse.comments.length === 0})}>
                 {postResponse.comments.sort(compareByDateDesc).map(comment => (
                     <Comment key={comment.id} comment={comment}/>))}
@@ -104,8 +112,8 @@ const Post: React.FC<Props> = ({postResponse, createComment}) => {
     );
 };
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: AppState) => ({
     logInError: state.auth.logInError
 });
 
-export default connect(mapStateToProps, {createComment})(Post);
+export default connect(mapStateToProps, {createComment, loadPreviousComments})(Post);

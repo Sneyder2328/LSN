@@ -1,6 +1,7 @@
 import React from "react";
 import {Redirect, Route} from "react-router-dom";
 import {connect} from "react-redux";
+import {AppState} from "../../reducers";
 
 // @ts-ignore
 const AuthRoute = ({isLoggedIn, component: Component, ...rest}) => {
@@ -16,8 +17,8 @@ const AuthRoute = ({isLoggedIn, component: Component, ...rest}) => {
     />
 };
 
-const mapStateToProps = (state: any) => ({
-    isLoggedIn: state.auth.isLoggedIn
+const mapStateToProps = (state: AppState) => ({
+    isLoggedIn: state.auth.isAuthenticated
 });
 
 export default connect(mapStateToProps)(AuthRoute);

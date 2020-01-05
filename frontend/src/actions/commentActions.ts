@@ -1,6 +1,6 @@
 import {PostActions} from "../reducers/postReducer";
 import {CommentApi, CommentRequest} from "../api/comment";
-import {COMMENT_CREATED_ERROR, COMMENT_CREATED_SUCCESS, CREATING_COMMENT} from "./types";
+import {CREATE_COMMENT_REQUEST, CREATE_COMMENT_SUCCESS, CREATE_COMMENT_ERROR} from "./types";
 import {CommentResponse} from "../components/Home/NewsFeed/Comment";
 
 /*
@@ -12,7 +12,7 @@ export const fetchComments = async (dispatch: (actions: Actions) => any) => {
 export const createComment = (commentData: CommentRequest) => async (dispatch: (actions: PostActions) => any) => {
     try {
         dispatch({
-            type: CREATING_COMMENT,
+            type: CREATE_COMMENT_REQUEST,
             postId: commentData.postId
         });
         const response = await CommentApi.createComment(commentData);
@@ -21,15 +21,19 @@ export const createComment = (commentData: CommentRequest) => async (dispatch: (
     } catch (err) {
         console.log(err);
         dispatch({
-            type: COMMENT_CREATED_ERROR,
+            type: CREATE_COMMENT_ERROR,
             postId: commentData.postId
         });
     }
 };
 
+export const loadPreviousComments = (postId: string, offset: number, limit: number) => async (dispatch: (actions: PostActions) => any) => {
+    
+};
+
 const commentCreatedSuccess = (commentData: CommentRequest, commentResponse: CommentResponse): PostActions => {
     return {
-        type: COMMENT_CREATED_SUCCESS,
+        type: CREATE_COMMENT_SUCCESS,
         postId: commentData.postId,
         commentResponse
     };

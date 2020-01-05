@@ -5,16 +5,15 @@ import {ErrorMessage} from "../../commons/ErrorMessage";
 import {connect} from "react-redux";
 import {FormError} from "../../../reducers/authReducer";
 import {SignUpCredentials, signUpUser} from "../../../actions/authActions";
+import {AppState} from "../../../reducers";
 
 type Props = {
-    signUpError: FormError,
+    signUpError?: FormError,
     signUpUser: (credentials: SignUpCredentials) => any
 };
 
 const SignUp: React.FC<Props> = ({signUpError, signUpUser}) => {
     const {register, handleSubmit, errors, setError} = useForm();
-
-    //const {state: {auth}, dispatch} = useStateValue();
 
     useEffect(() => {
         if (signUpError) setError(signUpError.fieldName, signUpError.fieldName, signUpError.message);
@@ -67,7 +66,7 @@ const SignUp: React.FC<Props> = ({signUpError, signUpUser}) => {
     );
 };
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: AppState) => ({
     signUpError: state.auth.signUpError
 });
 

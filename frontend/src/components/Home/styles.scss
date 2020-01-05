@@ -7,10 +7,11 @@ $btnHoveredColor: #2c80d0;
 $width-page: 600px;
 $interactColor: #8ce9fa;
 $interactHoveredColor: #469efa;
-#main {
+
+main {
   width: 90%;
   max-width: $width-page;
-  margin: $navbarHeight+10px auto 0 auto;
+  margin: $navbarHeight+12px auto 0 auto;
 }
 
 .create-post {
@@ -156,7 +157,7 @@ $interactHoveredColor: #469efa;
       justify-content: space-evenly;
       margin: 0 6px;
       font-size: 1.04rem;
-      padding: 0 40px;
+      padding: 10px 40px;
 
       span {
         cursor: pointer;
@@ -213,6 +214,25 @@ $interactHoveredColor: #469efa;
           color: #a9a9a9;
         }
       }
+    }
+  }
+
+  .load-previous-comments {
+    padding: 6px 14px;
+    cursor: pointer;
+
+    span {
+      color: $interactColor;
+      font-size: 0.92rem;
+
+      i {
+        margin-right: 4px;
+        font-size: 0.92rem;
+      }
+    }
+
+    span:hover {
+      text-decoration: underline;
     }
   }
 

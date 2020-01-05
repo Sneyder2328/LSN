@@ -2,6 +2,7 @@ import React from "react";
 import {SearchBar} from "./SearchBar";
 import {connect} from 'react-redux'
 import {logOutUser} from "../../../actions/authActions";
+import {AppState} from "../../../reducers";
 
 const NavBar: React.FC<{ isLoggingOut: boolean; logOutUser: () => any }> = ({isLoggingOut, logOutUser}) => {
     return (
@@ -14,10 +15,8 @@ const NavBar: React.FC<{ isLoggingOut: boolean; logOutUser: () => any }> = ({isL
     );
 };
 
-const mapStateToProps = (state: any) => {
-    return {
-        isLoggingOut: state.auth.isLoggingOut
-    };
+const mapStateToProps = (state: AppState) => {
+    return {isLoggingOut: state.auth.isLoggingOut};
 };
 
 export default connect(mapStateToProps, {logOutUser})(NavBar);

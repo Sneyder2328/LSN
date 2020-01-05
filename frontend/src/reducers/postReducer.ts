@@ -1,83 +1,90 @@
 import {
-    POST_CREATED_SUCCESS,
-    CREATING_POST,
-    POSTS_FETCHED,
-    FETCHING_POSTS,
-    POST_CREATED_ERROR, CLEAN_POST_CREATED_STATUS
+    CREATE_POST_SUCCESS,
+    CREATE_POST_REQUEST,
+    LOAD_POSTS_SUCCESS,
+    LOAD_POSTS_REQUEST,
+    CREATE_POST_ERROR, LOAD_POSTS_ERROR
 } from "../actions/types";
 import {PostResponse} from "../components/Home/NewsFeed/Post";
 import {CommentActions, commentReducer} from "./commentReducer";
 
 
 export interface PostState {
-    createPostStatus: 'CREATING_POST' | 'POST_CREATED_SUCCESS' | 'POST_CREATED_ERROR' | '';
-    fetchPostsStatus: 'FETCHING_POSTS' | 'POSTS_FETCHED' | '';
+    isLoadingPosts: boolean;
+    isCreatingPost: boolean;
     posts: Array<PostResponse>;
 }
 
 const initialState: PostState = {
-    createPostStatus: '',
-    fetchPostsStatus: '',
+    isLoadingPosts: false,
+    isCreatingPost: false,
     posts: []
 };
 
 type creatingPostAction = {
-    type: 'CREATING_POST'
+    type: 'CREATE_POST_REQUEST'
 };
-type cleanPostCreatedStatus = {
-    type: 'CLEAN_POST_CREATED_STATUS'
-}
 type postCreatedAction = {
-    type: 'POST_CREATED_SUCCESS';
+    type: 'CREATE_POST_SUCCESS';
     postResponse: PostResponse
 };
 type postCreatedErrorAction = {
-    type: 'POST_CREATED_ERROR'
+    type: 'CREATE_POST_ERROR'
 };
-type fetchingPostsAction = {
-    type: 'FETCHING_POSTS'
-    posts?: Array<PostResponse>;
+export type LoadPostsRequest = {
+    type: 'LOAD_POSTS_REQUEST'
 };
-type postsFetchedAction = {
-    type: 'POSTS_FETCHED';
+export type LoadPostsSuccess = {
+    type: 'LOAD_POSTS_SUCCESS';
     posts: Array<PostResponse>;
+};
+export type LoadPostsError = {
+    type: 'LOAD_POSTS_ERROR';
 };
 
 export type PostActions =
     creatingPostAction
-    | cleanPostCreatedStatus
     | postCreatedAction
     | postCreatedErrorAction
-    | fetchingPostsAction
-    | postsFetchedAction
+    | LoadPostsRequest
+    | LoadPostsSuccess
+    | LoadPostsError
     | CommentActions;
 
 
 export const postReducer = (state: PostState = initialState, action: PostActions): PostState => {
     switch (action.type) {
-        case CREATING_POST:
-        case POST_CREATED_ERROR:
+        case CREATE_POST_REQUEST:
             return {
                 ...state,
-                createPostStatus: action.type
+                isCreatingPost: true
             };
-        case POST_CREATED_SUCCESS:
+        case CREATE_POST_SUCCESS:
             return {
                 ...state,
-                createPostStatus: action.type,
+                isCreatingPost: false,
                 posts: [...state.posts, action.postResponse]
             };
-        case FETCHING_POSTS:
-        case POSTS_FETCHED:
+        case CREATE_POST_ERROR:
             return {
                 ...state,
-                fetchPostsStatus: action.type,
-                posts: action.posts || []
+                isCreatingPost: false
             };
-        case CLEAN_POST_CREATED_STATUS:
+        case LOAD_POSTS_REQUEST:
             return {
                 ...state,
-                createPostStatus: ''
+                isLoadingPosts: true
+            };
+        case LOAD_POSTS_SUCCESS:
+            return {
+                ...state,
+                posts: action.posts || [],
+                isLoadingPosts: false
+            };
+        case LOAD_POSTS_ERROR:
+            return {
+                ...state,
+                isLoadingPosts: false
             };
         default:
             return commentReducer(state, action);

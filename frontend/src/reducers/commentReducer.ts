@@ -1,48 +1,48 @@
 import {
-    COMMENT_CREATED_ERROR,
-    COMMENT_CREATED_SUCCESS,
-    COMMENTS_FETCHED,
-    CREATING_COMMENT,
-    FETCHING_COMMENTS
+    CREATE_COMMENT_REQUEST,
+    CREATE_COMMENT_SUCCESS,
+    CREATE_COMMENT_ERROR,
+    LOAD_COMMENTS_REQUEST,
+    LOAD_COMMENTS_SUCCESS
 } from "../actions/types";
 import {PostState} from "./postReducer";
 import {CommentResponse} from "../components/Home/NewsFeed/Comment";
 
-type creatingCommentAction = {
-    type: 'CREATING_COMMENT';
+type createCommentRequest = {
+    type: 'CREATE_COMMENT_REQUEST';
     postId: string;
 };
-type commentCreatedAction = {
-    type: 'COMMENT_CREATED_SUCCESS';
+type createCommentSuccess = {
+    type: 'CREATE_COMMENT_SUCCESS';
     postId: string;
     commentResponse: CommentResponse;
 };
-type commentCreatedErrorAction = {
-    type: 'COMMENT_CREATED_ERROR';
+type createCommentError = {
+    type: 'CREATE_COMMENT_ERROR';
     postId: string;
 };
-type fetchingCommentsAction = {
-    type: 'FETCHING_COMMENTS'
+type loadCommentsRequest = {
+    type: 'LOAD_COMMENTS_REQUEST'
     postId: string;
     comments?: Array<any>;
 };
-type commentsFetchedAction = {
-    type: 'COMMENTS_FETCHED';
+type loadCommentsSuccess = {
+    type: 'LOAD_COMMENTS_SUCCESS';
     postId: string;
     comments: Array<any>;
 };
 
 export type CommentActions =
-    creatingCommentAction
-    | commentCreatedAction
-    | commentCreatedErrorAction
-    | fetchingCommentsAction
-    | commentsFetchedAction;
+    createCommentRequest
+    | createCommentSuccess
+    | createCommentError
+    | loadCommentsRequest
+    | loadCommentsSuccess;
 
 export const commentReducer = (state: PostState, action: CommentActions): PostState => {
     switch (action.type) {
-        case CREATING_COMMENT:
-        case COMMENT_CREATED_ERROR:
+        case CREATE_COMMENT_REQUEST:
+        case CREATE_COMMENT_ERROR:
             return {
                 ...state,
                 posts: state.posts.map(post => {
@@ -50,7 +50,7 @@ export const commentReducer = (state: PostState, action: CommentActions): PostSt
                     return post;
                 })
             };
-        case COMMENT_CREATED_SUCCESS:
+        case CREATE_COMMENT_SUCCESS:
             return {
                 ...state,
                 posts: state.posts.map(post => {
@@ -64,8 +64,8 @@ export const commentReducer = (state: PostState, action: CommentActions): PostSt
                     return post;
                 })
             };
-        case FETCHING_COMMENTS:
-        case COMMENTS_FETCHED:
+        case LOAD_COMMENTS_REQUEST:
+        case LOAD_COMMENTS_SUCCESS:
             return {
                 ...state,
                 posts: state.posts.map(post => {

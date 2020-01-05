@@ -4,9 +4,10 @@ import {ErrorMessage} from "../../commons/ErrorMessage";
 import {connect} from "react-redux";
 import {LoginCredentials, logInUser} from "../../../actions/authActions";
 import {FormError} from "../../../reducers/authReducer";
+import {AppState} from "../../../reducers";
 
 type Props = {
-    logInError: FormError,
+    logInError?: FormError,
     logInUser: (credentials: LoginCredentials) => any
 };
 
@@ -37,7 +38,7 @@ const LogIn: React.FC<Props> = ({logInError, logInUser}) => {
     );
 };
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: AppState) => ({
     logInError: state.auth.logInError
 });
 

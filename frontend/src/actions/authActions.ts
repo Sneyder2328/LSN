@@ -3,8 +3,8 @@ import {ACCESS_TOKEN, REFRESH_TOKEN} from "../utils/constants";
 import {removeAuthTokenHeaders, setAccessTokenHeaders, setRefreshTokenHeaders} from "../utils/setAccessTokenHeaders";
 import * as jwt_decode from 'jwt-decode';
 import {getTokens, removeTokens, setTokens} from "../utils/tokensManager";
-import {LOG_IN_ERROR, LOGGED_OUT, LOGGING_OUT, SET_CURRENT_USER, SIGN_UP_ERROR} from "./types";
-import {AuthActions, loggedOutAction, loginAction} from "../reducers/authReducer";
+import {LOG_IN_ERROR, LOG_OUT_REQUEST, LOG_OUT_SUCCESS, SET_CURRENT_USER, SIGN_UP_ERROR} from "./types";
+import {AuthActions, loginAction, logOutSuccess} from "../reducers/authReducer";
 
 export type SignUpCredentials = { username: string; fullname: string; password: string; email: string; };
 
@@ -17,7 +17,7 @@ export const signUpUser = (userData: SignUpCredentials) => async (dispatch: (act
             setAccessTokenHeaders(accessToken);
             setTokens(accessToken, refreshToken);
             // @ts-ignore
-            dispatch(setCurrentUser(jwt_decode(accessToken.id)));
+            dispatch(setCurrentUser(jwt_decode(accessToken).id));
         }
     } catch (err) {
         console.log("error:", err);
@@ -62,7 +62,7 @@ export const setCurrentUser = (decoded: string): loginAction => {
 // Log user out
 export const logOutUser = () => async (dispatch: Function) => {
     try {
-        dispatch({type: LOGGING_OUT});
+        dispatch({type: LOG_OUT_REQUEST});
         const {refreshToken} = getTokens();
         setRefreshTokenHeaders(refreshToken);
         await AuthApi.logOut();
@@ -74,6 +74,6 @@ export const logOutUser = () => async (dispatch: Function) => {
     }
 };
 
-export const loggedOut = (): loggedOutAction => {
-    return {type: LOGGED_OUT};
+export const loggedOut = (): logOutSuccess => {
+    return {type: LOG_OUT_SUCCESS};
 };

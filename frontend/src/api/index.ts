@@ -9,10 +9,7 @@ export const transport = axios.create({
 });
 
 transport.interceptors.request.use(async (config) => {
-    // Do something with response data
-    console.log('config here', config);
-    if (config.url !== '/tokens' &&
-        isTokenExpired(getTokens().dateAccessTokenIssued, FOURTEEN_MINUTES_IN_MILLIS)) {
+    if (config.url !== '/tokens' && isTokenExpired(getTokens().dateAccessTokenIssued, FOURTEEN_MINUTES_IN_MILLIS)) {
         console.log('token has expired');
         const accessToken = await AuthApi.getNewAccessToken(getTokens().refreshToken);
         if (accessToken) updateAccessToken(accessToken);

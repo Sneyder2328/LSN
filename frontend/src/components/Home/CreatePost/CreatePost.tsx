@@ -1,17 +1,14 @@
 import React, {useState} from "react";
 import {TextEditor} from "./TextEditor";
-import {POST_CREATED_SUCCESS} from "../../../actions/types";
 import {connect} from "react-redux";
 import {Post} from "../NewsFeed/Post";
-import {cleanCreatePostStatus, createPost} from "../../../actions/postActions";
+import {createPost} from "../../../actions/postActions";
 
 type Props = {
-    createPostStatus: string;
     createPost: (post: Post) => any;
-    cleanCreatePostStatus: () => any;
 };
 
-const CreatePost: React.FC<Props> = ({createPostStatus, createPost, cleanCreatePostStatus}) => {
+const CreatePost: React.FC<Props> = ({createPost}) => {
 
     const [text, setText] = useState<string>('');
 
@@ -22,10 +19,8 @@ const CreatePost: React.FC<Props> = ({createPostStatus, createPost, cleanCreateP
             img: ''
         };
         createPost(newPost);
+        setText('clean')
     };
-
-    const conditionForCleanUp = createPostStatus === POST_CREATED_SUCCESS;
-    if (conditionForCleanUp) cleanCreatePostStatus();
 
     return (
         <div className='create-post'>
@@ -33,7 +28,7 @@ const CreatePost: React.FC<Props> = ({createPostStatus, createPost, cleanCreateP
             <div id='content'>
                 <img id='avatar' src='https://miro.medium.com/max/280/1*MccriYX-ciBniUzRKAUsAw.png'
                      alt='profile picture'/>
-                <TextEditor onChange={setText} cleanUpWhen={conditionForCleanUp}
+                <TextEditor onChange={setText} cleanUpWhen={text === 'clean'}
                             placeholder="What's happening?"/>
             </div>
             <div id='publish'>
@@ -43,8 +38,4 @@ const CreatePost: React.FC<Props> = ({createPostStatus, createPost, cleanCreateP
     );
 };
 
-const mapStateToProps = (state: any) => ({
-    createPostStatus: state.post.createPostStatus,
-});
-
-export default connect(mapStateToProps, {createPost, cleanCreatePostStatus})(CreatePost)
+export default connect(null, {createPost})(CreatePost)

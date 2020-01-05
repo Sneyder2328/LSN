@@ -1,8 +1,9 @@
 import React, {useEffect} from "react";
-import {fetchPosts} from "../../../actions/postActions";
+import {loadPosts} from "../../../actions/postActions";
 import {connect} from "react-redux";
 import Post, {PostResponse} from "./Post";
 import {compareByDateAsc} from "../../../utils/utils";
+import {AppState} from "../../../reducers";
 
 const NewsFeed: React.FC<{ posts: Array<PostResponse>, fetchPosts: () => any }> = ({posts, fetchPosts}) => {
     useEffect(() => {
@@ -14,13 +15,14 @@ const NewsFeed: React.FC<{ posts: Array<PostResponse>, fetchPosts: () => any }> 
     }, []);
     return (
         <div className='news-feed'>
-            {posts && posts.sort(compareByDateAsc).map((post: PostResponse) => <Post postResponse={post} key={post.id}/>)}
+            {posts && posts.sort(compareByDateAsc).map((post: PostResponse) => <Post postResponse={post}
+                                                                                     key={post.id}/>)}
         </div>
     );
 };
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: AppState) => ({
     posts: state.post.posts
 });
 
-export default connect(mapStateToProps, {fetchPosts})(NewsFeed);
+export default connect(mapStateToProps, {fetchPosts: loadPosts})(NewsFeed);
