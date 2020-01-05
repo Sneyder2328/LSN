@@ -14,7 +14,6 @@ router.post(endpoints.comment.CREATE_COMMENT(':postId'), authenticate, createCom
 }));
 
 router.post(endpoints.comment.LIKE_COMMENT(':commentId'), authenticate, likeCommentValidationRules, validate, handleErrorAsync(async (req, res) => {
-    console.log('liking comment', req.userId, req.params.commentId);
     const response = await likeComment(req.userId, req.params.commentId);
     res.status(httpCodes.OK).send(response);
 }));
@@ -35,7 +34,8 @@ router.delete(endpoints.comment.DISLIKE_COMMENT(':commentId'), authenticate, lik
 }));
 
 router.get(endpoints.comment.GET_COMMENTS(':postId'), authenticate, getCommentsValidationRules, validate, handleErrorAsync(async (req, res) => {
-    const response = await getComments(req.params.postId);
+    const response = await getComments(req.params.postId, req.query.offset, req.query.limit);
+    res.status(httpCodes.OK).send(response);
 }));
 
 module.exports = router;

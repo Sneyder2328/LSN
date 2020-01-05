@@ -8,6 +8,7 @@ const {users, profiles, posts, comments} = require('./seed');
 const {wipeOutDatabase, createUserAndProfile} = require('./index');
 const {User, Profile, Post, PostLike, Comment} = require('../src/database/database');
 const {config} = require('../src/config/config');
+const {LIMIT_COMMENTS_PER_POST} = require('../src/utils/constants/index');
 
 describe('POST /createPost', () => {
     let accessToken;
@@ -48,13 +49,11 @@ describe('POST /createPost', () => {
     });
 });
 
-describe('GET /getPosts', () => {
+describe('GET /posts', () => {
     beforeEach(async () => {
         await wipeOutDatabase();
-        await User.create(users[0]);
-        await User.create(users[1]);
-        await Profile.create(profiles[0]);
-        await Profile.create(profiles[1]);
+        await Promise.all(users.map((user) => User.create(user)));
+        await Promise.all(profiles.map((profile) => Profile.create(profile)));
         await Promise.all(posts.map((post) => Post.create(post)));
     });
 
@@ -83,8 +82,7 @@ describe('GET /getPosts', () => {
     });
 
     it('should return text posts with comments', async (done) => {
-        await Comment.create(comments[0]);
-        await Comment.create(comments[1]);
+        await Promise.all(comments.map((comment) => Comment.create(comment)));
 
         request(app)
             .get(endpoints.post.GET_POSTS)
@@ -99,10 +97,22 @@ describe('GET /getPosts', () => {
                     expect(post.createdAt).toBeTruthy();
                     expect(post.likesCount).toBe(0);
                     expect(post.type).toBe('text');
-                    if (post.id === posts[0].id) {
-                        expect(post.commentsCount).toBe(2);
-                        expect(post.comments.length).toBe(2);
-                    }
+                    const expectedCommentsCount = comments.filter(comment => comment.postId === post.id).length;
+                    expect(post.commentsCount).toBe(expectedCommentsCount);
+                    const expectedCommentsFetched = expectedCommentsCount < LIMIT_COMMENTS_PER_POST ? expectedCommentsCount : LIMIT_COMMENTS_PER_POST;
+                    expect(post.comments.length).toBe(expectedCommentsFetched);
+                    post.comments.forEach(comment => {
+                        expect(comment.text).toBe(comments.find(it => it.id === comment.id).text);
+                        expect(comment.postId).toBe(comments.find(it => it.id === comment.id).postId);
+                        expect(comment.type).toBe(comments.find(it => it.id === comment.id).type);
+                        const commentCreatorUserProfile = profiles.find(it => it.userId === comment.userId);
+                        expect(comment.authorProfile).toBeDefined();
+                        expect(comment.authorProfile.username).toBe(commentCreatorUserProfile.username);
+                        expect(comment.authorProfile.fullname).toBe(commentCreatorUserProfile.fullname);
+                        expect(comment.authorProfile.description).toBe(commentCreatorUserProfile.description);
+                        expect(comment.authorProfile.profilePhotoUrl).toBe(commentCreatorUserProfile.profilePhotoUrl);
+                        expect(comment.authorProfile.coverPhotoUrl).toBe(commentCreatorUserProfile.coverPhotoUrl);
+                    });
                 });
             })
             .end(done);
@@ -138,7 +148,7 @@ async function assertLikeOrDislike(err, done) {
     done();
 }
 
-describe('POST /likePost', () => {
+describe('POST /posts/likes', () => {
     let accessToken;
     beforeEach(async () => {
         await wipeOutDatabase();
@@ -153,6 +163,16 @@ describe('POST /likePost', () => {
             .set(config.headers.accessToken, accessToken)
             .expect(httpCodes.OK)
             .end(async (err, _) => await assertLikeOrDislike(err, done));
+    });
+});
+
+describe('DELETE /posts/likes', () => {
+    let accessToken;
+    beforeEach(async () => {
+        await wipeOutDatabase();
+        const {user} = await createUserAndProfile(users[0], profiles[0]);
+        accessToken = await signJWT(user.id);
+        await Post.create(posts[0]);
     });
 
     it('should unlike a post[with like]', async (done) => {
@@ -169,6 +189,16 @@ describe('POST /likePost', () => {
             .expect(httpCodes.OK)
             .end(async (err, _) => await assertUnLikeOrUnDislike(err, done));
     });
+});
+
+describe('POST /posts/dislikes', () => {
+    let accessToken;
+    beforeEach(async () => {
+        await wipeOutDatabase();
+        const {user} = await createUserAndProfile(users[0], profiles[0]);
+        accessToken = await signJWT(user.id);
+        await Post.create(posts[0]);
+    });
 
     it('should dislike a post[without like nor dislike]', (done) => {
         request(app)
@@ -176,6 +206,16 @@ describe('POST /likePost', () => {
             .set(config.headers.accessToken, accessToken)
             .expect(httpCodes.OK)
             .end(async (err, _) => await assertLikeOrDislike(err, done));
+    });
+});
+
+describe('DELETE /posts/dislikes', () => {
+    let accessToken;
+    beforeEach(async () => {
+        await wipeOutDatabase();
+        const {user} = await createUserAndProfile(users[0], profiles[0]);
+        accessToken = await signJWT(user.id);
+        await Post.create(posts[0]);
     });
 
     it('should undislike a post[with dislike]', async (done) => {

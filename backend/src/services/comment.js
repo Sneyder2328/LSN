@@ -24,9 +24,20 @@ async function dislikeComment(userId, commentId) {
     return commentLike !== null;
 }
 
-async function getComments(postId) {
-    const comments = await Comment.findAll({where: {postId}});
+async function getComments(postId, offset, limit) {
+    let comments = await Comment.findAll({
+        where: {postId},
+        order: [['createdAt', 'DESC']],
+        offset: parseInt(offset),
+        limit: parseInt(limit),
+        include: [{model: Profile}]
+    });
     if (!comments) return [];
+    comments = comments.map(it => it.toJSON()).map(comment => {
+        comment.authorProfile = comment.Profile;
+        delete comment.Profile;
+        return comment;
+    });
     return comments;
 }
 

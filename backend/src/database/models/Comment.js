@@ -48,10 +48,8 @@ module.exports = (sequelize, DataTypes, User, Post) => {
     });
 
     Comment.beforeCreate(async (comment, _) => {
-        console.log('beforeCreate');
         const post = await Post.findByPk(comment.postId);
-        const res = await post.increment('commentsCount', {by: 1});
-        console.log('response in create', res);
+        await post.increment('commentsCount', {by: 1});
     });
 
     return Comment;

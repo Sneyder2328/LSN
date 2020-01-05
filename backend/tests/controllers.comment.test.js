@@ -1,4 +1,3 @@
-
 const request = require('supertest');
 
 const {app, server} = require('../src/app');
@@ -31,7 +30,7 @@ describe('POST /createComment', () => {
                 expect(comment.img).toBe(comments[0].img);
                 expect(comment.type).toBe(comments[0].type);
                 expect(comment.text).toBe(comments[0].text);
-                expect(comment.likes).toBe(comments[0].likes);
+                expect(comment.likesCount).toBe(comments[0].likesCount);
                 expect(comment.postId).toBe(comments[0].postId);
                 expect(comment.userId).toBe(comments[0].userId);
                 expect(comment.id).toBe(comments[0].id);
@@ -39,6 +38,32 @@ describe('POST /createComment', () => {
             });
     });
 });
+
+
+describe('GET /posts/:postId/comments', () => {
+    let accessToken, commentsToFetch;
+    beforeEach(async () => {
+        await wipeOutDatabase();
+        const {user} = await createUserAndProfile(users.find(it => it.id === posts[2].userId), profiles.find(it => it.userId === posts[2].userId));
+        accessToken = await signJWT(user.id);
+        await Post.create(posts[2]);
+        commentsToFetch = comments.filter(comment => comment.postId === posts[2].id);
+        await Promise.all(commentsToFetch.map(it => Comment.create(it)));
+    });
+
+    it('should get comments with offset[3] and limit[10] from post', (done) => {
+        request(app)
+            .get(endpoints.comment.GET_COMMENTS(posts[2].id) + '?offset=3&limit=10')
+            .set(config.headers.accessToken, accessToken)
+            .expect(httpCodes.OK)
+            .expect((res) => {
+                console.log('res here=', res.body);
+                expect(res.body.length).toBe(10);
+            })
+            .end(done);
+    });
+});
+
 
 async function assertUnLikeOrUnDislike(err, done) {
     if (err) return done(err);
@@ -74,7 +99,7 @@ async function assertLikeOrDislike(err, done) {
     done();
 }
 
-describe('POST /likeComment', () => {
+describe('POST /comments/likes', () => {
     let accessToken;
     beforeEach(async () => {
         await wipeOutDatabase();
@@ -91,8 +116,16 @@ describe('POST /likeComment', () => {
             .expect(httpCodes.OK)
             .end(async (err, _) => await assertLikeOrDislike(err, done));
     });
+});
 
-    it('should unlike a comment[with like]', async (done) => {
+describe('DELETE /comments/likes', () => {
+    let accessToken;
+    beforeEach(async () => {
+        await wipeOutDatabase();
+        const {user} = await createUserAndProfile(users[0], profiles[0]);
+        await Post.create(posts[0]);
+        await Comment.create(comments[0]);
+        accessToken = await signJWT(user.id);
         await CommentLike.create({
             userId: comments[0].userId,
             commentId: comments[0].id,
@@ -104,12 +137,25 @@ describe('POST /likeComment', () => {
             postId: comments[0].postId,
             likesCount: comments[0].likesCount + 1
         });
+    });
 
+    it('should unlike a comment[with like]', (done) => {
         request(app)
             .delete(endpoints.comment.LIKE_COMMENT(comments[0].id))
             .set(config.headers.accessToken, accessToken)
             .expect(httpCodes.OK)
             .end(async (err, _) => await assertUnLikeOrUnDislike(err, done));
+    });
+});
+
+describe('POST /comments/dislikes', () => {
+    let accessToken;
+    beforeEach(async () => {
+        await wipeOutDatabase();
+        const {user} = await createUserAndProfile(users[0], profiles[0]);
+        await Post.create(posts[0]);
+        await Comment.create(comments[0]);
+        accessToken = await signJWT(user.id);
     });
 
     it('should dislike a comment[without like nor dislike]', (done) => {
@@ -119,8 +165,16 @@ describe('POST /likeComment', () => {
             .expect(httpCodes.OK)
             .end(async (err, _) => await assertLikeOrDislike(err, done));
     });
+});
 
-    it('should undislike a comment[with dislike]', async (done) => {
+describe('DELETE /comments/dislikes', () => {
+    let accessToken;
+    beforeEach(async () => {
+        await wipeOutDatabase();
+        const {user} = await createUserAndProfile(users[0], profiles[0]);
+        await Post.create(posts[0]);
+        await Comment.create(comments[0]);
+        accessToken = await signJWT(user.id);
         await CommentLike.create({
             userId: comments[0].userId,
             commentId: comments[0].id,
@@ -132,7 +186,9 @@ describe('POST /likeComment', () => {
             postId: comments[0].postId,
             dislikesCount: comments[0].dislikesCount + 1
         });
+    });
 
+    it('should undislike a comment[with dislike]', async (done) => {
         request(app)
             .delete(endpoints.comment.DISLIKE_COMMENT(comments[0].id))
             .set(config.headers.accessToken, accessToken)

@@ -1,3 +1,5 @@
+const {LIMIT_COMMENTS_PER_POST} = require("../utils/constants");
+
 const {Post, Profile, PostLike, Comment} = require('../database/database');
 const {genUUID} = require('../utils/utils');
 const PostNotCreatedError = require('../utils/errors/PostNotCreatedError');
@@ -15,10 +17,11 @@ async function getPosts() {
     let posts = await Post.findAll({
         include: [
             {model: Profile, as: 'authorProfile'},
-            {model: Comment, as: 'comments'}
+            {model: Comment, as: 'comments', limit: LIMIT_COMMENTS_PER_POST, order: [['createdAt', 'DESC']]}
         ]
     });
     posts = posts.map(post => post.toJSON());
+
 
     const profilesToFetch = new Set();
     posts.forEach(post => {
@@ -32,7 +35,6 @@ async function getPosts() {
 
     posts.forEach(post => {
         post.comments = post.comments.map(comment => {
-            console.log('siuu here', comment, 'profiles', profiles);
             return {
                 ...comment,
                 authorProfile: profiles.find(profile => profile.userId === comment.userId)
@@ -41,6 +43,7 @@ async function getPosts() {
     });
 
     if (!posts) return [];
+    //console.log('getposts', posts);
     return posts;
 }
 
