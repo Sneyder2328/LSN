@@ -17,11 +17,8 @@ export const getTokens = (): Tokens => {
 };
 
 export const setTokens = (accessToken: string, refreshToken: string) => {
-    localStorage.setItem(ACCESS_TOKEN, accessToken);
-    localStorage.setItem(REFRESH_TOKEN, refreshToken);
-    const currentDate = new Date().getTime().toString();
-    localStorage.setItem(ACCESS_TOKEN_ISSUED_AT, currentDate);
-    localStorage.setItem(REFRESH_TOKEN_ISSUED_AT, currentDate);
+    updateAccessToken(accessToken);
+    updateRefreshToken(refreshToken);
 };
 
 export const removeTokens = () => {
@@ -30,6 +27,12 @@ export const removeTokens = () => {
     localStorage.removeItem(ACCESS_TOKEN_ISSUED_AT);
     localStorage.removeItem(REFRESH_TOKEN_ISSUED_AT);
 };
+
+function updateRefreshToken(refreshToken: string) {
+    localStorage.setItem(REFRESH_TOKEN, refreshToken);
+    const currentDate = new Date().getTime().toString();
+    localStorage.setItem(REFRESH_TOKEN_ISSUED_AT, currentDate);
+}
 
 export const updateAccessToken = (accessToken: string) => {
     localStorage.setItem(ACCESS_TOKEN, accessToken);

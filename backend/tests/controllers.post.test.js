@@ -90,6 +90,8 @@ describe('GET /posts', () => {
             .expect((res) => {
                 expect(res.body.length).toBe(posts.length);
                 res.body.forEach(post => {
+                    console.log('post=', post);
+
                     expect(post.id).toBeTruthy();
                     expect(post.userId).toBeTruthy();
                     expect(post.text).toBeTruthy();

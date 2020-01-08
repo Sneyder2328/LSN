@@ -17,33 +17,24 @@ async function getPosts() {
     let posts = await Post.findAll({
         include: [
             {model: Profile, as: 'authorProfile'},
-            {model: Comment, as: 'comments', limit: LIMIT_COMMENTS_PER_POST, order: [['createdAt', 'DESC']]}
+            {
+                model: Comment,
+                as: 'comments',
+                limit: LIMIT_COMMENTS_PER_POST,
+                order: [['createdAt', 'DESC']],
+                include: [Profile]
+            }
         ]
     });
-    posts = posts.map(post => post.toJSON());
-
-
-    const profilesToFetch = new Set();
-    posts.forEach(post => {
-        post.comments.forEach(comment => {
-            profilesToFetch.add(comment.userId)
-        });
-    });
-    const uniqueUserIdsToFetch = Array.from(profilesToFetch);
-    let profiles = await Promise.all(uniqueUserIdsToFetch.map(userId => Profile.findByPk(userId)));
-    profiles = profiles.map(profile => profile.toJSON());
-
-    posts.forEach(post => {
-        post.comments = post.comments.map(comment => {
-            return {
-                ...comment,
-                authorProfile: profiles.find(profile => profile.userId === comment.userId)
-            };
-        });
-    });
+    posts = posts.map(post => post.toJSON()).map(post => ({
+        ...post, comments: post.comments.map(comment => {
+            comment.authorProfile = comment.Profile;
+            delete comment.Profile;
+            return comment;
+        })
+    }));
 
     if (!posts) return [];
-    //console.log('getposts', posts);
     return posts;
 }
 

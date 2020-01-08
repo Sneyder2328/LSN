@@ -1,6 +1,6 @@
 import axios from "axios";
 import {getTokens, isTokenExpired, updateAccessToken} from "../utils/tokensManager";
-import {FOURTEEN_MINUTES_IN_MILLIS} from "../utils/constants";
+import {ACCESS_TOKEN, FOURTEEN_MINUTES_IN_MILLIS} from "../utils/constants";
 import {AuthApi} from "./auth";
 
 export const transport = axios.create({
@@ -10,12 +10,9 @@ export const transport = axios.create({
 
 transport.interceptors.request.use(async (config) => {
     if (config.url !== '/tokens' && isTokenExpired(getTokens().dateAccessTokenIssued, FOURTEEN_MINUTES_IN_MILLIS)) {
-        console.log('token has expired');
         const accessToken = await AuthApi.getNewAccessToken(getTokens().refreshToken);
         if (accessToken) updateAccessToken(accessToken);
-        console.log('new token is', accessToken);
-    } else {
-        console.log('token is ok');
+        config.headers[ACCESS_TOKEN] = accessToken;
     }
     return config;
 }, function (error) {
