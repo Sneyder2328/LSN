@@ -226,8 +226,15 @@ main {
       font-size: 0.92rem;
 
       i {
-        margin-right: 4px;
         font-size: 0.92rem;
+      }
+
+      .showMoreComments {
+        margin-right: 4px;
+      }
+
+      .loadingComments {
+        margin-left: 4px;
       }
     }
 

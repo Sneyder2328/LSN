@@ -3,7 +3,8 @@ import {
     CREATE_COMMENT_SUCCESS,
     CREATE_COMMENT_ERROR,
     LOAD_COMMENTS_REQUEST,
-    LOAD_COMMENTS_SUCCESS
+    LOAD_COMMENTS_SUCCESS,
+    LOAD_COMMENTS_ERROR
 } from "../actions/types";
 import {PostState} from "./postReducer";
 import {CommentResponse} from "../components/Home/NewsFeed/Comment";
@@ -24,12 +25,15 @@ type createCommentError = {
 type loadCommentsRequest = {
     type: 'LOAD_COMMENTS_REQUEST'
     postId: string;
-    comments?: Array<any>;
 };
 type loadCommentsSuccess = {
     type: 'LOAD_COMMENTS_SUCCESS';
     postId: string;
-    comments: Array<any>;
+    newComments: Array<any>;
+};
+type loadCommentsError = {
+    type: 'LOAD_COMMENTS_ERROR';
+    postId: string;
 };
 
 export type CommentActions =
@@ -37,16 +41,24 @@ export type CommentActions =
     | createCommentSuccess
     | createCommentError
     | loadCommentsRequest
-    | loadCommentsSuccess;
+    | loadCommentsSuccess
+    | loadCommentsError;
 
 export const commentReducer = (state: PostState, action: CommentActions): PostState => {
     switch (action.type) {
         case CREATE_COMMENT_REQUEST:
+            return {
+                ...state,
+                posts: state.posts.map(post => {
+                    if (post.id === action.postId) return {...post, isCreatingComment: true};
+                    return post;
+                })
+            };
         case CREATE_COMMENT_ERROR:
             return {
                 ...state,
                 posts: state.posts.map(post => {
-                    if (post.id === action.postId) return {...post, createCommentStatus: action.type};
+                    if (post.id === action.postId) return {...post, isCreatingComment: false};
                     return post;
                 })
             };
@@ -58,13 +70,29 @@ export const commentReducer = (state: PostState, action: CommentActions): PostSt
                         return {
                             ...post,
                             comments: [...post.comments, action.commentResponse],
-                            createCommentStatus: action.type
+                            commentsCount: post.commentsCount + 1,
+                            isCreatingComment: false
                         };
                     }
                     return post;
                 })
             };
         case LOAD_COMMENTS_REQUEST:
+            return {
+                ...state,
+                posts: state.posts.map(post => {
+                    if (post.id === action.postId) return {...post, loadingPreviousComments: true};
+                    return post;
+                })
+            };
+        case LOAD_COMMENTS_ERROR:
+            return {
+                ...state,
+                posts: state.posts.map(post => {
+                    if (post.id === action.postId) return {...post, loadingPreviousComments: false};
+                    return post;
+                })
+            };
         case LOAD_COMMENTS_SUCCESS:
             return {
                 ...state,
@@ -72,8 +100,8 @@ export const commentReducer = (state: PostState, action: CommentActions): PostSt
                     if (post.id === action.postId)
                         return {
                             ...post,
-                            fetchCommentsStatus: action.type,
-                            comments: action.comments || []
+                            loadingPreviousComments: false,
+                            comments: [...post.comments, ...action.newComments]
                         };
                     return post;
                 })

@@ -19,7 +19,7 @@ const LogIn: React.FC<Props> = ({logInError, logInUser}) => {
     }, [logInError]);
 
     // @ts-ignore
-    const onSubmit = async (data: any) => logInUser(data);
+    const onSubmit = (data: any) => logInUser(data);
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <p>Welcome Back!</p>

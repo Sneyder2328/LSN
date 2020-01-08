@@ -7,9 +7,9 @@
     "test": "tests"
   },
   "scripts": {
-    "start": "node dist/app.js",
+    "start": "tsc && node dist/app.js",
     "build": "tsc",
-    "start-dev": "nodemon dist/app.js",
+    "start-dev": "tsc && nodemon dist/app.js",
     "test": "export NODE_ENV=test || SET NODE_ENV=test && jest --testTimeout=10000 --runInBand",
     "test-watch": "nodemon --exec \"npm test\""
   },

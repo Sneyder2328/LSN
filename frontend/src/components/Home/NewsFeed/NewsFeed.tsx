@@ -15,8 +15,8 @@ const NewsFeed: React.FC<{ posts: Array<PostResponse>, fetchPosts: () => any }> 
     }, []);
     return (
         <div className='news-feed'>
-            {posts && posts.sort(compareByDateAsc).map((post: PostResponse) => <Post postResponse={post}
-                                                                                     key={post.id}/>)}
+            {posts && posts.sort(compareByDateAsc).map((post: PostResponse) =>
+                <Post postResponse={post} key={post.id}/>)}
         </div>
     );
 };

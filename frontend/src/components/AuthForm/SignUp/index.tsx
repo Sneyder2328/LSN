@@ -20,7 +20,7 @@ const SignUp: React.FC<Props> = ({signUpError, signUpUser}) => {
     }, [signUpError]);
 
     // @ts-ignore
-    const onSubmit = async (data: any) => signUpUser(data);
+    const onSubmit = (data: any) => signUpUser(data);
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>

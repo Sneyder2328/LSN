@@ -56,8 +56,8 @@ const likeCommentValidationRules = [
 
 const getCommentsValidationRules = [
     param('postId').trim().matches(config.regex.uuidV4),
-    query('offset').matches(/\d/g),
-    query('limit').matches(/\d/g)
+    query('offset').isDecimal().withMessage('offset must be a number'),
+    query('limit').isDecimal().withMessage('limit must be a number')
 ];
 
 const createPostValidationRules = [
