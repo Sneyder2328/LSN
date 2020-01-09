@@ -32,6 +32,7 @@ export interface PostResponse extends Post {
     createdAt: any;
     id: string;
     authorProfile: Profile;
+    currentUserLikeStatus: 'like' | 'dislike' | undefined;
     loadingPreviousComments?: boolean;
     isCreatingComment?: boolean;
     comments: Array<CommentResponse>;
