@@ -1,5 +1,6 @@
 "use strict";
-module.exports = (models) => {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = (models) => {
     const { Token, User, Profile, UserRelationShip, Post, PostLike, Comment, CommentLike } = models;
     Profile.hasMany(Post, { as: 'authorProfile', foreignKey: 'userId' });
     Post.belongsTo(Profile, { as: 'authorProfile', foreignKey: 'userId' });

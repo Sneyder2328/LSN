@@ -8,7 +8,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-module.exports = (sequelize, DataTypes, User, Post) => {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = (sequelize, DataTypes, User, Post) => {
     const PostLike = sequelize.define('Post_Like', {
         postId: {
             type: DataTypes.UUID,
@@ -35,6 +36,7 @@ module.exports = (sequelize, DataTypes, User, Post) => {
         }
     });
     PostLike.removeAttribute('id');
+    // @ts-ignore
     PostLike.beforeUpsert((postLike, _) => __awaiter(void 0, void 0, void 0, function* () {
         console.log('beforeUpsert');
         const post = yield Post.findByPk(postLike.postId);
@@ -43,6 +45,7 @@ module.exports = (sequelize, DataTypes, User, Post) => {
         else
             yield post.increment('dislikesCount', { by: 1 });
     }));
+    // @ts-ignore
     PostLike.beforeDestroy((postLike, _) => __awaiter(void 0, void 0, void 0, function* () {
         console.log('beforeDestroy');
         const post = yield Post.findByPk(postLike.postId);

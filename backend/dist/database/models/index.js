@@ -1,12 +1,26 @@
 "use strict";
-module.exports = (sequelize, Sequelize) => {
-    const Token = require('./Token')(sequelize, Sequelize);
-    const User = require('./User')(sequelize, Sequelize);
-    const Profile = require('./Profile')(sequelize, Sequelize, User);
-    const UserRelationShip = require('./UserRelationship')(sequelize, Sequelize);
-    const Post = require('./Post')(sequelize, Sequelize, User);
-    const PostLike = require('./PostLike')(sequelize, Sequelize, User, Post);
-    const Comment = require('./Comment')(sequelize, Sequelize, User, Post);
-    const CommentLike = require('./CommentLike')(sequelize, Sequelize, User, Comment);
-    return { Token, User, Profile, UserRelationShip, Post, PostLike, Comment, CommentLike };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+Object.defineProperty(exports, "__esModule", { value: true });
+const Token_1 = __importDefault(require("./Token"));
+const User_1 = __importDefault(require("./User"));
+const Profile_1 = __importDefault(require("./Profile"));
+const UserRelationship_1 = __importDefault(require("./UserRelationship"));
+const Post_1 = __importDefault(require("./Post"));
+const PostLike_1 = __importDefault(require("./PostLike"));
+const Comment_1 = __importDefault(require("./Comment"));
+const CommentLike_1 = __importDefault(require("./CommentLike"));
+function default_1(sequelize, Sequelize) {
+    const User = User_1.default(sequelize, Sequelize);
+    const Token = Token_1.default(sequelize, Sequelize, User);
+    const Profile = Profile_1.default(sequelize, Sequelize, User);
+    const UserRelationShip = UserRelationship_1.default(sequelize, Sequelize);
+    const Post = Post_1.default(sequelize, Sequelize, User);
+    const PostLike = PostLike_1.default(sequelize, Sequelize, User, Post);
+    const Comment = Comment_1.default(sequelize, Sequelize, User, Post);
+    const CommentLike = CommentLike_1.default(sequelize, Sequelize, User, Comment);
+    return { Token, User, Profile, UserRelationShip, Post, PostLike, Comment, CommentLike };
+}
+exports.default = default_1;
+;

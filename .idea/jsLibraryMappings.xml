@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="JavaScriptLibraryMappings">
-    <file url="PROJECT" libraries="{@types/jest, @types/supertest}" />
+    <file url="file://$PROJECT_DIR$/backend" libraries="{LSN/backend/node_modules}" />
+    <file url="file://$PROJECT_DIR$/frontend" libraries="{LSN/frontend/node_modules}" />
+    <file url="PROJECT" libraries="{@types/bcryptjs, @types/body-parser, @types/express, @types/jest, @types/jsonwebtoken, @types/node, @types/node-wit, @types/react, @types/supertest, LSN/backend/node_modules, LSN/frontend/node_modules}" />
   </component>
 </project>

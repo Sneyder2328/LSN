@@ -1,5 +1,6 @@
 "use strict";
-module.exports = {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = {
     auth: {
         LOG_IN: '/sessions',
         SIGN_UP: '/users',

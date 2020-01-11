@@ -8,34 +8,31 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const uuid = require('uuid');
-const bcrypt = require('bcryptjs');
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const uuid_1 = __importDefault(require("uuid"));
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 /**
  * gen hex(uuid) for user,post,comment,etc
  */
-function genUUID() {
-    return uuid.v4();
-}
-function hashPassword(saltRounds = 10, password) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return yield new Promise((resolve, reject) => {
-            bcrypt.hash(password, saltRounds, (err, hash) => {
-                if (err)
-                    reject(err);
-                resolve(hash);
-            });
+exports.genUUID = () => uuid_1.default.v4();
+exports.hashPassword = (saltRounds = 10, password) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield new Promise((resolve, reject) => {
+        bcryptjs_1.default.hash(password, saltRounds, (err, hash) => {
+            if (err)
+                reject(err);
+            resolve(hash);
         });
     });
-}
-function verifyPassword(password, hashedPassword) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return yield new Promise(((resolve, reject) => {
-            bcrypt.compare(password, hashedPassword, (err, success) => {
-                if (err || !success)
-                    resolve(false);
-                resolve(true);
-            });
-        }));
-    });
-}
-module.exports = { genUUID, hashPassword, verifyPassword };
+});
+exports.verifyPassword = (password, hashedPassword) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield new Promise(((resolve) => {
+        bcryptjs_1.default.compare(password, hashedPassword, (err, success) => {
+            if (err || !success)
+                resolve(false);
+            resolve(true);
+        });
+    }));
+});

@@ -1,5 +1,6 @@
 "use strict";
-const corsOptions = {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.corsOptions = {
     origin: process.env.NODE_ENV === 'production'
         ? [/mystifying-liskov-d8ef00.netlify.com/]
         : [/localhost/],
@@ -8,4 +9,3 @@ const corsOptions = {
     methods: 'GET,POST,PUT,DELETE,OPTIONS,PATCH',
     exposedHeaders: 'authorization, authorization-refresh-token'
 };
-module.exports = corsOptions;

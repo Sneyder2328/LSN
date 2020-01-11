@@ -1,5 +1,6 @@
 "use strict";
-module.exports = (sequelize, DataTypes) => {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = (sequelize, DataTypes) => {
     const UserRelationShip = sequelize.define('User_Relationship', {
         senderId: {
             type: DataTypes.UUID,

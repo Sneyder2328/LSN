@@ -1,5 +1,6 @@
 "use strict";
-module.exports = (sequelize, DataTypes, User) => {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = (sequelize, DataTypes, User) => {
     return sequelize.define('Post', {
         id: {
             primaryKey: true,

@@ -8,16 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const jwt = require('jsonwebtoken');
-const { config } = require('../config/config');
-function signJWT(id) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return jwt.sign({ id }, config.jwtSecret, { expiresIn: config.auth.accessTokenLifeTime });
-    });
-}
-function verifyJWT(accessToken) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return jwt.verify(accessToken, config.jwtSecret);
-    });
-}
-module.exports = { signJWT, verifyJWT };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const config_1 = __importDefault(require("../config/config"));
+exports.signJWT = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    return jsonwebtoken_1.default.sign({ id }, config_1.default.jwtSecret, { expiresIn: config_1.default.auth.accessTokenLifeTime });
+});
+// @ts-ignore
+exports.verifyJWT = (accessToken) => __awaiter(void 0, void 0, void 0, function* () { return jsonwebtoken_1.default.verify(accessToken, config_1.default.jwtSecret); });

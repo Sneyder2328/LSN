@@ -8,12 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const { signJWT } = require('../../helpers/JWTHelper');
-const { hashPassword } = require('../../utils/utils');
+Object.defineProperty(exports, "__esModule", { value: true });
+const utils_1 = require("../../utils/utils");
 const ENUM_EMAIL = 'email';
 const ENUM_FACEBOOK = 'facebook';
 const ENUM_GOOGLE = 'google';
-module.exports = (sequelize, DataTypes) => {
+exports.default = (sequelize, DataTypes) => {
     const User = sequelize.define('User', {
         id: {
             type: DataTypes.STRING(36),
@@ -53,8 +53,9 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: 'en'
         }
     });
+    // @ts-ignore
     User.beforeSave((user, _) => __awaiter(void 0, void 0, void 0, function* () {
-        return hashPassword(10, user.password).then(hashedPw => {
+        return utils_1.hashPassword(10, user.password).then(hashedPw => {
             user.password = hashedPw;
         });
     }));

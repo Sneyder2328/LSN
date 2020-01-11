@@ -1,7 +1,16 @@
 "use strict";
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const require1 = __importStar(require("./configFile.json"));
 const env = (process.env.NODE_ENV || 'development').trim();
 if (env === 'development' || env === 'test') {
-    const envConfig = require('./config.json')[env];
+    const envConfig = require1[env];
     Object.keys(envConfig).forEach(key => process.env[key] = envConfig[key]);
 }
 const config = {
@@ -27,7 +36,6 @@ const config = {
         jwt: /^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/,
         uuidV4: /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i
     },
-    jwtSecret: process.env.JWT_SECRET
+    jwtSecret: process.env.JWT_SECRET || ""
 };
-Object.freeze(config);
-module.exports = { config };
+exports.default = config;

@@ -1,5 +1,6 @@
 "use strict";
-module.exports = {
+Object.defineProperty(exports, "__esModule", { value: true });
+const responseCodes = {
     // Informational
     CONTINUE: 100,
     SWITCHING_PROTOCOLS: 101,
@@ -25,3 +26,4 @@ module.exports = {
     SERVICE_UNAVAILABLE: 503,
     GATEWAY_TIMEOUT: 504,
 };
+exports.default = responseCodes;

@@ -8,5 +8,12 @@
     <orderEntry type="library" name="@types/supertest" level="application" />
     <orderEntry type="library" name="@types/jest" level="application" />
     <orderEntry type="module" module-name="www" />
+    <orderEntry type="library" name="@types/bcryptjs" level="application" />
+    <orderEntry type="library" name="@types/body-parser" level="application" />
+    <orderEntry type="library" name="@types/express" level="application" />
+    <orderEntry type="library" name="@types/jsonwebtoken" level="application" />
+    <orderEntry type="library" name="@types/node" level="application" />
+    <orderEntry type="library" name="@types/react" level="application" />
+    <orderEntry type="library" name="@types/node-wit" level="application" />
   </component>
 </module>

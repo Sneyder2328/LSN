@@ -8,7 +8,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-module.exports = (sequelize, DataTypes, User, Comment) => {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = (sequelize, DataTypes, User, Comment) => {
     const CommentLike = sequelize.define('Comment_Like', {
         commentId: {
             type: DataTypes.UUID,

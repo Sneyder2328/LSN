@@ -2,15 +2,15 @@
   "name": "backend",
   "version": "0.0.1",
   "description": "Node.js server",
-  "main": "src/app.js",
+  "main": "dist/index.js",
   "directories": {
     "test": "tests"
   },
   "scripts": {
-    "start": "node dist/app.js",
-    "build": "tsc",
-    "start-dev": "tsc && nodemon dist/app.js",
-    "test": "export NODE_ENV=test || SET NODE_ENV=test && jest --testTimeout=10000 --runInBand",
+    "start": "node dist/index.js",
+    "build": "tsc -p .",
+    "dev": "nodemon --exec ts-node src/index.ts",
+    "test": "export NODE_ENV=test || SET NODE_ENV=test && tsc && jest --testTimeout=10000 --runInBand -c jest.config.js",
     "test-watch": "nodemon --exec \"npm test\""
   },
   "jest": {
@@ -41,10 +41,19 @@
     "uuid": "^3.3.3"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.2",
+    "@types/bluebird": "^3.5.29",
+    "@types/cors": "^2.8.6",
     "@types/express": "^4.17.2",
+    "@types/jest": "^24.0.25",
+    "@types/jsonwebtoken": "^8.3.5",
     "@types/node": "^13.1.4",
+    "@types/supertest": "^2.0.8",
+    "@types/uuid": "^3.4.6",
+    "@types/validator": "^12.0.1",
     "jest": "^24.9.0",
     "supertest": "^4.0.2",
+    "ts-jest": "^24.3.0",
     "ts-node": "^8.5.4",
     "typescript": "^3.7.4"
   }

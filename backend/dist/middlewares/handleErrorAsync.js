@@ -8,7 +8,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const handleErrorAsync = func => (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.handleErrorAsync = func => (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield func(req, res, next);
     }
@@ -17,4 +18,3 @@ const handleErrorAsync = func => (req, res, next) => __awaiter(void 0, void 0, v
         next(error);
     }
 });
-module.exports = handleErrorAsync;

@@ -1,0 +1,38 @@
+{
+    "test-online": {
+        "PORT": 3060,
+        "JWT_SECRET": "k9J0/4DJn+34igjWISTJ4uYhkUN0bJbKK5pAl4OQJtLYUOBwY7PXjmxm9We2NB42xbGtRximSV5KcMfi1i98sDbulikdHbDw1zbINv0tw2cq/wQdveMHPGv2V2Wlx/Xls7ZAGOV0+P3cQrE9cIG26IUyngZ51e4UT2QE1irVg/hlgSnKNrSOtvI8d\nulDqQKvYh2DDVmOO5sGsalTeCv+8U6VhSqlKPdSAezB+x/l/7yCseF13CUMlC8NtsdM0tqkPaRnP89ymBdI1fzm+9dcAeKKA0fAvkPbF5k/R8gIrQklpUrTIbu29zxbJ5IpBU1fN2W6CWTz57JMg0zexDRwig==",
+        "MYSQL_HOST": "snyderinstance.c1kuhoytzjth.us-east-1.rds.amazonaws.com",
+        "MYSQL_USER": "sneyder2328",
+        "MYSQL_PASSWORD": "mngpissunignat13245",
+        "MYSQL_DATABASE": "lasocialnetworkdbtest",
+        "DB_TIMEZONE": "Etc/GMT0"
+    },
+    "development": {
+        "PORT": 3030,
+        "JWT_SECRET": "KhM2oX5LpDtY6k5l+uVzumGcYh8odK4b/z94BYbQeR3GLlWDcfUjIg0eCx0sLtfZhI1DLrcwO7LCArabK45ZLMNThDuF82Fwsely+68JwfwmY9MNARyE1s4INn0OjENm1bgUYRMDFxM8TFw310Wfk26EV62y0MjP549xZXSQCWQaj1ZopfdMF3YfV/jywRAIABJ/3ti60VuOzkyFfPlPmToesJR7S/vaPKV5nAtL1lzRj/QDnJXY/T2BOOkaJYtsY5yD61zEw\nu9cdPMeFDRR8tcNLofb06pmDO1KL7PtgLH5MtUnqSKXEdPoPMjFmic+JcYrIESc/XEWdWnzPFL/IQ==",
+        "MYSQL_HOST": "localhost",
+        "MYSQL_USER": "root",
+        "MYSQL_PASSWORD": "abwtswemysqlmyself123456$$$$###",
+        "MYSQL_DATABASE": "lasocialnetworkdblocal",
+        "DB_TIMEZONE": "Etc/GMT0"
+    },
+    "test": {
+        "PORT": 3060,
+        "JWT_SECRET": "KhM2oX5LpDtY6k5l+uVzumGcYh8odK4b/z94BYbQeR3GLlWDcfUjIg0eCx0sLtfZhI1DLrcwO7LCArabK45ZLMNThDuF82Fwsely+68JwfwmY9MNARyE1s4INn0OjENm1bgUYRMDFxM8TFw310Wfk26EV62y0MjP549xZXSQCWQaj1ZopfdMF3YfV/jywRAIABJ/3ti60VuOzkyFfPlPmToesJR7S/vaPKV5nAtL1lzRj/QDnJXY/T2BOOkaJYtsY5yD61zEw\nu9cdPMeFDRR8tcNLofb06pmDO1KL7PtgLH5MtUnqSKXEdPoPMjFmic+JcYrIESc/XEWdWnzPFL/IQ==",
+        "MYSQL_HOST": "localhost",
+        "MYSQL_USER": "root",
+        "MYSQL_PASSWORD": "abwtswemysqlmyself123456$$$$###",
+        "MYSQL_DATABASE": "lasocialnetworkdblocaltest",
+        "DB_TIMEZONE": "Etc/GMT0"
+    },
+    "production": {
+        "PORT": 3000,
+        "JWT_SECRET": "KhM2oX5LpDtY6k5l+uVzumGcYh8odK4b/z94BYbQeR3GLlWDcfUjIg0eCx0sLtfZhI1DLrcwO7LCArabK45ZLMNThDuF82Fwsely+68JwfwmY9MNARyE1s4INn0OjENm1bgUYRMDFxM8TFw310Wfk26EV62y0MjP549xZXSQCWQaj1ZopfdMF3YfV/jywRAIABJ/3ti60VuOzkyFfPlPmToesJR7S/vaPKV5nAtL1lzRj/QDnJXY/T2BOOkaJYtsY5yD61zEw\nu9cdPMeFDRR8tcNLofb06pmDO1KL7PtgLH5MtUnqSKXEdPoPMjFmic+JcYrIESc/XEWdWnzPFL/IQ==",
+        "MYSQL_HOST": "snyderinstance.c1kuhoytzjth.us-east-1.rds.amazonaws.com",
+        "MYSQL_USER": "sneyder2328",
+        "MYSQL_PASSWORD": "mngpissunignat13245",
+        "MYSQL_DATABASE": "lasocialnetworkdb",
+        "DB_TIMEZONE": "Etc/GMT0"
+    }
+}

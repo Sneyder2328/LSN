@@ -1,5 +1,5 @@
 backend/node_modules
 frontend/node_modules
-backend/src/config/config.json
+backend/src/config/configFile.json
 docs
 backend/info.txt

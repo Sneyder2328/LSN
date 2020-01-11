@@ -1,5 +1,6 @@
 "use strict";
-module.exports = {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = {
     NOT_FOUND: 'Not found error',
     USERNAME: 'username',
     EMAIL: 'email',
