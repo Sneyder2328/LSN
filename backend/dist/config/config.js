@@ -1,16 +1,12 @@
 "use strict";
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const require1 = __importStar(require("./configFile.json"));
+const configFile_json_1 = __importDefault(require("./configFile.json"));
 const env = (process.env.NODE_ENV || 'development').trim();
-if (env === 'development' || env === 'test') {
-    const envConfig = require1[env];
+if (env === 'development' || env === 'test' && configFile_json_1.default) {
+    const envConfig = configFile_json_1.default[env];
     Object.keys(envConfig).forEach(key => process.env[key] = envConfig[key]);
 }
 const config = {

@@ -1,9 +1,9 @@
 import {Dialect} from "sequelize";
-import * as require1 from "./configFile.json";
+import require1 from "./configFile.json";
 
 const env = (process.env.NODE_ENV || 'development').trim();
 
-if (env === 'development' || env === 'test') {
+if (env === 'development' || env === 'test' && require1) {
     const envConfig = require1[env];
     Object.keys(envConfig).forEach(key => process.env[key] = envConfig[key]);
 }
