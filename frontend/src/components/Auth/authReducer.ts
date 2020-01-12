@@ -1,4 +1,4 @@
-import {LOG_IN_ERROR, LOG_OUT_REQUEST, LOG_OUT_SUCCESS, SET_CURRENT_USER, SIGN_UP_ERROR} from "../actions/types";
+import {LOG_IN_ERROR, LOG_OUT_REQUEST, LOG_OUT_SUCCESS, SET_CURRENT_USER, SIGN_UP_ERROR} from "../../actions/types";
 
 export type FormError = { fieldName: string; message: string };
 

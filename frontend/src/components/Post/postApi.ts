@@ -1,5 +1,5 @@
-import {transport} from "./index";
-import {Post} from "../components/Home/NewsFeed/Post";
+import {transport} from "../../api";
+import {Post} from "./Post";
 
 export const PostApi = {
     async createPost(content: Post) {

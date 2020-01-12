@@ -1,0 +1,89 @@
+@import "src/utils/variables";
+
+.create-post {
+  background-color: #fff;
+  border-radius: $radius;
+
+  .title {
+    width: 100%;
+    padding: 10px;
+    background-color: #f5f6f7;
+    display: block;
+    box-sizing: border-box;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #313741;
+    border-top-left-radius: $radius;
+    border-top-right-radius: $radius;
+  }
+
+  .content {
+    display: flex;
+    padding: 10px;
+
+    .avatar {
+      width: $thumbnailImgDimen;
+      height: $thumbnailImgDimen;
+      margin: 4px 4px;
+    }
+
+    .editor {
+      width: 100%;
+      padding: 2px 5px;
+      border: none;
+      outline: none;
+      min-height: 50px;
+      overflow: hidden;
+      line-height: 50px;
+      font-size: 1.2rem;
+      cursor: text;
+      border-radius: $radius;
+    }
+
+    .editor:focus {
+      outline: rgba(97, 218, 251, 0.23) solid 1px;
+    }
+
+    .editor.medium {
+      line-height: normal;
+      padding: 5px 5px;
+      font-size: 1.1rem;
+    }
+
+    .editor.small {
+      line-height: normal;
+      font-size: 0.9rem;
+    }
+
+    .editor:empty:before {
+      content: attr(placeholder);
+      color: #a9a9a9;
+      line-height: 50px;
+      font-size: 1.2rem;
+    }
+  }
+
+  .publish {
+
+    text-align: right;
+
+    .post-btn {
+      display: inline-block;
+      background-color: $btnColor;
+      padding: 8px 20px;
+      color: #fff;
+      font-size: 0.94rem;
+      font-weight: 600;
+      border-radius: $radius;
+      margin: 4px;
+    }
+
+    .post-btn:hover:enabled {
+      background-color: $btnHoveredColor;
+    }
+
+    .post-btn:disabled {
+      background-color: $btnColorOpaque;
+    }
+  }
+}

@@ -3,8 +3,8 @@ import classnames from 'classnames';
 import {useForm} from 'react-hook-form'
 import {ErrorMessage} from "../../commons/ErrorMessage";
 import {connect} from "react-redux";
-import {FormError} from "../../../reducers/authReducer";
-import {SignUpCredentials, signUpUser} from "../../../actions/authActions";
+import {FormError} from "../authReducer";
+import {SignUpCredentials, signUpUser} from "../authActions";
 import {AppState} from "../../../reducers";
 
 type Props = {

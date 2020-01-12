@@ -1,7 +1,7 @@
 import axios from "axios";
 import {getTokens, isTokenExpired, updateAccessToken} from "../utils/tokensManager";
 import {ACCESS_TOKEN, FOURTEEN_MINUTES_IN_MILLIS} from "../utils/constants";
-import {AuthApi} from "./auth";
+import {AuthApi} from "../components/Auth/authApi";
 
 export const transport = axios.create({
     baseURL: process.env.REACT_APP_BASE_URL,

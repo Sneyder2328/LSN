@@ -1,9 +1,10 @@
 import React, {useEffect} from "react";
-import {loadPosts} from "../../../actions/postActions";
+import {loadPosts} from "../Post/postActions";
 import {connect} from "react-redux";
-import Post, {PostResponse} from "./Post";
-import {compareByDateAsc} from "../../../utils/utils";
-import {AppState} from "../../../reducers";
+import Post, {PostResponse} from "../Post/Post";
+import {compareByDateAsc} from "../../utils/utils";
+import {AppState} from "../../reducers";
+import './styles.scss'
 
 const NewsFeed: React.FC<{ posts: Array<PostResponse>, fetchPosts: () => any }> = ({posts, fetchPosts}) => {
     useEffect(() => {

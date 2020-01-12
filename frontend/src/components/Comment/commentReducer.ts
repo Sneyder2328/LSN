@@ -5,9 +5,9 @@ import {
     LOAD_COMMENTS_REQUEST,
     LOAD_COMMENTS_SUCCESS,
     LOAD_COMMENTS_ERROR
-} from "../actions/types";
-import {PostState} from "./postReducer";
-import {CommentResponse} from "../components/Home/NewsFeed/Comment";
+} from "../../actions/types";
+import {PostState} from "../Post/postReducer";
+import {CommentResponse} from "./Comment";
 
 type createCommentRequest = {
     type: 'CREATE_COMMENT_REQUEST';

@@ -1,6 +1,6 @@
-import {transport} from "./index";
-import {ACCESS_TOKEN, REFRESH_TOKEN} from "../utils/constants";
-import {setAccessTokenHeaders} from "../utils/setAccessTokenHeaders";
+import {transport} from "../../api";
+import {ACCESS_TOKEN, REFRESH_TOKEN} from "../../utils/constants";
+import {setAccessTokenHeaders} from "../../utils/setAccessTokenHeaders";
 
 export const AuthApi = {
     async signUp(userData: { username: string; fullname: string; password: string; email: string; }) {

@@ -1,13 +1,13 @@
-import {PostActions} from "../reducers/postReducer";
-import {CommentApi, CommentRequest} from "../api/comment";
+import {PostActions} from "../Post/postReducer";
+import {CommentApi, CommentRequest} from "./commentApi";
 import {
     CREATE_COMMENT_REQUEST,
     CREATE_COMMENT_SUCCESS,
     CREATE_COMMENT_ERROR,
     LOAD_COMMENTS_REQUEST,
     LOAD_COMMENTS_SUCCESS, LOAD_COMMENTS_ERROR
-} from "./types";
-import {CommentResponse} from "../components/Home/NewsFeed/Comment";
+} from "../../actions/types";
+import {CommentResponse} from "./Comment";
 
 export const createComment = (commentData: CommentRequest) => async (dispatch: (actions: PostActions) => any) => {
     try {

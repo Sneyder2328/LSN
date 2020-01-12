@@ -2,8 +2,8 @@ import React, {useEffect} from "react";
 import {useForm} from "react-hook-form";
 import {ErrorMessage} from "../../commons/ErrorMessage";
 import {connect} from "react-redux";
-import {LoginCredentials, logInUser} from "../../../actions/authActions";
-import {FormError} from "../../../reducers/authReducer";
+import {LoginCredentials, logInUser} from "../authActions";
+import {FormError} from "../authReducer";
 import {AppState} from "../../../reducers";
 
 type Props = {

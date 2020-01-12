@@ -1,5 +1,6 @@
 import React from "react";
-import {Profile} from "./Post";
+import {Profile} from "../Post/Post";
+import './styles.scss'
 // @ts-ignore
 import moment from "moment-shortformat";
 

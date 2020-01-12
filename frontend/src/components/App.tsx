@@ -1,6 +1,6 @@
 import React from 'react';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
-import AuthForm from "./AuthForm";
+import AuthForm from "./Auth";
 import {Provider} from 'react-redux';
 import {Home} from "./Home";
 import AuthRoute from "./commons/AuthRoute";
@@ -9,7 +9,7 @@ import store from "../store";
 import jwt_decode from 'jwt-decode';
 import {getTokens, removeTokens, isTokenExpired} from "../utils/tokensManager";
 import {removeAuthTokenHeaders, setAccessTokenHeaders} from "../utils/setAccessTokenHeaders";
-import {loggedOut, setCurrentUser} from "../actions/authActions";
+import {loggedOut, setCurrentUser} from "./Auth/authActions";
 import {ONE_WEEK_IN_MILLIS} from "../utils/constants";
 
 const {accessToken, refreshToken, dateRefreshTokenIssued} = getTokens();

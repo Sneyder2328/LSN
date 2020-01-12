@@ -1,10 +1,10 @@
-import {AuthApi} from "../api/auth";
-import {ACCESS_TOKEN, REFRESH_TOKEN} from "../utils/constants";
-import {removeAuthTokenHeaders, setAccessTokenHeaders, setRefreshTokenHeaders} from "../utils/setAccessTokenHeaders";
+import {AuthApi} from "./authApi";
+import {ACCESS_TOKEN, REFRESH_TOKEN} from "../../utils/constants";
+import {removeAuthTokenHeaders, setAccessTokenHeaders, setRefreshTokenHeaders} from "../../utils/setAccessTokenHeaders";
 import * as jwt_decode from 'jwt-decode';
-import {getTokens, removeTokens, setTokens} from "../utils/tokensManager";
-import {LOG_IN_ERROR, LOG_OUT_REQUEST, LOG_OUT_SUCCESS, SET_CURRENT_USER, SIGN_UP_ERROR} from "./types";
-import {AuthActions, loginAction, logOutSuccess} from "../reducers/authReducer";
+import {getTokens, removeTokens, setTokens} from "../../utils/tokensManager";
+import {LOG_IN_ERROR, LOG_OUT_REQUEST, LOG_OUT_SUCCESS, SET_CURRENT_USER, SIGN_UP_ERROR} from "../../actions/types";
+import {AuthActions, loginAction, logOutSuccess} from "./authReducer";
 
 export type SignUpCredentials = { username: string; fullname: string; password: string; email: string; };
 

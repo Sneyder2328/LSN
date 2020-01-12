@@ -4,9 +4,9 @@ import {
     LOAD_POSTS_SUCCESS,
     LOAD_POSTS_REQUEST,
     CREATE_POST_ERROR, LOAD_POSTS_ERROR
-} from "../actions/types";
-import {PostResponse} from "../components/Home/NewsFeed/Post";
-import {CommentActions, commentReducer} from "./commentReducer";
+} from "../../actions/types";
+import {PostResponse} from "./Post";
+import {CommentActions, commentReducer} from "../Comment/commentReducer";
 
 
 export interface PostState {

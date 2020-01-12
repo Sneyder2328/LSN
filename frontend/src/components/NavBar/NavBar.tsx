@@ -1,15 +1,16 @@
 import React from "react";
 import {SearchBar} from "./SearchBar";
 import {connect} from 'react-redux'
-import {logOutUser} from "../../../actions/authActions";
-import {AppState} from "../../../reducers";
+import {logOutUser} from "../Auth/authActions";
+import {AppState} from "../../reducers";
+import './styles.scss'
 
 const NavBar: React.FC<{ isLoggingOut: boolean; logOutUser: () => any }> = ({isLoggingOut, logOutUser}) => {
     return (
-        <div id='nav-container'>
-            <div id='nav-bar'>
+        <div className='nav-container'>
+            <div className='nav-bar'>
                 <SearchBar/>
-                <button id='log-out-button' disabled={isLoggingOut} onClick={logOutUser}>Log out</button>
+                <button className='log-out-button' disabled={isLoggingOut} onClick={logOutUser}>Log out</button>
             </div>
         </div>
     );

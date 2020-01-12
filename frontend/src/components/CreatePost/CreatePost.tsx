@@ -1,8 +1,9 @@
 import React, {useState} from "react";
 import {TextEditor} from "./TextEditor";
 import {connect} from "react-redux";
-import {Post} from "../NewsFeed/Post";
-import {createPost} from "../../../actions/postActions";
+import {Post} from "../Post/Post";
+import {createPost} from "../Post/postActions";
+import './styles.scss'
 
 type Props = {
     createPost: (post: Post) => any;
@@ -25,14 +26,14 @@ const CreatePost: React.FC<Props> = ({createPost}) => {
     return (
         <div className='create-post'>
             <span className='title'>Create post</span>
-            <div id='content'>
-                <img id='avatar' src='https://miro.medium.com/max/280/1*MccriYX-ciBniUzRKAUsAw.png'
+            <div className='content'>
+                <img className='avatar' src='https://miro.medium.com/max/280/1*MccriYX-ciBniUzRKAUsAw.png'
                      alt='profile picture'/>
-                <TextEditor onChange={setText} cleanUpWhen={text === 'clean'}
+                <TextEditor className='editor' onChange={setText} cleanUpWhen={text === 'clean'}
                             placeholder="What's happening?"/>
             </div>
-            <div id='publish'>
-                <button id='post-btn' disabled={text.length === 0} onClick={handleClick}>Post</button>
+            <div className='publish'>
+                <button className='post-btn' disabled={text.length === 0} onClick={handleClick}>Post</button>
             </div>
         </div>
     );

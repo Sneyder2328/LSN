@@ -1,14 +1,15 @@
 import React, {useState} from "react";
 import moment from "moment";
+import './styles.scss'
 // @ts-ignore
 import uuidv4 from "uuid/v4";
 import {TextEditor} from "../CreatePost/TextEditor";
-import {CommentRequest} from "../../../api/comment";
-import {createComment, loadPreviousComments} from "../../../actions/commentActions";
-import {Comment, CommentResponse} from "./Comment"
+import {CommentRequest} from "../Comment/commentApi";
+import {createComment, loadPreviousComments} from "../Comment/commentActions";
+import {Comment, CommentResponse} from "../Comment/Comment"
 import {connect} from "react-redux";
 import classNames from "classnames";
-import {compareByDateDesc} from "../../../utils/utils";
+import {compareByDateDesc} from "../../utils/utils";
 
 export interface Profile {
     coverPhotoUrl: string;

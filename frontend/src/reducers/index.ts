@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
-import {authReducer, AuthState} from "./authReducer";
-import {postReducer, PostState} from "./postReducer";
+import {authReducer, AuthState} from "../components/Auth/authReducer";
+import {postReducer, PostState} from "../components/Post/postReducer";
 
 export type AppState = {
     auth: AuthState;

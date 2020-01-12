@@ -1,0 +1,48 @@
+@import "src/utils/variables";
+
+.nav-container {
+  width: 100%;
+  background-color: #61dafb;
+  position: fixed;
+  top: 0;
+  height: $navbarHeight;
+
+  .nav-bar {
+    width: 60%;
+    margin: 0 auto;
+    @media screen and (max-width: 1010px) {
+      width: 100%;
+      padding: 0 40px;
+      box-sizing: border-box;
+    }
+    height: inherit;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .search {
+      padding: 8px 16px;
+      font-size: 1rem;
+      border-radius: $radius;
+      border: none;
+      outline: none;
+    }
+
+    .log-out-button {
+      padding: 8px 16px;
+      font-size: 1rem;
+      background-color: #4497f1;
+      border-radius: $radius;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .log-out-button:hover {
+      background-color: $btnHoveredColor;
+    }
+
+    .log-out-button:disabled {
+      background-color: $btnColorOpaque;
+    }
+  }
+}
