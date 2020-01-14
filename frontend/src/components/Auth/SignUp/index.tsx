@@ -23,8 +23,8 @@ const SignUp: React.FC<Props> = ({signUpError, signUpUser}) => {
     const onSubmit = (data: any) => signUpUser(data);
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
-            <p id="title">Sign up to LaSocialNetwork</p>
+        <form onSubmit={handleSubmit(onSubmit)} id="signUpForm">
+            <p className="title">Sign up to LaSocialNetwork</p>
             <div style={{width: '48%', float: 'left'}} className="inputFrame">
                 <input name="fullname" type="text" placeholder='Full name'
                        className={classnames({'invalid-input': errors.fullname},'input_style1')} ref={register({
@@ -61,7 +61,7 @@ const SignUp: React.FC<Props> = ({signUpError, signUpUser}) => {
                 })}/>
                 <ErrorMessage message={errors.password}/>
             </div>
-            <button>Create account</button>
+            <button id="createAccount">Create account</button>
         </form>
     );
 };

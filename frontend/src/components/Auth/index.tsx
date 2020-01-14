@@ -19,6 +19,8 @@ const AuthForm: React.FC<Props> = ({isLoggedIn}) => {
     const Content = isLoginSelected ? <LogIn/> : <SignUp/>;
     return (
         <div className='auth-form'>
+				<div id="background">
+				</div>
             <div className='buttons-container'>
                 <button className={classnames({'selected': !isLoginSelected})} onClick={() => setLoginSelected(false)}>
                     Sign up

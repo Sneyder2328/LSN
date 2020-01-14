@@ -23,9 +23,9 @@ const LogIn: React.FC<Props> = ({logInError, logInUser}) => {
     const onSubmit = (data: any) => logInUser(data);
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
-            <p>Welcome Back!</p>
-			<i class="fas fa-user inputIcon" id="iconUser"></i>
+            <p className="title">Welcome Back!</p>
             <div className="inputFrame">
+				<i class="fas fa-user inputIcon" id="iconUser"></i>
                 <input name="username" type="text" placeholder='Username' className="input_style1 loginInput"
                        ref={register({required: {value: true, message: 'Please enter your username'}})}/>
                 <ErrorMessage message={errors.username}/>

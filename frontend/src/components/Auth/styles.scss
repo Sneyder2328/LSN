@@ -3,19 +3,40 @@
 @import url('https://fonts.googleapis.com/css?family=Oswald&display=swap');
 @import "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css";
 
+html,body{height:100%;} 
+
 body{
-background-color:rgba(0,0,0,0.5);
-width:100%;
-height:108.5vh;
+background-color:rgba(0,0,0,0);
+min-width:100%;
 }
 
-html{
-  position:absolute;
-  height: 100%;
-  width: 100vw;
-  background:url("C:/Users/chapulinchip/Desktop/LaSocialNetwork/frontend/src/resources/wallpaper.jpg");
-  background-repeat: no-repeat;
-  background-size: cover;
+#signUpForm{
+  margin:-2vh;
+}
+
+#background {
+  position: absolute; 
+  top: 0; 
+  left: 0; 
+  background: url('../../resources/wallpaper.jpg') no-repeat;
+  /* Preserve aspet ratio */
+  min-width: 100%;
+  min-height: 100%;
+  background-size:cover;
+  z-index:-100;
+}
+
+#background:before{
+  content:'';
+  background-color:rgba(0,0,0,0.6);
+  position: absolute; 
+  top: 0; 
+  left: 0; 
+  /* Preserve aspet ratio */
+  min-width: 100%;
+  min-height: 100%;
+  background-size:cover;
+  z-index:-99;
 }
 
 .auth-form {
@@ -29,8 +50,8 @@ html{
   display:block;
   float:right;
   background-color: var(--authBackColor);
-  width: 40%;
-  height:98.4vh;
+  width: 40vw;
+  height: 89.7vh;
   padding: 0px 50px 50px 50px;
   margin: 0 auto;
   box-shadow: -5 2px 2px 0 rgba(0, 0, 0, 0.14), -5 3px 1px -2px rgba(0, 0, 0, 0.12), -5 1px 5px 0 rgba(0, 0, 0, 0.20);
@@ -39,12 +60,16 @@ html{
   button {
     width: 50%;
     padding: 18px 10px;
-    margin-top: 20px;
+    margin-top: 10px;
     font-size: 1.3rem;
     background-color: var(--btonBackColor);
     color: #d5d5d5;
     text-decoration: none;
   }
+
+	#createAccount{
+	  margin-top:0px;
+	}
 
   button.selected {
     background-color: var(--btonSelectBackColor);
@@ -74,7 +99,7 @@ html{
       input:-webkit-autofill:focus,
       input:-webkit-autofill:active {
         color: #fff !important;
-        -webkit-box-shadow: 0 0 0 30px #ddf8ff inset !important;
+        -webkit-box-shadow: 0 0 0 30px rgba(97, 218, 251,0.6) inset !important;
       }
 
       input.invalid-input {
@@ -115,7 +140,7 @@ html{
 	  font-family: Montserrat, Verdana;
     }
 	
-	#title{
+	.title{
 	  text-align: center;
 	  font-size: 28px;
 	}
@@ -146,19 +171,15 @@ html{
 	
 	.inputFrame{
 	  position:relative;
-	}
+	  top:-5vh;
+    }
 	
 	
 	.inputIcon{
 	  position:absolute;
+	  z-index: 10;
+	  top: 52%;
 	}
-	
-	#iconUser{
-	  top:42%;
-	}
-	
-	#iconPass{
-	  top:50%;
-	}
+
   }
 }
