@@ -6,7 +6,6 @@ import LogIn from "./LogIn";
 import {connect} from "react-redux";
 import {Redirect} from "react-router-dom";
 import {AppState} from "../../reducers";
-
 type Props = {
     isLoggedIn: boolean;
 }

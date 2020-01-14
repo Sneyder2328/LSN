@@ -1,30 +1,58 @@
 @import "src/utils/variables";
+@import url('https://fonts.googleapis.com/css?family=Montserrat&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Oswald&display=swap');
+@import "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css";
+
+body{
+background-color:rgba(0,0,0,0.5);
+width:100%;
+height:108.5vh;
+}
+
+html{
+  position:absolute;
+  height: 100%;
+  width: 100vw;
+  background:url("C:/Users/chapulinchip/Desktop/LaSocialNetwork/frontend/src/resources/wallpaper.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
 
 .auth-form {
-  background-color: #61dafb;
-  width: 500px;
-  padding: 50px;
+//VARIABLES
+--authBackColor: rgba(97, 218, 251,0.6);
+--btonBackColor: rgba(68, 161, 241,0.6);
+--btonSelectBackColor: rgba(53, 133, 241,0.6);
+--btonHoverBackColor: rgba(68, 151, 241,0.6);
+//STYLYING
+
+  display:block;
+  float:right;
+  background-color: var(--authBackColor);
+  width: 40%;
+  height:98.4vh;
+  padding: 0px 50px 50px 50px;
   margin: 0 auto;
+  box-shadow: -5 2px 2px 0 rgba(0, 0, 0, 0.14), -5 3px 1px -2px rgba(0, 0, 0, 0.12), -5 1px 5px 0 rgba(0, 0, 0, 0.20);
+
 
   button {
     width: 50%;
     padding: 18px 10px;
-    margin-top: 30px;
+    margin-top: 20px;
     font-size: 1.3rem;
-    background-color: #44a1f1;
+    background-color: var(--btonBackColor);
     color: #d5d5d5;
-    box-shadow: none;
     text-decoration: none;
   }
 
   button.selected {
-    background-color: #3585f1;
+    background-color: var(--btonSelectBackColor);
     color: white;
   }
 
   button:hover {
-    background-color: #4497f1;
-    box-shadow: none;
+    background-color: var(--btonHoverBackColor);
     color: #ebebeb;
   }
 
@@ -35,15 +63,10 @@
       input {
         width: 100%;
         box-sizing: border-box;
-        margin-top: 22px;
-        padding: 10px 15px;
-        border: none;
+        margin-top: 40px;
+        padding: 8px 15px;
         outline: none;
-        border-radius: 5px;
-      }
-
-      input:focus {
-        box-shadow: 0 0 0 2px #2c80d0;
+        
       }
 
       input:-webkit-autofill,
@@ -55,16 +78,16 @@
       }
 
       input.invalid-input {
-        border: 2px solid #f00;
+        border-bottom: 2px solid #f00;
       }
 
       .error-message {
         min-height: 14px;
         padding-top: 5px;
         padding-left: 6px;
-        color: red;
-        font-size: 0.8rem;
-
+        color: #b62020;
+        font-size: 0.9rem;
+		font-family: Oswald;
         * {
           margin: 0 2px;
         }
@@ -85,12 +108,57 @@
     }
 
     p {
-      width: 100%;
       color: #ffffff;
       font-size: 2rem;
       margin-bottom: 0;
-      text-align: center;
       padding: 0;
+	  font-family: Montserrat, Verdana;
     }
+	
+	#title{
+	  text-align: center;
+	  font-size: 28px;
+	}
+	
+	.input_style1{
+	  border:none;
+	  background: none;
+	  color: white;
+	  border-bottom: 2px solid #8b9dc3;
+	  font-family: Montserrat, Verdana;
+	  transition: 400ms;
+	}
+	
+	.input_style1:focus{
+	  border-bottom: 2px solid #f2f2f2;
+
+	}
+	
+	.input_style1::placeholder{
+	  color:white;
+	  font-family: Montserrat, Verdana;
+	  padding: 0px 0px 0px 5px;
+	}
+	
+	.loginInput{
+	  padding-left:18px;
+	}
+	
+	.inputFrame{
+	  position:relative;
+	}
+	
+	
+	.inputIcon{
+	  position:absolute;
+	}
+	
+	#iconUser{
+	  top:42%;
+	}
+	
+	#iconPass{
+	  top:50%;
+	}
   }
 }

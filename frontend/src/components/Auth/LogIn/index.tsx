@@ -5,6 +5,7 @@ import {connect} from "react-redux";
 import {LoginCredentials, logInUser} from "../authActions";
 import {FormError} from "../authReducer";
 import {AppState} from "../../../reducers";
+import {IntrinsicElements} from "../icon";
 
 type Props = {
     logInError?: FormError,
@@ -23,13 +24,15 @@ const LogIn: React.FC<Props> = ({logInError, logInUser}) => {
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <p>Welcome Back!</p>
-            <div>
-                <input name="username" type="text" placeholder='Username'
+			<i class="fas fa-user inputIcon" id="iconUser"></i>
+            <div className="inputFrame">
+                <input name="username" type="text" placeholder='Username' className="input_style1 loginInput"
                        ref={register({required: {value: true, message: 'Please enter your username'}})}/>
                 <ErrorMessage message={errors.username}/>
             </div>
-            <div>
-                <input name="password" type="password" placeholder='Password'
+            <div className="inputFrame">
+				<i class="fas fa-lock inputIcon" id="iconPass"></i>
+                <input name="password" type="password" placeholder='Password' className="input_style1 loginInput"
                        ref={register({required: {value: true, message: 'Please enter your password'}})}/>
                 <ErrorMessage message={errors.password}/>
             </div>
