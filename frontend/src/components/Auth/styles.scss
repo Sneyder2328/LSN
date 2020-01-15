@@ -52,11 +52,18 @@ body {
   display: block;
   float: right;
   background-color: var(--authBackColor);
-  width: 45vw;
+  width: 55vw;
+  max-width: 640px;
   height: 89.7vh;
-  padding: 0px 50px 50px 50px;
+  padding: 0 50px 50px 50px;
   margin: 0 auto;
   box-shadow: -5 2px 2px 0 rgba(0, 0, 0, 0.14), -5 3px 1px -2px rgba(0, 0, 0, 0.12), -5 1px 5px 0 rgba(0, 0, 0, 0.20);
+
+  @media (max-width: 768px) {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
 
 
   button {
@@ -128,16 +135,17 @@ body {
 
     button {
       width: 100%;
-      margin-top: 20px;
+      margin-top: 36px;
       display: block;
       font-size: 1.5rem;
       padding: 18px 0;
       text-transform: uppercase;
       color: #f4f4f4;
+      opacity: 1.0;
     }
 
     button:hover {
-      box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.20);
+      opacity: 0.85;
     }
 
     p {
@@ -151,6 +159,8 @@ body {
     .title {
       text-align: center;
       font-size: 28px;
+      margin-top: 36px;
+      position: relative;
     }
 
     .input_style1 {
