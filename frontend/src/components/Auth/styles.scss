@@ -3,54 +3,56 @@
 @import url('https://fonts.googleapis.com/css?family=Oswald&display=swap');
 @import "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css";
 
-html,body{height:100%;} 
-
-body{
-background-color:rgba(0,0,0,0);
-min-width:100%;
+html, body {
+  height: 100%;
 }
 
-#signUpForm{
-  margin:-2vh;
+body {
+  background-color: rgba(0, 0, 0, 0);
+  min-width: 100%;
+}
+
+#signUpForm {
+
 }
 
 #background {
-  position: absolute; 
-  top: 0; 
-  left: 0; 
+  position: absolute;
+  top: 0;
+  left: 0;
   background: url('../../resources/wallpaper.jpg') no-repeat;
   /* Preserve aspet ratio */
   min-width: 100%;
   min-height: 100%;
-  background-size:cover;
-  z-index:-100;
+  background-size: cover;
+  z-index: -100;
 }
 
-#background:before{
-  content:'';
-  background-color:rgba(0,0,0,0.6);
-  position: absolute; 
-  top: 0; 
-  left: 0; 
+#background:before {
+  content: '';
+  background-color: rgba(0, 0, 0, 0.6);
+  position: absolute;
+  top: 0;
+  left: 0;
   /* Preserve aspet ratio */
   min-width: 100%;
   min-height: 100%;
-  background-size:cover;
-  z-index:-99;
+  background-size: cover;
+  z-index: -99;
 }
 
 .auth-form {
-//VARIABLES
---authBackColor: rgba(97, 218, 251,0.6);
---btonBackColor: rgba(68, 161, 241,0.6);
---btonSelectBackColor: rgba(53, 133, 241,0.6);
---btonHoverBackColor: rgba(68, 151, 241,0.6);
-//STYLYING
+  //VARIABLES
+  --authBackColor: rgba(97, 218, 251, 0.35);
+  --btonBackColor: rgba(68, 161, 241, 0.6);
+  --btonSelectBackColor: rgba(53, 133, 241, 0.6);
+  --btonHoverBackColor: rgba(68, 151, 241, 0.6);
+  //STYLYING
 
-  display:block;
-  float:right;
+  display: block;
+  float: right;
   background-color: var(--authBackColor);
-  width: 40vw;
+  width: 45vw;
   height: 89.7vh;
   padding: 0px 50px 50px 50px;
   margin: 0 auto;
@@ -66,10 +68,6 @@ min-width:100%;
     color: #d5d5d5;
     text-decoration: none;
   }
-
-	#createAccount{
-	  margin-top:0px;
-	}
 
   button.selected {
     background-color: var(--btonSelectBackColor);
@@ -91,7 +89,7 @@ min-width:100%;
         margin-top: 40px;
         padding: 8px 15px;
         outline: none;
-        
+
       }
 
       input:-webkit-autofill,
@@ -99,7 +97,15 @@ min-width:100%;
       input:-webkit-autofill:focus,
       input:-webkit-autofill:active {
         color: #fff !important;
-        -webkit-box-shadow: 0 0 0 30px rgba(97, 218, 251,0.6) inset !important;
+        -webkit-animation: autofill 0s forwards;
+        animation: autofill 0s forwards;
+      }
+
+      @keyframes autofill {
+        100% {
+          background: transparent;
+          color: inherit;
+        }
       }
 
       input.invalid-input {
@@ -112,7 +118,8 @@ min-width:100%;
         padding-left: 6px;
         color: #b62020;
         font-size: 0.9rem;
-		font-family: Oswald;
+        font-family: Oswald;
+
         * {
           margin: 0 2px;
         }
@@ -121,6 +128,7 @@ min-width:100%;
 
     button {
       width: 100%;
+      margin-top: 20px;
       display: block;
       font-size: 1.5rem;
       padding: 18px 0;
@@ -137,49 +145,47 @@ min-width:100%;
       font-size: 2rem;
       margin-bottom: 0;
       padding: 0;
-	  font-family: Montserrat, Verdana;
+      font-family: Montserrat, Verdana;
     }
-	
-	.title{
-	  text-align: center;
-	  font-size: 28px;
-	}
-	
-	.input_style1{
-	  border:none;
-	  background: none;
-	  color: white;
-	  border-bottom: 2px solid #8b9dc3;
-	  font-family: Montserrat, Verdana;
-	  transition: 400ms;
-	}
-	
-	.input_style1:focus{
-	  border-bottom: 2px solid #f2f2f2;
 
-	}
-	
-	.input_style1::placeholder{
-	  color:white;
-	  font-family: Montserrat, Verdana;
-	  padding: 0px 0px 0px 5px;
-	}
-	
-	.loginInput{
-	  padding-left:18px;
-	}
-	
-	.inputFrame{
-	  position:relative;
-	  top:-5vh;
+    .title {
+      text-align: center;
+      font-size: 28px;
     }
-	
-	
-	.inputIcon{
-	  position:absolute;
-	  z-index: 10;
-	  top: 52%;
-	}
 
+    .input_style1 {
+      border: none;
+      background: none;
+      color: white !important;
+      border-bottom: 2px solid #8b9dc3;
+      font-family: Montserrat, Verdana;
+      transition: 400ms;
+    }
+
+    .input_style1:focus {
+      border-bottom: 2px solid #f2f2f2;
+
+    }
+
+    .input_style1::placeholder {
+      color: white;
+      font-family: Montserrat, Verdana;
+      padding: 0px 0px 0px 5px;
+    }
+
+    .loginInput {
+      padding-left: 18px;
+    }
+
+    .inputFrame {
+      position: relative;
+      top: 0.2vh;
+    }
+
+    .inputIcon {
+      position: absolute;
+      z-index: 10;
+      top: 52%;
+    }
   }
 }

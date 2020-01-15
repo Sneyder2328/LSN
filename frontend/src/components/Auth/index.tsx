@@ -6,6 +6,7 @@ import LogIn from "./LogIn";
 import {connect} from "react-redux";
 import {Redirect} from "react-router-dom";
 import {AppState} from "../../reducers";
+
 type Props = {
     isLoggedIn: boolean;
 }
@@ -19,8 +20,7 @@ const AuthForm: React.FC<Props> = ({isLoggedIn}) => {
     const Content = isLoginSelected ? <LogIn/> : <SignUp/>;
     return (
         <div className='auth-form'>
-				<div id="background">
-				</div>
+            <div id="background"/>
             <div className='buttons-container'>
                 <button className={classnames({'selected': !isLoginSelected})} onClick={() => setLoginSelected(false)}>
                     Sign up
