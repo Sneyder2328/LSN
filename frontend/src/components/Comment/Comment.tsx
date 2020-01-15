@@ -3,6 +3,8 @@ import {Profile} from "../Post/Post";
 import './styles.scss'
 // @ts-ignore
 import moment from "moment-shortformat";
+import {connect} from "react-redux";
+import {AppState} from "../../reducers";
 
 export interface CommentResponse {
     id: string;
@@ -17,7 +19,11 @@ export interface CommentResponse {
     authorProfile: Profile;
 }
 
-export const Comment: React.FC<{ comment: CommentResponse }> = ({comment}) => {
+type Props = {
+    commentId: string;
+    comment: CommentResponse
+};
+const Comment: React.FC<Props> = ({comment}) => {
     let diffInMillis = new Date().getTime() - new Date(comment.createdAt).getTime();
     const timePublished = moment(moment() + diffInMillis).short(true);
 
@@ -45,3 +51,13 @@ export const Comment: React.FC<{ comment: CommentResponse }> = ({comment}) => {
         </div>
     );
 };
+const mapStateToProps = (state: AppState, ownProps: { commentId: string }): { comment: CommentResponse } => {
+    let commentObject = state.entities.comments.entities[ownProps.commentId];
+    return {
+        comment: {
+            ...commentObject,
+            authorProfile: state.entities.users.entities[commentObject.userId]
+        }
+    };
+};
+export default connect(mapStateToProps)(Comment)

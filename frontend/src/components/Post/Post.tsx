@@ -6,7 +6,7 @@ import uuidv4 from "uuid/v4";
 import {TextEditor} from "../commons/TextEditor";
 import {CommentRequest} from "../Comment/commentApi";
 import {createComment, loadPreviousComments} from "../Comment/commentActions";
-import {Comment, CommentResponse} from "../Comment/Comment"
+import Comment from "../Comment/Comment"
 import {connect} from "react-redux";
 import classNames from "classnames";
 import {AppState} from "../../reducers";
@@ -36,7 +36,7 @@ export interface PostResponse extends Post {
     createdAt: any;
 
     authorProfile: Profile;
-    comments: Array<CommentResponse>;
+    comments: Array<string>;
     currentUserLikeStatus: 'like' | 'dislike' | undefined;
     loadingPreviousComments?: boolean;
     isCreatingComment?: boolean;
@@ -107,8 +107,7 @@ const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComment
                 </span>
             </div>
             <div className={classNames('comments-container', {'hide': postResponse.comments.length === 0})}>
-                {postResponse.comments.map(comment => (
-                    <Comment key={comment.id} comment={comment}/>))}
+                {postResponse.comments.map(id => (<Comment key={id} commentId={id}/>))}
             </div>
             <div className='new-comment'>
                 <img className='avatar'
@@ -125,20 +124,19 @@ const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComment
 };
 const mapStateToProps = (state: AppState, ownProps: { postId: string }): { postResponse: PostResponse } => {
     let postObject = state.entities.posts.entities[ownProps.postId];
-    let comments: Array<CommentResponse> = postObject.comments.map(commentId => {
+   /* let comments: Array<CommentResponse> = postObject.comments.map(commentId => {
         const commentObject = state.entities.comments.entities[commentId];
         let commentResponse: CommentResponse = {
             ...commentObject,
             authorProfile: state.entities.users.entities[commentObject.userId]
         };
         return commentResponse;
-    });
+    });*/
     return {
         postResponse: {
             ...postObject,
             authorProfile: state.entities.users.entities[postObject.userId],
             currentUserLikeStatus: undefined,
-            comments,
             loadingPreviousComments: state.entities.posts.metas[postObject.id] && state.entities.posts.metas[postObject.id].isLoadingPreviousComments
         }
     }

@@ -15,8 +15,7 @@ const NewsFeed: React.FC<{ postsIds: Array<string>, fetchPosts: () => any }> = (
     }, [fetchPosts]);
     return (
         <div className='news-feed'>
-            {postsIds && postsIds.map((postId: string) =>
-                <Post postId={postId} key={postId}/>)}
+            {postsIds && postsIds.map((postId: string) => <Post postId={postId} key={postId}/>)}
         </div>
     );
 };
