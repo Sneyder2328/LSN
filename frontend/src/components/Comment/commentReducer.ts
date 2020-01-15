@@ -1,9 +1,10 @@
+import {createSelector} from 'reselect'
 import {
     CREATE_COMMENT_SUCCESS,
     LOAD_COMMENTS_SUCCESS, SET_COMMENTS,
 } from "../../actions/types";
 import {HashTable} from "../../utils/utils";
-import {Actions} from "../../reducers";
+import {Actions, AppState} from "../../reducers";
 
 type SetComments = {
     type: 'SET_COMMENTS';
@@ -100,3 +101,28 @@ export const commentsReducer = (state: CommentsState = initialCommentsState, act
             return state;
     }
 };
+
+export const commentSelector = (state: AppState, commentId: string) => {
+    let commentObject = selectCommentObject(state, commentId);
+    return {
+        ...commentObject,
+        authorProfile: state.entities.users.entities[commentObject.userId]
+    };
+};
+
+const selectCommentObject = (state: AppState, commentId: string) => {
+    return state.entities.comments.entities[commentId];
+};
+
+const selectCommentAuthorObject = (state: AppState, commentId: string) => {
+    return state.entities.users.entities[selectCommentObject(state, commentId).userId]
+};
+
+export const selectComment = () => createSelector([selectCommentObject, selectCommentAuthorObject],
+    (commentObject, authorObject) => {
+        return {
+            ...commentObject,
+            authorProfile: authorObject
+        };
+    }
+);

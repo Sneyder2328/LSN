@@ -5,6 +5,7 @@ import './styles.scss'
 import moment from "moment-shortformat";
 import {connect} from "react-redux";
 import {AppState} from "../../reducers";
+import {selectComment} from "./commentReducer";
 
 export interface CommentResponse {
     id: string;
@@ -26,7 +27,6 @@ type Props = {
 const Comment: React.FC<Props> = ({comment}) => {
     let diffInMillis = new Date().getTime() - new Date(comment.createdAt).getTime();
     const timePublished = moment(moment() + diffInMillis).short(true);
-
     return (
         <div className='comment'>
             <img className='avatar'
@@ -51,13 +51,12 @@ const Comment: React.FC<Props> = ({comment}) => {
         </div>
     );
 };
-const mapStateToProps = (state: AppState, ownProps: { commentId: string }): { comment: CommentResponse } => {
-    let commentObject = state.entities.comments.entities[ownProps.commentId];
-    return {
-        comment: {
-            ...commentObject,
-            authorProfile: state.entities.users.entities[commentObject.userId]
-        }
+const makeMapStateToProps = () => {
+    const commentSelector = selectComment();
+    return (state: AppState, ownProps: { commentId: string }) => {
+        return {
+            comment: commentSelector(state, ownProps.commentId)
+        };
     };
 };
-export default connect(mapStateToProps)(Comment)
+export default connect(makeMapStateToProps)(Comment)
