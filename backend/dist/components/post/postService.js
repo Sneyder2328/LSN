@@ -44,7 +44,7 @@ function getPosts() {
                 comment.authorProfile = comment.Profile;
                 delete comment.Profile;
                 return comment;
-            }) })));
+            }).sort(utils_1.compareByDateDesc) }))).sort(utils_1.compareByDateAsc);
         if (!posts)
             return [];
         return posts;

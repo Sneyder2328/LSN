@@ -10,11 +10,6 @@
   .nav-bar {
     width: 60%;
     margin: 0 auto;
-    @media screen and (max-width: 1010px) {
-      width: 100%;
-      padding: 0 40px;
-      box-sizing: border-box;
-    }
     height: inherit;
     display: flex;
     justify-content: space-between;
@@ -43,6 +38,23 @@
 
     .log-out-button:disabled {
       background-color: $btnColorOpaque;
+    }
+
+    @media screen and (max-width: 1150px) {
+      width: 100%;
+      padding: 0 60px;
+      box-sizing: border-box;
+    }
+    @media screen and (max-width: 750px) {
+      padding: 0;
+      width: 90%;
+      .search {
+        width: 50%;
+        font-size: 0.88rem;
+      }
+      .log-out-button {
+        font-size: 0.88rem;
+      }
     }
   }
 }

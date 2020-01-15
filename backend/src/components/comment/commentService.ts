@@ -1,6 +1,7 @@
 import {models} from "../../database/database";
 const {Comment, CommentLike, Profile} = models;
 import {CommentNotCreatedError} from "../../utils/errors/CommentNotCreatedError";
+import {compareByDateDesc} from "../../utils/utils";
 
 export async function createComment(userId, postId, {id, type, text, img}) {
     const comment = await Comment.create({id, userId, postId, type, text, img});
@@ -38,6 +39,6 @@ export async function getComments(postId, offset, limit) {
         comment.authorProfile = comment.Profile;
         delete comment.Profile;
         return comment;
-    });
+    }).sort(compareByDateDesc);
     return comments;
 }

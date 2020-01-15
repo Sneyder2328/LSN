@@ -1,7 +1,7 @@
 import {models} from "../../database/database";
 const {Comment, Post, PostLike, Profile} = models;
 import {LIMIT_COMMENTS_PER_POST} from "../../utils/constants";
-import {genUUID} from "../../utils/utils";
+import {compareByDateAsc, compareByDateDesc, genUUID} from "../../utils/utils";
 import {PostNotCreatedError} from "../../utils/errors/PostNotCreatedError";
 
 export async function createPost(userId, type, text, img) {
@@ -31,8 +31,8 @@ export async function getPosts() {
             comment.authorProfile = comment.Profile;
             delete comment.Profile;
             return comment;
-        })
-    }));
+        }).sort(compareByDateDesc)
+    })).sort(compareByDateAsc);
 
     if (!posts) return [];
     return posts;

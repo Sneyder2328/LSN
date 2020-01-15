@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = require("../../database/database");
 const { Comment, CommentLike, Profile } = database_1.models;
 const CommentNotCreatedError_1 = require("../../utils/errors/CommentNotCreatedError");
+const utils_1 = require("../../utils/utils");
 function createComment(userId, postId, { id, type, text, img }) {
     return __awaiter(this, void 0, void 0, function* () {
         const comment = yield Comment.create({ id, userId, postId, type, text, img });
@@ -59,7 +60,7 @@ function getComments(postId, offset, limit) {
             comment.authorProfile = comment.Profile;
             delete comment.Profile;
             return comment;
-        });
+        }).sort(utils_1.compareByDateDesc);
         return comments;
     });
 }

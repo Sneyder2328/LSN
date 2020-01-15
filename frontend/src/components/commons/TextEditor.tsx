@@ -4,7 +4,7 @@ import classnames from "classnames";
 type Props = {
     onChange: (text: string) => void;
     placeholder: string;
-    cleanUpWhen?: boolean;
+    cleanUpWhen?: () => boolean;
     onEnterCleanUp?: boolean;
     className?: string;
     onEnter?: () => any;
@@ -28,7 +28,7 @@ export const TextEditor: React.FC<Props> = ({onChange, placeholder, cleanUpWhen,
         }
     };
 
-    if (cleanUpWhen) {
+    if (cleanUpWhen && cleanUpWhen()) {
         cleanUpTextEditor();
     }
 

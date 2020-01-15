@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {TextEditor} from "./TextEditor";
+import {TextEditor} from "../commons/TextEditor";
 import {connect} from "react-redux";
 import {Post} from "../Post/Post";
 import {createPost} from "../Post/postActions";
@@ -10,8 +10,8 @@ type Props = {
 };
 
 const CreatePost: React.FC<Props> = ({createPost}) => {
-
     const [text, setText] = useState<string>('');
+    const [cleanTextEditor, setCleanTextEditor] = useState<boolean>(false);
 
     const handleClick = () => {
         const newPost = {
@@ -20,7 +20,15 @@ const CreatePost: React.FC<Props> = ({createPost}) => {
             img: ''
         };
         createPost(newPost);
-        setText('clean')
+        setCleanTextEditor(true);
+    };
+
+    const shouldCleanUpTextEditor = () => {
+        if (cleanTextEditor) {
+            setCleanTextEditor(false);
+            return true;
+        }
+        return false;
     };
 
     return (
@@ -28,8 +36,8 @@ const CreatePost: React.FC<Props> = ({createPost}) => {
             <span className='title'>Create post</span>
             <div className='content'>
                 <img className='avatar' src='https://miro.medium.com/max/280/1*MccriYX-ciBniUzRKAUsAw.png'
-                     alt='profile picture'/>
-                <TextEditor className='editor' onChange={setText} cleanUpWhen={text === 'clean'}
+                     alt='profile avatar'/>
+                <TextEditor className='editor' onChange={setText} cleanUpWhen={shouldCleanUpTextEditor}
                             placeholder="What's happening?"/>
             </div>
             <div className='publish'>

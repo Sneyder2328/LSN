@@ -1,29 +1,28 @@
 import React, {useEffect} from "react";
 import {loadPosts} from "../Post/postActions";
 import {connect} from "react-redux";
-import Post, {PostResponse} from "../Post/Post";
-import {compareByDateAsc} from "../../utils/utils";
+import Post from "../Post/Post";
 import {AppState} from "../../reducers";
 import './styles.scss'
 
-const NewsFeed: React.FC<{ posts: Array<PostResponse>, fetchPosts: () => any }> = ({posts, fetchPosts}) => {
+const NewsFeed: React.FC<{ postsIds: Array<string>, fetchPosts: () => any }> = ({postsIds, fetchPosts}) => {
     useEffect(() => {
         console.log('fetching posts!!');
         const loadPosts = () => {
             fetchPosts();
         };
         loadPosts();
-    }, []);
+    }, [fetchPosts]);
     return (
         <div className='news-feed'>
-            {posts && posts.sort(compareByDateAsc).map((post: PostResponse) =>
-                <Post postResponse={post} key={post.id}/>)}
+            {postsIds && postsIds.map((postId: string) =>
+                <Post postId={postId} key={postId}/>)}
         </div>
     );
 };
 
 const mapStateToProps = (state: AppState) => ({
-    posts: state.post.posts
+    postsIds: state.newsFeed.latest.postIds//.sort(compareByDateAsc)
 });
 
 export default connect(mapStateToProps, {fetchPosts: loadPosts})(NewsFeed);

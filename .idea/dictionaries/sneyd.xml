@@ -7,6 +7,7 @@
       <w>dimen</w>
       <w>fullname</w>
       <w>navbar</w>
+      <w>newsfeed</w>
       <w>sequelize</w>
       <w>superagent</w>
       <w>uuidv</w>

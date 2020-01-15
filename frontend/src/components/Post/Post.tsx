@@ -3,15 +3,16 @@ import moment from "moment";
 import './styles.scss'
 // @ts-ignore
 import uuidv4 from "uuid/v4";
-import {TextEditor} from "../CreatePost/TextEditor";
+import {TextEditor} from "../commons/TextEditor";
 import {CommentRequest} from "../Comment/commentApi";
 import {createComment, loadPreviousComments} from "../Comment/commentActions";
 import {Comment, CommentResponse} from "../Comment/Comment"
 import {connect} from "react-redux";
 import classNames from "classnames";
-import {compareByDateDesc} from "../../utils/utils";
+import {AppState} from "../../reducers";
 
 export interface Profile {
+    userId: string;
     coverPhotoUrl: string;
     profilePhotoUrl: string;
     description: string;
@@ -25,21 +26,24 @@ export interface Post {
     img: string;
 }
 
+
 export interface PostResponse extends Post {
-    commentsCount: number;
+    id: string;
+    userId: string;
     likesCount: number;
     dislikesCount: number;
-    userId: string;
+    commentsCount: number;
     createdAt: any;
-    id: string;
+
     authorProfile: Profile;
+    comments: Array<CommentResponse>;
     currentUserLikeStatus: 'like' | 'dislike' | undefined;
     loadingPreviousComments?: boolean;
     isCreatingComment?: boolean;
-    comments: Array<CommentResponse>;
 }
 
 type Props = {
+    postId: string;
     postResponse: PostResponse;
     createComment: (commentData: CommentRequest) => any;
     loadPreviousComments: (postId: string, offset: number, limit: number) => any;
@@ -103,7 +107,7 @@ const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComment
                 </span>
             </div>
             <div className={classNames('comments-container', {'hide': postResponse.comments.length === 0})}>
-                {postResponse.comments.sort(compareByDateDesc).map(comment => (
+                {postResponse.comments.map(comment => (
                     <Comment key={comment.id} comment={comment}/>))}
             </div>
             <div className='new-comment'>
@@ -119,5 +123,24 @@ const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComment
         </div>
     );
 };
-
-export default connect(null, {createComment, loadPreviousComments})(Post);
+const mapStateToProps = (state: AppState, ownProps: { postId: string }): { postResponse: PostResponse } => {
+    let postObject = state.entities.posts.entities[ownProps.postId];
+    let comments: Array<CommentResponse> = postObject.comments.map(commentId => {
+        const commentObject = state.entities.comments.entities[commentId];
+        let commentResponse: CommentResponse = {
+            ...commentObject,
+            authorProfile: state.entities.users.entities[commentObject.userId]
+        };
+        return commentResponse;
+    });
+    return {
+        postResponse: {
+            ...postObject,
+            authorProfile: state.entities.users.entities[postObject.userId],
+            currentUserLikeStatus: undefined,
+            comments,
+            loadingPreviousComments: state.entities.posts.metas[postObject.id] && state.entities.posts.metas[postObject.id].isLoadingPreviousComments
+        }
+    }
+};
+export default connect(mapStateToProps, {createComment, loadPreviousComments})(Post);

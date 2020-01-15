@@ -71,6 +71,25 @@
       }
     }
 
+    .load-previous-comments {
+      padding: 6px 14px;
+      cursor: pointer;
+
+      span {
+        color: $interactColor;
+        font-size: 0.92rem;
+
+        i {
+          margin-right: 4px;
+          font-size: 0.92rem;
+        }
+      }
+
+      span:hover {
+        text-decoration: underline;
+      }
+    }
+
     .new-comment {
       padding: 0;
       margin: 0 0 0 2px;

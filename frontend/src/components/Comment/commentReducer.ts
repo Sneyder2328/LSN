@@ -1,110 +1,100 @@
 import {
-    CREATE_COMMENT_REQUEST,
     CREATE_COMMENT_SUCCESS,
-    CREATE_COMMENT_ERROR,
-    LOAD_COMMENTS_REQUEST,
-    LOAD_COMMENTS_SUCCESS,
-    LOAD_COMMENTS_ERROR
+    LOAD_COMMENTS_SUCCESS, SET_COMMENTS,
 } from "../../actions/types";
-import {PostState} from "../Post/postReducer";
-import {CommentResponse} from "./Comment";
+import {HashTable} from "../../utils/utils";
+import {Actions} from "../../reducers";
 
-type createCommentRequest = {
+type SetComments = {
+    type: 'SET_COMMENTS';
+    comments: HashTable<CommentObject>
+}
+type CreateCommentRequest = {
     type: 'CREATE_COMMENT_REQUEST';
     postId: string;
 };
-type createCommentSuccess = {
+type CreateCommentSuccess = {
     type: 'CREATE_COMMENT_SUCCESS';
-    postId: string;
-    commentResponse: CommentResponse;
+    comment: CommentObject;
 };
-type createCommentError = {
+type CreateCommentError = {
     type: 'CREATE_COMMENT_ERROR';
     postId: string;
 };
-type loadCommentsRequest = {
+type LoadCommentsRequest = {
     type: 'LOAD_COMMENTS_REQUEST'
     postId: string;
 };
-type loadCommentsSuccess = {
+type LoadCommentsSuccess = {
     type: 'LOAD_COMMENTS_SUCCESS';
-    postId: string;
-    newComments: Array<any>;
+    payload: {
+        postId: string;
+        newComments: HashTable<CommentObject>;
+        newCommentsIds: Array<string>
+    }
 };
-type loadCommentsError = {
+type LoadCommentsError = {
     type: 'LOAD_COMMENTS_ERROR';
     postId: string;
 };
 
 export type CommentActions =
-    createCommentRequest
-    | createCommentSuccess
-    | createCommentError
-    | loadCommentsRequest
-    | loadCommentsSuccess
-    | loadCommentsError;
+    SetComments
+    | CreateCommentRequest
+    | CreateCommentSuccess
+    | CreateCommentError
+    | LoadCommentsRequest
+    | LoadCommentsSuccess
+    | LoadCommentsError;
 
-export const commentReducer = (state: PostState, action: CommentActions): PostState => {
+
+export interface CommentObject {
+    id: string;
+    userId: string;
+    postId: string;
+    type: 'text' | 'img';
+    text: string;
+    img: string;
+    createdAt: string;
+    likesCount: number;
+    dislikesCount: number;
+    //currentUserLikeStatus: 'like' | 'dislike' | undefined;
+}
+
+export type CommentsState = {
+    entities: HashTable<CommentObject>
+};
+
+
+export const initialCommentsState: CommentsState = {
+    entities: {}
+};
+
+export const commentsReducer = (state: CommentsState = initialCommentsState, action: Actions): CommentsState => {
     switch (action.type) {
-        case CREATE_COMMENT_REQUEST:
+        case SET_COMMENTS:
             return {
                 ...state,
-                posts: state.posts.map(post => {
-                    if (post.id === action.postId) return {...post, isCreatingComment: true};
-                    return post;
-                })
-            };
-        case CREATE_COMMENT_ERROR:
-            return {
-                ...state,
-                posts: state.posts.map(post => {
-                    if (post.id === action.postId) return {...post, isCreatingComment: false};
-                    return post;
-                })
+                entities: {
+                    ...state.entities,
+                    ...action.comments
+                }
             };
         case CREATE_COMMENT_SUCCESS:
             return {
                 ...state,
-                posts: state.posts.map(post => {
-                    if (post.id === action.postId) {
-                        return {
-                            ...post,
-                            comments: [...post.comments, action.commentResponse],
-                            commentsCount: post.commentsCount + 1,
-                            isCreatingComment: false
-                        };
-                    }
-                    return post;
-                })
-            };
-        case LOAD_COMMENTS_REQUEST:
-            return {
-                ...state,
-                posts: state.posts.map(post => {
-                    if (post.id === action.postId) return {...post, loadingPreviousComments: true};
-                    return post;
-                })
-            };
-        case LOAD_COMMENTS_ERROR:
-            return {
-                ...state,
-                posts: state.posts.map(post => {
-                    if (post.id === action.postId) return {...post, loadingPreviousComments: false};
-                    return post;
-                })
+                entities: {
+                    ...state.entities,
+                    [action.comment.id]: action.comment
+                }
             };
         case LOAD_COMMENTS_SUCCESS:
             return {
                 ...state,
-                posts: state.posts.map(post => {
-                    if (post.id === action.postId)
-                        return {
-                            ...post,
-                            loadingPreviousComments: false,
-                            comments: [...post.comments, ...action.newComments]
-                        };
-                    return post;
-                })
+                entities: {
+                    ...state.entities,
+                    ...action.payload.newComments
+                }
             };
         default:
             return state;
