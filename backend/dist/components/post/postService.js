@@ -26,7 +26,7 @@ function createPost(userId, type, text, img) {
     });
 }
 exports.createPost = createPost;
-function getPosts() {
+function getPosts(userId) {
     return __awaiter(this, void 0, void 0, function* () {
         let posts = yield Post.findAll({
             include: [
@@ -46,7 +46,7 @@ function getPosts() {
         // @ts-ignore
         const fetchLikeStatus = (postId, userId) => __awaiter(this, void 0, void 0, function* () { return (yield PostLike.findOne({ where: { postId, userId } })); });
         console.log('new version 1.2');
-        const likeStatusList = yield Promise.all(posts.map(post => fetchLikeStatus(post.id, post.userId)));
+        const likeStatusList = yield Promise.all(posts.map(post => fetchLikeStatus(post.id, userId)));
         console.log('likeStatusList', likeStatusList);
         posts = posts.map(post => post.toJSON()).map(post => {
             const likeStatus = likeStatusList.filter(it => it != null).find((postLike) => postLike.postId === post.id);

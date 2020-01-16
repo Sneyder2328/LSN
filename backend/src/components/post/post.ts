@@ -14,8 +14,8 @@ router.post(endpoints.post.CREATE_POST, authenticate, createPostValidationRules,
     res.status(httpCodes.CREATED).send(post);
 }));
 
-router.get(endpoints.post.GET_POSTS, handleErrorAsync(async (req, res) => {
-    const posts = await getPosts();
+router.get(endpoints.post.GET_POSTS, authenticate, handleErrorAsync(async (req, res) => {
+    const posts = await getPosts(req.userId);
     res.status(httpCodes.OK).send(posts);
 }));
 

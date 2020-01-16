@@ -14,7 +14,7 @@ export async function createPost(userId, type, text, img) {
     return response;
 }
 
-export async function getPosts() {
+export async function getPosts(userId: string) {
     let posts = await Post.findAll({
         include: [
             {
@@ -33,7 +33,7 @@ export async function getPosts() {
     // @ts-ignore
     const fetchLikeStatus = async (postId, userId) => (await PostLike.findOne({where: {postId, userId}}));
     console.log('new version 1.2');
-    const likeStatusList = await Promise.all(posts.map(post => fetchLikeStatus(post.id, post.userId)));
+    const likeStatusList = await Promise.all(posts.map(post => fetchLikeStatus(post.id, userId)));
     console.log('likeStatusList', likeStatusList);
 
     posts = posts.map(post => post.toJSON()).map(post => {

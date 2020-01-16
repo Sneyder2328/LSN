@@ -24,13 +24,13 @@ const LogIn: React.FC<Props> = ({logInError, logInUser}) => {
         <form onSubmit={handleSubmit(onSubmit)}>
             <p className="title">Welcome Back!</p>
             <div className="inputFrame">
-				<i class="fas fa-user inputIcon" id="iconUser"/>
+				<i className="fas fa-user inputIcon" id="iconUser"/>
                 <input name="username" type="text" placeholder='Username' className="input_style1 loginInput"
                        ref={register({required: {value: true, message: 'Please enter your username'}})}/>
                 <ErrorMessage message={errors.username}/>
             </div>
             <div className="inputFrame">
-				<i class="fas fa-lock inputIcon" id="iconPass"/>
+				<i className="fas fa-lock inputIcon" id="iconPass"/>
                 <input name="password" type="password" placeholder='Password' className="input_style1 loginInput"
                        ref={register({required: {value: true, message: 'Please enter your password'}})}/>
                 <ErrorMessage message={errors.password}/>

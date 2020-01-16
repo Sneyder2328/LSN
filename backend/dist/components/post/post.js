@@ -25,8 +25,8 @@ router.post(endpoints_1.default.post.CREATE_POST, authenticate_1.default, valida
     const post = yield postService_1.createPost(req.userId, content.type, content.text, content.img);
     res.status(httpResponseCodes_1.default.CREATED).send(post);
 })));
-router.get(endpoints_1.default.post.GET_POSTS, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const posts = yield postService_1.getPosts();
+router.get(endpoints_1.default.post.GET_POSTS, authenticate_1.default, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const posts = yield postService_1.getPosts(req.userId);
     res.status(httpResponseCodes_1.default.OK).send(posts);
 })));
 router.post(endpoints_1.default.post.LIKE_POST(':postId'), authenticate_1.default, validate_1.likePostValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
