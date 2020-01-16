@@ -37,13 +37,26 @@ exports.default = (sequelize, DataTypes, User, Post) => {
     });
     PostLike.removeAttribute('id');
     // @ts-ignore
-    PostLike.beforeUpsert((postLike, _) => __awaiter(void 0, void 0, void 0, function* () {
-        console.log('beforeUpsert');
+    PostLike.afterCreate((postLike, _) => __awaiter(void 0, void 0, void 0, function* () {
+        console.log('afterCreate');
         const post = yield Post.findByPk(postLike.postId);
         if (postLike.isLike)
             yield post.increment('likesCount', { by: 1 });
         else
             yield post.increment('dislikesCount', { by: 1 });
+    }));
+    // @ts-ignore
+    PostLike.afterUpdate((postLike, _) => __awaiter(void 0, void 0, void 0, function* () {
+        console.log('afterUpdate');
+        const post = yield Post.findByPk(postLike.postId);
+        if (postLike.isLike) {
+            yield post.increment('likesCount', { by: 1 });
+            yield post.decrement('dislikesCount', { by: 1 });
+        }
+        else {
+            yield post.increment('dislikesCount', { by: 1 });
+            yield post.decrement('likesCount', { by: 1 });
+        }
     }));
     // @ts-ignore
     PostLike.beforeDestroy((postLike, _) => __awaiter(void 0, void 0, void 0, function* () {

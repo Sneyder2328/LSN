@@ -4,7 +4,12 @@ import {
     CREATE_COMMENT_REQUEST,
     CREATE_COMMENT_ERROR,
     CREATE_COMMENT_SUCCESS,
-    LOAD_COMMENTS_REQUEST, LOAD_COMMENTS_ERROR, LOAD_COMMENTS_SUCCESS
+    LOAD_COMMENTS_REQUEST,
+    LOAD_COMMENTS_ERROR,
+    LOAD_COMMENTS_SUCCESS,
+    INTERACT_POST_REQUEST,
+    INTERACT_POST_ERROR,
+    INTERACT_POST_SUCCESS
 } from "../../actions/types";
 import {Post} from "./Post";
 import {HashTable} from "../../utils/utils";
@@ -19,12 +24,13 @@ export interface PostObject extends Post {
     createdAt: any;
     comments: Array<string>;
     //authorProfile: Profile; delete this one while normalizing with normalizr
-    //currentUserLikeStatus: 'like' | 'dislike' | undefined;
+    likeStatus: 'like' | 'dislike' | undefined;
 }
 
 export interface PostMetadata {
     isLoadingPreviousComments?: boolean;
     isCreatingComment?: boolean;
+    likeStatus: 'like' | 'dislike' | undefined;
 }
 
 export type PostState = {
@@ -64,6 +70,28 @@ export type LoadPostsError = {
     };
 };
 
+type InteractPostRequest = {
+    type: 'INTERACT_POST_REQUEST';
+    postId: string;
+    typeInteraction: 'like' | 'unlike' | 'dislike' | 'undislike';
+}
+
+type InteractPostSuccess = {
+    type: 'INTERACT_POST_SUCCESS';
+    post: {
+        id: string;
+        likesCount: number;
+        dislikesCount: number;
+    };
+    typeInteraction: 'like' | 'unlike' | 'dislike' | 'undislike';
+}
+
+type InteractPostError = {
+    type: 'INTERACT_POST_ERROR';
+    postId: string;
+    typeInteraction: 'like' | 'unlike' | 'dislike' | 'undislike';
+}
+
 export type PostActions =
     CreatePostRequest
     | CreatePostSuccess
@@ -71,6 +99,9 @@ export type PostActions =
     | LoadPostsRequest
     | LoadPostsSuccess
     | LoadPostsError
+    | InteractPostRequest
+    | InteractPostSuccess
+    | InteractPostError
 
 export const initialPostsState: PostState = {
     entities: {},
@@ -79,6 +110,41 @@ export const initialPostsState: PostState = {
 
 export const postsReducer = (state: PostState = initialPostsState, action: Actions): PostState => {
     switch (action.type) {
+        case INTERACT_POST_REQUEST:
+            return {
+                ...state,
+                metas: {
+                    ...state.metas,
+                    [action.postId]: {
+                        ...state.metas[action.postId],
+                        likeStatus: (action.typeInteraction === "like" || action.typeInteraction === "dislike") ? action.typeInteraction : undefined
+                    }
+                }
+            };
+        case INTERACT_POST_SUCCESS:
+            return {
+                ...state,
+                entities: {
+                    ...state.entities,
+                    [action.post.id]: {
+                        ...state.entities[action.post.id],
+                        likeStatus: (action.typeInteraction === "like" || action.typeInteraction === "dislike") ? action.typeInteraction : undefined,
+                        likesCount: action.post.likesCount,
+                        dislikesCount: action.post.dislikesCount,
+                    }
+                }
+            };
+        case INTERACT_POST_ERROR:
+            return {
+                ...state,
+                metas: {
+                    ...state.metas,
+                    [action.postId]: {
+                        ...state.metas[action.postId],
+                        likeStatus: undefined
+                    }
+                }
+            };
         case CREATE_POST_SUCCESS:
             return {
                 ...state,

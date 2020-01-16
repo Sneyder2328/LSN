@@ -1,4 +1,5 @@
 import {models} from "../../database/database";
+
 const {Comment, Post, PostLike, Profile} = models;
 import {LIMIT_COMMENTS_PER_POST} from "../../utils/constants";
 import {compareByDateAsc, compareByDateDesc, genUUID} from "../../utils/utils";
@@ -16,7 +17,10 @@ export async function createPost(userId, type, text, img) {
 export async function getPosts() {
     let posts = await Post.findAll({
         include: [
-            {model: Profile, as: 'authorProfile'},
+            {
+                model: Profile,
+                as: 'authorProfile'
+            },
             {
                 model: Comment,
                 as: 'comments',
@@ -26,13 +30,24 @@ export async function getPosts() {
             }
         ]
     });
-    posts = posts.map(post => post.toJSON()).map(post => ({
-        ...post, comments: post.comments.map(comment => {
-            comment.authorProfile = comment.Profile;
-            delete comment.Profile;
-            return comment;
-        }).sort(compareByDateDesc)
-    })).sort(compareByDateAsc);
+    // @ts-ignore
+    const fetchLikeStatus = async (postId, userId) => (await PostLike.findOne({where: {postId, userId}}));
+    console.log('new version 1.2');
+    const likeStatusList = await Promise.all(posts.map(post => fetchLikeStatus(post.id, post.userId)));
+    console.log('likeStatusList', likeStatusList);
+
+    posts = posts.map(post => post.toJSON()).map(post => {
+        const likeStatus: any = likeStatusList.filter(it => it != null).find((postLike: any) => postLike.postId === post.id);
+        return {
+            ...post,
+            likeStatus: likeStatus != null ? (likeStatus.isLike === true ? 'like' : 'dislike') : undefined,
+            comments: post.comments.map(comment => {
+                comment.authorProfile = comment.Profile;
+                delete comment.Profile;
+                return comment;
+            }).sort(compareByDateDesc)
+        }
+    }).sort(compareByDateAsc);
 
     if (!posts) return [];
     return posts;
@@ -40,17 +55,40 @@ export async function getPosts() {
 
 export async function likePost(userId, postId) {
     // @ts-ignore
-    return PostLike.upsert({userId, postId, isLike: true});
+    const currentLikePost = await PostLike.findOne({where: {userId, postId}});
+    if (currentLikePost) {
+        if (currentLikePost.isLike === false && await currentLikePost.update({isLike: true}) != null)
+            return getFindByPk(postId);
+        return false;
+    }
+    // @ts-ignore
+    if (await PostLike.create({userId, postId, isLike: true}) != null)
+        return getFindByPk(postId);
 }
 
 export async function removeLikeOrDislikePost(userId, postId) {
     // @ts-ignore
     const postLike = await PostLike.findOne({where: {userId, postId}});
-    return await postLike.destroy() != null;
+    if (await postLike.destroy() != null)
+        return getFindByPk(postId);
+    return false;
+}
+
+async function getFindByPk(postId) {
+    return Post.findByPk(postId, {
+        attributes: ['id', 'likesCount', 'dislikesCount']
+    });
 }
 
 export async function dislikePost(userId, postId) {
     // @ts-ignore
-    const postLike = await PostLike.upsert({userId, postId, isLike: false});
-    return postLike !== null;
+    const currentLikePost = await PostLike.findOne({where: {userId, postId}});
+    if (currentLikePost) {
+        if (currentLikePost.isLike === true && await currentLikePost.update({isLike: false}) != null)
+            return getFindByPk(postId);
+        return false;
+    }
+    // @ts-ignore
+    if (await PostLike.create({userId, postId, isLike: false}) != null)
+        return getFindByPk(postId);
 }

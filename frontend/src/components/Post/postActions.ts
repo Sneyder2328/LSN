@@ -6,7 +6,7 @@ import {
     CREATE_POST_ERROR,
     CREATE_POST_SUCCESS,
     LOAD_POSTS_SUCCESS,
-    LOAD_POSTS_ERROR
+    LOAD_POSTS_ERROR, INTERACT_POST_REQUEST, INTERACT_POST_ERROR, INTERACT_POST_SUCCESS
 } from "../../actions/types";
 import {LoadPostsError, LoadPostsRequest, PostActions, PostObject} from "./postReducer";
 import {normalize} from "normalizr";
@@ -63,16 +63,50 @@ export const loadPosts = () => async (dispatch: (actions: Actions) => any) => {
     }
 };
 
-const loadPostsRequest = (section: 'top'|'latest'): LoadPostsRequest => {
+const loadPostsRequest = (section: 'top' | 'latest'): LoadPostsRequest => {
     return {
         type: LOAD_POSTS_REQUEST,
         payload: {section}
     }
 };
 
-const loadPostsError = (section: 'top'|'latest'): LoadPostsError => {
+const loadPostsError = (section: 'top' | 'latest'): LoadPostsError => {
     return {
         type: LOAD_POSTS_ERROR,
         payload: {section}
+    }
+};
+
+export const likePost = (postId: string, undo: boolean) => async (dispatch: (actions: PostActions) => any) => {
+    console.log('likePost', postId, undo);
+    const typeInteraction = undo ? "unlike" : "like";
+    dispatch({type: INTERACT_POST_REQUEST, postId, typeInteraction});
+    try {
+        const likeInteraction = () => undo ? PostApi.unlikePost(postId) : PostApi.likePost(postId);
+        const response = await likeInteraction();
+        if (response.data)
+            dispatch({type: INTERACT_POST_SUCCESS, post: response.data, typeInteraction});
+        else
+            dispatch({type: INTERACT_POST_ERROR, postId, typeInteraction});
+    } catch (err) {
+        console.log(err);
+        dispatch({type: INTERACT_POST_ERROR, postId, typeInteraction});
+    }
+};
+
+export const dislikePost = (postId: string, undo: boolean) => async (dispatch: (actions: PostActions) => any) => {
+    console.log('dislikePost', postId, undo);
+    const typeInteraction = undo ? "undislike" : "dislike";
+    dispatch({type: INTERACT_POST_REQUEST, postId, typeInteraction});
+    try {
+        const dislikeInteraction = () => undo ? PostApi.undislikePost(postId) : PostApi.dislikePost(postId);
+        const response = await dislikeInteraction();
+        if (response.data)
+            dispatch({type: INTERACT_POST_SUCCESS, post: response.data, typeInteraction});
+        else
+            dispatch({type: INTERACT_POST_ERROR, postId, typeInteraction});
+    } catch (err) {
+        console.log(err);
+        dispatch({type: INTERACT_POST_ERROR, postId, typeInteraction});
     }
 };

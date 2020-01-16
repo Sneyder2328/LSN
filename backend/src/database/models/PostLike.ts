@@ -29,13 +29,26 @@ export default (sequelize: sequelize.Sequelize, DataTypes, User, Post) => {
     PostLike.removeAttribute('id');
 
     // @ts-ignore
-    PostLike.beforeUpsert(async (postLike, _) => {
-        console.log('beforeUpsert');
+    PostLike.afterCreate(async (postLike, _) => {
+        console.log('afterCreate');
         const post = await Post.findByPk(postLike.postId);
         if (postLike.isLike)
             await post.increment('likesCount', {by: 1});
         else
             await post.increment('dislikesCount', {by: 1});
+    });
+
+    // @ts-ignore
+    PostLike.afterUpdate(async (postLike, _) => {
+        console.log('afterUpdate');
+        const post = await Post.findByPk(postLike.postId);
+        if (postLike.isLike) {
+            await post.increment('likesCount', {by: 1});
+            await post.decrement('dislikesCount', {by: 1});
+        } else {
+            await post.increment('dislikesCount', {by: 1});
+            await post.decrement('likesCount', {by: 1});
+        }
     });
 
     // @ts-ignore

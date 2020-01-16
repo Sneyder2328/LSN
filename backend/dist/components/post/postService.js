@@ -30,7 +30,10 @@ function getPosts() {
     return __awaiter(this, void 0, void 0, function* () {
         let posts = yield Post.findAll({
             include: [
-                { model: Profile, as: 'authorProfile' },
+                {
+                    model: Profile,
+                    as: 'authorProfile'
+                },
                 {
                     model: Comment,
                     as: 'comments',
@@ -40,11 +43,19 @@ function getPosts() {
                 }
             ]
         });
-        posts = posts.map(post => post.toJSON()).map(post => (Object.assign(Object.assign({}, post), { comments: post.comments.map(comment => {
-                comment.authorProfile = comment.Profile;
-                delete comment.Profile;
-                return comment;
-            }).sort(utils_1.compareByDateDesc) }))).sort(utils_1.compareByDateAsc);
+        // @ts-ignore
+        const fetchLikeStatus = (postId, userId) => __awaiter(this, void 0, void 0, function* () { return (yield PostLike.findOne({ where: { postId, userId } })); });
+        console.log('new version 1.2');
+        const likeStatusList = yield Promise.all(posts.map(post => fetchLikeStatus(post.id, post.userId)));
+        console.log('likeStatusList', likeStatusList);
+        posts = posts.map(post => post.toJSON()).map(post => {
+            const likeStatus = likeStatusList.filter(it => it != null).find((postLike) => postLike.postId === post.id);
+            return Object.assign(Object.assign({}, post), { likeStatus: likeStatus != null ? (likeStatus.isLike === true ? 'like' : 'dislike') : undefined, comments: post.comments.map(comment => {
+                    comment.authorProfile = comment.Profile;
+                    delete comment.Profile;
+                    return comment;
+                }).sort(utils_1.compareByDateDesc) });
+        }).sort(utils_1.compareByDateAsc);
         if (!posts)
             return [];
         return posts;
@@ -54,7 +65,15 @@ exports.getPosts = getPosts;
 function likePost(userId, postId) {
     return __awaiter(this, void 0, void 0, function* () {
         // @ts-ignore
-        return PostLike.upsert({ userId, postId, isLike: true });
+        const currentLikePost = yield PostLike.findOne({ where: { userId, postId } });
+        if (currentLikePost) {
+            if (currentLikePost.isLike === false && (yield currentLikePost.update({ isLike: true })) != null)
+                return getFindByPk(postId);
+            return false;
+        }
+        // @ts-ignore
+        if ((yield PostLike.create({ userId, postId, isLike: true })) != null)
+            return getFindByPk(postId);
     });
 }
 exports.likePost = likePost;
@@ -62,15 +81,31 @@ function removeLikeOrDislikePost(userId, postId) {
     return __awaiter(this, void 0, void 0, function* () {
         // @ts-ignore
         const postLike = yield PostLike.findOne({ where: { userId, postId } });
-        return (yield postLike.destroy()) != null;
+        if ((yield postLike.destroy()) != null)
+            return getFindByPk(postId);
+        return false;
     });
 }
 exports.removeLikeOrDislikePost = removeLikeOrDislikePost;
+function getFindByPk(postId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return Post.findByPk(postId, {
+            attributes: ['id', 'likesCount', 'dislikesCount']
+        });
+    });
+}
 function dislikePost(userId, postId) {
     return __awaiter(this, void 0, void 0, function* () {
         // @ts-ignore
-        const postLike = yield PostLike.upsert({ userId, postId, isLike: false });
-        return postLike !== null;
+        const currentLikePost = yield PostLike.findOne({ where: { userId, postId } });
+        if (currentLikePost) {
+            if (currentLikePost.isLike === true && (yield currentLikePost.update({ isLike: false })) != null)
+                return getFindByPk(postId);
+            return false;
+        }
+        // @ts-ignore
+        if ((yield PostLike.create({ userId, postId, isLike: false })) != null)
+            return getFindByPk(postId);
     });
 }
 exports.dislikePost = dislikePost;

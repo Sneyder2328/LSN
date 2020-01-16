@@ -10,6 +10,7 @@ import {connect} from "react-redux";
 import classNames from "classnames";
 import {AppState} from "../../reducers";
 import {useTimeSincePublished} from "../../hooks/updateRelativeTimeHook";
+import {dislikePost, likePost} from "./postActions";
 
 export interface Profile {
     userId: string;
@@ -34,7 +35,7 @@ export interface PostResponse extends Post {
     dislikesCount: number;
     commentsCount: number;
     createdAt: any;
-
+    likeStatus: 'like' | 'dislike' | undefined;
     authorProfile: Profile;
     comments: Array<string>;
     currentUserLikeStatus: 'like' | 'dislike' | undefined;
@@ -47,9 +48,11 @@ type Props = {
     postResponse: PostResponse;
     createComment: (commentData: CommentRequest) => any;
     loadPreviousComments: (postId: string, offset: number, limit: number) => any;
+    likePost: (postId: string, undo: boolean) => any;
+    dislikePost: (postId: string, undo: boolean) => any;
 };
 
-const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComments}) => {
+const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComments, likePost, dislikePost}) => {
     const timeSincePublished = useTimeSincePublished(postResponse.createdAt);
     const [commentText, setCommentText] = useState<string>('');
 
@@ -85,10 +88,12 @@ const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComment
             </div>
             <p className='content'>{postResponse.text}</p>
             <div className='interact'>
-                <span>
+                <span onClick={() => likePost(postResponse.id, postResponse.likeStatus === 'like')}
+                      className={classNames({'selected': postResponse.likeStatus === 'like'})}>
                     <i className="fas fa-thumbs-up"/>{postResponse.likesCount !== 0 && postResponse.likesCount}
                 </span>
-                <span>
+                <span onClick={() => dislikePost(postResponse.id, postResponse.likeStatus === 'dislike')}
+                      className={classNames({'selected': postResponse.likeStatus === 'dislike'})}>
                     <i className="fas fa-thumbs-down"/>{postResponse.dislikesCount !== 0 && postResponse.dislikesCount}
                 </span>
                 <span>
@@ -124,14 +129,6 @@ const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComment
 };
 const mapStateToProps = (state: AppState, ownProps: { postId: string }): { postResponse: PostResponse } => {
     let postObject = state.entities.posts.entities[ownProps.postId];
-   /* let comments: Array<CommentResponse> = postObject.comments.map(commentId => {
-        const commentObject = state.entities.comments.entities[commentId];
-        let commentResponse: CommentResponse = {
-            ...commentObject,
-            authorProfile: state.entities.users.entities[commentObject.userId]
-        };
-        return commentResponse;
-    });*/
     return {
         postResponse: {
             ...postObject,
@@ -141,4 +138,4 @@ const mapStateToProps = (state: AppState, ownProps: { postId: string }): { postR
         }
     }
 };
-export default connect(mapStateToProps, {createComment, loadPreviousComments})(Post);
+export default connect(mapStateToProps, {createComment, loadPreviousComments, likePost, dislikePost})(Post);

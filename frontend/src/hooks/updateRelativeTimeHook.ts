@@ -13,7 +13,6 @@ export const useTimeSincePublishedShort = (createdAt: string) => {
     useEffect(() => {
         const interval = setInterval(() => {
             setTimeSincePublished(moment_shortformat(moment_shortformat() + getCurrentDiffInTime()).short(true));
-            console.log('updating useTimeSincePublishedShort');
         }, 60_000);
         return () => clearInterval(interval);
     }, []);
@@ -29,7 +28,6 @@ export const useTimeSincePublished = (createdAt: string) => {
     useEffect(() => {
         const interval = setInterval(() => {
             setTimeSincePublished(moment(dateEntityCreated).fromNow());
-            console.log('updating useTimeSincePublished');
         }, 60_000);
         return () => clearInterval(interval);
     }, []);

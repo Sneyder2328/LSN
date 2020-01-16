@@ -54,6 +54,7 @@
       margin: 0 6px;
       font-size: 1.04rem;
       padding: 10px 40px;
+      user-select: none;
 
       span {
         cursor: pointer;
@@ -67,6 +68,10 @@
       }
 
       span:hover {
+        color: $interactHoveredColor;
+      }
+
+      .selected {
         color: $interactHoveredColor;
       }
     }
