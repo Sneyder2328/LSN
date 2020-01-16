@@ -1,5 +1,4 @@
 import React, {useState} from "react";
-import moment from "moment";
 import './styles.scss'
 // @ts-ignore
 import uuidv4 from "uuid/v4";
@@ -10,6 +9,7 @@ import Comment from "../Comment/Comment"
 import {connect} from "react-redux";
 import classNames from "classnames";
 import {AppState} from "../../reducers";
+import {useTimeSincePublished} from "../../hooks/updateRelativeTimeHook";
 
 export interface Profile {
     userId: string;
@@ -50,7 +50,7 @@ type Props = {
 };
 
 const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComments}) => {
-    const timePublished = moment(new Date(postResponse.createdAt).getTime()).fromNow();
+    const timeSincePublished = useTimeSincePublished(postResponse.createdAt);
     const [commentText, setCommentText] = useState<string>('');
 
     const submitComment = () => {
@@ -80,7 +80,7 @@ const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComment
                 <div>
                     <p className='fullname'>{postResponse.authorProfile.fullname}</p>
                     <p className='username'>@{postResponse.authorProfile.username}</p>
-                    <p className='time-published'>{timePublished}</p>
+                    <p className='time-published'>{timeSincePublished}</p>
                 </div>
             </div>
             <p className='content'>{postResponse.text}</p>

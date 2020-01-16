@@ -1,11 +1,10 @@
 import React from "react";
 import {Profile} from "../Post/Post";
 import './styles.scss'
-// @ts-ignore
-import moment from "moment-shortformat";
 import {connect} from "react-redux";
 import {AppState} from "../../reducers";
 import {selectComment} from "./commentReducer";
+import {useTimeSincePublishedShort} from "../../hooks/updateRelativeTimeHook";
 
 export interface CommentResponse {
     id: string;
@@ -25,8 +24,8 @@ type Props = {
     comment: CommentResponse
 };
 const Comment: React.FC<Props> = ({comment}) => {
-    let diffInMillis = new Date().getTime() - new Date(comment.createdAt).getTime();
-    const timePublished = moment(moment() + diffInMillis).short(true);
+    const timeSincePublished = useTimeSincePublishedShort(comment.createdAt);
+
     return (
         <div className='comment'>
             <img className='avatar'
@@ -45,7 +44,7 @@ const Comment: React.FC<Props> = ({comment}) => {
                     <span>
                         <i className="fas fa-thumbs-down"/>{comment.dislikesCount !== 0 && comment.dislikesCount}
                     </span>
-                    <p className='time-published'>{timePublished}</p>
+                    <p className='time-published'>{timeSincePublished}</p>
                 </div>
             </div>
         </div>

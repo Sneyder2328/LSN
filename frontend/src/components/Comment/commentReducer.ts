@@ -102,14 +102,6 @@ export const commentsReducer = (state: CommentsState = initialCommentsState, act
     }
 };
 
-export const commentSelector = (state: AppState, commentId: string) => {
-    let commentObject = selectCommentObject(state, commentId);
-    return {
-        ...commentObject,
-        authorProfile: state.entities.users.entities[commentObject.userId]
-    };
-};
-
 const selectCommentObject = (state: AppState, commentId: string) => {
     return state.entities.comments.entities[commentId];
 };
