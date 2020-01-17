@@ -11,6 +11,7 @@ import classNames from "classnames";
 import {AppState} from "../../reducers";
 import {useTimeSincePublished} from "../../hooks/updateRelativeTimeHook";
 import {dislikePost, likePost} from "./postActions";
+import {selectPost} from "./postReducer";
 
 export interface Profile {
     userId: string;
@@ -38,7 +39,7 @@ export interface PostResponse extends Post {
     likeStatus: 'like' | 'dislike' | undefined;
     authorProfile: Profile;
     comments: Array<string>;
-    loadingPreviousComments?: boolean;
+    isLoadingPreviousComments?: boolean;
     isCreatingComment?: boolean;
 }
 
@@ -55,7 +56,6 @@ const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComment
     const timeSincePublished = useTimeSincePublished(postResponse.createdAt);
     const [commentText, setCommentText] = useState<string>('');
     const [focusInput, setFocusInput] = useState<boolean>(false);
-
     const submitComment = () => {
         if (commentText.trim() !== '') {
             const newComment: CommentRequest = {
@@ -116,7 +116,7 @@ const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComment
                 <span onClick={loadMoreComments}>
                     <i className="showMoreComments fas fa-angle-up"/>
                     Load more comments
-                    <i className={classNames('loadingComments fas fa-spinner fa-pulse', {'hide': !postResponse.loadingPreviousComments})}/>
+                    <i className={classNames('loadingComments fas fa-spinner fa-pulse', {'hide': !postResponse.isLoadingPreviousComments})}/>
                 </span>
             </div>
             <div className={classNames('comments-container', {'hide': postResponse.comments.length === 0})}>
@@ -137,14 +137,12 @@ const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComment
         </div>
     );
 };
-const mapStateToProps = (state: AppState, ownProps: { postId: string }): { postResponse: PostResponse } => {
-    let postObject = state.entities.posts.entities[ownProps.postId];
-    return {
-        postResponse: {
-            ...postObject,
-            authorProfile: state.entities.users.entities[postObject.userId],
-            loadingPreviousComments: state.entities.posts.metas[postObject.id] && state.entities.posts.metas[postObject.id].isLoadingPreviousComments
+const makeMapStateToProps = () => {
+    const postSelector = selectPost();
+    return (state: AppState, ownProps: { postId: string }) => {
+        return {
+            postResponse: postSelector(state, ownProps.postId)
         }
-    }
+    };
 };
-export default connect(mapStateToProps, {createComment, loadPreviousComments, likePost, dislikePost})(Post);
+export default connect(makeMapStateToProps, {createComment, loadPreviousComments, likePost, dislikePost})(Post);

@@ -13,7 +13,7 @@ import {
 } from "../../actions/types";
 import {Post} from "./Post";
 import {HashTable} from "../../utils/utils";
-import {Actions} from "../../reducers";
+import {Actions, AppState} from "../../reducers";
 import {createSelector} from "reselect";
 
 export interface PostObject extends Post {
@@ -248,4 +248,24 @@ export const postsReducer = (state: PostState = initialPostsState, action: Actio
     }
 };
 
-//export const selectPost = () => createSelector()
+const selectPostObject = (state: AppState, postId: string) => {
+    return state.entities.posts.entities[postId];
+};
+
+const selectCommentAuthorObject = (state: AppState, postId: string) => {
+    return state.entities.users.entities[selectPostObject(state, postId).userId]
+};
+
+const selectPostMetadata = (state: AppState, postId: string) => {
+    return state.entities.posts.metas[postId];
+};
+
+export const selectPost = () => createSelector([selectPostObject, selectCommentAuthorObject, selectPostMetadata],
+    (postObject, authorObject, postMetadata) => {
+        return {
+            ...postObject,
+            authorProfile: authorObject,
+            isLoadingPreviousComments: postMetadata && postMetadata.isLoadingPreviousComments
+        };
+    }
+);
