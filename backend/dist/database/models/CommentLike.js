@@ -36,12 +36,23 @@ exports.default = (sequelize, DataTypes, User, Comment) => {
         }
     });
     CommentLike.removeAttribute('id');
-    CommentLike.beforeUpsert((commentLike, _) => __awaiter(void 0, void 0, void 0, function* () {
+    CommentLike.afterCreate((commentLike, _) => __awaiter(void 0, void 0, void 0, function* () {
         const comment = yield Comment.findByPk(commentLike.commentId);
         if (commentLike.isLike)
             yield comment.increment('likesCount', { by: 1 });
         else
             yield comment.increment('dislikesCount', { by: 1 });
+    }));
+    CommentLike.afterUpdate((commentLike, _) => __awaiter(void 0, void 0, void 0, function* () {
+        const comment = yield Comment.findByPk(commentLike.commentId);
+        if (commentLike.isLike) {
+            yield comment.increment('likesCount', { by: 1 });
+            yield comment.decrement('dislikesCount', { by: 1 });
+        }
+        else {
+            yield comment.increment('dislikesCount', { by: 1 });
+            yield comment.decrement('likesCount', { by: 1 });
+        }
     }));
     CommentLike.beforeDestroy((commentLike, _) => __awaiter(void 0, void 0, void 0, function* () {
         console.log('beforeDestroy');

@@ -34,7 +34,7 @@ router.post(endpoints_1.default.post.LIKE_POST(':postId'), authenticate_1.defaul
     res.status(httpResponseCodes_1.default.OK).send(response);
 })));
 router.delete(endpoints_1.default.post.LIKE_POST(':postId'), authenticate_1.default, validate_1.likePostValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const response = yield postService_1.removeLikeOrDislikePost(req.userId, req.params.postId);
+    const response = yield postService_1.removeLikeOrDislikeFromPost(req.userId, req.params.postId);
     res.status(httpResponseCodes_1.default.OK).send(response);
 })));
 router.post(endpoints_1.default.post.DISLIKE_POST(':postId'), authenticate_1.default, validate_1.likePostValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -42,7 +42,7 @@ router.post(endpoints_1.default.post.DISLIKE_POST(':postId'), authenticate_1.def
     res.status(httpResponseCodes_1.default.OK).send(response);
 })));
 router.delete(endpoints_1.default.post.DISLIKE_POST(':postId'), authenticate_1.default, validate_1.likePostValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const response = yield postService_1.removeLikeOrDislikePost(req.userId, req.params.postId);
+    const response = yield postService_1.removeLikeOrDislikeFromPost(req.userId, req.params.postId);
     res.status(httpResponseCodes_1.default.OK).send(response);
 })));
 exports.default = router;

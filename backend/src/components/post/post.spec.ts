@@ -51,17 +51,21 @@ describe('POST /createPost', () => {
 });
 
 describe('GET /posts', () => {
+    let accessToken;
     beforeEach(async () => {
         await wipeOutDatabase();
+        const {user} = await createUserAndProfile(users[0], profiles[0]);
         // @ts-ignore
-        await Promise.all(users.map((user) => User.create(user)));
-        await Promise.all(profiles.map((profile) => Profile.create(profile)));
+        await Promise.all(users.slice(1).map((user) => User.create(user)));
+        await Promise.all(profiles.slice(1).map((profile) => Profile.create(profile)));
         await Promise.all(posts.map((post) => Post.create(post)));
+        accessToken = await signJWT(user.id);
     });
 
     it('should return text posts with author metadata', (done) => {
         request(app)
             .get(endpoints.post.GET_POSTS)
+            .set(config.headers.accessToken, accessToken)
             .expect(httpCodes.OK)
             .expect((res) => {
                 expect(res.body.length).toBe(posts.length);
@@ -88,6 +92,7 @@ describe('GET /posts', () => {
 
         request(app)
             .get(endpoints.post.GET_POSTS)
+            .set(config.headers.accessToken, accessToken)
             .expect(httpCodes.OK)
             .expect((res) => {
                 expect(res.body.length).toBe(posts.length);

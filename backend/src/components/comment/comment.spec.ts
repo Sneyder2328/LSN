@@ -9,7 +9,7 @@ const {Comment, CommentLike, Post} = models;
 import {comments, posts, profiles, users} from "../../test/seed";
 import httpCodes from "../../utils/constants/httpResponseCodes";
 
-describe('POST /createComment', () => {
+describe('POST /posts/:postId/comments', () => {
     let accessToken;
     beforeEach(async () => {
         await wipeOutDatabase();

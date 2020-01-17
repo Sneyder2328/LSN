@@ -81,8 +81,8 @@ export const likePost = (postId: string, undo: boolean) => async (dispatch: (act
     console.log('likePost', postId, undo);
     const typeInteraction = undo ? "unlike" : "like";
     dispatch({type: INTERACT_POST_REQUEST, postId, typeInteraction});
+    const likeInteraction = () => undo ? PostApi.unlikePost(postId) : PostApi.likePost(postId);
     try {
-        const likeInteraction = () => undo ? PostApi.unlikePost(postId) : PostApi.likePost(postId);
         const response = await likeInteraction();
         if (response.data)
             dispatch({type: INTERACT_POST_SUCCESS, post: response.data, typeInteraction});
@@ -98,8 +98,8 @@ export const dislikePost = (postId: string, undo: boolean) => async (dispatch: (
     console.log('dislikePost', postId, undo);
     const typeInteraction = undo ? "undislike" : "dislike";
     dispatch({type: INTERACT_POST_REQUEST, postId, typeInteraction});
+    const dislikeInteraction = () => undo ? PostApi.undislikePost(postId) : PostApi.dislikePost(postId);
     try {
-        const dislikeInteraction = () => undo ? PostApi.undislikePost(postId) : PostApi.dislikePost(postId);
         const response = await dislikeInteraction();
         if (response.data)
             dispatch({type: INTERACT_POST_SUCCESS, post: response.data, typeInteraction});

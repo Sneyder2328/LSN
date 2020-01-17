@@ -26,25 +26,48 @@ function createComment(userId, postId, { id, type, text, img }) {
 exports.createComment = createComment;
 function likeComment(userId, commentId) {
     return __awaiter(this, void 0, void 0, function* () {
-        const commentLike = yield CommentLike.upsert({ userId, commentId, isLike: true });
-        return commentLike !== null;
+        return interactWithComment(userId, commentId, true);
     });
 }
 exports.likeComment = likeComment;
-function removeLikeOrDislikeComment(userId, commentId) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const commentLike = yield CommentLike.findOne({ where: { userId, commentId } });
-        return (yield commentLike.destroy()) != null;
-    });
-}
-exports.removeLikeOrDislikeComment = removeLikeOrDislikeComment;
 function dislikeComment(userId, commentId) {
     return __awaiter(this, void 0, void 0, function* () {
-        const commentLike = yield CommentLike.upsert({ userId, commentId, isLike: false });
-        return commentLike !== null;
+        return interactWithComment(userId, commentId, false);
     });
 }
 exports.dislikeComment = dislikeComment;
+function interactWithComment(userId, commentId, isLike) {
+    return __awaiter(this, void 0, void 0, function* () {
+        // @ts-ignore
+        const currentCommentLike = yield CommentLike.findOne({ where: { userId, commentId } });
+        if (currentCommentLike) {
+            if (currentCommentLike.isLike === !isLike && (yield currentCommentLike.update({ isLike })) != null) {
+                return findCommentLikesInfoByPk(commentId);
+            }
+        }
+        // @ts-ignore
+        else if ((yield CommentLike.create({ userId, commentId, isLike })) != null)
+            return findCommentLikesInfoByPk(commentId);
+        return false;
+    });
+}
+function removeLikeOrDislikeComment(userId, commentId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        // @ts-ignore
+        const commentLike = yield CommentLike.findOne({ where: { userId, commentId } });
+        if ((yield commentLike.destroy()) != null)
+            return findCommentLikesInfoByPk(commentId);
+        return false;
+    });
+}
+exports.removeLikeOrDislikeComment = removeLikeOrDislikeComment;
+function findCommentLikesInfoByPk(commentId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return (yield Comment.findByPk(commentId, {
+            attributes: ['id', 'likesCount', 'dislikesCount']
+        })).dataValues;
+    });
+}
 function getComments(postId, offset, limit) {
     return __awaiter(this, void 0, void 0, function* () {
         let comments = yield Comment.findAll({

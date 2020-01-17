@@ -38,7 +38,6 @@ exports.default = (sequelize, DataTypes, User, Post) => {
     PostLike.removeAttribute('id');
     // @ts-ignore
     PostLike.afterCreate((postLike, _) => __awaiter(void 0, void 0, void 0, function* () {
-        console.log('afterCreate');
         const post = yield Post.findByPk(postLike.postId);
         if (postLike.isLike)
             yield post.increment('likesCount', { by: 1 });
@@ -47,7 +46,6 @@ exports.default = (sequelize, DataTypes, User, Post) => {
     }));
     // @ts-ignore
     PostLike.afterUpdate((postLike, _) => __awaiter(void 0, void 0, void 0, function* () {
-        console.log('afterUpdate');
         const post = yield Post.findByPk(postLike.postId);
         if (postLike.isLike) {
             yield post.increment('likesCount', { by: 1 });

@@ -1,10 +1,35 @@
 import {createSelector} from 'reselect'
 import {
-    CREATE_COMMENT_SUCCESS,
-    LOAD_COMMENTS_SUCCESS, SET_COMMENTS,
+    CREATE_COMMENT_SUCCESS, INTERACT_COMMENT_ERROR,
+    INTERACT_COMMENT_REQUEST,
+    INTERACT_COMMENT_SUCCESS,
+    LOAD_COMMENTS_SUCCESS,
+    SET_COMMENTS,
 } from "../../actions/types";
 import {HashTable} from "../../utils/utils";
 import {Actions, AppState} from "../../reducers";
+
+export interface CommentObject {
+    id: string;
+    userId: string;
+    postId: string;
+    type: 'text' | 'img';
+    text: string;
+    img: string;
+    createdAt: string;
+    likesCount: number;
+    dislikesCount: number;
+    likeStatus: 'like' | 'dislike' | undefined;
+}
+
+export interface CommentMetadata {
+    likeStatus: 'like' | 'dislike' | undefined;
+}
+
+export type CommentsState = {
+    entities: HashTable<CommentObject>
+    metas: HashTable<CommentMetadata>;
+};
 
 type SetComments = {
     type: 'SET_COMMENTS';
@@ -39,6 +64,28 @@ type LoadCommentsError = {
     postId: string;
 };
 
+type InteractCommentRequest = {
+    type: 'INTERACT_COMMENT_REQUEST';
+    commentId: string;
+    typeInteraction: 'like' | 'unlike' | 'dislike' | 'undislike';
+}
+
+type InteractCommentSuccess = {
+    type: 'INTERACT_COMMENT_SUCCESS';
+    comment: {
+        id: string;
+        likesCount: number;
+        dislikesCount: number;
+    };
+    typeInteraction: 'like' | 'unlike' | 'dislike' | 'undislike';
+}
+
+type InteractCommentError = {
+    type: 'INTERACT_COMMENT_ERROR';
+    commentId: string;
+    typeInteraction: 'like' | 'unlike' | 'dislike' | 'undislike';
+}
+
 export type CommentActions =
     SetComments
     | CreateCommentRequest
@@ -46,33 +93,54 @@ export type CommentActions =
     | CreateCommentError
     | LoadCommentsRequest
     | LoadCommentsSuccess
-    | LoadCommentsError;
-
-
-export interface CommentObject {
-    id: string;
-    userId: string;
-    postId: string;
-    type: 'text' | 'img';
-    text: string;
-    img: string;
-    createdAt: string;
-    likesCount: number;
-    dislikesCount: number;
-    //currentUserLikeStatus: 'like' | 'dislike' | undefined;
-}
-
-export type CommentsState = {
-    entities: HashTable<CommentObject>
-};
+    | LoadCommentsError
+    | InteractCommentRequest
+    | InteractCommentSuccess
+    | InteractCommentError;
 
 
 export const initialCommentsState: CommentsState = {
-    entities: {}
+    entities: {},
+    metas: {}
 };
 
 export const commentsReducer = (state: CommentsState = initialCommentsState, action: Actions): CommentsState => {
     switch (action.type) {
+        case INTERACT_COMMENT_REQUEST:
+            return {
+                ...state,
+                metas: {
+                    ...state.metas,
+                    [action.commentId]: {
+                        ...state.metas[action.commentId],
+                        likeStatus: (action.typeInteraction === "like" || action.typeInteraction === "dislike") ? action.typeInteraction : undefined
+                    }
+                }
+            };
+        case INTERACT_COMMENT_SUCCESS:
+            return {
+                ...state,
+                entities: {
+                    ...state.entities,
+                    [action.comment.id]: {
+                        ...state.entities[action.comment.id],
+                        likeStatus: (action.typeInteraction === "like" || action.typeInteraction === "dislike") ? action.typeInteraction : undefined,
+                        likesCount: action.comment.likesCount,
+                        dislikesCount: action.comment.dislikesCount,
+                    }
+                }
+            };
+        case INTERACT_COMMENT_ERROR:
+            return {
+                ...state,
+                metas: {
+                    ...state.metas,
+                    [action.commentId]: {
+                        ...state.metas[action.commentId],
+                        likeStatus: undefined
+                    }
+                }
+            };
         case SET_COMMENTS:
             return {
                 ...state,

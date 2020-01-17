@@ -38,7 +38,6 @@ export interface PostResponse extends Post {
     likeStatus: 'like' | 'dislike' | undefined;
     authorProfile: Profile;
     comments: Array<string>;
-    currentUserLikeStatus: 'like' | 'dislike' | undefined;
     loadingPreviousComments?: boolean;
     isCreatingComment?: boolean;
 }
@@ -133,7 +132,6 @@ const mapStateToProps = (state: AppState, ownProps: { postId: string }): { postR
         postResponse: {
             ...postObject,
             authorProfile: state.entities.users.entities[postObject.userId],
-            currentUserLikeStatus: undefined,
             loadingPreviousComments: state.entities.posts.metas[postObject.id] && state.entities.posts.metas[postObject.id].isLoadingPreviousComments
         }
     }

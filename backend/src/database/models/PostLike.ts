@@ -30,7 +30,6 @@ export default (sequelize: sequelize.Sequelize, DataTypes, User, Post) => {
 
     // @ts-ignore
     PostLike.afterCreate(async (postLike, _) => {
-        console.log('afterCreate');
         const post = await Post.findByPk(postLike.postId);
         if (postLike.isLike)
             await post.increment('likesCount', {by: 1});
@@ -40,7 +39,6 @@ export default (sequelize: sequelize.Sequelize, DataTypes, User, Post) => {
 
     // @ts-ignore
     PostLike.afterUpdate(async (postLike, _) => {
-        console.log('afterUpdate');
         const post = await Post.findByPk(postLike.postId);
         if (postLike.isLike) {
             await post.increment('likesCount', {by: 1});

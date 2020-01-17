@@ -5,6 +5,8 @@ import {connect} from "react-redux";
 import {AppState} from "../../reducers";
 import {selectComment} from "./commentReducer";
 import {useTimeSincePublishedShort} from "../../hooks/updateRelativeTimeHook";
+import {dislikeComment, likeComment} from "./commentActions";
+import classNames from "classnames";
 
 export interface CommentResponse {
     id: string;
@@ -17,13 +19,16 @@ export interface CommentResponse {
     likesCount: number;
     dislikesCount: number;
     authorProfile: Profile;
+    likeStatus: 'like' | 'dislike' | undefined;
 }
 
 type Props = {
     commentId: string;
-    comment: CommentResponse
+    comment: CommentResponse;
+    likeComment: (commentId: string, undo: boolean) => any;
+    dislikeComment: (commentId: string, undo: boolean) => any;
 };
-const Comment: React.FC<Props> = ({comment}) => {
+const Comment: React.FC<Props> = ({comment, likeComment, dislikeComment}) => {
     const timeSincePublished = useTimeSincePublishedShort(comment.createdAt);
 
     return (
@@ -38,10 +43,12 @@ const Comment: React.FC<Props> = ({comment}) => {
                 </div>
                 <p className='content'>{comment.text}</p>
                 <div className='interact-comment'>
-                    <span>
+                    <span onClick={() => likeComment(comment.id, comment.likeStatus === 'like')}
+                          className={classNames({'selected': comment.likeStatus === 'like'})}>
                         <i className="fas fa-thumbs-up"/>{comment.likesCount !== 0 && comment.likesCount}
                     </span>
-                    <span>
+                    <span onClick={() => dislikeComment(comment.id, comment.likeStatus === 'dislike')}
+                          className={classNames({'selected': comment.likeStatus === 'dislike'})}>
                         <i className="fas fa-thumbs-down"/>{comment.dislikesCount !== 0 && comment.dislikesCount}
                     </span>
                     <p className='time-published'>{timeSincePublished}</p>
@@ -58,4 +65,4 @@ const makeMapStateToProps = () => {
         };
     };
 };
-export default connect(makeMapStateToProps)(Comment)
+export default connect(makeMapStateToProps, {likeComment, dislikeComment})(Comment)

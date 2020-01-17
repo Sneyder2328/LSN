@@ -26,12 +26,23 @@ export default (sequelize, DataTypes, User, Comment) => {
     });
     CommentLike.removeAttribute('id');
 
-    CommentLike.beforeUpsert(async (commentLike, _) => {
+    CommentLike.afterCreate(async (commentLike, _) => {
         const comment = await Comment.findByPk(commentLike.commentId);
         if (commentLike.isLike)
             await comment.increment('likesCount', {by: 1});
         else
             await comment.increment('dislikesCount', {by: 1});
+    });
+
+    CommentLike.afterUpdate(async (commentLike, _) => {
+        const comment = await Comment.findByPk(commentLike.commentId);
+        if (commentLike.isLike) {
+            await comment.increment('likesCount', {by: 1});
+            await comment.decrement('dislikesCount', {by: 1});
+        } else {
+            await comment.increment('dislikesCount', {by: 1});
+            await comment.decrement('likesCount', {by: 1});
+        }
     });
 
     CommentLike.beforeDestroy(async (commentLike, _) => {

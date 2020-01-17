@@ -1,9 +1,10 @@
 import {models} from "../../database/database";
 
-const {Comment, Post, PostLike, Profile} = models;
+const {Comment, Post, PostLike, Profile, CommentLike} = models;
 import {LIMIT_COMMENTS_PER_POST} from "../../utils/constants";
 import {compareByDateAsc, compareByDateDesc, genUUID} from "../../utils/utils";
 import {PostNotCreatedError} from "../../utils/errors/PostNotCreatedError";
+import {LikesInfo} from "../../utils/types";
 
 export async function createPost(userId, type, text, img) {
     const post = await Post.create({id: genUUID(), userId, type, text, img});
@@ -31,17 +32,36 @@ export async function getPosts(userId: string) {
         ]
     });
     // @ts-ignore
-    const fetchLikeStatus = async (postId, userId) => (await PostLike.findOne({where: {postId, userId}}));
-    console.log('new version 1.2');
-    const likeStatusList = await Promise.all(posts.map(post => fetchLikeStatus(post.id, userId)));
-    console.log('likeStatusList', likeStatusList);
+    const fetchPostLikeStatus = async (postId, userId) => (await PostLike.findOne({where: {postId, userId}}));
+    // @ts-ignore
+    const fetchCommentLikeStatus = async (commentId, userId) => (await CommentLike.findOne({
+        where: {
+            commentId,
+            userId
+        }
+    }));
+
+    const postLikeStatusList = (await Promise.all(
+            posts.map(post => fetchPostLikeStatus(post.id, userId)))
+    ).filter(it => it != null);
+    console.log('postLikeStatusList', postLikeStatusList);
+
+    const commentLikeStatusList = (await Promise.all(
+            posts.map(post => post.comments.map(comment => comment.id))
+                .filter(it => it.lenght !== 0)
+                .flat()
+                .map(commentId => fetchCommentLikeStatus(commentId, userId)))
+    ).filter(it => it != null);
+    console.log('commentLikeStatusList', commentLikeStatusList);
 
     posts = posts.map(post => post.toJSON()).map(post => {
-        const likeStatus: any = likeStatusList.filter(it => it != null).find((postLike: any) => postLike.postId === post.id);
+        const postLikeStatus: any = postLikeStatusList.find((postLike: any) => postLike.postId === post.id);
         return {
             ...post,
-            likeStatus: likeStatus != null ? (likeStatus.isLike === true ? 'like' : 'dislike') : undefined,
+            likeStatus: postLikeStatus != null ? (postLikeStatus.isLike === true ? 'like' : 'dislike') : undefined,
             comments: post.comments.map(comment => {
+                const commentLikeStatus: any = commentLikeStatusList.find((commentLike: any) => commentLike.commentId === comment.id);
+                comment.likeStatus = commentLikeStatus != null ? (commentLikeStatus.isLike === true ? 'like' : 'dislike') : undefined;
                 comment.authorProfile = comment.Profile;
                 delete comment.Profile;
                 return comment;
@@ -53,42 +73,38 @@ export async function getPosts(userId: string) {
     return posts;
 }
 
-export async function likePost(userId, postId) {
-    // @ts-ignore
-    const currentLikePost = await PostLike.findOne({where: {userId, postId}});
-    if (currentLikePost) {
-        if (currentLikePost.isLike === false && await currentLikePost.update({isLike: true}) != null)
-            return getFindByPk(postId);
-        return false;
-    }
-    // @ts-ignore
-    if (await PostLike.create({userId, postId, isLike: true}) != null)
-        return getFindByPk(postId);
+export async function likePost(userId, postId): Promise<LikesInfo | false> {
+    return interactWithPost(userId, postId, true);
 }
 
-export async function removeLikeOrDislikePost(userId, postId) {
+export async function dislikePost(userId, postId): Promise<LikesInfo | false> {
+    return interactWithPost(userId, postId, false);
+}
+
+async function interactWithPost(userId, postId, isLike: boolean): Promise<LikesInfo | false> {
     // @ts-ignore
-    const postLike = await PostLike.findOne({where: {userId, postId}});
-    if (await postLike.destroy() != null)
-        return getFindByPk(postId);
+    const currentPostLike = await PostLike.findOne({where: {userId, postId}});
+    if (currentPostLike) {
+        if (currentPostLike.isLike === !isLike && await currentPostLike.update({isLike}) != null) {
+            return findPostLikesInfoByPk(postId);
+        }
+    }
+    // @ts-ignore
+    else if (await PostLike.create({userId, postId, isLike}) != null)
+        return findPostLikesInfoByPk(postId);
     return false;
 }
 
-async function getFindByPk(postId) {
-    return Post.findByPk(postId, {
-        attributes: ['id', 'likesCount', 'dislikesCount']
-    });
+export async function removeLikeOrDislikeFromPost(userId, postId): Promise<LikesInfo | false> {
+    // @ts-ignore
+    const postLike = await PostLike.findOne({where: {userId, postId}});
+    if (await postLike.destroy() != null)
+        return findPostLikesInfoByPk(postId);
+    return false;
 }
 
-export async function dislikePost(userId, postId) {
-    // @ts-ignore
-    const currentLikePost = await PostLike.findOne({where: {userId, postId}});
-    if (currentLikePost) {
-        if (currentLikePost.isLike === true && await currentLikePost.update({isLike: false}) != null)
-            return getFindByPk(postId);
-        return false;
-    }
-    // @ts-ignore
-    if (await PostLike.create({userId, postId, isLike: false}) != null)
-        return getFindByPk(postId);
+async function findPostLikesInfoByPk(postId): Promise<LikesInfo> {
+    return (await Post.findByPk(postId, {
+        attributes: ['id', 'likesCount', 'dislikesCount']
+    })).dataValues;
 }

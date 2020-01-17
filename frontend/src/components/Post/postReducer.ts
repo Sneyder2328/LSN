@@ -14,6 +14,7 @@ import {
 import {Post} from "./Post";
 import {HashTable} from "../../utils/utils";
 import {Actions} from "../../reducers";
+import {createSelector} from "reselect";
 
 export interface PostObject extends Post {
     id: string;
@@ -246,3 +247,5 @@ export const postsReducer = (state: PostState = initialPostsState, action: Actio
             return state;
     }
 };
+
+//export const selectPost = () => createSelector()

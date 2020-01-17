@@ -22,7 +22,7 @@ const database_1 = require("../../database/database");
 const { Comment, CommentLike, Post } = database_1.models;
 const seed_1 = require("../../test/seed");
 const httpResponseCodes_1 = __importDefault(require("../../utils/constants/httpResponseCodes"));
-describe('POST /createComment', () => {
+describe('POST /posts/:postId/comments', () => {
     let accessToken;
     beforeEach(() => __awaiter(void 0, void 0, void 0, function* () {
         yield setup_1.wipeOutDatabase();

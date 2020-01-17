@@ -1,5 +1,5 @@
 import {Router} from "express";
-import {createPost, dislikePost, getPosts, likePost, removeLikeOrDislikePost} from "./postService";
+import {createPost, dislikePost, getPosts, likePost, removeLikeOrDislikeFromPost} from "./postService";
 import authenticate from "../../middlewares/authenticate";
 import {createPostValidationRules, likePostValidationRules, validate} from "../../middlewares/validate";
 import {handleErrorAsync} from "../../middlewares/handleErrorAsync";
@@ -25,7 +25,7 @@ router.post(endpoints.post.LIKE_POST(':postId'), authenticate, likePostValidatio
 }));
 
 router.delete(endpoints.post.LIKE_POST(':postId'), authenticate, likePostValidationRules, validate, handleErrorAsync(async (req, res) => {
-    const response = await removeLikeOrDislikePost(req.userId, req.params.postId);
+    const response = await removeLikeOrDislikeFromPost(req.userId, req.params.postId);
     res.status(httpCodes.OK).send(response);
 }));
 
@@ -35,7 +35,7 @@ router.post(endpoints.post.DISLIKE_POST(':postId'), authenticate, likePostValida
 }));
 
 router.delete(endpoints.post.DISLIKE_POST(':postId'), authenticate, likePostValidationRules, validate, handleErrorAsync(async (req, res) => {
-    const response = await removeLikeOrDislikePost(req.userId, req.params.postId);
+    const response = await removeLikeOrDislikeFromPost(req.userId, req.params.postId);
     res.status(httpCodes.OK).send(response);
 }));
 

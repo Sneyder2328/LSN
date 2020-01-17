@@ -60,16 +60,20 @@ describe('POST /createPost', () => {
     });
 });
 describe('GET /posts', () => {
+    let accessToken;
     beforeEach(() => __awaiter(void 0, void 0, void 0, function* () {
         yield setup_1.wipeOutDatabase();
+        const { user } = yield setup_1.createUserAndProfile(seed_1.users[0], seed_1.profiles[0]);
         // @ts-ignore
-        yield Promise.all(seed_1.users.map((user) => User.create(user)));
-        yield Promise.all(seed_1.profiles.map((profile) => Profile.create(profile)));
+        yield Promise.all(seed_1.users.slice(1).map((user) => User.create(user)));
+        yield Promise.all(seed_1.profiles.slice(1).map((profile) => Profile.create(profile)));
         yield Promise.all(seed_1.posts.map((post) => Post.create(post)));
+        accessToken = yield JWTHelper_1.signJWT(user.id);
     }));
     it('should return text posts with author metadata', (done) => {
         supertest_1.default(index_1.app)
             .get(endpoints_1.default.post.GET_POSTS)
+            .set(config_1.default.headers.accessToken, accessToken)
             .expect(httpResponseCodes_1.default.OK)
             .expect((res) => {
             expect(res.body.length).toBe(seed_1.posts.length);
@@ -94,6 +98,7 @@ describe('GET /posts', () => {
         yield Promise.all(seed_1.comments.map((comment) => Comment.create(comment)));
         supertest_1.default(index_1.app)
             .get(endpoints_1.default.post.GET_POSTS)
+            .set(config_1.default.headers.accessToken, accessToken)
             .expect(httpResponseCodes_1.default.OK)
             .expect((res) => {
             expect(res.body.length).toBe(seed_1.posts.length);

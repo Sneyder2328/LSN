@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = require("../../database/database");
-const { Comment, Post, PostLike, Profile } = database_1.models;
+const { Comment, Post, PostLike, Profile, CommentLike } = database_1.models;
 const constants_1 = require("../../utils/constants");
 const utils_1 = require("../../utils/utils");
 const PostNotCreatedError_1 = require("../../utils/errors/PostNotCreatedError");
@@ -44,13 +44,28 @@ function getPosts(userId) {
             ]
         });
         // @ts-ignore
-        const fetchLikeStatus = (postId, userId) => __awaiter(this, void 0, void 0, function* () { return (yield PostLike.findOne({ where: { postId, userId } })); });
-        console.log('new version 1.2');
-        const likeStatusList = yield Promise.all(posts.map(post => fetchLikeStatus(post.id, userId)));
-        console.log('likeStatusList', likeStatusList);
+        const fetchPostLikeStatus = (postId, userId) => __awaiter(this, void 0, void 0, function* () { return (yield PostLike.findOne({ where: { postId, userId } })); });
+        // @ts-ignore
+        const fetchCommentLikeStatus = (commentId, userId) => __awaiter(this, void 0, void 0, function* () {
+            return (yield CommentLike.findOne({
+                where: {
+                    commentId,
+                    userId
+                }
+            }));
+        });
+        const postLikeStatusList = (yield Promise.all(posts.map(post => fetchPostLikeStatus(post.id, userId)))).filter(it => it != null);
+        console.log('postLikeStatusList', postLikeStatusList);
+        const commentLikeStatusList = (yield Promise.all(posts.map(post => post.comments.map(comment => comment.id))
+            .filter(it => it.lenght !== 0)
+            .flat()
+            .map(commentId => fetchCommentLikeStatus(commentId, userId)))).filter(it => it != null);
+        console.log('commentLikeStatusList', commentLikeStatusList);
         posts = posts.map(post => post.toJSON()).map(post => {
-            const likeStatus = likeStatusList.filter(it => it != null).find((postLike) => postLike.postId === post.id);
-            return Object.assign(Object.assign({}, post), { likeStatus: likeStatus != null ? (likeStatus.isLike === true ? 'like' : 'dislike') : undefined, comments: post.comments.map(comment => {
+            const postLikeStatus = postLikeStatusList.find((postLike) => postLike.postId === post.id);
+            return Object.assign(Object.assign({}, post), { likeStatus: postLikeStatus != null ? (postLikeStatus.isLike === true ? 'like' : 'dislike') : undefined, comments: post.comments.map(comment => {
+                    const commentLikeStatus = commentLikeStatusList.find((commentLike) => commentLike.commentId === comment.id);
+                    comment.likeStatus = commentLikeStatus != null ? (commentLikeStatus.isLike === true ? 'like' : 'dislike') : undefined;
                     comment.authorProfile = comment.Profile;
                     delete comment.Profile;
                     return comment;
@@ -64,48 +79,45 @@ function getPosts(userId) {
 exports.getPosts = getPosts;
 function likePost(userId, postId) {
     return __awaiter(this, void 0, void 0, function* () {
-        // @ts-ignore
-        const currentLikePost = yield PostLike.findOne({ where: { userId, postId } });
-        if (currentLikePost) {
-            if (currentLikePost.isLike === false && (yield currentLikePost.update({ isLike: true })) != null)
-                return getFindByPk(postId);
-            return false;
-        }
-        // @ts-ignore
-        if ((yield PostLike.create({ userId, postId, isLike: true })) != null)
-            return getFindByPk(postId);
+        return interactWithPost(userId, postId, true);
     });
 }
 exports.likePost = likePost;
-function removeLikeOrDislikePost(userId, postId) {
+function dislikePost(userId, postId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return interactWithPost(userId, postId, false);
+    });
+}
+exports.dislikePost = dislikePost;
+function interactWithPost(userId, postId, isLike) {
+    return __awaiter(this, void 0, void 0, function* () {
+        // @ts-ignore
+        const currentPostLike = yield PostLike.findOne({ where: { userId, postId } });
+        if (currentPostLike) {
+            if (currentPostLike.isLike === !isLike && (yield currentPostLike.update({ isLike })) != null) {
+                return findPostLikesInfoByPk(postId);
+            }
+        }
+        // @ts-ignore
+        else if ((yield PostLike.create({ userId, postId, isLike })) != null)
+            return findPostLikesInfoByPk(postId);
+        return false;
+    });
+}
+function removeLikeOrDislikeFromPost(userId, postId) {
     return __awaiter(this, void 0, void 0, function* () {
         // @ts-ignore
         const postLike = yield PostLike.findOne({ where: { userId, postId } });
         if ((yield postLike.destroy()) != null)
-            return getFindByPk(postId);
+            return findPostLikesInfoByPk(postId);
         return false;
     });
 }
-exports.removeLikeOrDislikePost = removeLikeOrDislikePost;
-function getFindByPk(postId) {
+exports.removeLikeOrDislikeFromPost = removeLikeOrDislikeFromPost;
+function findPostLikesInfoByPk(postId) {
     return __awaiter(this, void 0, void 0, function* () {
-        return Post.findByPk(postId, {
+        return (yield Post.findByPk(postId, {
             attributes: ['id', 'likesCount', 'dislikesCount']
-        });
+        })).dataValues;
     });
 }
-function dislikePost(userId, postId) {
-    return __awaiter(this, void 0, void 0, function* () {
-        // @ts-ignore
-        const currentLikePost = yield PostLike.findOne({ where: { userId, postId } });
-        if (currentLikePost) {
-            if (currentLikePost.isLike === true && (yield currentLikePost.update({ isLike: false })) != null)
-                return getFindByPk(postId);
-            return false;
-        }
-        // @ts-ignore
-        if ((yield PostLike.create({ userId, postId, isLike: false })) != null)
-            return getFindByPk(postId);
-    });
-}
-exports.dislikePost = dislikePost;

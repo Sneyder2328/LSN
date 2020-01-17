@@ -4,10 +4,15 @@ import {
     CREATE_COMMENT_SUCCESS,
     CREATE_COMMENT_ERROR,
     LOAD_COMMENTS_REQUEST,
-    LOAD_COMMENTS_SUCCESS, LOAD_COMMENTS_ERROR, SET_COMMENTS
+    LOAD_COMMENTS_SUCCESS,
+    LOAD_COMMENTS_ERROR,
+    SET_COMMENTS,
+    INTERACT_COMMENT_REQUEST,
+    INTERACT_COMMENT_SUCCESS,
+    INTERACT_COMMENT_ERROR
 } from "../../actions/types";
 import {Actions} from "../../reducers";
-import {CommentObject} from "./commentReducer";
+import {CommentActions, CommentObject} from "./commentReducer";
 import {normalize} from "normalizr";
 import {comment} from "../../api/schema";
 import {HashTable} from "../../utils/utils";
@@ -63,4 +68,38 @@ export const setComments = (comments: HashTable<CommentObject>): Actions => {
         type: SET_COMMENTS,
         comments
     };
+};
+
+export const likeComment = (commentId: string, undo: boolean) => async (dispatch: (actions: CommentActions) => any) => {
+    console.log('likeComment', commentId, undo);
+    const typeInteraction = undo ? "unlike" : "like";
+    dispatch({type: INTERACT_COMMENT_REQUEST, commentId, typeInteraction});
+    try {
+        const likeInteraction = () => undo ? CommentApi.unlikeComment(commentId) : CommentApi.likeComment(commentId);
+        const response = await likeInteraction();
+        if (response.data)
+            dispatch({type: INTERACT_COMMENT_SUCCESS, comment: response.data, typeInteraction});
+        else
+            dispatch({type: INTERACT_COMMENT_ERROR, commentId, typeInteraction});
+    } catch (err) {
+        console.log(err);
+        dispatch({type: INTERACT_COMMENT_ERROR, commentId, typeInteraction});
+    }
+};
+
+export const dislikeComment = (commentId: string, undo: boolean) => async (dispatch: (actions: CommentActions) => any) => {
+    console.log('dislikeComment', commentId, undo);
+    const typeInteraction = undo ? "undislike" : "dislike";
+    dispatch({type: INTERACT_COMMENT_REQUEST, commentId, typeInteraction});
+    try {
+        const dislikeInteraction = () => undo ? CommentApi.undislikeComment(commentId) : CommentApi.dislikeComment(commentId);
+        const response = await dislikeInteraction();
+        if (response.data)
+            dispatch({type: INTERACT_COMMENT_SUCCESS, comment: response.data, typeInteraction});
+        else
+            dispatch({type: INTERACT_COMMENT_ERROR, commentId, typeInteraction});
+    } catch (err) {
+        console.log(err);
+        dispatch({type: INTERACT_COMMENT_ERROR, commentId, typeInteraction});
+    }
 };
