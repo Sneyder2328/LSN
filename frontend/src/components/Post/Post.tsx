@@ -54,6 +54,7 @@ type Props = {
 const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComments, likePost, dislikePost}) => {
     const timeSincePublished = useTimeSincePublished(postResponse.createdAt);
     const [commentText, setCommentText] = useState<string>('');
+    const [focusInput, setFocusInput] = useState<boolean>(false);
 
     const submitComment = () => {
         if (commentText.trim() !== '') {
@@ -71,6 +72,14 @@ const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComment
     const loadMoreComments = () => {
         console.log('load comments for post ', postResponse.id, postResponse.comments.length);
         loadPreviousComments(postResponse.id, postResponse.comments.length, 10);
+    };
+
+    const shouldFocusTextEditor = () => {
+        if (focusInput) {
+            setFocusInput(false);
+            return true;
+        }
+        return false;
     };
 
     return (
@@ -95,7 +104,7 @@ const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComment
                       className={classNames({'selected': postResponse.likeStatus === 'dislike'})}>
                     <i className="fas fa-thumbs-down"/>{postResponse.dislikesCount !== 0 && postResponse.dislikesCount}
                 </span>
-                <span>
+                <span onClick={() => setFocusInput(true)}>
                     <i className="fas fa-comment"/>
                 </span>
                 <span>
@@ -118,7 +127,9 @@ const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComment
                      src={postResponse.authorProfile.profilePhotoUrl || 'https://miro.medium.com/max/280/1*MccriYX-ciBniUzRKAUsAw.png'}
                      alt='post pic'/>
                 <div className='comment-editor-container'>
-                    <TextEditor onChange={setCommentText} placeholder='Write a comment' className='comment-editor'
+                    <TextEditor focusWhen={shouldFocusTextEditor} onChange={setCommentText}
+                                placeholder='Write a comment'
+                                className='comment-editor'
                                 onEnter={submitComment} onEnterCleanUp={true}/>
                 </div>
 

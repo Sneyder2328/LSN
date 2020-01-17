@@ -8,11 +8,11 @@ type Props = {
     onEnterCleanUp?: boolean;
     className?: string;
     onEnter?: () => any;
+    focusWhen?: () => boolean;
 };
 
-export const TextEditor: React.FC<Props> = ({onChange, placeholder, cleanUpWhen, className, onEnter, onEnterCleanUp}) => {
+export const TextEditor: React.FC<Props> = ({focusWhen, onChange, placeholder, cleanUpWhen, className, onEnter, onEnterCleanUp}) => {
     const [text, setText] = useState<string>('');
-
     const editorRef: any = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -27,6 +27,10 @@ export const TextEditor: React.FC<Props> = ({onChange, placeholder, cleanUpWhen,
             setText('');
         }
     };
+
+    if (focusWhen && focusWhen()) {
+        editorRef.current.focus();
+    }
 
     if (cleanUpWhen && cleanUpWhen()) {
         cleanUpTextEditor();
