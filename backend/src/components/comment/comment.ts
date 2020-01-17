@@ -38,7 +38,7 @@ router.delete(endpoints.comment.DISLIKE_COMMENT(':commentId'), authenticate, lik
 }));
 
 router.get(endpoints.comment.GET_COMMENTS(':postId'), authenticate, getCommentsValidationRules, validate, handleErrorAsync(async (req, res) => {
-    const response = await getComments(req.params.postId, req.query.offset, req.query.limit);
+    const response = await getComments(req.userId, req.params.postId, req.query.offset, req.query.limit);
     res.status(httpCodes.OK).send(response);
 }));
 

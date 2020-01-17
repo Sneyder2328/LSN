@@ -5,6 +5,7 @@ import {LIMIT_COMMENTS_PER_POST} from "../../utils/constants";
 import {compareByDateAsc, compareByDateDesc, genUUID} from "../../utils/utils";
 import {PostNotCreatedError} from "../../utils/errors/PostNotCreatedError";
 import {LikesInfo} from "../../utils/types";
+import {fetchCommentLikeStatus} from "../comment/commentService";
 
 export async function createPost(userId, type, text, img) {
     const post = await Post.create({id: genUUID(), userId, type, text, img});
@@ -31,15 +32,6 @@ export async function getPosts(userId: string) {
             }
         ]
     });
-    // @ts-ignore
-    const fetchPostLikeStatus = async (postId, userId) => (await PostLike.findOne({where: {postId, userId}}));
-    // @ts-ignore
-    const fetchCommentLikeStatus = async (commentId, userId) => (await CommentLike.findOne({
-        where: {
-            commentId,
-            userId
-        }
-    }));
 
     const postLikeStatusList = (await Promise.all(
             posts.map(post => fetchPostLikeStatus(post.id, userId)))
@@ -72,6 +64,8 @@ export async function getPosts(userId: string) {
     if (!posts) return [];
     return posts;
 }
+// @ts-ignore
+const fetchPostLikeStatus = async (postId, userId) => (await PostLike.findOne({where: {postId, userId}}));
 
 export async function likePost(userId, postId): Promise<LikesInfo | false> {
     return interactWithPost(userId, postId, true);

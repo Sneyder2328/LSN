@@ -41,7 +41,7 @@ router.delete(endpoints_1.default.comment.DISLIKE_COMMENT(':commentId'), authent
     res.status(httpResponseCodes_1.default.OK).send(response);
 })));
 router.get(endpoints_1.default.comment.GET_COMMENTS(':postId'), authenticate_1.default, validate_1.getCommentsValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const response = yield commentService_1.getComments(req.params.postId, req.query.offset, req.query.limit);
+    const response = yield commentService_1.getComments(req.userId, req.params.postId, req.query.offset, req.query.limit);
     res.status(httpResponseCodes_1.default.OK).send(response);
 })));
 exports.default = router;

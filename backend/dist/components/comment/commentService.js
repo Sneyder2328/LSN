@@ -68,7 +68,7 @@ function findCommentLikesInfoByPk(commentId) {
         })).dataValues;
     });
 }
-function getComments(postId, offset, limit) {
+function getComments(userId, postId, offset, limit) {
     return __awaiter(this, void 0, void 0, function* () {
         let comments = yield Comment.findAll({
             where: { postId },
@@ -79,7 +79,11 @@ function getComments(postId, offset, limit) {
         });
         if (!comments)
             return [];
+        const commentLikeStatusList = (yield Promise.all(comments.map(comment => exports.fetchCommentLikeStatus(comment.id, userId)))).filter(it => it != null);
+        console.log('commentLikeStatusList', commentLikeStatusList);
         comments = comments.map(it => it.toJSON()).map(comment => {
+            const commentLikeStatus = commentLikeStatusList.find((commentLike) => commentLike.commentId === comment.id);
+            comment.likeStatus = commentLikeStatus != null ? (commentLikeStatus.isLike === true ? 'like' : 'dislike') : undefined;
             comment.authorProfile = comment.Profile;
             delete comment.Profile;
             return comment;
@@ -88,3 +92,12 @@ function getComments(postId, offset, limit) {
     });
 }
 exports.getComments = getComments;
+// @ts-ignore
+exports.fetchCommentLikeStatus = (commentId, userId) => __awaiter(void 0, void 0, void 0, function* () {
+    return (yield CommentLike.findOne({
+        where: {
+            commentId,
+            userId
+        }
+    }));
+});

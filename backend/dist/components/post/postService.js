@@ -14,6 +14,7 @@ const { Comment, Post, PostLike, Profile, CommentLike } = database_1.models;
 const constants_1 = require("../../utils/constants");
 const utils_1 = require("../../utils/utils");
 const PostNotCreatedError_1 = require("../../utils/errors/PostNotCreatedError");
+const commentService_1 = require("../comment/commentService");
 function createPost(userId, type, text, img) {
     return __awaiter(this, void 0, void 0, function* () {
         const post = yield Post.create({ id: utils_1.genUUID(), userId, type, text, img });
@@ -43,23 +44,12 @@ function getPosts(userId) {
                 }
             ]
         });
-        // @ts-ignore
-        const fetchPostLikeStatus = (postId, userId) => __awaiter(this, void 0, void 0, function* () { return (yield PostLike.findOne({ where: { postId, userId } })); });
-        // @ts-ignore
-        const fetchCommentLikeStatus = (commentId, userId) => __awaiter(this, void 0, void 0, function* () {
-            return (yield CommentLike.findOne({
-                where: {
-                    commentId,
-                    userId
-                }
-            }));
-        });
         const postLikeStatusList = (yield Promise.all(posts.map(post => fetchPostLikeStatus(post.id, userId)))).filter(it => it != null);
         console.log('postLikeStatusList', postLikeStatusList);
         const commentLikeStatusList = (yield Promise.all(posts.map(post => post.comments.map(comment => comment.id))
             .filter(it => it.lenght !== 0)
             .flat()
-            .map(commentId => fetchCommentLikeStatus(commentId, userId)))).filter(it => it != null);
+            .map(commentId => commentService_1.fetchCommentLikeStatus(commentId, userId)))).filter(it => it != null);
         console.log('commentLikeStatusList', commentLikeStatusList);
         posts = posts.map(post => post.toJSON()).map(post => {
             const postLikeStatus = postLikeStatusList.find((postLike) => postLike.postId === post.id);
@@ -77,6 +67,8 @@ function getPosts(userId) {
     });
 }
 exports.getPosts = getPosts;
+// @ts-ignore
+const fetchPostLikeStatus = (postId, userId) => __awaiter(void 0, void 0, void 0, function* () { return (yield PostLike.findOne({ where: { postId, userId } })); });
 function likePost(userId, postId) {
     return __awaiter(this, void 0, void 0, function* () {
         return interactWithPost(userId, postId, true);

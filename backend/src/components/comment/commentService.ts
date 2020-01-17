@@ -50,7 +50,7 @@ async function findCommentLikesInfoByPk(commentId): Promise<LikesInfo> {
 }
 
 
-export async function getComments(postId, offset, limit) {
+export async function getComments(userId, postId, offset, limit) {
     let comments = await Comment.findAll({
         where: {postId},
         order: [['createdAt', 'DESC']],
@@ -59,10 +59,26 @@ export async function getComments(postId, offset, limit) {
         include: [{model: Profile}]
     });
     if (!comments) return [];
+
+    const commentLikeStatusList = (await Promise.all(
+            comments.map(comment => fetchCommentLikeStatus(comment.id, userId)))
+    ).filter(it => it != null);
+    console.log('commentLikeStatusList', commentLikeStatusList);
+
     comments = comments.map(it => it.toJSON()).map(comment => {
+        const commentLikeStatus: any = commentLikeStatusList.find((commentLike: any) => commentLike.commentId === comment.id);
+        comment.likeStatus = commentLikeStatus != null ? (commentLikeStatus.isLike === true ? 'like' : 'dislike') : undefined;
         comment.authorProfile = comment.Profile;
         delete comment.Profile;
         return comment;
     }).sort(compareByDateDesc);
     return comments;
 }
+
+// @ts-ignore
+export const fetchCommentLikeStatus = async (commentId, userId) => (await CommentLike.findOne({
+    where: {
+        commentId,
+        userId
+    }
+}));
