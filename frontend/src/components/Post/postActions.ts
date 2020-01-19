@@ -21,7 +21,7 @@ import {CommentObject} from "../Comment/commentReducer";
 export const createPost = (postData: Post) => async (dispatch: (actions: PostActions) => any) => {
     try {
         dispatch({type: CREATE_POST_REQUEST});
-        const response = await PostApi.createPost(postData);
+        const response = postData.imageFiles ? await PostApi.createPostWithImage(postData) : await PostApi.createPost(postData);
         const normalizedData = normalize(response.data, post);
         console.log('normalized create post', normalizedData);
         dispatch(createPostSuccess(normalizedData.entities['posts'][response.data.id] as PostObject));

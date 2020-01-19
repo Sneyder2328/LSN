@@ -6,7 +6,7 @@
 
   .title {
     width: 100%;
-    padding: 10px;
+    padding: 9px;
     background-color: #f5f6f7;
     display: block;
     box-sizing: border-box;
@@ -29,7 +29,7 @@
 
     .editor {
       width: 100%;
-      padding: 2px 5px;
+      padding: 2px 7px;
       border: none;
       outline: none;
       min-height: 50px;
@@ -41,7 +41,7 @@
     }
 
     .editor:focus {
-      outline: rgba(97, 218, 251, 0.23) solid 1px;
+      //outline: rgba(97, 218, 251, 0.23) solid 1px;
     }
 
     .editor.medium {
@@ -63,27 +63,61 @@
     }
   }
 
+
   .publish {
-    padding: 0 10px 7px 0;
-    text-align: right;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px 7px 10px;
+    margin-top: 4px;
+    margin-left: $thumbnailImgDimen + 11px;
 
-    .post-btn {
+    .image {
+
+
+      #file {
+        width: 0.1px;
+        height: 0.1px;
+        opacity: 0;
+        overflow: hidden;
+        position: absolute;
+        z-index: -1;
+      }
+
+      #file + label {
+        color: $btnColor;
+        font-size: 1.5rem;
+        margin: 4px;
+        cursor: pointer;
+      }
+
+      #file + label:hover {
+        color: $btnHoveredColor;
+      }
+    }
+
+    .post {
+      text-align: right;
       display: inline-block;
-      background-color: $btnColor;
-      padding: 8px 20px;
-      color: #fff;
-      font-size: 0.94rem;
-      font-weight: 600;
-      border-radius: $radius;
-      margin: 4px;
-    }
 
-    .post-btn:hover:enabled {
-      background-color: $btnHoveredColor;
-    }
+      .post-btn {
+        display: inline-block;
+        background-color: $btnColor;
+        padding: 8px 20px;
+        color: #fff;
+        font-size: 0.94rem;
+        font-weight: 600;
+        border-radius: $radius;
+        margin: 4px;
+      }
 
-    .post-btn:disabled {
-      background-color: $btnColorOpaque;
+      .post-btn:hover:enabled {
+        background-color: $btnHoveredColor;
+      }
+
+      .post-btn:disabled {
+        background-color: $btnColorOpaque;
+      }
     }
   }
 }

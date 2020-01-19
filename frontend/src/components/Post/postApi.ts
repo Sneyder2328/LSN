@@ -5,6 +5,20 @@ export const PostApi = {
     async createPost(content: Post) {
         return await transport.post('/posts/', content);
     },
+    async createPostWithImage(content: Post) {
+        console.log("createPostWithImage", content);
+        const formData = new FormData();
+        content.imageFiles!.forEach(imageFile => {
+            formData.append('image', imageFile);
+        });
+        formData.append('text', content.text);
+        formData.append('type', content.type);
+        return await transport.post('/imageposts/', formData, {
+            headers: {
+                'content-type': 'multipart/form-data'
+            }
+        });
+    },
     async getPosts() {
         return await transport.get('/posts/');
     },

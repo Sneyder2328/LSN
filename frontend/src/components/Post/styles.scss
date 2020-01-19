@@ -43,9 +43,15 @@
     }
 
     .content {
-      margin: 0 0 0 50px;
-      padding: 0 10px 10px 10px;
-      white-space: pre-wrap;
+      .text {
+        margin: 0 0 0 50px;
+        padding: 0 10px 10px 10px;
+        white-space: pre-wrap;
+      }
+
+      img {
+        max-width: $width-page + - 8px;
+      }
     }
 
     .interact {

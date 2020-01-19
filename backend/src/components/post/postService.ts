@@ -1,18 +1,24 @@
 import {models} from "../../database/database";
-
-const {Comment, Post, PostLike, Profile, CommentLike} = models;
 import {LIMIT_COMMENTS_PER_POST} from "../../utils/constants";
 import {compareByDateAsc, compareByDateDesc, genUUID} from "../../utils/utils";
 import {PostNotCreatedError} from "../../utils/errors/PostNotCreatedError";
 import {LikesInfo} from "../../utils/types";
 import {fetchCommentLikeStatus} from "../comment/commentService";
 
-export async function createPost(userId, type, text, img) {
-    const post = await Post.create({id: genUUID(), userId, type, text, img});
+const {Comment, Post, PostLike, Profile, PostImage} = models;
+
+export async function createPost(userId: string, type: string, text: string, images?: Array<string>) {
+    const postId = genUUID();
+    const post = await Post.create({id: postId, userId, type, text});
     if (!post) throw new PostNotCreatedError();
     const response = post.toJSON();
     response.authorProfile = (await Profile.findByPk(userId)).toJSON();
     response.comments = [];
+    if (images) {
+        response.images = await Promise.all(images.map(url => PostImage.create({id: genUUID(), postId, url})));
+    } else {
+        response.images = [];
+    }
     return response;
 }
 
@@ -22,6 +28,11 @@ export async function getPosts(userId: string) {
             {
                 model: Profile,
                 as: 'authorProfile'
+            },
+            {
+                model: PostImage,
+                as: 'images',
+                attributes: ['url']
             },
             {
                 model: Comment,
@@ -36,7 +47,7 @@ export async function getPosts(userId: string) {
     const postLikeStatusList = (await Promise.all(
             posts.map(post => fetchPostLikeStatus(post.id, userId)))
     ).filter(it => it != null);
-    console.log('postLikeStatusList', postLikeStatusList);
+    //console.log('postLikeStatusList', postLikeStatusList);
 
     const commentLikeStatusList = (await Promise.all(
             posts.map(post => post.comments.map(comment => comment.id))
@@ -44,7 +55,7 @@ export async function getPosts(userId: string) {
                 .flat()
                 .map(commentId => fetchCommentLikeStatus(commentId, userId)))
     ).filter(it => it != null);
-    console.log('commentLikeStatusList', commentLikeStatusList);
+//    console.log('commentLikeStatusList', commentLikeStatusList);
 
     posts = posts.map(post => post.toJSON()).map(post => {
         const postLikeStatus: any = postLikeStatusList.find((postLike: any) => postLike.postId === post.id);
@@ -64,6 +75,7 @@ export async function getPosts(userId: string) {
     if (!posts) return [];
     return posts;
 }
+
 // @ts-ignore
 const fetchPostLikeStatus = async (postId, userId) => (await PostLike.findOne({where: {postId, userId}}));
 

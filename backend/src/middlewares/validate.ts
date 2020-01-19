@@ -60,8 +60,8 @@ export const getCommentsValidationRules = [
 
 export const createPostValidationRules = [
     body('type').isString().escape(),
-    body('text').not().isEmpty().trim().escape(),
-    body('img').escape()
+    body('text').isString(),
+    body('img')
 ];
 
 export const acceptFriendRequestValidationRules = [

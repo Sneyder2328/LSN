@@ -42,11 +42,6 @@ export default (sequelize, DataTypes, User) => {
                 type: DataTypes.STRING,
                 allowNull: true,
                 defaultValue: ''
-            },
-            img: {
-                type: DataTypes.STRING,
-                allowNull: true,
-                defaultValue: ''
             }
         }
     );

@@ -16,6 +16,10 @@ import {HashTable} from "../../utils/utils";
 import {Actions, AppState} from "../../reducers";
 import {createSelector} from "reselect";
 
+export type PostImage = {
+    url: string;
+};
+
 export interface PostObject extends Post {
     id: string;
     userId: string;
@@ -24,6 +28,7 @@ export interface PostObject extends Post {
     commentsCount: number;
     createdAt: any;
     comments: Array<string>;
+    images: Array<PostImage>
     //authorProfile: Profile; delete this one while normalizing with normalizr
     likeStatus: 'like' | 'dislike' | undefined;
 }

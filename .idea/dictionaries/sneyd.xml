@@ -4,8 +4,10 @@
       <w>axios</w>
       <w>bcrypt</w>
       <w>classnames</w>
+      <w>cloudinary</w>
       <w>dimen</w>
       <w>fullname</w>
+      <w>multer</w>
       <w>navbar</w>
       <w>newsfeed</w>
       <w>sequelize</w>

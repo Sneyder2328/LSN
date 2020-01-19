@@ -6,7 +6,10 @@
         "MYSQL_USER": "sneyder2328",
         "MYSQL_PASSWORD": "mngpissunignat13245",
         "MYSQL_DATABASE": "lasocialnetworkdbtest",
-        "DB_TIMEZONE": "Etc/GMT0"
+        "DB_TIMEZONE": "Etc/GMT0",
+        "CLOUDINARY_CLOUD_NAME": "dkflrjxwe",
+        "CLOUDINARY_API_KEY": "279574914915198",
+        "CLOUDINARY_API_SECRET": "mzTVP0gUQrm2fT1gejxyXrkepEI"
     },
     "development": {
         "PORT": 3030,
@@ -15,7 +18,10 @@
         "MYSQL_USER": "root",
         "MYSQL_PASSWORD": "abwtswemysqlmyself123456$$$$###",
         "MYSQL_DATABASE": "lasocialnetworkdblocal",
-        "DB_TIMEZONE": "Etc/GMT0"
+        "DB_TIMEZONE": "Etc/GMT0",
+        "CLOUDINARY_CLOUD_NAME": "dkflrjxwe",
+        "CLOUDINARY_API_KEY": "279574914915198",
+        "CLOUDINARY_API_SECRET": "mzTVP0gUQrm2fT1gejxyXrkepEI"
     },
     "test": {
         "PORT": 3060,
@@ -24,7 +30,10 @@
         "MYSQL_USER": "root",
         "MYSQL_PASSWORD": "abwtswemysqlmyself123456$$$$###",
         "MYSQL_DATABASE": "lasocialnetworkdblocaltest",
-        "DB_TIMEZONE": "Etc/GMT0"
+        "DB_TIMEZONE": "Etc/GMT0",
+        "CLOUDINARY_CLOUD_NAME": "dkflrjxwe",
+        "CLOUDINARY_API_KEY": "279574914915198",
+        "CLOUDINARY_API_SECRET": "mzTVP0gUQrm2fT1gejxyXrkepEI"
     },
     "production": {
         "PORT": 3000,
@@ -33,6 +42,9 @@
         "MYSQL_USER": "sneyder2328",
         "MYSQL_PASSWORD": "mngpissunignat13245",
         "MYSQL_DATABASE": "lasocialnetworkdb",
-        "DB_TIMEZONE": "Etc/GMT0"
+        "DB_TIMEZONE": "Etc/GMT0",
+        "CLOUDINARY_CLOUD_NAME": "dkflrjxwe",
+        "CLOUDINARY_API_KEY": "279574914915198",
+        "CLOUDINARY_API_SECRET": "mzTVP0gUQrm2fT1gejxyXrkepEI"
     }
 }

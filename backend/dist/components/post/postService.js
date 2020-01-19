@@ -10,19 +10,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = require("../../database/database");
-const { Comment, Post, PostLike, Profile, CommentLike } = database_1.models;
 const constants_1 = require("../../utils/constants");
 const utils_1 = require("../../utils/utils");
 const PostNotCreatedError_1 = require("../../utils/errors/PostNotCreatedError");
 const commentService_1 = require("../comment/commentService");
-function createPost(userId, type, text, img) {
+const { Comment, Post, PostLike, Profile, PostImage } = database_1.models;
+function createPost(userId, type, text, images) {
     return __awaiter(this, void 0, void 0, function* () {
-        const post = yield Post.create({ id: utils_1.genUUID(), userId, type, text, img });
+        const postId = utils_1.genUUID();
+        const post = yield Post.create({ id: postId, userId, type, text });
         if (!post)
             throw new PostNotCreatedError_1.PostNotCreatedError();
         const response = post.toJSON();
         response.authorProfile = (yield Profile.findByPk(userId)).toJSON();
         response.comments = [];
+        if (images) {
+            response.images = yield Promise.all(images.map(url => PostImage.create({ id: utils_1.genUUID(), postId, url })));
+        }
+        else {
+            response.images = [];
+        }
         return response;
     });
 }
@@ -36,6 +43,11 @@ function getPosts(userId) {
                     as: 'authorProfile'
                 },
                 {
+                    model: PostImage,
+                    as: 'images',
+                    attributes: ['url']
+                },
+                {
                     model: Comment,
                     as: 'comments',
                     limit: constants_1.LIMIT_COMMENTS_PER_POST,
@@ -45,12 +57,12 @@ function getPosts(userId) {
             ]
         });
         const postLikeStatusList = (yield Promise.all(posts.map(post => fetchPostLikeStatus(post.id, userId)))).filter(it => it != null);
-        console.log('postLikeStatusList', postLikeStatusList);
+        //console.log('postLikeStatusList', postLikeStatusList);
         const commentLikeStatusList = (yield Promise.all(posts.map(post => post.comments.map(comment => comment.id))
             .filter(it => it.lenght !== 0)
             .flat()
             .map(commentId => commentService_1.fetchCommentLikeStatus(commentId, userId)))).filter(it => it != null);
-        console.log('commentLikeStatusList', commentLikeStatusList);
+        //    console.log('commentLikeStatusList', commentLikeStatusList);
         posts = posts.map(post => post.toJSON()).map(post => {
             const postLikeStatus = postLikeStatusList.find((postLike) => postLike.postId === post.id);
             return Object.assign(Object.assign({}, post), { likeStatus: postLikeStatus != null ? (postLikeStatus.isLike === true ? 'like' : 'dislike') : undefined, comments: post.comments.map(comment => {

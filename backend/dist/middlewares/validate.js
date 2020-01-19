@@ -53,8 +53,8 @@ exports.getCommentsValidationRules = [
 ];
 exports.createPostValidationRules = [
     express_validator_1.body('type').isString().escape(),
-    express_validator_1.body('text').not().isEmpty().trim().escape(),
-    express_validator_1.body('img').escape()
+    express_validator_1.body('text').isString(),
+    express_validator_1.body('img')
 ];
 exports.acceptFriendRequestValidationRules = [
     express_validator_1.param('senderId').trim().matches(config_1.default.regex.uuidV4),

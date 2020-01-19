@@ -19,10 +19,34 @@ const validate_1 = require("../../middlewares/validate");
 const handleErrorAsync_1 = require("../../middlewares/handleErrorAsync");
 const httpResponseCodes_1 = __importDefault(require("../../utils/constants/httpResponseCodes"));
 const endpoints_1 = __importDefault(require("../../utils/constants/endpoints"));
+const multer_1 = __importDefault(require("multer"));
+const cloudinaryConfig_1 = require("../../config/cloudinaryConfig");
+const multer_storage_cloudinary_1 = __importDefault(require("multer-storage-cloudinary"));
+const AppError_1 = require("../../utils/errors/AppError");
+const storage = multer_storage_cloudinary_1.default({
+    cloudinary: cloudinaryConfig_1.cloudinary,
+    folder: 'postImages',
+    allowedFormats: ['jpg', 'png', "jpeg"],
+    filename: function (req, file, cb) {
+        cb(null, file.originalname.substring(0, file.originalname.length - 4) + '-' + Date.now());
+    }
+    //transformation: [{ width: 500, height: 500, crop: 'limit' }]
+});
+const parser = multer_1.default({ storage });
+const maxImagesPerUpload = 10;
+const multerUploads = parser.array('image', maxImagesPerUpload);
 const router = express_1.Router();
 router.post(endpoints_1.default.post.CREATE_POST, authenticate_1.default, validate_1.createPostValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const content = req.body;
-    const post = yield postService_1.createPost(req.userId, content.type, content.text, content.img);
+    const post = yield postService_1.createPost(req.userId, content.type, content.text);
+    res.status(httpResponseCodes_1.default.CREATED).send(post);
+})));
+router.post('/imageposts', authenticate_1.default, multerUploads, validate_1.createPostValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const content = req.body;
+    if (!req.files)
+        throw new AppError_1.AppError(httpResponseCodes_1.default.BAD_REQUEST, 'Image not provided error', 'Image was not successfully uploaded');
+    const imageUrls = req.files.map(file => file.url);
+    const post = yield postService_1.createPost(req.userId, content.type, content.text, imageUrls);
     res.status(httpResponseCodes_1.default.CREATED).send(post);
 })));
 router.get(endpoints_1.default.post.GET_POSTS, authenticate_1.default, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {

@@ -11,7 +11,7 @@ import classNames from "classnames";
 import {AppState} from "../../reducers";
 import {useTimeSincePublished} from "../../hooks/updateRelativeTimeHook";
 import {dislikePost, likePost} from "./postActions";
-import {selectPost} from "./postReducer";
+import {PostImage, selectPost} from "./postReducer";
 
 export interface Profile {
     userId: string;
@@ -25,7 +25,7 @@ export interface Profile {
 export interface Post {
     text: string;
     type: string;
-    img: string;
+    imageFiles?: Array<File>
 }
 
 
@@ -38,6 +38,7 @@ export interface PostResponse extends Post {
     createdAt: any;
     likeStatus: 'like' | 'dislike' | undefined;
     authorProfile: Profile;
+    images: Array<PostImage>;
     comments: Array<string>;
     isLoadingPreviousComments?: boolean;
     isCreatingComment?: boolean;
@@ -53,6 +54,7 @@ type Props = {
 };
 
 const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComments, likePost, dislikePost}) => {
+    console.log('rendering post', postResponse);
     const timeSincePublished = useTimeSincePublished(postResponse.createdAt);
     const [commentText, setCommentText] = useState<string>('');
     const [focusInput, setFocusInput] = useState<boolean>(false);
@@ -94,7 +96,10 @@ const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComment
                     <p className='time-published'>{timeSincePublished}</p>
                 </div>
             </div>
-            <p className='content'>{postResponse.text}</p>
+            <div className='content'>
+                <p className='text'>{postResponse.text}</p>
+                {postResponse.images.map(image => (<img src={image.url}/>))}
+            </div>
             <div className='interact'>
                 <span onClick={() => likePost(postResponse.id, postResponse.likeStatus === 'like')}
                       className={classNames({'selected': postResponse.likeStatus === 'like'})}>
