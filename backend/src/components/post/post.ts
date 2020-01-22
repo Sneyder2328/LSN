@@ -18,11 +18,11 @@ const storage = cloudinaryStorage({
     allowedFormats: ['jpg', 'png', "jpeg"],
     filename: function (req, file, cb) {
         cb(null, file.originalname.substring(0, file.originalname.length - 4) + '-' + Date.now())
-    }
-    //transformation: [{ width: 500, height: 500, crop: 'limit' }]
+    },
+    transformation: [{ width: 1024}]
 });
 const parser = multer({storage});
-const maxImagesPerUpload = 10;
+const maxImagesPerUpload = 12;
 const multerUploads = parser.array('image', maxImagesPerUpload);
 
 const router = Router();

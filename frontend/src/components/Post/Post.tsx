@@ -13,6 +13,9 @@ import {useTimeSincePublished} from "../../hooks/updateRelativeTimeHook";
 import {dislikePost, likePost} from "./postActions";
 import {PostImage, selectPost} from "./postReducer";
 
+// @ts-ignore
+import ExifOrientationImg from 'react-exif-orientation-img'
+
 export interface Profile {
     userId: string;
     coverPhotoUrl: string;
@@ -84,6 +87,10 @@ const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComment
         return false;
     };
 
+    const transformUrl = (url: string): string => {
+        return url.replace("/image/upload/", "/image/upload/a_0/");
+    };
+
     return (
         <div className='post'>
             <div className='userProfile'>
@@ -98,7 +105,7 @@ const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComment
             </div>
             <div className='content'>
                 <p className='text'>{postResponse.text}</p>
-                {postResponse.images.map(image => (<img src={image.url}/>))}
+                {postResponse.images.map(image => (<img key={image.url} src={transformUrl(image.url)}/>))}
             </div>
             <div className='interact'>
                 <span onClick={() => likePost(postResponse.id, postResponse.likeStatus === 'like')}

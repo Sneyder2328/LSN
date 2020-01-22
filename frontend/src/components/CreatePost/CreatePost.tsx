@@ -1,27 +1,36 @@
-import React, {ChangeEventHandler, useState} from "react";
+import React, {useState} from "react";
 import {TextEditor} from "../commons/TextEditor";
 import {connect} from "react-redux";
 import {Post} from "../Post/Post";
 import {createPost} from "../Post/postActions";
 import './styles.scss'
 
+// @ts-ignore
+import Img from 'react-fix-image-orientation'
+import {MAX_FILE_SIZE, MAX_IMAGES_PER_POST} from "../../utils/constants";
+
 type Props = {
     createPost: (post: Post) => any;
 };
 
+type ImageFile = {
+    name: string;
+    file: File;
+    result?: string;
+};
 const CreatePost: React.FC<Props> = ({createPost}) => {
     const [text, setText] = useState<string>('');
     const [cleanTextEditor, setCleanTextEditor] = useState<boolean>(false);
-    const [imageFiles, setImageFiles] = useState<Array<File>>();
+    const [imageFiles, setImageFiles] = useState<Array<ImageFile>>([]);
 
     const handleClick = () => {
         const newPost: Post = {
             text,
             type: 'text',
-            imageFiles
+            imageFiles: imageFiles.map(it => it.file)
         };
         createPost(newPost);
-        setImageFiles(undefined);
+        setImageFiles([]);
         setCleanTextEditor(true);
     };
 
@@ -33,12 +42,45 @@ const CreatePost: React.FC<Props> = ({createPost}) => {
         return false;
     };
 
-    const onChangeHandler = (event: any) => {
+    const onInputImgsHandler = async (event: any) => {
         console.log('files', event.target.files);
-        if (imageFiles)
-            setImageFiles([...imageFiles, ...event.target.files]);
-        else
-            setImageFiles([...event.target.files]);
+
+        let uploadedImages: Array<ImageFile> = imageFiles ? [...imageFiles] : [];
+
+        for (let n = 0; n < event.target.files.length; n++) {
+            // @ts-ignore
+            const file = event.target.files[n];
+            console.log('file size', file.size);
+            if (!file.type.match('image/')) {
+                alert("Only jpg/jpeg and png files are allowed!");
+            } else if (file.size > MAX_FILE_SIZE) {
+                alert(`'${file.name}' is too large, please pick a smaller file`);
+            } else if (!uploadedImages.some(img => img.name === file.name)) { // image is not already uploaded
+                uploadedImages.push({file, name: file.name});
+            }
+        }
+        if (uploadedImages.length > MAX_IMAGES_PER_POST) {
+            alert('Only up to 12 images can be uploaded at a time');
+            uploadedImages = uploadedImages.slice(0, MAX_IMAGES_PER_POST);
+        }
+
+        const validImages = await Promise.all(uploadedImages.map(imgFile => {
+            return (new Promise<ImageFile>((resolve, reject) => {
+                const reader = new FileReader();
+                reader.addEventListener('load', (ev) => {
+                    // @ts-ignore
+                    console.log('onload', imgFile.name);
+                    resolve({
+                        ...imgFile,
+                        result: ev.target!.result as string
+                    });
+                });
+                reader.addEventListener('error', reject);
+                reader.readAsDataURL(imgFile.file);
+            }));
+        }));
+        console.log('validImages', validImages);
+        setImageFiles(validImages);
     };
 
     return (
@@ -50,10 +92,16 @@ const CreatePost: React.FC<Props> = ({createPost}) => {
                 <TextEditor className='editor' onChange={setText} cleanUpWhen={shouldCleanUpTextEditor}
                             placeholder="What's happening?"/>
             </div>
-
+            <div className='preview-images'>
+                {
+                    imageFiles.filter(it => it.result != null).map((imgFileUrl) => <Img key={imgFileUrl.name}
+                                                                                        src={imgFileUrl.result}/>)
+                }
+            </div>
             <div className='publish'>
                 <div className='image'>
-                    <input type='file' name='file' id='file' multiple onChange={onChangeHandler} accept="image/*"/>
+                    <input type='file' name='file' id='file' multiple onChange={onInputImgsHandler}
+                           accept=".png, .jpg, .jpeg"/>
                     <label htmlFor='file'><i className="far fa-images"/></label>
                 </div>
                 <div className='post'>

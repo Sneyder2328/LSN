@@ -50,7 +50,8 @@
       }
 
       img {
-        max-width: $width-page + - 8px;
+        width: $width-page + - 8px;
+        max-width: 100%;
       }
     }
 
