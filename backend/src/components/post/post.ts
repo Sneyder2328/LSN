@@ -7,7 +7,7 @@ import {handleErrorAsync} from "../../middlewares/handleErrorAsync";
 import httpCodes from "../../utils/constants/httpResponseCodes";
 import endpoints from "../../utils/constants/endpoints";
 import multer from "multer"
-import {cloudinary, uploader} from "../../config/cloudinaryConfig";
+import {cloudinary} from "../../config/cloudinaryConfig";
 import cloudinaryStorage from "multer-storage-cloudinary";
 import {AppError} from "../../utils/errors/AppError";
 
@@ -19,7 +19,7 @@ const storage = cloudinaryStorage({
     filename: function (req, file, cb) {
         cb(null, file.originalname.substring(0, file.originalname.length - 4) + '-' + Date.now())
     },
-    transformation: [{ width: 1024}]
+    transformation: [{width: 960, height: 960, crop: 'limit'}]
 });
 const parser = multer({storage});
 const maxImagesPerUpload = 12;
