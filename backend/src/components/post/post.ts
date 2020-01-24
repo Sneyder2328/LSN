@@ -32,7 +32,7 @@ const router = Router();
 
 router.post(endpoints.post.CREATE_POST, authenticate, createPostValidationRules, validate, handleErrorAsync(async (req, res) => {
     const content = req.body;
-    const post = await createPost(req.userId, content.type, content.text);
+    const post = await createPost(content.id, req.userId, content.type, content.text);
     res.status(httpCodes.CREATED).send(post);
 }));
 
@@ -42,7 +42,7 @@ router.post('/imageposts', authenticate, multerUploads, createPostValidationRule
     if (!req.files)
         throw new AppError(httpCodes.BAD_REQUEST, 'Image not provided error', 'Image was not successfully uploaded');
     const imageUrls = req.files.map(file => file.url);
-    const post = await createPost(req.userId, content.type, content.text, imageUrls);
+    const post = await createPost(content.id, req.userId, content.type, content.text, imageUrls);
     res.status(httpCodes.CREATED).send(post);
 }));
 

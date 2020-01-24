@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import './styles.scss'
 // @ts-ignore
 import uuidv4 from "uuid/v4";
@@ -12,9 +12,7 @@ import {AppState} from "../../reducers";
 import {useTimeSincePublished} from "../../hooks/updateRelativeTimeHook";
 import {dislikePost, likePost} from "./postActions";
 import {PostImage, selectPost} from "./postReducer";
-
-// @ts-ignore
-import ExifOrientationImg from 'react-exif-orientation-img'
+import {ImageFile, readImgFileContent} from "../../utils/utils";
 
 export interface Profile {
     userId: string;
@@ -26,11 +24,14 @@ export interface Profile {
 }
 
 export interface Post {
+    id: string;
     text: string;
-    type: string;
-    imageFiles?: Array<File>
 }
 
+export interface PostRequest extends Post {
+    imageFiles: Array<File>;
+    userId: string;
+}
 
 export interface PostResponse extends Post {
     id: string;
@@ -42,9 +43,11 @@ export interface PostResponse extends Post {
     likeStatus: 'like' | 'dislike' | undefined;
     authorProfile: Profile;
     images: Array<PostImage>;
+    previewImages?: Array<File>;
     comments: Array<string>;
     isLoadingPreviousComments?: boolean;
     isCreatingComment?: boolean;
+    isUploading?: boolean;
 }
 
 type Props = {
@@ -61,6 +64,26 @@ const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComment
     const timeSincePublished = useTimeSincePublished(postResponse.createdAt);
     const [commentText, setCommentText] = useState<string>('');
     const [focusInput, setFocusInput] = useState<boolean>(false);
+    const [previewImageResults, setPreviewImageResults] = useState<Array<string>>();
+
+    useEffect(() => {
+        console.log('useEffect inside of post');
+        const waitForPreviewOfImages = async (): Promise<Array<ImageFile> | undefined> => {
+            if (postResponse.previewImages) {
+                return await Promise.all(postResponse.previewImages.map((imgFile) => readImgFileContent({
+                    name: '',
+                    file: imgFile
+                })));
+            }
+        };
+        postResponse.previewImages && waitForPreviewOfImages().then((previewImgs) => {
+            console.log('previewimgs loaded', previewImgs);
+            if (previewImgs) {
+                setPreviewImageResults(previewImgs.filter((prevImg) => prevImg.result != null).map((prevImg) => prevImg.result!));
+            }
+        });
+    }, [postResponse.previewImages]);
+
     const submitComment = () => {
         if (commentText.trim() !== '') {
             const newComment: CommentRequest = {
@@ -103,9 +126,17 @@ const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComment
                     <p className='time-published'>{timeSincePublished}</p>
                 </div>
             </div>
-            <div className='content'>
+            <div className={classNames('content', {'uploading': postResponse.isUploading})}>
                 <p className='text'>{postResponse.text}</p>
-                {postResponse.images.map(image => (<img key={image.url} src={transformUrl(image.url)}/>))}
+                <div className='images'>
+                    {postResponse.images.map(image => (<img key={image.url} src={transformUrl(image.url)}/>))}
+                </div>
+                <div className='preview-images'>
+                    {
+                        postResponse.images.length === 0 && previewImageResults && previewImageResults.map((imgFile, index) => (
+                            <img key={index} src={imgFile}/>))
+                    }
+                </div>
             </div>
             <div className='interact'>
                 <span onClick={() => likePost(postResponse.id, postResponse.likeStatus === 'like')}

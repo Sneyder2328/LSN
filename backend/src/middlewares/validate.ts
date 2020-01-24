@@ -59,7 +59,7 @@ export const getCommentsValidationRules = [
 ];
 
 export const createPostValidationRules = [
-    body('type').isString().escape(),
+    body('id').trim().matches(config.regex.uuidV4),
     body('text').isString(),
     body('img')
 ];

@@ -1,32 +1,33 @@
 import React, {useState} from "react";
 import {TextEditor} from "../commons/TextEditor";
 import {connect} from "react-redux";
-import {Post} from "../Post/Post";
+import {PostRequest} from "../Post/Post";
 import {createPost} from "../Post/postActions";
 import './styles.scss'
 
 // @ts-ignore
 import Img from 'react-fix-image-orientation'
 import {MAX_FILE_SIZE, MAX_IMAGES_PER_POST} from "../../utils/constants";
+import {genUUID, ImageFile, readImgFileContent} from "../../utils/utils";
+import {AppState} from "../../reducers";
 
 type Props = {
-    createPost: (post: Post) => any;
+    createPost: (post: PostRequest) => any;
+    userId: string;
 };
 
-type ImageFile = {
-    name: string;
-    file: File;
-    result?: string;
-};
-const CreatePost: React.FC<Props> = ({createPost}) => {
+const CreatePost: React.FC<Props> = ({userId, createPost}) => {
     const [text, setText] = useState<string>('');
     const [cleanTextEditor, setCleanTextEditor] = useState<boolean>(false);
     const [imageFiles, setImageFiles] = useState<Array<ImageFile>>([]);
 
+    console.log('userId hereee', userId);
+
     const handleClick = () => {
-        const newPost: Post = {
+        const newPost: PostRequest = {
+            id: genUUID(),
+            userId,
             text,
-            type: 'text',
             imageFiles: imageFiles.map(it => it.file)
         };
         createPost(newPost);
@@ -43,8 +44,6 @@ const CreatePost: React.FC<Props> = ({createPost}) => {
     };
 
     const onInputImgsHandler = async (event: any) => {
-        console.log('files', event.target.files);
-
         let uploadedImages: Array<ImageFile> = imageFiles ? [...imageFiles] : [];
 
         for (let n = 0; n < event.target.files.length; n++) {
@@ -64,21 +63,7 @@ const CreatePost: React.FC<Props> = ({createPost}) => {
             uploadedImages = uploadedImages.slice(0, MAX_IMAGES_PER_POST);
         }
 
-        const validImages = await Promise.all(uploadedImages.map(imgFile => {
-            return (new Promise<ImageFile>((resolve, reject) => {
-                const reader = new FileReader();
-                reader.addEventListener('load', (ev) => {
-                    // @ts-ignore
-                    console.log('onload', imgFile.name);
-                    resolve({
-                        ...imgFile,
-                        result: ev.target!.result as string
-                    });
-                });
-                reader.addEventListener('error', reject);
-                reader.readAsDataURL(imgFile.file);
-            }));
-        }));
+        const validImages = await Promise.all(uploadedImages.map(imgFile => readImgFileContent(imgFile)));
         console.log('validImages', validImages);
         setImageFiles(validImages);
     };
@@ -114,4 +99,8 @@ const CreatePost: React.FC<Props> = ({createPost}) => {
     );
 };
 
-export default connect(null, {createPost})(CreatePost)
+const mapStateToProps = (state: AppState) => {
+    return {userId: state.auth.userId};
+};
+
+export default connect(mapStateToProps, {createPost})(CreatePost)

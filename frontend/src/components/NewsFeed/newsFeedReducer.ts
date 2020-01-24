@@ -35,19 +35,20 @@ export const newsFeedReducer = (state: NewsFeedState = initialState, action: Act
         case CREATE_POST_REQUEST:
             return {
                 ...state,
-                isCreatingPost: true
+                isCreatingPost: true,
+                latest: {
+                    ...state.latest,
+                    postIds: [action.payload.postId, ...state.latest.postIds]
+                },
+                top: {
+                    ...state.top,
+                    postIds: [action.payload.postId, ...state.top.postIds]
+                }
             };
         case CREATE_POST_SUCCESS:
             return {
-                isCreatingPost: false,
-                latest: {
-                    ...state.latest,
-                    postIds: [action.postCreated.id, ...state.latest.postIds]
-                },
-                top: {
-                    ...state.latest,
-                    postIds: [action.postCreated.id, ...state.latest.postIds]
-                }
+                ...state,
+                isCreatingPost: false
             };
         case CREATE_POST_ERROR:
             return {

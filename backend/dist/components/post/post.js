@@ -41,7 +41,7 @@ const multerUploads = parser.array('image', constants_1.MAX_IMGS_PER_UPLOAD);
 const router = express_1.Router();
 router.post(endpoints_1.default.post.CREATE_POST, authenticate_1.default, validate_1.createPostValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const content = req.body;
-    const post = yield postService_1.createPost(req.userId, content.type, content.text);
+    const post = yield postService_1.createPost(content.id, req.userId, content.type, content.text);
     res.status(httpResponseCodes_1.default.CREATED).send(post);
 })));
 router.post('/imageposts', authenticate_1.default, multerUploads, validate_1.createPostValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -49,7 +49,7 @@ router.post('/imageposts', authenticate_1.default, multerUploads, validate_1.cre
     if (!req.files)
         throw new AppError_1.AppError(httpResponseCodes_1.default.BAD_REQUEST, 'Image not provided error', 'Image was not successfully uploaded');
     const imageUrls = req.files.map(file => file.url);
-    const post = yield postService_1.createPost(req.userId, content.type, content.text, imageUrls);
+    const post = yield postService_1.createPost(content.id, req.userId, content.type, content.text, imageUrls);
     res.status(httpResponseCodes_1.default.CREATED).send(post);
 })));
 router.get(endpoints_1.default.post.GET_POSTS, authenticate_1.default, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {

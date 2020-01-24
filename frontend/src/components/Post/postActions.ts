@@ -1,4 +1,4 @@
-import {Post} from "./Post";
+import {PostRequest} from "./Post";
 import {PostApi} from "./postApi";
 import {
     CREATE_POST_REQUEST,
@@ -18,10 +18,19 @@ import {Actions} from "../../reducers";
 import {setComments} from "../Comment/commentActions";
 import {CommentObject} from "../Comment/commentReducer";
 
-export const createPost = (postData: Post) => async (dispatch: (actions: PostActions) => any) => {
+export const createPost = (postData: PostRequest) => async (dispatch: (actions: PostActions) => any) => {
     try {
-        dispatch({type: CREATE_POST_REQUEST});
-        const response = postData.imageFiles ? await PostApi.createPostWithImage(postData) : await PostApi.createPost(postData);
+        console.log('createPost', postData);
+        dispatch({
+            type: CREATE_POST_REQUEST,
+            payload: {
+                postId: postData.id,
+                text: postData.text,
+                imageFiles: postData.imageFiles,
+                userId: postData.userId
+            }
+        });
+        const response = postData.imageFiles.length !== 0 ? await PostApi.createPostWithImage(postData) : await PostApi.createPost(postData);
         const normalizedData = normalize(response.data, post);
         console.log('normalized create post', normalizedData);
         dispatch(createPostSuccess(normalizedData.entities['posts'][response.data.id] as PostObject));

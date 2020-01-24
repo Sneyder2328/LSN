@@ -52,7 +52,7 @@ exports.getCommentsValidationRules = [
     express_validator_1.query('limit').isDecimal().withMessage('limit must be a number')
 ];
 exports.createPostValidationRules = [
-    express_validator_1.body('type').isString().escape(),
+    express_validator_1.body('id').trim().matches(config_1.default.regex.uuidV4),
     express_validator_1.body('text').isString(),
     express_validator_1.body('img')
 ];

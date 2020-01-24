@@ -15,9 +15,8 @@ const utils_1 = require("../../utils/utils");
 const PostNotCreatedError_1 = require("../../utils/errors/PostNotCreatedError");
 const commentService_1 = require("../comment/commentService");
 const { Comment, Post, PostLike, Profile, PostImage } = database_1.models;
-function createPost(userId, type, text, images) {
+function createPost(postId, userId, type, text, images) {
     return __awaiter(this, void 0, void 0, function* () {
-        const postId = utils_1.genUUID();
         const post = yield Post.create({ id: postId, userId, type, text });
         if (!post)
             throw new PostNotCreatedError_1.PostNotCreatedError();

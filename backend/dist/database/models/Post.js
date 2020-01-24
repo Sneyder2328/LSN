@@ -35,10 +35,6 @@ exports.default = (sequelize, DataTypes, User) => {
             allowNull: false,
             defaultValue: DataTypes.NOW
         },
-        type: {
-            type: DataTypes.ENUM('text', 'img'),
-            allowNull: false
-        },
         text: {
             type: DataTypes.STRING,
             allowNull: true,

@@ -55,6 +55,10 @@
       }
     }
 
+    .content.uploading {
+      opacity: 0.5;
+    }
+
     .interact {
       display: flex;
       justify-content: space-evenly;

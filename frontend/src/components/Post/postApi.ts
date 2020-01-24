@@ -1,18 +1,18 @@
 import {transport} from "../../api";
-import {Post} from "./Post";
+import {PostRequest} from "./Post";
 
 export const PostApi = {
-    async createPost(content: Post) {
+    async createPost(content: PostRequest) {
         return await transport.post('/posts/', content);
     },
-    async createPostWithImage(content: Post) {
+    async createPostWithImage(content: PostRequest) {
         console.log("createPostWithImage", content);
         const formData = new FormData();
         content.imageFiles!.forEach(imageFile => {
             formData.append('image', imageFile);
         });
         formData.append('text', content.text);
-        formData.append('type', content.type);
+        formData.append('id', content.id);
         return await transport.post('/imageposts/', formData, {
             headers: {
                 'content-type': 'multipart/form-data'

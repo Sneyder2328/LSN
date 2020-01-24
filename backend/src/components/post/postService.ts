@@ -7,8 +7,7 @@ import {fetchCommentLikeStatus} from "../comment/commentService";
 
 const {Comment, Post, PostLike, Profile, PostImage} = models;
 
-export async function createPost(userId: string, type: string, text: string, images?: Array<string>) {
-    const postId = genUUID();
+export async function createPost(postId: string, userId: string, type: string, text: string, images?: Array<string>) {
     const post = await Post.create({id: postId, userId, type, text});
     if (!post) throw new PostNotCreatedError();
     const response = post.toJSON();

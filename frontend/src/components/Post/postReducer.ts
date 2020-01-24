@@ -9,7 +9,8 @@ import {
     LOAD_COMMENTS_SUCCESS,
     INTERACT_POST_REQUEST,
     INTERACT_POST_ERROR,
-    INTERACT_POST_SUCCESS
+    INTERACT_POST_SUCCESS,
+    CREATE_POST_REQUEST
 } from "../../actions/types";
 import {Post} from "./Post";
 import {HashTable} from "../../utils/utils";
@@ -28,7 +29,8 @@ export interface PostObject extends Post {
     commentsCount: number;
     createdAt: any;
     comments: Array<string>;
-    images: Array<PostImage>
+    images: Array<PostImage>;
+    previewImages?: Array<File>;
     //authorProfile: Profile; delete this one while normalizing with normalizr
     likeStatus: 'like' | 'dislike' | undefined;
 }
@@ -37,6 +39,7 @@ export interface PostMetadata {
     isLoadingPreviousComments?: boolean;
     isCreatingComment?: boolean;
     likeStatus: 'like' | 'dislike' | undefined;
+    isUploading: boolean;
 }
 
 export type PostState = {
@@ -45,7 +48,13 @@ export type PostState = {
 };
 
 type CreatePostRequest = {
-    type: 'CREATE_POST_REQUEST'
+    type: 'CREATE_POST_REQUEST';
+    payload: {
+        postId: string;
+        text: string;
+        imageFiles: Array<File>;
+        userId: string;
+    }
 };
 type CreatePostSuccess = {
     type: 'CREATE_POST_SUCCESS';
@@ -151,12 +160,48 @@ export const postsReducer = (state: PostState = initialPostsState, action: Actio
                     }
                 }
             };
+        case CREATE_POST_REQUEST:
+            return {
+                ...state,
+                metas: {
+                    ...state.metas,
+                    [action.payload.postId]: {
+                        isLoadingPreviousComments: false,
+                        isCreatingComment: false,
+                        likeStatus: undefined,
+                        isUploading: true
+                    }
+                },
+                entities: {
+                    ...state.entities,
+                    [action.payload.postId]: {
+                        likeStatus: undefined,
+                        likesCount: 0,
+                        dislikesCount: 0,
+                        commentsCount: 0,
+                        comments: [],
+                        createdAt: new Date().getTime(),
+                        id: action.payload.postId,
+                        text: action.payload.text,
+                        images: [],
+                        previewImages: action.payload.imageFiles.map((imgFile) => (imgFile)),
+                        userId: action.payload.userId
+                    }
+                }
+            };
         case CREATE_POST_SUCCESS:
             return {
                 ...state,
                 entities: {
                     ...state.entities,
                     [action.postCreated.id]: action.postCreated
+                },
+                metas: {
+                    ...state.metas,
+                    [action.postCreated.id]: {
+                        ...state.metas[action.postCreated.id],
+                        isUploading: false
+                    }
                 }
             };
         case LOAD_POSTS_SUCCESS:
@@ -270,7 +315,8 @@ export const selectPost = () => createSelector([selectPostObject, selectCommentA
         return {
             ...postObject,
             authorProfile: authorObject,
-            isLoadingPreviousComments: postMetadata && postMetadata.isLoadingPreviousComments
+            isLoadingPreviousComments: postMetadata && postMetadata.isLoadingPreviousComments,
+            isUploading: postMetadata && postMetadata.isUploading
         };
     }
 );
