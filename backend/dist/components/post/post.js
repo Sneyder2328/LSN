@@ -23,6 +23,7 @@ const multer_1 = __importDefault(require("multer"));
 const cloudinaryConfig_1 = require("../../config/cloudinaryConfig");
 const multer_storage_cloudinary_1 = __importDefault(require("multer-storage-cloudinary"));
 const AppError_1 = require("../../utils/errors/AppError");
+const constants_1 = require("../../utils/constants");
 const storage = multer_storage_cloudinary_1.default({
     cloudinary: cloudinaryConfig_1.cloudinary,
     folder: 'postImages',
@@ -30,11 +31,13 @@ const storage = multer_storage_cloudinary_1.default({
     filename: function (req, file, cb) {
         cb(null, file.originalname.substring(0, file.originalname.length - 4) + '-' + Date.now());
     },
-    transformation: [{ width: 1024, height: 1024, crop: 'limit' }]
+    transformation: [{ width: 960, height: 960, crop: 'limit' }]
 });
-const parser = multer_1.default({ storage });
-const maxImagesPerUpload = 12;
-const multerUploads = parser.array('image', maxImagesPerUpload);
+const parser = multer_1.default({
+    storage,
+    limits: { fileSize: constants_1.MAX_IMG_FILE_SIZE }
+});
+const multerUploads = parser.array('image', constants_1.MAX_IMGS_PER_UPLOAD);
 const router = express_1.Router();
 router.post(endpoints_1.default.post.CREATE_POST, authenticate_1.default, validate_1.createPostValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const content = req.body;

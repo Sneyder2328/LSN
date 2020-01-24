@@ -10,6 +10,7 @@ import multer from "multer"
 import {cloudinary} from "../../config/cloudinaryConfig";
 import cloudinaryStorage from "multer-storage-cloudinary";
 import {AppError} from "../../utils/errors/AppError";
+import {MAX_IMG_FILE_SIZE, MAX_IMGS_PER_UPLOAD} from "../../utils/constants";
 
 
 const storage = cloudinaryStorage({
@@ -21,9 +22,11 @@ const storage = cloudinaryStorage({
     },
     transformation: [{width: 960, height: 960, crop: 'limit'}]
 });
-const parser = multer({storage});
-const maxImagesPerUpload = 12;
-const multerUploads = parser.array('image', maxImagesPerUpload);
+const parser = multer({
+    storage,
+    limits: {fileSize: MAX_IMG_FILE_SIZE}
+});
+const multerUploads = parser.array('image', MAX_IMGS_PER_UPLOAD);
 
 const router = Router();
 
