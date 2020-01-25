@@ -1,5 +1,13 @@
 import {transport} from "../../api";
 import {PostRequest} from "./Post";
+// @ts-ignore
+import imageCompression from 'browser-image-compression';
+
+const options = {
+    maxSizeMB: 1,
+    maxWidthOrHeight: 960,
+    useWebWorker: true
+};
 
 export const PostApi = {
     async createPost(content: PostRequest) {
@@ -8,7 +16,8 @@ export const PostApi = {
     async createPostWithImage(content: PostRequest) {
         console.log("createPostWithImage", content);
         const formData = new FormData();
-        content.imageFiles!.forEach(imageFile => {
+        const images = await Promise.all(content.imageFiles.map((imgFile): File => (imageCompression(imgFile, options))));
+        images.forEach((imageFile) => {
             formData.append('image', imageFile);
         });
         formData.append('text', content.text);

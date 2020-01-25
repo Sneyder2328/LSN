@@ -7,4 +7,4 @@ export const FOURTEEN_MINUTES_IN_MILLIS = 14 * 60 * 1000;
 export const LIKE = 'like';
 export const DISLIKE = 'dislike';
 export const MAX_IMAGES_PER_POST = 12;
-export const MAX_FILE_SIZE = 2_048_000;
+export const MAX_FILE_SIZE = 4_096_000;
