@@ -28,10 +28,8 @@ describe('POST /createPost', () => {
             .expect((res) => {
                 expect(res.body.commentsCount).toBe(0);
                 expect(res.body.likesCount).toBe(0);
-                expect(res.body.type).toBe(posts[0].type);
                 expect(res.body.text).toBe(posts[0].text);
                 expect(res.body.id).toBeTruthy();
-                expect(res.body.img).toBe(posts[0].img);
                 expect(res.body.createdAt).toBeTruthy();
             })
             .end(done)
@@ -77,7 +75,6 @@ describe('GET /posts', () => {
                     expect(post.createdAt).toBeTruthy();
                     expect(post.commentsCount).toBe(0);
                     expect(post.likesCount).toBe(0);
-                    expect(post.type).toBe('text');
                     expect(post.authorProfile.userId).toBeTruthy();
                     expect(post.authorProfile.username).toBeTruthy();
                     expect(post.authorProfile.fullname).toBeTruthy();
@@ -98,14 +95,12 @@ describe('GET /posts', () => {
                 expect(res.body.length).toBe(posts.length);
                 res.body.forEach(post => {
                     console.log('post=', post);
-
                     expect(post.id).toBeTruthy();
                     expect(post.userId).toBeTruthy();
                     expect(post.text).toBeTruthy();
                     expect(post.img).toBeFalsy();
                     expect(post.createdAt).toBeTruthy();
                     expect(post.likesCount).toBe(0);
-                    expect(post.type).toBe('text');
                     const expectedCommentsCount = comments.filter(comment => comment.postId === post.id).length;
                     expect(post.commentsCount).toBe(expectedCommentsCount);
                     const expectedCommentsFetched = expectedCommentsCount < LIMIT_COMMENTS_PER_POST ? expectedCommentsCount : LIMIT_COMMENTS_PER_POST;

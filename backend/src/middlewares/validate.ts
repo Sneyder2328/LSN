@@ -32,6 +32,10 @@ export const getProfileValidationRules = [
     param('username').trim().escape().isAlphanumeric()
 ];
 
+export const searchUserValidationRules = [
+    query('query').isString().exists()
+];
+
 export const sendFriendRequestValidationRules = [
     param('receiverId').trim().matches(config.regex.uuidV4)
 ];

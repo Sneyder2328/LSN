@@ -1,5 +1,8 @@
 @import "src/utils/variables";
 
+$search-width: 350px;
+$search-width-sm: 250px;
+
 .nav-container {
   width: 100%;
   background-color: #61dafb;
@@ -15,12 +18,54 @@
     justify-content: space-between;
     align-items: center;
 
-    .search {
+    .search-box {
       padding: 8px 16px;
+      width: $search-width;
+      box-sizing: border-box;
       font-size: 1rem;
       border-radius: $radius;
       border: none;
       outline: none;
+    }
+
+    .search-results {
+      width: $search-width;
+      position: absolute;
+      top: $navbarHeight;
+      max-height: 400px;
+      overflow-y: auto;
+      background-color: #fff;
+
+      .person {
+        margin: 0;
+        padding: 10px;
+        display: flex;
+        cursor: pointer;
+        border-bottom: 1px solid #e2e2e2;
+
+        img {
+          width: $thumbnailImgDimen+-8px;
+          height: $thumbnailImgDimen+-8px;
+        }
+
+        div {
+          margin-left: 4px;
+          display: flex;
+          height: auto;
+          flex-wrap: wrap;
+          align-content: center;
+
+          p {
+            margin: 0;
+            width: 100%;
+            font-size: 0.85rem;
+          }
+
+          .username {
+            color: #97a5af;
+          }
+        }
+      }
     }
 
     .log-out-button {
@@ -48,9 +93,13 @@
     @media screen and (max-width: 750px) {
       padding: 0;
       width: 90%;
-      .search {
-        width: 50%;
+
+      .search-box {
         font-size: 0.88rem;
+        width: $search-width-sm;
+      }
+      .search-results {
+        width: $search-width-sm;
       }
       .log-out-button {
         font-size: 0.88rem;

@@ -39,10 +39,8 @@ describe('POST /createPost', () => {
             .expect((res) => {
             expect(res.body.commentsCount).toBe(0);
             expect(res.body.likesCount).toBe(0);
-            expect(res.body.type).toBe(seed_1.posts[0].type);
             expect(res.body.text).toBe(seed_1.posts[0].text);
             expect(res.body.id).toBeTruthy();
-            expect(res.body.img).toBe(seed_1.posts[0].img);
             expect(res.body.createdAt).toBeTruthy();
         })
             .end(done);
@@ -85,7 +83,6 @@ describe('GET /posts', () => {
                 expect(post.createdAt).toBeTruthy();
                 expect(post.commentsCount).toBe(0);
                 expect(post.likesCount).toBe(0);
-                expect(post.type).toBe('text');
                 expect(post.authorProfile.userId).toBeTruthy();
                 expect(post.authorProfile.username).toBeTruthy();
                 expect(post.authorProfile.fullname).toBeTruthy();
@@ -110,7 +107,6 @@ describe('GET /posts', () => {
                 expect(post.img).toBeFalsy();
                 expect(post.createdAt).toBeTruthy();
                 expect(post.likesCount).toBe(0);
-                expect(post.type).toBe('text');
                 const expectedCommentsCount = seed_1.comments.filter(comment => comment.postId === post.id).length;
                 expect(post.commentsCount).toBe(expectedCommentsCount);
                 const expectedCommentsFetched = expectedCommentsCount < constants_1.LIMIT_COMMENTS_PER_POST ? expectedCommentsCount : constants_1.LIMIT_COMMENTS_PER_POST;

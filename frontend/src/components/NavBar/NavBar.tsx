@@ -1,5 +1,5 @@
 import React from "react";
-import {SearchBar} from "./SearchBar";
+import SearchBar from "./SearchBar";
 import {connect} from 'react-redux'
 import {logOutUser} from "../Auth/authActions";
 import {AppState} from "../../reducers";

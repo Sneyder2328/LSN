@@ -31,6 +31,9 @@ exports.refreshTokenValidationRules = [
 exports.getProfileValidationRules = [
     express_validator_1.param('username').trim().escape().isAlphanumeric()
 ];
+exports.searchUserValidationRules = [
+    express_validator_1.query('query').isString().exists()
+];
 exports.sendFriendRequestValidationRules = [
     express_validator_1.param('receiverId').trim().matches(config_1.default.regex.uuidV4)
 ];

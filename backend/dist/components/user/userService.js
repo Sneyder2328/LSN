@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = require("../../database/database");
 const UserNotFoundError_1 = require("../../utils/errors/UserNotFoundError");
 const userRelationship_1 = __importDefault(require("../../utils/constants/userRelationship"));
+const sequelize_1 = require("sequelize");
 const { Profile, UserRelationShip } = database_1.models;
 function getProfile(username) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -25,6 +26,19 @@ function getProfile(username) {
     });
 }
 exports.getProfile = getProfile;
+function searchUser(query) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return Profile.findAll({
+            attributes: ['userId', 'username', 'fullname', 'profilePhotoUrl'],
+            where: {
+                fullname: {
+                    [sequelize_1.Op.like]: `${query}%`
+                }
+            }
+        });
+    });
+}
+exports.searchUser = searchUser;
 function sendFriendRequest(senderId, receiverId) {
     return __awaiter(this, void 0, void 0, function* () {
         const fRequest = yield UserRelationShip.create({ senderId, receiverId, type: userRelationship_1.default.PENDING });
@@ -41,7 +55,7 @@ exports.getFriendRequests = getFriendRequests;
 function handleFriendRequest(receiverId, senderId, action) {
     return __awaiter(this, void 0, void 0, function* () {
         if (action === 'confirm') {
-            return yield UserRelationShip.update({ type: userRelationship_1.default.FRIEND }, { where: { receiverId, senderId } });
+            return UserRelationShip.update({ type: userRelationship_1.default.FRIEND }, { where: { receiverId, senderId } });
         }
         return UserRelationShip.destroy({ where: { receiverId, senderId } });
     });

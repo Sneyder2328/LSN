@@ -1,9 +1,9 @@
 import {Router} from "express";
-import {getFriendRequests, getProfile, handleFriendRequest, sendFriendRequest} from "./userService";
+import {getFriendRequests, getProfile, handleFriendRequest, searchUser, sendFriendRequest} from "./userService";
 import {
     acceptFriendRequestValidationRules,
     getFriendRequestValidationRules,
-    getProfileValidationRules,
+    getProfileValidationRules, searchUserValidationRules,
     sendFriendRequestValidationRules, validate
 } from "../../middlewares/validate";
 import {handleErrorAsync} from "../../middlewares/handleErrorAsync";
@@ -19,9 +19,16 @@ router.get(endpoints.user.GET_PROFILE(':username'), getProfileValidationRules, v
     res.json(user);
 }));
 
+router.get(endpoints.user.SEARCH, authenticate, searchUserValidationRules, validate, handleErrorAsync(async (req, res) => {
+    const query = req.query.query;
+    if(query.length < 2) return res.send([]);
+    const users = await searchUser(query);
+    res.json(users);
+}));
+
 router.post(endpoints.user.SEND_FRIEND_REQUEST(':receiverId'), authenticate, sendFriendRequestValidationRules, validate, handleErrorAsync(async (req, res) => {
     const fRequestSent = await sendFriendRequest(req.userId, req.params.receiverId);
-    res.status(httpCodes.CREATED).json(fRequestSent);
+    res.status(httpCodes.CREATED).send(fRequestSent);
 }));
 
 router.get(endpoints.user.GET_FRIEND_REQUESTS, authenticate, getFriendRequestValidationRules, validate, handleErrorAsync(async (req, res) => {

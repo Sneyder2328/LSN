@@ -23,7 +23,6 @@ export const AuthApi = {
     },
     async getNewAccessToken(refreshToken: string): Promise<string | undefined> {
         const response = await transport.get('/tokens', {headers: {[REFRESH_TOKEN]: refreshToken}});
-        console.log('getNewAccessToken response', response);
         if (response.data.accessTokenIssued === true) {
             const accessToken = response.headers[ACCESS_TOKEN] as string;
             setAccessTokenHeaders(accessToken);

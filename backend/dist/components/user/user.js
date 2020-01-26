@@ -25,9 +25,16 @@ router.get(endpoints_1.default.user.GET_PROFILE(':username'), validate_1.getProf
     const user = yield userService_1.getProfile(username);
     res.json(user);
 })));
+router.get(endpoints_1.default.user.SEARCH, authenticate_1.default, validate_1.searchUserValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const query = req.query.query;
+    if (query.length < 2)
+        return res.send([]);
+    const users = yield userService_1.searchUser(query);
+    res.json(users);
+})));
 router.post(endpoints_1.default.user.SEND_FRIEND_REQUEST(':receiverId'), authenticate_1.default, validate_1.sendFriendRequestValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const fRequestSent = yield userService_1.sendFriendRequest(req.userId, req.params.receiverId);
-    res.status(httpResponseCodes_1.default.CREATED).json(fRequestSent);
+    res.status(httpResponseCodes_1.default.CREATED).send(fRequestSent);
 })));
 router.get(endpoints_1.default.user.GET_FRIEND_REQUESTS, authenticate_1.default, validate_1.getFriendRequestValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const friendRequests = yield userService_1.getFriendRequests(req.userId);

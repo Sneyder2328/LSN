@@ -8,6 +8,7 @@ import endpoints from "../../utils/constants/endpoints";
 import config from "../../config/config";
 import userRelationship from "../../utils/constants/userRelationship";
 import {models} from "../../database/database";
+
 const {UserRelationShip} = models;
 import {profiles, users} from "../../test/seed";
 
@@ -38,6 +39,41 @@ describe('GET /profile/:username', () => {
             .expect((res) => {
                 expect(res.body.error).toBe(error.USER_NOT_FOUND_ERROR);
                 expect(res.body.message).toBe(error.USER_NOT_FOUND_ERROR);
+            })
+            .end(done);
+    });
+});
+
+describe('GET /users/?query=someusername', () => {
+    beforeEach(async () => {
+        await wipeOutDatabase();
+        await createUserAndProfile({...users[0]}, {...profiles[0]});
+        await createUserAndProfile({...users[1]}, {...profiles[1]});
+    });
+
+    it('should return an array of matches for the search', (done) => {
+        request(app)
+            .get(endpoints.user.SEARCH + '?query=' + profiles[0].fullname.slice(0, 3))
+            .expect(httpCodes.OK)
+            .expect((res) => {
+                expect(res.body).toBeTruthy();
+                res.body.forEach((person: any) => {
+                    expect(person.userId).toBeTruthy();
+                    expect(person.username).toBeTruthy();
+                    expect(person.fullname).toBeTruthy();
+                    expect(person.profilePhotoUrl).toBeTruthy();
+                });
+            })
+            .end(done);
+    });
+
+    it('should return an empty array of matches for the search', (done) => {
+        request(app)
+            .get(endpoints.user.SEARCH + '?query=thisisnotasearch')
+            .expect(httpCodes.OK)
+            .expect((res) => {
+                expect(res.body).toBeInstanceOf(Array);
+                expect(res.body.length).toBe(0);
             })
             .end(done);
     });

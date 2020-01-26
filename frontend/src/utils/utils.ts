@@ -8,6 +8,10 @@ export interface HashTable<T> {
     [key: string]: T;
 }
 
+export interface HashTableArray<T> {
+    [key: string]: Array<T>;
+}
+
 export interface NumberedHashTable<T> {
     [key: number]: T;
 }

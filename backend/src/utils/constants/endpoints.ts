@@ -9,7 +9,8 @@ export default {
         GET_PROFILE: (username) => `/users/${username}`,
         SEND_FRIEND_REQUEST: (receiverUserId) => `/users/${receiverUserId}/friends`,
         GET_FRIEND_REQUESTS: '/me/friends/incoming',
-        RESPOND_TO_FRIEND_REQUEST: (senderUserId) => `/users/${senderUserId}/friends`
+        RESPOND_TO_FRIEND_REQUEST: (senderUserId) => `/users/${senderUserId}/friends`,
+        SEARCH: '/users'
     },
     post: {
         CREATE_POST: '/posts',

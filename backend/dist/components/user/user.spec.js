@@ -53,6 +53,38 @@ describe('GET /profile/:username', () => {
             .end(done);
     });
 });
+describe('GET /users/?query=someusername', () => {
+    beforeEach(() => __awaiter(void 0, void 0, void 0, function* () {
+        yield setup_1.wipeOutDatabase();
+        yield setup_1.createUserAndProfile(Object.assign({}, seed_1.users[0]), Object.assign({}, seed_1.profiles[0]));
+        yield setup_1.createUserAndProfile(Object.assign({}, seed_1.users[1]), Object.assign({}, seed_1.profiles[1]));
+    }));
+    it('should return an array of matches for the search', (done) => {
+        supertest_1.default(index_1.app)
+            .get(endpoints_1.default.user.SEARCH + '?query=' + seed_1.profiles[0].fullname.slice(0, 3))
+            .expect(httpResponseCodes_1.default.OK)
+            .expect((res) => {
+            expect(res.body).toBeTruthy();
+            res.body.forEach((person) => {
+                expect(person.userId).toBeTruthy();
+                expect(person.username).toBeTruthy();
+                expect(person.fullname).toBeTruthy();
+                expect(person.profilePhotoUrl).toBeTruthy();
+            });
+        })
+            .end(done);
+    });
+    it('should return an empty array of matches for the search', (done) => {
+        supertest_1.default(index_1.app)
+            .get(endpoints_1.default.user.SEARCH + '?query=thisisnotasearch')
+            .expect(httpResponseCodes_1.default.OK)
+            .expect((res) => {
+            expect(res.body).toBeInstanceOf(Array);
+            expect(res.body.length).toBe(0);
+        })
+            .end(done);
+    });
+});
 describe('POST /sendFriendRequest', () => {
     let accessToken;
     beforeEach(() => __awaiter(void 0, void 0, void 0, function* () {
