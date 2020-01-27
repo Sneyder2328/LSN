@@ -126,5 +126,16 @@ $search-width-sm: 250px;
         font-size: 0.88rem;
       }
     }
+    @media screen and (max-width: 400px) {
+      .search-container {
+        .search-box {
+          font-size: 0.88rem;
+          width: $search-width-sm+-60px;
+        }
+      }
+      .search-results {
+        width: $search-width-sm+-60px;
+      }
+    }
   }
 }
