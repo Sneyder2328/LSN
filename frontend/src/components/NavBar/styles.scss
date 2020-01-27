@@ -113,9 +113,11 @@ $search-width-sm: 250px;
       padding: 0;
       width: 90%;
 
-      .search-box {
-        font-size: 0.88rem;
-        width: $search-width-sm;
+      .search-container {
+        .search-box {
+          font-size: 0.88rem;
+          width: $search-width-sm;
+        }
       }
       .search-results {
         width: $search-width-sm;
