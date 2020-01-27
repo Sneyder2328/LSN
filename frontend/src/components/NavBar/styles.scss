@@ -1,7 +1,7 @@
 @import "src/utils/variables";
 
-$search-width: 350px;
-$search-width-sm: 250px;
+$search-width: 270px;
+$search-width-sm: 220px;
 
 .nav-container {
   width: 100%;
@@ -17,6 +17,34 @@ $search-width-sm: 250px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    .news-feed-type {
+      display: flex;
+      height: 100%;
+
+      ul {
+        color: #fff;
+        font-weight: 600;
+        font-size: 1.1rem;
+        box-sizing: border-box;
+        height: 100%;
+        margin: 0;
+        padding: 0 14px;
+        display: flex;
+        border-top: 2px solid transparent;
+        border-bottom: 2px solid transparent;
+
+        a {
+          color: #fff;
+          text-decoration: none;
+          margin: auto auto;
+        }
+      }
+
+      ul.selected {
+        border-bottom: 2px solid #2c80d0;
+      }
+    }
 
     .search-container {
       text-align: center;

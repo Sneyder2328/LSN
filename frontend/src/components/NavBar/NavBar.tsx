@@ -9,6 +9,13 @@ const NavBar: React.FC<{ isLoggingOut: boolean; logOutUser: () => any }> = ({isL
     return (
         <div className='nav-container'>
             <div className='nav-bar'>
+                <div className='news-feed-type'>
+                    <ul className='selected'><a href='#'>Top</a></ul>
+                    <ul><a href='#'>Latest</a></ul>
+                </div>
+                <div>
+                    <img src='../../resources/lsn-ic.png'/>
+                </div>
                 <SearchBar/>
                 <button className='log-out-button' disabled={isLoggingOut} onClick={logOutUser}>Log out</button>
             </div>
