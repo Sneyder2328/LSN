@@ -4,7 +4,7 @@ import {PostRequest} from "./Post";
 import imageCompression from 'browser-image-compression';
 
 const options = {
-    maxSizeMB: 1,
+    maxSizeMB: 2,
     maxWidthOrHeight: 960,
     useWebWorker: true
 };
