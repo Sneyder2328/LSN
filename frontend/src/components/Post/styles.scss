@@ -82,6 +82,10 @@
         color: $interactHoveredColor;
       }
 
+      span:focus {
+        outline: none;
+      }
+
       .selected {
         color: $interactHoveredColor;
       }
