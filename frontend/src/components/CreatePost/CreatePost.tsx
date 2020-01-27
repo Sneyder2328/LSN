@@ -90,7 +90,7 @@ const CreatePost: React.FC<Props> = ({userId, createPost}) => {
                     <label htmlFor='file'><i className="far fa-images"/></label>
                 </div>
                 <div className='post'>
-                    <button className='post-btn' disabled={text.length === 0 && imageFiles === undefined}
+                    <button className='post-btn' disabled={text.length === 0 && imageFiles.length === 0}
                             onClick={handleClick}>Post
                     </button>
                 </div>

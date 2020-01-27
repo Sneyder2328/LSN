@@ -18,14 +18,32 @@ $search-width-sm: 250px;
     justify-content: space-between;
     align-items: center;
 
-    .search-box {
-      padding: 8px 16px;
-      width: $search-width;
-      box-sizing: border-box;
-      font-size: 1rem;
-      border-radius: $radius;
-      border: none;
-      outline: none;
+    .search-container {
+      text-align: center;
+
+      .search-icon {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+
+        .fa-search {
+          font-size: 1rem;
+          color: $btnColor;
+          padding: 8px;
+        }
+      }
+
+      .search-box {
+        padding: 8px 16px 8px 30px;
+        width: $search-width;
+        box-sizing: border-box;
+        font-size: 1rem;
+        border-radius: $radius;
+        border: none;
+        outline: none;
+      }
     }
 
     .search-results {
