@@ -29,7 +29,9 @@ export const refreshTokenValidationRules = [
 ];
 
 export const getProfileValidationRules = [
-    param('username').trim().escape().isAlphanumeric()
+    param('userIdentifier').trim().escape().custom((value: string) => {
+        return value.match(config.regex.uuidV4) || value.match("^[a-zA-Z0-9]+$");
+    }).withMessage("userIdentifier provided is not alphanumeric nor uuidV4")
 ];
 
 export const searchUserValidationRules = [

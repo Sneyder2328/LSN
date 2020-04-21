@@ -1,7 +1,7 @@
 export default (models) => {
     const {Profile, Post, PostImage, Comment} = models;
 
-    Profile.hasMany(Post, {as: 'authorProfile', foreignKey: 'userId'});
+    Profile.hasMany(Post, {as: 'posts', foreignKey: 'userId'});
     Post.belongsTo(Profile, {as: 'authorProfile', foreignKey: 'userId'});
 
     Profile.hasMany(Comment, {foreignKey: 'userId'});

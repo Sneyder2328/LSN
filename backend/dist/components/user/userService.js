@@ -16,16 +16,49 @@ const database_1 = require("../../database/database");
 const UserNotFoundError_1 = require("../../utils/errors/UserNotFoundError");
 const userRelationship_1 = __importDefault(require("../../utils/constants/userRelationship"));
 const sequelize_1 = require("sequelize");
+const utils_1 = require("../../utils/utils");
+const { Post } = database_1.models;
 const { Profile, UserRelationShip } = database_1.models;
-function getProfile(username) {
+const includePostsSorted = [
+    {
+        model: Post,
+        as: 'posts'
+    }
+];
+function getProfileByUsername(username, includePosts) {
     return __awaiter(this, void 0, void 0, function* () {
-        const user = yield Profile.findOne({ where: { username } });
+        let user;
+        if (includePosts === true) {
+            user = yield Profile.findOne({ where: { username }, include: includePostsSorted });
+            user = user.toJSON();
+            user.posts = user.posts.sort(utils_1.compareByDateAsc);
+        }
+        else {
+            user = yield Profile.findOne({ where: { username } });
+        }
         if (!user)
             throw new UserNotFoundError_1.UserNotFoundError();
         return user;
     });
 }
-exports.getProfile = getProfile;
+exports.getProfileByUsername = getProfileByUsername;
+function getProfileByUserId(userId, includePosts) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let user;
+        if (includePosts === true) {
+            user = yield Profile.findByPk(userId, { include: includePostsSorted });
+            user = user.toJSON();
+            user.posts = user.posts.sort(utils_1.compareByDateAsc);
+        }
+        else {
+            user = yield Profile.findByPk(userId);
+        }
+        if (!user)
+            throw new UserNotFoundError_1.UserNotFoundError();
+        return user;
+    });
+}
+exports.getProfileByUserId = getProfileByUserId;
 function searchUser(query) {
     return __awaiter(this, void 0, void 0, function* () {
         return Profile.findAll({

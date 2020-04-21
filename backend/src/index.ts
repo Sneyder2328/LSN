@@ -4,6 +4,7 @@ import compression from "compression";
 import cors from "cors";
 import router from './components/app';
 import {corsOptions} from './middlewares/cors';
+import {genUUID} from "./utils/utils";
 
 
 export const app = express();
@@ -15,5 +16,5 @@ app.use(bodyParser.json());
 app.use('/', router);
 
 export const server = app.listen(port, () => {
-    console.log(`Server started on port ${port}`);
+    console.log(`Server started on port ${port}`, genUUID());
 });

@@ -19,10 +19,12 @@ const handleErrorAsync_1 = require("../../middlewares/handleErrorAsync");
 const authenticate_1 = __importDefault(require("../../middlewares/authenticate"));
 const endpoints_1 = __importDefault(require("../../utils/constants/endpoints"));
 const httpResponseCodes_1 = __importDefault(require("../../utils/constants/httpResponseCodes"));
+const config_1 = __importDefault(require("../../config/config"));
 const router = express_1.Router();
-router.get(endpoints_1.default.user.GET_PROFILE(':username'), validate_1.getProfileValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const username = req.params.username;
-    const user = yield userService_1.getProfile(username);
+router.get(endpoints_1.default.user.GET_PROFILE(':userIdentifier'), validate_1.getProfileValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userIdentifier = req.params.userIdentifier;
+    const includePosts = req.query.includePosts == "true";
+    const user = userIdentifier.match(config_1.default.regex.uuidV4) ? yield userService_1.getProfileByUserId(userIdentifier, includePosts) : yield userService_1.getProfileByUsername(userIdentifier, includePosts);
     res.json(user);
 })));
 router.get(endpoints_1.default.user.SEARCH, authenticate_1.default, validate_1.searchUserValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {

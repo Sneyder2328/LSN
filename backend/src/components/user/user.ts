@@ -1,5 +1,12 @@
 import {Router} from "express";
-import {getFriendRequests, getProfile, handleFriendRequest, searchUser, sendFriendRequest} from "./userService";
+import {
+    getFriendRequests,
+    getProfileByUserId,
+    getProfileByUsername,
+    handleFriendRequest,
+    searchUser,
+    sendFriendRequest
+} from "./userService";
 import {
     acceptFriendRequestValidationRules,
     getFriendRequestValidationRules,
@@ -10,18 +17,20 @@ import {handleErrorAsync} from "../../middlewares/handleErrorAsync";
 import authenticate from "../../middlewares/authenticate";
 import endpoints from "../../utils/constants/endpoints";
 import httpCodes from "../../utils/constants/httpResponseCodes";
+import config from "../../config/config";
 
 const router = Router();
 
-router.get(endpoints.user.GET_PROFILE(':username'), getProfileValidationRules, validate, handleErrorAsync(async (req, res) => {
-    const username = req.params.username;
-    const user = await getProfile(username);
+router.get(endpoints.user.GET_PROFILE(':userIdentifier'), getProfileValidationRules, validate, handleErrorAsync(async (req, res) => {
+    const userIdentifier: string = req.params.userIdentifier;
+    const includePosts = req.query.includePosts == "true";
+    const user = userIdentifier.match(config.regex.uuidV4) ? await getProfileByUserId(userIdentifier, includePosts) : await getProfileByUsername(userIdentifier, includePosts);
     res.json(user);
 }));
 
 router.get(endpoints.user.SEARCH, authenticate, searchUserValidationRules, validate, handleErrorAsync(async (req, res) => {
     const query = req.query.query;
-    if(query.length < 2) return res.send([]);
+    if (query.length < 2) return res.send([]);
     const users = await searchUser(query);
     res.json(users);
 }));

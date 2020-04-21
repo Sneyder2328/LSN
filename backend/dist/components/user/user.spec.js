@@ -29,7 +29,7 @@ describe('GET /profile/:username', () => {
         yield setup_1.wipeOutDatabase();
         yield setup_1.createUserAndProfile(Object.assign({}, seed_1.users[0]), Object.assign({}, seed_1.profiles[0]));
     }));
-    it('should return a profile', (done) => {
+    it('should return a profile by username', (done) => {
         supertest_1.default(index_1.app)
             .get(endpoints_1.default.user.GET_PROFILE(seed_1.users[0].username))
             .expect(httpResponseCodes_1.default.OK)
@@ -42,7 +42,20 @@ describe('GET /profile/:username', () => {
         })
             .end(done);
     });
-    it('should not return a profile', (done) => {
+    it('should return a profile by userId', (done) => {
+        supertest_1.default(index_1.app)
+            .get(endpoints_1.default.user.GET_PROFILE(seed_1.users[0].id))
+            .expect(httpResponseCodes_1.default.OK)
+            .expect((res) => {
+            expect(res.body.username).toBe(seed_1.users[0].username);
+            expect(res.body.fullname).toBe(seed_1.profiles[0].fullname);
+            expect(res.body.description).toBe(seed_1.profiles[0].description);
+            expect(res.body.coverPhotoUrl).toBe(seed_1.profiles[0].coverPhotoUrl);
+            expect(res.body.profilePhotoUrl).toBe(seed_1.profiles[0].profilePhotoUrl);
+        })
+            .end(done);
+    });
+    it('should not return a profile with an inexisting username', (done) => {
         supertest_1.default(index_1.app)
             .get(endpoints_1.default.user.GET_PROFILE(seed_1.users[1].username))
             .expect(httpResponseCodes_1.default.NOT_FOUND)
@@ -52,16 +65,29 @@ describe('GET /profile/:username', () => {
         })
             .end(done);
     });
+    it('should not return a profile with an inexisting userId', (done) => {
+        supertest_1.default(index_1.app)
+            .get(endpoints_1.default.user.GET_PROFILE(seed_1.users[1].id))
+            .expect(httpResponseCodes_1.default.NOT_FOUND)
+            .expect((res) => {
+            expect(res.body.error).toBe(errors_1.default.USER_NOT_FOUND_ERROR);
+            expect(res.body.message).toBe(errors_1.default.USER_NOT_FOUND_ERROR);
+        })
+            .end(done);
+    });
 });
 describe('GET /users/?query=someusername', () => {
+    let accessToken;
     beforeEach(() => __awaiter(void 0, void 0, void 0, function* () {
         yield setup_1.wipeOutDatabase();
         yield setup_1.createUserAndProfile(Object.assign({}, seed_1.users[0]), Object.assign({}, seed_1.profiles[0]));
-        yield setup_1.createUserAndProfile(Object.assign({}, seed_1.users[1]), Object.assign({}, seed_1.profiles[1]));
+        const { user } = yield setup_1.createUserAndProfile(Object.assign({}, seed_1.users[1]), Object.assign({}, seed_1.profiles[1]));
+        accessToken = yield JWTHelper_1.signJWT(user.id);
     }));
     it('should return an array of matches for the search', (done) => {
         supertest_1.default(index_1.app)
             .get(endpoints_1.default.user.SEARCH + '?query=' + seed_1.profiles[0].fullname.slice(0, 3))
+            .set(config_1.default.headers.accessToken, accessToken)
             .expect(httpResponseCodes_1.default.OK)
             .expect((res) => {
             expect(res.body).toBeTruthy();
@@ -77,6 +103,7 @@ describe('GET /users/?query=someusername', () => {
     it('should return an empty array of matches for the search', (done) => {
         supertest_1.default(index_1.app)
             .get(endpoints_1.default.user.SEARCH + '?query=thisisnotasearch')
+            .set(config_1.default.headers.accessToken, accessToken)
             .expect(httpResponseCodes_1.default.OK)
             .expect((res) => {
             expect(res.body).toBeInstanceOf(Array);

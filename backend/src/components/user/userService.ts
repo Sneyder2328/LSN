@@ -2,11 +2,41 @@ import {models} from "../../database/database";
 import {UserNotFoundError} from "../../utils/errors/UserNotFoundError";
 import userRelationship from "../../utils/constants/userRelationship";
 import {Op} from "sequelize";
+import {compareByDateAsc} from "../../utils/utils";
+
+const {Post} = models;
 
 const {Profile, UserRelationShip} = models;
 
-export async function getProfile(username) {
-    const user = await Profile.findOne({where: {username}});
+const includePostsSorted = [
+    {
+        model: Post,
+        as: 'posts'
+    }
+];
+
+export async function getProfileByUsername(username, includePosts?: boolean) {
+    let user;
+    if (includePosts === true) {
+        user = await Profile.findOne({where: {username}, include: includePostsSorted});
+        user = user.toJSON();
+        user.posts = user.posts.sort(compareByDateAsc);
+    } else {
+        user = await Profile.findOne({where: {username}});
+    }
+    if (!user) throw new UserNotFoundError();
+    return user;
+}
+
+export async function getProfileByUserId(userId, includePosts?: boolean) {
+    let user;
+    if (includePosts === true) {
+        user = await Profile.findByPk(userId, {include: includePostsSorted});
+        user = user.toJSON();
+        user.posts = user.posts.sort(compareByDateAsc);
+    } else {
+        user = await Profile.findByPk(userId);
+    }
     if (!user) throw new UserNotFoundError();
     return user;
 }

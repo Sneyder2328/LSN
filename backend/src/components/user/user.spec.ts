@@ -14,11 +14,13 @@ import {profiles, users} from "../../test/seed";
 
 
 describe('GET /profile/:username', () => {
+
     beforeEach(async () => {
         await wipeOutDatabase();
         await createUserAndProfile({...users[0]}, {...profiles[0]});
     });
-    it('should return a profile', (done) => {
+
+    it('should return a profile by username', (done) => {
         request(app)
             .get(endpoints.user.GET_PROFILE(users[0].username))
             .expect(httpCodes.OK)
@@ -32,9 +34,34 @@ describe('GET /profile/:username', () => {
             .end(done);
     });
 
-    it('should not return a profile', (done) => {
+    it('should return a profile by userId', (done) => {
+        request(app)
+            .get(endpoints.user.GET_PROFILE(users[0].id))
+            .expect(httpCodes.OK)
+            .expect((res) => {
+                expect(res.body.username).toBe(users[0].username);
+                expect(res.body.fullname).toBe(profiles[0].fullname);
+                expect(res.body.description).toBe(profiles[0].description);
+                expect(res.body.coverPhotoUrl).toBe(profiles[0].coverPhotoUrl);
+                expect(res.body.profilePhotoUrl).toBe(profiles[0].profilePhotoUrl);
+            })
+            .end(done);
+    });
+
+    it('should not return a profile with an inexisting username', (done) => {
         request(app)
             .get(endpoints.user.GET_PROFILE(users[1].username))
+            .expect(httpCodes.NOT_FOUND)
+            .expect((res) => {
+                expect(res.body.error).toBe(error.USER_NOT_FOUND_ERROR);
+                expect(res.body.message).toBe(error.USER_NOT_FOUND_ERROR);
+            })
+            .end(done);
+    });
+
+    it('should not return a profile with an inexisting userId', (done) => {
+        request(app)
+            .get(endpoints.user.GET_PROFILE(users[1].id))
             .expect(httpCodes.NOT_FOUND)
             .expect((res) => {
                 expect(res.body.error).toBe(error.USER_NOT_FOUND_ERROR);
@@ -45,15 +72,18 @@ describe('GET /profile/:username', () => {
 });
 
 describe('GET /users/?query=someusername', () => {
+    let accessToken;
     beforeEach(async () => {
         await wipeOutDatabase();
         await createUserAndProfile({...users[0]}, {...profiles[0]});
-        await createUserAndProfile({...users[1]}, {...profiles[1]});
+        const {user} = await createUserAndProfile({...users[1]}, {...profiles[1]});
+        accessToken = await signJWT(user.id);
     });
 
     it('should return an array of matches for the search', (done) => {
         request(app)
             .get(endpoints.user.SEARCH + '?query=' + profiles[0].fullname.slice(0, 3))
+            .set(config.headers.accessToken, accessToken)
             .expect(httpCodes.OK)
             .expect((res) => {
                 expect(res.body).toBeTruthy();
@@ -70,6 +100,7 @@ describe('GET /users/?query=someusername', () => {
     it('should return an empty array of matches for the search', (done) => {
         request(app)
             .get(endpoints.user.SEARCH + '?query=thisisnotasearch')
+            .set(config.headers.accessToken, accessToken)
             .expect(httpCodes.OK)
             .expect((res) => {
                 expect(res.body).toBeInstanceOf(Array);
