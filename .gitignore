@@ -2,16 +2,16 @@ backend/node_modules
 frontend/node_modules
 
 
-mobile/node_modules/**/*
-mobile/.expo/*
-mobile/npm-debug.*
-mobile/*.jks
-mobile/*.p8
-mobile/*.p12
-mobile/*.key
-mobile/*.mobileprovision
-mobile/*.orig.*
-mobile/web-build/
+app/node_modules/**/*
+app/.expo/*
+app/npm-debug.*
+app/*.jks
+app/*.p8
+app/*.p12
+app/*.key
+app/*.mobileprovision
+app/*.orig.*
+app/web-build/
 
 # macOS
 .DS_Store
