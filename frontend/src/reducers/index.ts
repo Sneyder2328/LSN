@@ -13,6 +13,7 @@ import {
 } from "../components/Comment/commentReducer";
 import { UserActions, usersReducers, UsersState} from "../components/User/userReducer";
 import {SearchActions, searchReducer, SearchState} from "../components/NavBar/searchReducer";
+import {profilesReducer, ProfilesState} from "../components/UserProfile/profileReducer";
 
 type EntitiesState = {
     posts: PostState;
@@ -25,6 +26,7 @@ export interface AppState {
     newsFeed: NewsFeedState
     entities: EntitiesState;
     search: SearchState;
+    profiles: ProfilesState;
 }
 
 export type Actions = PostActions | UserActions | CommentActions | SearchActions;
@@ -37,5 +39,6 @@ export default combineReducers({
         posts: postsReducer,
         comments: commentsReducer,
         users: usersReducers,
-    })
+    }),
+    profiles: profilesReducer
 });

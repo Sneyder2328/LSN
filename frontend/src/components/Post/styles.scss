@@ -50,7 +50,7 @@
       }
 
       img {
-        width: $width-page + - 8px;
+        width: $main-width-page + - 8px;
         max-width: 100%;
       }
     }
@@ -134,7 +134,7 @@
       }
 
       .comment-editor-container {
-        width: $width-page+-$thumbnailImgDimen+-18px;
+        width: $main-width-page+-$thumbnailImgDimen+-18px;
         min-height: $thumbnailImgDimen;
         display: flex;
         padding: 7px 2px;

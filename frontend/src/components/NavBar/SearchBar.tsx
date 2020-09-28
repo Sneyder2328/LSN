@@ -26,12 +26,12 @@ const SearchBar: React.FC<Props> = ({searchUser}) => {
     };
 
     return (
-        <div ref={ref}>
-            <div className='search-container' onClick={() => setResultsVisible(true)}>
+        <div ref={ref} className='search-container'>
+            <div className='search-box' onClick={() => setResultsVisible(true)}>
                 <div className='search-icon'>
                     <i className="fas fa-search"/>
                 </div>
-                <input className='search-box' placeholder='Search people' onChange={onHandleChange} value={query}/>
+                <input className='search-input' placeholder='Search people' onChange={onHandleChange} value={query}/>
             </div>
             {resultsVisible && <SearchResults query={query}/>}
         </div>

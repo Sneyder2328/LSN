@@ -2,16 +2,17 @@ import React from "react";
 import {connect} from "react-redux";
 import {AppState} from "../../reducers";
 import {UserSearch} from "./searchReducer";
+import {Link} from "react-router-dom";
 
 const Profile: React.FC<{ profile: UserSearch }> = ({profile}) => {
     return (
-        <div className='person'>
+        <Link className='person' to={"/"+profile.username}>
             <img className='avatar' src='https://miro.medium.com/max/280/1*MccriYX-ciBniUzRKAUsAw.png'/>
             <div>
                 <p className='fullname'><strong>{profile.fullname}</strong></p>
                 <p className='username'>@{profile.username}</p>
             </div>
-        </div>
+        </Link>
     );
 };
 

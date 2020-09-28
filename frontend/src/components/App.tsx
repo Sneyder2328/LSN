@@ -2,7 +2,7 @@ import React from 'react';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import AuthForm from "./Auth";
 import {Provider} from 'react-redux';
-import {Home} from "./Home";
+import NewsFeedPage from "./NewsFeedPage";
 import AuthRoute from "./commons/AuthRoute";
 import {PageNotFound} from "./commons/PageNotFound";
 import store from "../store";
@@ -11,6 +11,7 @@ import {getTokens, removeTokens, isTokenExpired} from "../utils/tokensManager";
 import {removeAuthTokenHeaders, setAccessTokenHeaders} from "../utils/setAccessTokenHeaders";
 import {loggedOut, setCurrentUser} from "./Auth/authActions";
 import {ONE_WEEK_IN_MILLIS} from "../utils/constants";
+import UserProfilePage from "./UserProfilePage/UserProfilePage";
 
 const {accessToken, refreshToken, dateRefreshTokenIssued} = getTokens();
 const tokensExist = accessToken && refreshToken && dateRefreshTokenIssued;
@@ -32,7 +33,8 @@ const App = () => {
             <BrowserRouter>
                 <Switch>
                     <Route exact path='/login' component={AuthForm}/>
-                    <AuthRoute exact path='/' component={Home}/>
+                    <AuthRoute exact path='/' component={NewsFeedPage}/>
+                    <AuthRoute path='/:username' component={UserProfilePage}/>
                     <Route path='*' component={PageNotFound}/>
                 </Switch>
             </BrowserRouter>

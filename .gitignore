@@ -1,5 +1,22 @@
 backend/node_modules
 frontend/node_modules
+
+
+mobile/node_modules/**/*
+mobile/.expo/*
+mobile/npm-debug.*
+mobile/*.jks
+mobile/*.p8
+mobile/*.p12
+mobile/*.key
+mobile/*.mobileprovision
+mobile/*.orig.*
+mobile/web-build/
+
+# macOS
+.DS_Store
+
+
 backend/src/config/configFile.json
 docs
 backend/info.txt

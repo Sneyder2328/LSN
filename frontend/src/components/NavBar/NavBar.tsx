@@ -4,6 +4,7 @@ import {connect} from 'react-redux'
 import {logOutUser} from "../Auth/authActions";
 import {AppState} from "../../reducers";
 import './styles.scss'
+import Logo from "./../../resources/lsn-ic.png";
 
 const NavBar: React.FC<{ isLoggingOut: boolean; logOutUser: () => any }> = ({isLoggingOut, logOutUser}) => {
     return (
@@ -13,8 +14,8 @@ const NavBar: React.FC<{ isLoggingOut: boolean; logOutUser: () => any }> = ({isL
                     <ul className='selected'><a href='#'>Top</a></ul>
                     <ul><a href='#'>Latest</a></ul>
                 </div>
-                <div>
-                    <img src='../../resources/lsn-ic.png'/>
+                <div className='logo-container'>
+                    <img src={Logo} />
                 </div>
                 <SearchBar/>
                 <button className='log-out-button' disabled={isLoggingOut} onClick={logOutUser}>Log out</button>

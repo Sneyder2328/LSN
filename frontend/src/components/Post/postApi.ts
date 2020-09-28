@@ -16,6 +16,7 @@ export const PostApi = {
     async createPostWithImage(content: PostRequest) {
         console.log("createPostWithImage", content);
         const formData = new FormData();
+        // @ts-ignore
         const images = await Promise.all(content.imageFiles.map((imgFile): File => (imageCompression(imgFile, options))));
         images.forEach((imageFile) => {
             formData.append('image', imageFile);

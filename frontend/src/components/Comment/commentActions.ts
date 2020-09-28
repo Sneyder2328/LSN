@@ -26,6 +26,7 @@ export const createComment = (commentData: CommentRequest) => async (dispatch: (
         const response = await CommentApi.createComment(commentData);
         const normalizedData = normalize(response.data, comment);
         console.log('createComment normalizedData=', normalizedData);
+        // @ts-ignore
         dispatch(commentCreatedSuccess(normalizedData.entities['comments'][commentData.id] as CommentObject));
     } catch (err) {
         console.log(err);
@@ -42,10 +43,12 @@ export const loadPreviousComments = (postId: string, offset: number, limit: numb
         const response = await CommentApi.getComments(postId, offset, limit);
         const normalizedData = normalize(response.data, [comment]);
         console.log('loadPreviousComments normalizedData=', normalizedData);
+        // @ts-ignore
         dispatch({
             type: LOAD_COMMENTS_SUCCESS,
             payload: {
                 postId,
+                // @ts-ignore
                 newComments: normalizedData.entities['comments'],
                 newCommentsIds: normalizedData.result
             }

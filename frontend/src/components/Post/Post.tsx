@@ -60,14 +60,12 @@ type Props = {
 };
 
 const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComments, likePost, dislikePost}) => {
-    console.log('rendering post', postResponse);
     const timeSincePublished = useTimeSincePublished(postResponse.createdAt);
     const [commentText, setCommentText] = useState<string>('');
     const [focusInput, setFocusInput] = useState<boolean>(false);
     const [previewImageResults, setPreviewImageResults] = useState<Array<string>>();
 
     useEffect(() => {
-        console.log('useEffect inside of post');
         const waitForPreviewOfImages = async (): Promise<Array<ImageFile> | undefined> => {
             if (postResponse.previewImages) {
                 return await Promise.all(postResponse.previewImages.map((imgFile) => readImgFileContent({
@@ -77,7 +75,6 @@ const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComment
             }
         };
         postResponse.previewImages && waitForPreviewOfImages().then((previewImgs) => {
-            console.log('previewimgs loaded', previewImgs);
             if (previewImgs) {
                 setPreviewImageResults(previewImgs.filter((prevImg) => prevImg.result != null).map((prevImg) => prevImg.result!));
             }

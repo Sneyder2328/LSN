@@ -21,8 +21,6 @@ const CreatePost: React.FC<Props> = ({userId, createPost}) => {
     const [cleanTextEditor, setCleanTextEditor] = useState<boolean>(false);
     const [imageFiles, setImageFiles] = useState<Array<ImageFile>>([]);
 
-    console.log('userId hereee', userId);
-
     const handleClick = () => {
         const newPost: PostRequest = {
             id: genUUID(),
@@ -64,7 +62,6 @@ const CreatePost: React.FC<Props> = ({userId, createPost}) => {
         }
 
         const validImages = await Promise.all(uploadedImages.map(imgFile => readImgFileContent(imgFile)));
-        console.log('validImages', validImages);
         setImageFiles(validImages);
     };
 

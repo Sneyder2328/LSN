@@ -19,20 +19,19 @@ import {setComments} from "../Comment/commentActions";
 import {CommentObject} from "../Comment/commentReducer";
 
 export const createPost = (postData: PostRequest) => async (dispatch: (actions: PostActions) => any) => {
+    dispatch({
+        type: CREATE_POST_REQUEST,
+        payload: {
+            postId: postData.id,
+            text: postData.text,
+            imageFiles: postData.imageFiles,
+            userId: postData.userId
+        }
+    });
     try {
-        console.log('createPost', postData);
-        dispatch({
-            type: CREATE_POST_REQUEST,
-            payload: {
-                postId: postData.id,
-                text: postData.text,
-                imageFiles: postData.imageFiles,
-                userId: postData.userId
-            }
-        });
         const response = postData.imageFiles.length !== 0 ? await PostApi.createPostWithImage(postData) : await PostApi.createPost(postData);
         const normalizedData = normalize(response.data, post);
-        console.log('normalized create post', normalizedData);
+        // @ts-ignore
         dispatch(createPostSuccess(normalizedData.entities['posts'][response.data.id] as PostObject));
     } catch (err) {
         console.log(err);
@@ -56,7 +55,6 @@ export const loadPosts = () => async (dispatch: (actions: Actions) => any) => {
         dispatch(loadPostsRequest('latest'));
         const response = await PostApi.getPosts();
         const normalizedData = normalize(response.data, [post]);
-        console.log('normalizedData=', normalizedData);
         dispatch(setUsers(normalizedData.entities['users'] as HashTable<UserObject>));
         dispatch(setComments(normalizedData.entities['comments'] as HashTable<CommentObject>));
         dispatch({

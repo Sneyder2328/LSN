@@ -9,15 +9,13 @@ export const searchUser = (query: string) => async (dispatch: (actions: SearchAc
     try {
         dispatch({type: SEARCH_USER_REQUEST});
         const response = await SearchApi.searchUser(query);
-        console.log('searchUser with query=', query, response.data);
-        let normalize1 = normalize(response.data, [user]);
-        console.log('users normalized', normalize1);
+        const usersNormalized = normalize(response.data, [user]);
         dispatch({
             type: SEARCH_USER_SUCCESS,
             payload: {
-                users: normalize1.entities.users as HashTable<UserSearch>,
+                users: usersNormalized.entities.users as HashTable<UserSearch>,
                 query,
-                queryResults: normalize1.result
+                queryResults: usersNormalized.result
             }
         })
     } catch (err) {

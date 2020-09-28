@@ -1,7 +1,7 @@
 @import "src/utils/variables";
 
-$search-width: 270px;
-$search-width-sm: 220px;
+//$search-width: 270px;
+//$search-width-sm: 220px;
 
 .nav-container {
   width: 100%;
@@ -11,7 +11,8 @@ $search-width-sm: 220px;
   height: $navbarHeight;
 
   .nav-bar {
-    width: 60%;
+    width: 90%;
+    max-width: 1250px;
     margin: 0 auto;
     height: inherit;
     display: flex;
@@ -20,6 +21,8 @@ $search-width-sm: 220px;
 
     .news-feed-type {
       display: flex;
+      width: 40%;
+      flex-grow: 1;
       height: 100%;
 
       ul {
@@ -46,77 +49,107 @@ $search-width-sm: 220px;
       }
     }
 
-    .search-container {
-      text-align: center;
+    .logo-container {
+      position: absolute;
+      right: 50%;
+      height: 100%;
+      width: fit-content;
+      flex-grow: 0;
+      //width: 20%;
+      display: flex;
 
-      .search-icon {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        display: flex;
-        align-items: center;
-
-        .fa-search {
-          font-size: 1rem;
-          color: $btnColor;
-          padding: 8px;
-        }
-      }
-
-      .search-box {
-        padding: 8px 16px 8px 30px;
-        width: $search-width;
-        box-sizing: border-box;
-        font-size: 1rem;
-        border-radius: $radius;
-        border: none;
-        outline: none;
+      img {
+        margin: 0 auto;
+        height: 100%;
       }
     }
 
-    .search-results {
-      width: $search-width;
-      position: absolute;
-      top: $navbarHeight;
-      max-height: 400px;
-      overflow-y: auto;
-      background-color: #fff;
-      box-shadow: rgba(101, 119, 134, 0.2) 0 0 15px, rgba(101, 119, 134, 0.15) 0 0 3px 1px;
+    .search-container {
+      width: 28%;
+      max-width: 300px;
+      flex-grow: 1;
+      box-sizing: border-box;
+      padding: 0 10px;
 
-      .person {
-        margin: 0;
-        padding: 10px;
-        display: flex;
-        cursor: pointer;
-        border-bottom: 1px solid #e2e2e2;
+      .search-box {
+        //text-align: center;
 
-        img {
-          width: $thumbnailImgDimen+-8px;
-          height: $thumbnailImgDimen+-8px;
+        .search-icon {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          display: flex;
+          align-items: center;
+
+          .fa-search {
+            font-size: 1rem;
+            color: $btnColor;
+            padding: 8px;
+          }
         }
 
-        div {
-          margin-left: 4px;
-          display: flex;
-          height: auto;
-          flex-wrap: wrap;
-          align-content: center;
+        .search-input {
+          width: 100%;
+          padding: 8px 16px 8px 30px;
+          box-sizing: border-box;
+          font-size: 1rem;
+          border-radius: $radius;
+          border: none;
+          outline: none;
+        }
+      }
 
-          p {
-            margin: 1.2px 0;
-            width: 100%;
-            font-size: 0.85rem;
+      .search-results {
+        //width: $search-width;
+        width: 27%;
+        max-width: 280px;
+        position: absolute;
+        top: $navbarHeight;
+        max-height: 400px;
+        overflow-y: auto;
+        background-color: #fff;
+        box-shadow: rgba(101, 119, 134, 0.2) 0 0 15px, rgba(101, 119, 134, 0.15) 0 0 3px 1px;
+
+        .person {
+          margin: 0;
+          padding: 10px;
+          display: flex;
+          cursor: pointer;
+          border-bottom: 1px solid #e2e2e2;
+          text-decoration: none;
+          color: #000;
+
+          img {
+            width: $thumbnailImgDimen+-8px;
+            height: $thumbnailImgDimen+-8px;
           }
 
-          .username {
-            color: #97a5af;
+          div {
+            margin-left: 4px;
+            display: flex;
+            height: auto;
+            flex-wrap: wrap;
+            align-content: center;
+
+            p {
+              margin: 1.2px 0;
+              width: 100%;
+              font-size: 0.85rem;
+            }
+
+            .username {
+              color: #97a5af;
+            }
           }
         }
       }
     }
 
     .log-out-button {
-      padding: 8px 16px;
+      width: 12%;
+      flex-grow: 0;
+      box-sizing: border-box;
+      padding: 8px 2px;
       font-size: 1rem;
       background-color: #4497f1;
       border-radius: $radius;
@@ -141,28 +174,28 @@ $search-width-sm: 220px;
       padding: 0;
       width: 90%;
 
-      .search-container {
-        .search-box {
+      .search-box {
+        .search-input {
           font-size: 0.88rem;
-          width: $search-width-sm;
+          //width: $search-width-sm;
         }
       }
       .search-results {
-        width: $search-width-sm;
+        //width: $search-width-sm;
       }
       .log-out-button {
         font-size: 0.88rem;
       }
     }
     @media screen and (max-width: 400px) {
-      .search-container {
-        .search-box {
+      .search-box {
+        .search-input {
           font-size: 0.88rem;
-          width: $search-width-sm+-60px;
+          //width: $search-width-sm+-60px;
         }
       }
       .search-results {
-        width: $search-width-sm+-60px;
+        //width: $search-width-sm+-60px;
       }
     }
   }

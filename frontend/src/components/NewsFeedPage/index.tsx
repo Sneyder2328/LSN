@@ -6,7 +6,7 @@ import NavBar from "../NavBar/NavBar";
 import DashBoardProfile from "../DashBoardProfile/DashBoardProfile";
 import {connect} from "react-redux";
 import {AppState} from "../../reducers";
-import {getUserProfileData} from "../User/userActions";
+import {getUserBasicInfo} from "../User/userActions";
 
 type Props = { userId: string, getUserProfileData: (userId: string) => any };
 
@@ -39,4 +39,4 @@ const mapStateToProps = (state: AppState) => {
         userId: state.auth.userId
     }
 };
-export default connect(mapStateToProps, {getUserProfileData})(Home);
+export default connect(mapStateToProps, {getUserProfileData: getUserBasicInfo})(Home);

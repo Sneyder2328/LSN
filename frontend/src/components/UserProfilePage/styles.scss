@@ -1,0 +1,27 @@
+@import "src/utils/variables";
+
+main {
+  margin: $navbarHeight+12px auto 0 auto;
+
+  .page-container {
+    width: 90%;
+    max-width: 1190px;
+    margin: 0 auto;
+    display: flex;
+
+    .left-section {
+      width: 290px;
+    }
+
+    .main-section {
+      //max-width: $main-width-page;
+      width: 590px;
+      margin: 0 10px;
+    }
+
+    .right-section {
+      width: 290px;
+    }
+  }
+
+}
