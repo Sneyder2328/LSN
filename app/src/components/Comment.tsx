@@ -2,12 +2,12 @@ import React from "react";
 import {StyleSheet, Text, View} from "react-native";
 import {useDispatch, useSelector} from "react-redux";
 import {MyAppState} from "../reducers/rootReducer";
-import {Avatar} from "react-native-paper";
 import {InteractionItem} from "./InteractionItem";
 import {AntDesign} from "@expo/vector-icons";
 import {COLOR_PRIMARY, COLOR_PRIMARY_LIGHT2} from "../constants/Colors";
 import {useTimeSincePublished} from "../hooks/updateRelativeTimeHook";
 import {dislikeComment, likeComment} from "../actions/commentActions";
+import {ProfilePic} from "./ProfilePic";
 
 export const Comment: React.FC<{ commentId: string }> = ({commentId}) => {
     const dispatch = useDispatch()
@@ -20,9 +20,7 @@ export const Comment: React.FC<{ commentId: string }> = ({commentId}) => {
     console.log('Comment=', commentId, comment, commentAuthor);
 
     return <View style={styles.container}>
-        <Avatar.Image
-            source={commentAuthor?.profilePhotoUrl ? {uri: commentAuthor.profilePhotoUrl} : require('../assets/images/ic_person.png')}
-            size={48}/>
+        <ProfilePic user={commentAuthor} size={48}/>
         <View style={{marginLeft: 6, marginTop: 2}}>
             <Text style={styles.username}>{commentAuthor.fullname}</Text>
             <Text>{comment.text}</Text>
@@ -33,7 +31,7 @@ export const Comment: React.FC<{ commentId: string }> = ({commentId}) => {
                     <AntDesign name="like1" size={24}
                                color={comment.likeStatus === 'like' ? COLOR_PRIMARY : COLOR_PRIMARY_LIGHT2}/>
                 </InteractionItem>
-                <InteractionItem count={comment.dislikesCount} style={{marginLeft: 6}} onPress={() => {
+                <InteractionItem count={comment.dislikesCount} style={{marginLeft: 8}} onPress={() => {
                     dispatch(dislikeComment(comment.id, comment.likeStatus === 'dislike'))
                 }}>
                     <AntDesign name="dislike1" size={24}
@@ -61,7 +59,8 @@ const styles = StyleSheet.create({
         fontSize: 14,
     },
     createdAt: {
-        color: "#9992a0"
+        color: "#9992a0",
+        marginLeft: 8
     },
     text: {},
     interactions: {

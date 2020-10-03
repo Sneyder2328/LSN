@@ -1,4 +1,5 @@
 import {transport} from "./index";
+import {PostRequest} from "../reducers/postsReducer";
 
 const options = {
     maxSizeMB: 2,
@@ -7,25 +8,25 @@ const options = {
 };
 
 export const PostApi = {
-    // async createPost(content: PostRequest) {
-    //     return await transport.post('/posts/', content);
-    // },
-    // async createPostWithImage(content: PostRequest) {
-    //     console.log("createPostWithImage", content);
-    //     const formData = new FormData();
-    //     // @ts-ignore
-    //     const images = await Promise.all(content.imageFiles.map((imgFile): File => (imageCompression(imgFile, options))));
-    //     images.forEach((imageFile) => {
-    //         formData.append('image', imageFile);
-    //     });
-    //     formData.append('text', content.text);
-    //     formData.append('id', content.id);
-    //     return await transport.post('/imageposts/', formData, {
-    //         headers: {
-    //             'content-type': 'multipart/form-data'
-    //         }
-    //     });
-    // },
+    async createPost(content: PostRequest) {
+        return await transport.post('/posts/', content);
+    },
+    async createPostWithImage(content: PostRequest) {
+        console.log("createPostWithImage", content);
+        const formData = new FormData();
+
+        const images = content.imageFiles //await Promise.all(content.imageFiles.map((imgFile): File => (imageCompression(imgFile, options))));
+        images.forEach((imageFile) => {
+            formData.append('image', imageFile);
+        });
+        formData.append('text', content.text);
+        formData.append('id', content.id);
+        return await transport.post('/imageposts/', formData, {
+            headers: {
+                'content-type': 'multipart/form-data'
+            }
+        });
+    },
     async getPosts() {
         return await transport.get('/posts/');
     },

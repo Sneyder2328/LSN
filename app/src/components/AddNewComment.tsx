@@ -6,12 +6,12 @@ import {CommentRequest} from "../api/commentApi";
 import {genUUID} from "../utils/utils";
 import {createComment} from "../actions/commentActions";
 import {StyleSheet, TextInput, View} from "react-native";
-import {Avatar} from "react-native-paper";
 import {MaterialIcons} from "@expo/vector-icons";
 import {COLOR_PRIMARY, COLOR_PRIMARY_LIGHT2} from "../constants/Colors";
+import {ProfilePic} from "./ProfilePic";
 
 
-export const AddNewComment: React.FC<{ currentUser: UserObject; post: PostObject }> = ({currentUser, post}) => {
+export const AddNewComment: React.FC<{ currentUser: UserObject; post: PostObject; inputRef: any }> = ({currentUser, post, inputRef}) => {
     const dispatch = useDispatch()
     const [text, setText] = useState("")
 
@@ -31,12 +31,10 @@ export const AddNewComment: React.FC<{ currentUser: UserObject; post: PostObject
     }
 
     return <View style={styles.container}>
-        <Avatar.Image
-            source={currentUser?.profilePhotoUrl ? {uri: currentUser.profilePhotoUrl} : require('../assets/images/ic_person.png')}
-            size={48} style={styles.authorAvatar}/>
+        <ProfilePic user={currentUser} size={48}/>
         <View style={styles.commentBox}>
             <TextInput style={styles.inputComment} placeholder={'Write a comment...'} multiline={true}
-                       onChangeText={setText} value={text}/>
+                       onChangeText={setText} value={text} ref={inputRef}/>
             <MaterialIcons name="send" size={24} color={COLOR_PRIMARY} style={styles.sendComment}
                            onPress={onSubmitComment}/>
         </View>
@@ -48,7 +46,7 @@ const styles = StyleSheet.create({
         position: 'relative',
         paddingBottom: 0,
         marginBottom: 0,
-        bottom: 0,
+        bottom: -8,
         left: 4,
         right: 4,
         paddingTop: 4,
@@ -75,6 +73,5 @@ const styles = StyleSheet.create({
     sendComment: {
         alignSelf: 'center',
         marginRight: 4,
-    },
-    authorAvatar: {},
+    }
 })

@@ -45,7 +45,8 @@ const styles = StyleSheet.create({
     },
     postsList: {
         flex: 1,
-        margin: 8
+        margin: 8,
+        marginBottom: 0,
     },
     fab: {
         position: 'absolute',

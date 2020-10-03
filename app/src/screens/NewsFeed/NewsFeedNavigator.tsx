@@ -18,18 +18,18 @@ export const NewsFeedNavigator = () => {
                 component={NewsFeedScreen}
                 // options={()=>({title: 'News Feed'})}
             />
-            <NewsFeedStack.Screen
-                name="CreatePost"
-                component={CreatePostScreen}
-                options={()=>({title: 'Create post'})}
-            />
-            <NewsFeedStack.Screen
-                name="PostDetail"
-                component={PostDetail}
-                // options={{
-                //     header
-                // }}
-            />
+            {/*<NewsFeedStack.Screen*/}
+            {/*    name="CreatePost"*/}
+            {/*    component={CreatePostScreen}*/}
+            {/*    options={()=>({title: 'Create post'})}*/}
+            {/*/>*/}
+            {/*<NewsFeedStack.Screen*/}
+            {/*    name="PostDetail"*/}
+            {/*    component={PostDetail}*/}
+            {/*    // options={{*/}
+            {/*    //     header*/}
+            {/*    // }}*/}
+            {/*/>*/}
         </NewsFeedStack.Navigator>
     );
 }

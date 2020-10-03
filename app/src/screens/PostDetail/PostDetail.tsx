@@ -8,10 +8,8 @@ import {
     TouchableHighlight,
     View
 } from "react-native";
-import React, {useState} from "react";
-import {PostObject} from "../../reducers/postsReducer";
+import React, {useRef} from "react";
 import {useRoute} from "@react-navigation/native";
-import {Avatar} from "react-native-paper";
 import {InteractionItem} from "../../components/InteractionItem";
 import {dislikePost, likePost} from "../../actions/postsActions";
 import {AntDesign, FontAwesome} from "@expo/vector-icons";
@@ -23,6 +21,7 @@ import {Comment} from "../../components/Comment";
 import {MyAppState} from "../../reducers/rootReducer";
 import {AddNewComment} from "../../components/AddNewComment";
 import {loadPreviousComments} from "../../actions/commentActions";
+import {ProfilePic} from "../../components/ProfilePic";
 
 
 const LoadMoreComments: React.FC<{ onLoadMoreComments: () => any; isLoadingPreviousComments: boolean }> = ({onLoadMoreComments, isLoadingPreviousComments}) => {
@@ -37,6 +36,8 @@ const LoadMoreComments: React.FC<{ onLoadMoreComments: () => any; isLoadingPrevi
 }
 
 export const PostDetail = () => {
+    const inputRef = useRef(null)
+
     const dispatch = useDispatch()
     const route = useRoute()
     // @ts-ignore
@@ -63,9 +64,7 @@ export const PostDetail = () => {
 
     return (<View style={styles.container}>
         <View style={styles.header}>
-            <Avatar.Image
-                source={postAuthor?.profilePhotoUrl ? {uri: postAuthor.profilePhotoUrl} : require('../../assets/images/ic_person.png')}
-                size={54} style={styles.authorAvatar}/>
+            <ProfilePic user={postAuthor} size={54}/>
             <View style={{marginLeft: 4}}>
                 <Text style={styles.username}>{postAuthor.fullname}</Text>
                 <Text style={styles.createdAt}>{timeSincePublished}</Text>
@@ -91,8 +90,8 @@ export const PostDetail = () => {
                            color={post.likeStatus === 'dislike' ? COLOR_PRIMARY : COLOR_PRIMARY_LIGHT2}/>
             </InteractionItem>
             <InteractionItem count={post.commentsCount} onPress={() => {
-                console.log('comment clicked!')
-
+                // @ts-ignore
+                inputRef?.current?.focus()
             }}>
                 <FontAwesome name="comment" size={24} color={COLOR_PRIMARY_LIGHT2}/>
             </InteractionItem>
@@ -101,10 +100,10 @@ export const PostDetail = () => {
             </InteractionItem>
         </View>
         {post.commentsCount !== post.comments.length && <LoadMoreComments onLoadMoreComments={onLoadMoreComments}
-                                                                          isLoadingPreviousComments={postMeta.isLoadingPreviousComments || false}/>}
+                                                                          isLoadingPreviousComments={postMeta?.isLoadingPreviousComments || false}/>}
         <FlatList data={post.comments} renderItem={({item}) => (<Comment commentId={item}/>)}
                   keyExtractor={(item => item)}/>
-        <AddNewComment currentUser={currentUser} post={post}/>
+        <AddNewComment currentUser={currentUser} post={post} inputRef={inputRef}/>
     </View>)
 }
 
@@ -122,7 +121,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     content: {},
-    authorAvatar: {},
     username: {
         fontWeight: 'bold',
     },

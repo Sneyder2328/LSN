@@ -8,7 +8,7 @@ import {Ionicons} from "@expo/vector-icons";
 import {NewsFeedNavigator} from "../NewsFeed/NewsFeedNavigator";
 import {SearchNavigator} from "../Search/SearchNavigator";
 import {useNavigation, useRoute, getFocusedRouteNameFromRoute} from "@react-navigation/native";
-
+import { MaterialIcons } from '@expo/vector-icons';
 
 export function getHeaderTitle(route: any) {
     // If the focused route is not found, we need to assume it's the initial screen
@@ -50,19 +50,23 @@ export const HomeScreen = () => {
     return (
         <BottomTab.Navigator
             initialRouteName="NewsFeed"
-            tabBarOptions={{activeTintColor: "#fff"}}>
+            tabBarOptions={{
+                activeTintColor: "#fff",
+                inactiveTintColor: "#84c5fc",
+                showLabel: false
+            }}>
             <BottomTab.Screen
                 name="NewsFeed"
                 component={NewsFeedNavigator}
                 options={{
-                    tabBarIcon: ({color}: { color: string }) => <TabBarIcon name="ios-home" color={color}/>,
+                    tabBarIcon: ({color}: { color: string }) => <TabBarIcon name="home" color={color}/>,
                 }}
             />
             <BottomTab.Screen
                 name="Search"
                 component={SearchNavigator}
                 options={{
-                    tabBarIcon: ({color}: { color: string }) => <TabBarIcon name="ios-search" color={color}/>,
+                    tabBarIcon: ({color}: { color: string }) => <TabBarIcon name="search" color={color}/>,
                 }}
             />
         </BottomTab.Navigator>
@@ -72,6 +76,7 @@ export const HomeScreen = () => {
 // You can explore the built-in icon families and icons on the web at:
 // https://icons.expo.fyi/
 function TabBarIcon(props: { name: string; color: string }) {
-    return <Ionicons size={30} style={{marginBottom: -3}} {...props} />;
+    // <MaterialIcons name="home" size={24} color="black" />
+    return <MaterialIcons size={30} style={{marginBottom: -3}} {...props} />;
 }
 

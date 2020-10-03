@@ -1,6 +1,7 @@
-import {PostObject, postsSlice} from "../reducers/postsReducer"
+import {PostObject, PostRequest, postsSlice} from "../reducers/postsReducer"
 import {usersSlice} from "../reducers/usersReducer"
 import {commentsSlice} from "../reducers/commentsReducer"
+
 const {setUsers} = usersSlice.actions
 const {setComments} = commentsSlice.actions
 import {normalize} from "normalizr";
@@ -12,8 +13,26 @@ import {UserObject} from "../reducers/usersReducer";
 import {CommentObject} from "../reducers/commentsReducer";
 
 const {
-    loadPostsRequest, loadPostsSuccess, loadPostsError, interactPostError, interactPostRequest, interactPostSuccess
+    loadPostsRequest, loadPostsSuccess, loadPostsError, interactPostError, interactPostRequest,
+    interactPostSuccess, createPostError, createPostRequest, createPostSuccess
 } = postsSlice.actions
+
+export const createPost = (postData: PostRequest): AppThunk => async (dispatch) => {
+    dispatch(createPostRequest({
+        postId: postData.id,
+        text: postData.text,
+        imageFiles: postData.imageFiles,
+        userId: postData.userId
+    }));
+    try {
+        const response = postData.imageFiles.length !== 0 ? await PostApi.createPostWithImage(postData) : await PostApi.createPost(postData);
+        const normalizedData = normalize(response.data, post);
+        dispatch(createPostSuccess({postCreated: normalizedData.entities['posts']!![response.data.id] as PostObject}));
+    } catch (err) {
+        console.log(err);
+        dispatch(createPostError({error: 'Error creating post'}));
+    }
+};
 
 export const loadPosts = (): AppThunk => async (dispatch) => {
     try {
@@ -50,7 +69,7 @@ export const likePost = (postId: string, undo: boolean): AppThunk => async (disp
     }
 };
 
-export const dislikePost = (postId: string, undo: boolean):AppThunk => async (dispatch) => {
+export const dislikePost = (postId: string, undo: boolean): AppThunk => async (dispatch) => {
     console.log('dislikePost', postId, undo);
     const typeInteraction = undo ? "undislike" : "dislike";
     dispatch(interactPostRequest({postId, typeInteraction}))

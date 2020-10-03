@@ -9,6 +9,12 @@ import {MyAppState} from "../reducers/rootReducer";
 import {useDispatch, useSelector} from "react-redux";
 import {logOutUser} from "../actions/authActions";
 import {FullOverlay} from "./FullOverlay";
+import {CreatePostScreen} from "../screens/Home/CreatePost/CreatePostScreen";
+import {Text} from "react-native";
+import {PostDetail} from "../screens/PostDetail/PostDetail";
+import {PostButton} from "./PostButton";
+import {createPost} from "../actions/postsActions";
+import {genUUID} from "../utils/utils";
 
 const Stack = createStackNavigator();
 
@@ -21,6 +27,7 @@ const Stack = createStackNavigator();
 
 //<Text onPress={showMenu}>Show menu</Text>
 
+
 // @ts-ignore
 export const AppNavigator = ({theme}) => {
     console.log("rendering AppNavigator");
@@ -31,14 +38,40 @@ export const AppNavigator = ({theme}) => {
     return (<NavigationContainer theme={theme}>
         <Stack.Navigator initialRouteName={auth.isAuthenticated ? 'Home' : 'LogIn'}
                          screenOptions={{headerTintColor: '#fff'}}>
-            <Stack.Screen name="LogIn" component={LogInScreen}/>
-            <Stack.Screen name="SignUp" component={SignUpScreen}/>
-            <Stack.Screen name="Home" component={HomeScreen} options={(route) => ({
-                headerTintColor: '#fff',
-                headerTitle: getHeaderTitle(route),
-                // title: 'LSN',
-                headerRight: () => <HomeMenu onPress={() => dispatch(logOutUser())}/>
-            })}
+            <Stack.Screen
+                name="LogIn"
+                component={LogInScreen}/>
+            <Stack.Screen
+                name="SignUp"
+                component={SignUpScreen}/>
+            <Stack.Screen
+                name="Home"
+                component={HomeScreen}
+                options={(route) => ({
+                    headerTintColor: '#fff',
+                    headerTitle: getHeaderTitle(route),
+                    // title: 'LSN',
+                    headerRight: () => <HomeMenu onPress={() => dispatch(logOutUser())}/>
+                })}/>
+            <Stack.Screen
+                name="CreatePost"
+                component={CreatePostScreen}
+                options={({route, navigation}) => ({
+                    title: 'Create post',
+                    headerRight: () => <PostButton onPress={()=> {
+                        console.log('post', route)
+                        // @ts-ignore
+                        dispatch(createPost({id:genUUID(), imageFiles: [], text: route.params.text, userId: route.params.userId}))
+                        navigation.goBack()
+
+                    }}/>
+                })}/>
+            <Stack.Screen
+                name="PostDetail"
+                component={PostDetail}
+                // options={{
+                //     header
+                // }}
             />
         </Stack.Navigator>
         <FullOverlay isVisible={auth.isLoggingOut}/>

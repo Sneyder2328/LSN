@@ -24,6 +24,13 @@ export interface PostObject {
     likeStatus: 'like' | 'dislike' | undefined;
 }
 
+export interface PostRequest {
+    imageFiles: Array<File>;
+    userId: string;
+    id: string;
+    text: string;
+}
+
 export interface PostMetadata {
     isLoadingPreviousComments?: boolean;
     isCreatingComment?: boolean;
@@ -88,6 +95,42 @@ export const postsSlice = createSlice({
                 likeStatus: undefined
             }
         },
+        createPostRequest: (state, action: PayloadAction<{
+            postId: string;
+            text: string;
+            imageFiles: Array<File>;
+            userId: string;
+        }>) => {
+            state.metas[action.payload.postId] = {
+                isLoadingPreviousComments: false,
+                isCreatingComment: false,
+                likeStatus: undefined,
+                isUploading: true
+            }
+            state.entities[action.payload.postId] = {
+                likeStatus: undefined,
+                likesCount: 0,
+                dislikesCount: 0,
+                commentsCount: 0,
+                comments: [],
+                createdAt: new Date().getTime(),
+                id: action.payload.postId,
+                text: action.payload.text,
+                images: [],
+                previewImages: action.payload.imageFiles.map((imgFile) => (imgFile)),
+                userId: action.payload.userId
+            }
+        },
+        createPostSuccess: (state, action: PayloadAction<{ postCreated: PostObject }>) => {
+            state.entities[action.payload.postCreated.id] = action.payload.postCreated
+            state.metas[action.payload.postCreated.id] = {
+                ...state.metas[action.payload.postCreated.id],
+                isUploading: false
+            }
+        },
+        createPostError: (state, action: PayloadAction<{ error: string }>) => {
+
+        }
     },
     extraReducers: builder => {
         builder.addCase(loadCommentsSuccess, (state, action) => {

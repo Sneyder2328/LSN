@@ -9,10 +9,10 @@ import {FontAwesome} from '@expo/vector-icons';
 
 import Image from 'react-native-scalable-image';
 import {COLOR_PRIMARY, COLOR_PRIMARY_LIGHT2} from "../constants/Colors";
-import {Avatar} from "react-native-paper";
 import {InteractionItem} from "./InteractionItem";
 import {dislikePost, likePost} from "../actions/postsActions";
 import {useNavigation} from "@react-navigation/native";
+import {ProfilePic} from "./ProfilePic";
 
 export const Post: React.FC<{ postId: string }> = ({postId}) => {
     const dispatch = useDispatch()
@@ -28,9 +28,7 @@ export const Post: React.FC<{ postId: string }> = ({postId}) => {
 
     return (<View style={styles.container}>
         <View style={styles.header}>
-            <Avatar.Image
-                source={postAuthor?.profilePhotoUrl ? {uri: postAuthor.profilePhotoUrl} : require('../assets/images/ic_person.png')}
-                size={54} style={styles.authorAvatar}/>
+            <ProfilePic user={postAuthor} size={54}/>
             <View style={{marginLeft: 4}}>
                 <Text style={styles.username}>{postAuthor.fullname}</Text>
                 <Text style={styles.createdAt}>{timeSincePublished}</Text>
@@ -75,7 +73,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         marginTop: 4,
         marginBottom: 4,
-        // width: '100%'
+        borderRadius: 12,
     },
     header: {
         flexDirection: 'row',
