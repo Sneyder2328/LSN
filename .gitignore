@@ -12,6 +12,7 @@ app/*.key
 app/*.mobileprovision
 app/*.orig.*
 app/web-build/
+app/.idea
 
 # macOS
 .DS_Store
