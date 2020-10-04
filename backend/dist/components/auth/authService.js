@@ -12,7 +12,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const uuid_1 = __importDefault(require("uuid"));
 const JWTHelper_1 = require("../../helpers/JWTHelper");
 const AppError_1 = require("../../utils/errors/AppError");
 const AuthError_1 = require("../../utils/errors/AuthError");
@@ -44,7 +43,7 @@ class AuthService {
                 email: email,
                 password: password
             });
-            yield this.Profile.create({
+            const newUserProfile = yield this.Profile.create({
                 userId,
                 username: username,
                 fullname: fullname,
@@ -53,9 +52,9 @@ class AuthService {
                 profilePhotoUrl: profilePhotoUrl
             });
             const accessToken = yield JWTHelper_1.signJWT(user.id);
-            const refreshToken = uuid_1.default.v4();
+            const refreshToken = utils_1.genUUID();
             yield this.Token.create({ userId, token: refreshToken });
-            return { accessToken, refreshToken };
+            return { accessToken, refreshToken, profile: newUserProfile };
         });
     }
     logInUser({ username, password }) {
@@ -68,7 +67,7 @@ class AuthService {
             if (!loggedIn)
                 throw new AuthError_1.AuthError(errors_1.default.PASSWORD, errors_1.default.message.INCORRECT_PASSWORD);
             const accessToken = yield JWTHelper_1.signJWT(user.id);
-            const refreshToken = uuid_1.default.v4();
+            const refreshToken = utils_1.genUUID();
             yield this.Token.create({ userId: user.id, token: refreshToken });
             return { accessToken, refreshToken };
         });

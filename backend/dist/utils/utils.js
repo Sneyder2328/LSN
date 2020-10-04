@@ -12,12 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const uuid_1 = __importDefault(require("uuid"));
+const uuid_1 = require("uuid");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 /**
  * gen hex(uuid) for user,post,comment,etc
  */
-exports.genUUID = () => uuid_1.default.v4();
+exports.genUUID = () => uuid_1.v4();
 exports.hashPassword = (saltRounds = 10, password) => __awaiter(void 0, void 0, void 0, function* () {
     return yield new Promise((resolve, reject) => {
         bcryptjs_1.default.hash(password, saltRounds, (err, hash) => {

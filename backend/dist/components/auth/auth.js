@@ -23,10 +23,10 @@ const endpoints_1 = __importDefault(require("../../utils/constants/endpoints"));
 const validate_1 = require("../../middlewares/validate");
 const router = express_1.Router();
 router.post(endpoints_1.default.auth.SIGN_UP, validate_1.signUpValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { accessToken, refreshToken } = yield service.signUpUser(req.body);
+    const { accessToken, refreshToken, profile } = yield service.signUpUser(req.body);
     res.header(config_1.default.headers.accessToken, accessToken)
         .header(config_1.default.headers.refreshToken, refreshToken)
-        .send({ access: true });
+        .send({ access: true, profile });
 })));
 router.post(endpoints_1.default.auth.LOG_IN, validate_1.logInValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { accessToken, refreshToken } = yield service.logInUser(req.body);
