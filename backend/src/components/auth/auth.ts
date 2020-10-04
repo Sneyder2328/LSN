@@ -22,10 +22,10 @@ router.post(endpoints.auth.SIGN_UP, signUpValidationRules, validate, handleError
 }));
 
 router.post(endpoints.auth.LOG_IN, logInValidationRules, validate, handleErrorAsync(async (req, res) => {
-    const {accessToken, refreshToken} = await service.logInUser(req.body);
+    const {accessToken, refreshToken, profile} = await service.logInUser(req.body);
     res.header(config.headers.accessToken, accessToken)
         .header(config.headers.refreshToken, refreshToken)
-        .send({access: true});
+        .send({access: true, profile});
 }));
 
 router.get(endpoints.auth.REFRESH_TOKEN, refreshTokenValidationRules, validate, handleErrorAsync(async (req, res) => {

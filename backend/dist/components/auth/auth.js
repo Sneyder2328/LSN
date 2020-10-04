@@ -29,10 +29,10 @@ router.post(endpoints_1.default.auth.SIGN_UP, validate_1.signUpValidationRules, 
         .send({ access: true, profile });
 })));
 router.post(endpoints_1.default.auth.LOG_IN, validate_1.logInValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { accessToken, refreshToken } = yield service.logInUser(req.body);
+    const { accessToken, refreshToken, profile } = yield service.logInUser(req.body);
     res.header(config_1.default.headers.accessToken, accessToken)
         .header(config_1.default.headers.refreshToken, refreshToken)
-        .send({ access: true });
+        .send({ access: true, profile });
 })));
 router.get(endpoints_1.default.auth.REFRESH_TOKEN, validate_1.refreshTokenValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const refreshToken = req.header(config_1.default.headers.refreshToken);

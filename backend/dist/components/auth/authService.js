@@ -69,7 +69,8 @@ class AuthService {
             const accessToken = yield JWTHelper_1.signJWT(user.id);
             const refreshToken = utils_1.genUUID();
             yield this.Token.create({ userId: user.id, token: refreshToken });
-            return { accessToken, refreshToken };
+            const userProfile = yield this.Profile.findByPk(user.id);
+            return { accessToken, refreshToken, profile: userProfile };
         });
     }
     logOutUser(refreshToken) {

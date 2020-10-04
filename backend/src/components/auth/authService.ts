@@ -53,7 +53,9 @@ export default class AuthService {
         const accessToken = await signJWT(user.id);
         const refreshToken = genUUID()
         await this.Token.create({userId: user.id, token: refreshToken});
-        return {accessToken, refreshToken};
+
+        const userProfile = await this.Profile.findByPk(user.id)
+        return {accessToken, refreshToken, profile: userProfile};
     }
 
     async logOutUser(refreshToken) {
