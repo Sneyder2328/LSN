@@ -31,6 +31,9 @@ export const usersSlice = createSlice({
                 ...state.entities,
                 ...action.payload
             }
+        },
+        setUser: (state, action: PayloadAction<UserObject>) => {
+            state.entities[action.payload.userId] = action.payload
         }
     }
 })

@@ -22,14 +22,6 @@ const initialAuthState: AuthState = {
     isSigningUp: false
 }
 
-// export const userLoggedInRequest = createAction('USER_LOGGED_IN_REQUEST')
-// export const userLoggedInSuccess = createAction<{ userId: string; accessToken: string; refreshToken: string }>('USER_LOGGED_IN_SUCCESS')
-// export const userLoggedInError = createAction<string>('USER_LOGGED_IN_ERROR')
-
-// export const logOutRequest = createAction('LOG_OUT_REQUEST')
-// export const logOutSuccess = createAction('LOG_OUT_SUCCESS')
-// export const logOutError = createAction('LOG_OUT_ERROR')
-
 export const authSlice = createSlice({
     name: 'auth',
     initialState: initialAuthState,
