@@ -1,10 +1,10 @@
-import uuid from "uuid";
+import {v4 as uuidv4} from 'uuid';
 import bcrypt from "bcryptjs";
 
 /**
  * gen hex(uuid) for user,post,comment,etc
  */
-export const genUUID = (): string => uuid.v4();
+export const genUUID = (): string => uuidv4();
 
 export const hashPassword = async (saltRounds = 10, password): Promise<string> => {
     return await new Promise((resolve, reject) => {

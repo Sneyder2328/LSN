@@ -1,4 +1,3 @@
-import uuid from "uuid";
 import {signJWT} from "../../helpers/JWTHelper";
 import {AppError} from "../../utils/errors/AppError";
 import {AuthError} from "../../utils/errors/AuthError";
@@ -38,7 +37,7 @@ export default class AuthService {
             profilePhotoUrl: profilePhotoUrl
         });
         const accessToken = await signJWT(user.id);
-        const refreshToken = uuid.v4();
+        const refreshToken = genUUID()
         await this.Token.create({userId, token: refreshToken});
         return {accessToken, refreshToken, profile: newUserProfile};
     }
@@ -52,7 +51,7 @@ export default class AuthService {
         if (!loggedIn) throw new AuthError(error.PASSWORD, error.message.INCORRECT_PASSWORD);
 
         const accessToken = await signJWT(user.id);
-        const refreshToken = uuid.v4();
+        const refreshToken = genUUID()
         await this.Token.create({userId: user.id, token: refreshToken});
         return {accessToken, refreshToken};
     }
