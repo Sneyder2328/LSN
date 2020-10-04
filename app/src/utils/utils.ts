@@ -22,6 +22,6 @@ export const genUUID = (): string => uuidv4();
 
 export type ImageFile = {
     name: string;
-    file: File;
-    result?: string;
+    type: string;
+    uri: string;
 };

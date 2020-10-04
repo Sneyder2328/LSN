@@ -4,17 +4,13 @@ import React from "react";
 import {createStackNavigator} from "@react-navigation/stack";
 import {LogInScreen} from "../screens/LogIn/LogInScreen";
 import {SignUpScreen} from "../screens/SignUp/SignUpScreen";
-import {getHeaderTitle, HomeScreen} from "../screens/Home/HomeScreen";
+import {HomeScreen} from "../screens/Home/HomeScreen";
 import {MyAppState} from "../reducers/rootReducer";
 import {useDispatch, useSelector} from "react-redux";
 import {logOutUser} from "../actions/authActions";
 import {FullOverlay} from "./FullOverlay";
 import {CreatePostScreen} from "../screens/Home/CreatePost/CreatePostScreen";
-import {Text} from "react-native";
 import {PostDetail} from "../screens/PostDetail/PostDetail";
-import {PostButton} from "./PostButton";
-import {createPost} from "../actions/postsActions";
-import {genUUID} from "../utils/utils";
 
 const Stack = createStackNavigator();
 
@@ -49,7 +45,7 @@ export const AppNavigator = ({theme}) => {
                 component={HomeScreen}
                 options={(route) => ({
                     headerTintColor: '#fff',
-                    headerTitle: getHeaderTitle(route),
+                    // headerTitle: getHeaderTitle(route),
                     // title: 'LSN',
                     headerRight: () => <HomeMenu onPress={() => dispatch(logOutUser())}/>
                 })}/>
@@ -58,13 +54,13 @@ export const AppNavigator = ({theme}) => {
                 component={CreatePostScreen}
                 options={({route, navigation}) => ({
                     title: 'Create post',
-                    headerRight: () => <PostButton onPress={()=> {
-                        console.log('post', route)
-                        // @ts-ignore
-                        dispatch(createPost({id:genUUID(), imageFiles: [], text: route.params.text, userId: route.params.userId}))
-                        navigation.goBack()
-
-                    }}/>
+                    // headerRight: () => <PostButton onPress={()=> {
+                    //     console.log('post', route)
+                    //     // @ts-ignore
+                    //     dispatch(createPost({id:genUUID(), imageFiles: [], text: route.params.text, userId: route.params.userId}))
+                    //     navigation.goBack()
+                    //
+                    // }}/>
                 })}/>
             <Stack.Screen
                 name="PostDetail"

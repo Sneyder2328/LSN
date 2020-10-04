@@ -1,4 +1,4 @@
-import {HashTable} from "../utils/utils";
+import {HashTable, ImageFile} from "../utils/utils";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import AsyncStorage from "@react-native-community/async-storage";
 import {persistReducer} from "redux-persist";
@@ -25,7 +25,7 @@ export interface PostObject {
 }
 
 export interface PostRequest {
-    imageFiles: Array<File>;
+    imageFiles: Array<ImageFile>;
     userId: string;
     id: string;
     text: string;
@@ -98,7 +98,7 @@ export const postsSlice = createSlice({
         createPostRequest: (state, action: PayloadAction<{
             postId: string;
             text: string;
-            imageFiles: Array<File>;
+            imageFiles: Array<ImageFile>;
             userId: string;
         }>) => {
             state.metas[action.payload.postId] = {
@@ -117,7 +117,7 @@ export const postsSlice = createSlice({
                 id: action.payload.postId,
                 text: action.payload.text,
                 images: [],
-                previewImages: action.payload.imageFiles.map((imgFile) => (imgFile)),
+                // previewImages: action.payload.imageFiles.map((imgFile) => (imgFile)),
                 userId: action.payload.userId
             }
         },

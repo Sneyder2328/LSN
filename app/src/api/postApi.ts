@@ -1,5 +1,6 @@
 import {transport} from "./index";
 import {PostRequest} from "../reducers/postsReducer";
+import {Platform} from "react-native";
 
 const options = {
     maxSizeMB: 2,
@@ -17,10 +18,12 @@ export const PostApi = {
 
         const images = content.imageFiles //await Promise.all(content.imageFiles.map((imgFile): File => (imageCompression(imgFile, options))));
         images.forEach((imageFile) => {
+            // @ts-ignore
             formData.append('image', imageFile);
         });
         formData.append('text', content.text);
         formData.append('id', content.id);
+        console.log('formData passed=', formData);
         return await transport.post('/imageposts/', formData, {
             headers: {
                 'content-type': 'multipart/form-data'

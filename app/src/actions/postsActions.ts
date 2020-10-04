@@ -18,6 +18,7 @@ const {
 } = postsSlice.actions
 
 export const createPost = (postData: PostRequest): AppThunk => async (dispatch) => {
+    console.log('createPost', postData);
     dispatch(createPostRequest({
         postId: postData.id,
         text: postData.text,

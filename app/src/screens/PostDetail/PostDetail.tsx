@@ -102,7 +102,7 @@ export const PostDetail = () => {
         {post.commentsCount !== post.comments.length && <LoadMoreComments onLoadMoreComments={onLoadMoreComments}
                                                                           isLoadingPreviousComments={postMeta?.isLoadingPreviousComments || false}/>}
         <FlatList data={post.comments} renderItem={({item}) => (<Comment commentId={item}/>)}
-                  keyExtractor={(item => item)}/>
+                  keyExtractor={(item => item)} style={styles.imageList}/>
         <AddNewComment currentUser={currentUser} post={post} inputRef={inputRef}/>
     </View>)
 }
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 8,
-        backgroundColor: '#fff',
+        backgroundColor: '#ff0',
         marginTop: 4,
         marginBottom: 4,
         // width: '100%'
@@ -132,6 +132,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         marginTop: 8,
+    },
+    imageList: {
+        // marginBottom: 88
     },
     imageItem: {
         marginTop: 2,

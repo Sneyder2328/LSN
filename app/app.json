@@ -22,10 +22,12 @@
       "supportsTablet": true
     },
     "android": {
-      "package": "com.sneyder.lasocialnetwork"
+      "package": "com.sneyder.lasocialnetwork",
+      "versionCode": 2
     },
     "web": {
       "favicon": "./src/assets/images/favicon.png"
-    }
+    },
+    "privacy": "unlisted"
   }
 }
