@@ -5,7 +5,7 @@ import {useDispatch} from "react-redux";
 import {CommentRequest} from "../api/commentApi";
 import {genUUID} from "../utils/utils";
 import {createComment} from "../actions/commentActions";
-import {StyleSheet, TextInput, View} from "react-native";
+import {StyleSheet, TextInput, TouchableOpacity, View} from "react-native";
 import {MaterialIcons} from "@expo/vector-icons";
 import {COLOR_PRIMARY, COLOR_PRIMARY_LIGHT2} from "../constants/Colors";
 import {ProfilePic} from "./ProfilePic";
@@ -35,8 +35,9 @@ export const AddNewComment: React.FC<{ currentUser: UserObject; post: PostObject
         <View style={styles.commentBox}>
             <TextInput style={styles.inputComment} placeholder={'Write a comment...'} multiline={true}
                        onChangeText={setText} value={text} ref={inputRef}/>
-            <MaterialIcons name="send" size={24} color={COLOR_PRIMARY} style={styles.sendComment}
-                           onPress={onSubmitComment}/>
+            <TouchableOpacity onPress={onSubmitComment} style={styles.sendComment}>
+                <MaterialIcons name="send" size={24} color={COLOR_PRIMARY} />
+            </TouchableOpacity>
         </View>
     </View>;
 }
@@ -46,10 +47,12 @@ const styles = StyleSheet.create({
         position: 'relative',
         paddingBottom: 0,
         marginBottom: 0,
-        bottom: -8,
-        left: 4,
-        right: 4,
+        bottom: 0,
+        left: 0,
+        right: 0,
         paddingTop: 4,
+        paddingRight: 4,
+        paddingLeft: 4,
         flexDirection: 'row',
         backgroundColor: '#fff',
         borderTopWidth: 1,
@@ -72,6 +75,6 @@ const styles = StyleSheet.create({
     },
     sendComment: {
         alignSelf: 'center',
-        marginRight: 4,
+        marginRight: 8,
     }
 })

@@ -1,7 +1,7 @@
 import {
     ActivityIndicator,
     Dimensions,
-    FlatList,
+    FlatList, ScrollView,
     StyleSheet,
     Text,
     TextInput,
@@ -62,17 +62,16 @@ export const PostDetail = () => {
         dispatch(loadPreviousComments(postId, post.comments.length, 10))
     }
 
-    return (<View style={styles.container}>
-        <View style={styles.header}>
-            <ProfilePic user={postAuthor} size={54}/>
-            <View style={{marginLeft: 4}}>
-                <Text style={styles.username}>{postAuthor.fullname}</Text>
-                <Text style={styles.createdAt}>{timeSincePublished}</Text>
-            </View>
+    let HeaderComponents = <><View style={styles.header}>
+        <ProfilePic user={postAuthor} size={54}/>
+        <View style={{marginLeft: 4}}>
+            <Text style={styles.username}>{postAuthor.fullname}</Text>
+            <Text style={styles.createdAt}>{timeSincePublished}</Text>
         </View>
+    </View>
         <View style={styles.content}>
             <Text style={styles.text}>{post.text}</Text>
-            <FlatList data={post.images} renderItem={({item}) => {
+            <FlatList data={post.images} style={styles.imagesList} renderItem={({item}) => {
                 return <Image style={styles.imageItem} width={Dimensions.get('window').width} source={{uri: item.url}}/>
             }} keyExtractor={(item => item.url)}/>
         </View>
@@ -100,9 +99,17 @@ export const PostDetail = () => {
             </InteractionItem>
         </View>
         {post.commentsCount !== post.comments.length && <LoadMoreComments onLoadMoreComments={onLoadMoreComments}
-                                                                          isLoadingPreviousComments={postMeta?.isLoadingPreviousComments || false}/>}
-        <FlatList data={post.comments} renderItem={({item}) => (<Comment commentId={item}/>)}
-                  keyExtractor={(item => item)} style={styles.imageList}/>
+                                                                          isLoadingPreviousComments={postMeta?.isLoadingPreviousComments || false}/>}</>;
+    return (<View
+        style={styles.container}>
+        {/*{HeaderComponents}*/}
+        <FlatList
+            style={styles.commentsList}
+            data={post.comments}
+            renderItem={({item}) => (<Comment commentId={item}/>)}
+            keyExtractor={(item => item)}
+            ListHeaderComponent={HeaderComponents}
+        />
         <AddNewComment currentUser={currentUser} post={post} inputRef={inputRef}/>
     </View>)
 }
@@ -111,8 +118,7 @@ export const PostDetail = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 8,
-        backgroundColor: '#ff0',
+        // backgroundColor: '#ff0',
         marginTop: 4,
         marginBottom: 4,
         // width: '100%'
@@ -121,6 +127,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     content: {},
+    imagesList: {
+        // marginTop: -10
+    },
     username: {
         fontWeight: 'bold',
     },
@@ -132,9 +141,14 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         marginTop: 8,
+        // backgroundColor: '#0ff',
+        marginBottom: 8,
+        // minHeight: 34
     },
-    imageList: {
-        // marginBottom: 88
+    commentsList: {
+        marginBottom: 8,
+        padding: 8,
+        // paddingBottom: 0,
     },
     imageItem: {
         marginTop: 2,

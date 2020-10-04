@@ -41,11 +41,6 @@ export const authSlice = createSlice({
         logInError: (state, action: PayloadAction<string>) => {
             state.isLoggingIn = false
             state.logInError = action.payload
-            // return {
-            //     ...state,
-            //     isLoggingIn: false,
-            //     logInError: action.payload
-            // }
         },
         signInSuccess: (state, action: PayloadAction<{ userId: string; accessToken: string; refreshToken: string }>) => {
             console.log("reducer userLoggedInSuccess ", state);
@@ -57,14 +52,6 @@ export const authSlice = createSlice({
             state.userId = userId
             state.accessToken = accessToken
             state.refreshToken = refreshToken
-            // return {
-            //     ...state,
-            //     isLoggingIn: false,
-            //     isAuthenticated: true,
-            //     userId,
-            //     accessToken,
-            //     refreshToken
-            // }
         },
         refreshAccessTokenSuccess: (state, action: PayloadAction<string>) => {
             state.accessToken = action.payload

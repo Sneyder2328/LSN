@@ -10,6 +10,7 @@ import {createPost} from "../../../actions/postsActions";
 import {genUUID, ImageFile} from "../../../utils/utils";
 import * as ImagePicker from 'expo-image-picker';
 import {COLOR_PRIMARY} from "../../../constants/Colors";
+import {PreviewImage} from "../../../components/PreviewImage";
 
 const optionsForImage = {
     allowsEditing: true,
@@ -38,6 +39,7 @@ export const CreatePostScreen = () => {
         navigation.setOptions({
             headerRight: () => (<PostButton onPress={() => {
                 console.log('post', imageFiles)
+                if (text.length === 0 && imageFiles.length === 0) return
                 dispatch(createPost({id: genUUID(), imageFiles, text, userId}))
                 navigation.goBack()
             }}/>)
@@ -90,6 +92,11 @@ export const CreatePostScreen = () => {
             setImageFiles([...imageFiles, newImg])
         }
     }
+
+    const onImageRemoved = (uri: string) => {
+        setImageFiles(imageFiles.filter((img) => img.uri !== uri))
+    }
+
     return (<View style={styles.container}>
         <View style={styles.header}>
             <ProfilePic user={currentUser} size={avatarDimens}/>
@@ -99,11 +106,12 @@ export const CreatePostScreen = () => {
         <View style={styles.bottom}>
             <FlatList
                 style={{
-                    // backgroundColor: '#00f',
+                    // backgroundColor: '#00f',remove
                     // bottom: 0,
                     // left: 0,
                 }}
-                data={imageFiles} renderItem={({item}) => (<PreviewImage uri={item.uri}/>)}
+                data={imageFiles}
+                renderItem={({item}) => (<PreviewImage uri={item.uri} onImageRemoved={onImageRemoved}/>)}
                 keyExtractor={(item => item.name)} horizontal={true}/>
             <View style={styles.imgSelectors}>
                 <TouchableOpacity onPress={openImagePickerAsync}>
@@ -118,21 +126,6 @@ export const CreatePostScreen = () => {
     </View>)
 }
 
-const PreviewImage: React.FC<{ uri: string }> = ({uri}) => {
-    console.log('PreviewImage', uri);
-    const imgDimens = 150;
-
-    return (<View>
-        <Image source={{uri}} width={imgDimens} height={imgDimens}
-               style={{
-                   // backgroundColor: '#00f',
-                   width: imgDimens,
-                   height: imgDimens,
-                   marginLeft: 8,
-                   borderRadius: 12,
-               }}/>
-    </View>)
-}
 
 const styles = StyleSheet.create({
     container: {

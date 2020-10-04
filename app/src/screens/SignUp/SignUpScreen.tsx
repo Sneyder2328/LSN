@@ -4,8 +4,11 @@ import {Button, TextInput, useTheme} from "react-native-paper";
 import {FORM_FONT_SIZE} from "../../constants/Colors";
 import {useDispatch, useSelector} from "react-redux";
 import {MyAppState} from "../../reducers/rootReducer";
-import {logInUser, signUpUser} from "../../actions/authActions";
+import {signUpUser} from "../../actions/authActions";
+import {FieldErrors, useForm} from 'react-hook-form'
 import {FullOverlay} from "../../components/FullOverlay";
+
+type SignUpFormParams = { username: string, password: string, email: string, fullname: string };
 
 export const SignUpScreen = ({navigation}: { navigation: any }) => {
     const [username, setUsername] = useState<string>('')
@@ -15,6 +18,8 @@ export const SignUpScreen = ({navigation}: { navigation: any }) => {
     const {auth} = useSelector((state: MyAppState) => state)
     const dispatch = useDispatch()
     const {colors} = useTheme();
+
+    const {register, handleSubmit, setValue} = useForm< SignUpFormParams>()
 
     useEffect(() => {
         console.log("SignUpScreen isAuthenticated", auth.isAuthenticated);
@@ -29,10 +34,45 @@ export const SignUpScreen = ({navigation}: { navigation: any }) => {
         }
     }, [auth.signUpError])
 
+    useEffect(() => {
+        register("fullname", {
+            required: {value: true, message: 'Please enter your full name'},
+            minLength: {value: 5, message: 'This field needs to be at least 5 characters long'}
+        })
+        register('username', {
+            required: {value: true, message: 'Please enter a username'},
+            pattern: {value: /^\w+$/, message: 'Username must contain only alphanumeric values'},
+            minLength: {value: 5, message: 'Username must be at least 5 characters long'}
+        })
+        register('email', {
+            required: {value: true, message: 'Please enter your email address'},
+            pattern: {
+                value: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
+                message: 'Please provide a properly formatted email address'
+            }
+        })
+        register('password', {
+            required: {value: true, message: 'Please enter your password'},
+            minLength: {value: 8, message: 'Your password needs to be at least 8 characters long'}
+        })
+    }, [register])
 
-    const signUp = async () => {
-        console.log('Sign Up Clicked')
-        dispatch(signUpUser({username, password, email, fullname}))
+    useEffect(() => {
+        setValue("username", username)
+        setValue("fullname", fullname)
+        setValue('email', email)
+        setValue('password', password)
+    }, [username, password, email, fullname])
+
+    const onValidData = (data: SignUpFormParams) => {
+        console.log('onValidData', data);
+        if (auth.isSigningUp) return
+        dispatch(signUpUser(data))
+    }
+    const onInvalidData = (errors: FieldErrors) => {
+        console.log('onInvalidData', errors);
+        if (auth.isSigningUp) return
+        alert(Object.values(errors)[0].message)
     }
 
     return (<ScrollView contentContainerStyle={styles.container}>
@@ -47,7 +87,7 @@ export const SignUpScreen = ({navigation}: { navigation: any }) => {
                    secureTextEntry={true} placeholder={'Password'}
                    value={password} onChangeText={setPassword}/>
         <Button style={styles.btn} mode="contained" color={auth.isSigningUp ? colors.disabled : colors.accent}
-                onPress={() => !auth.isSigningUp && signUp()} loading={auth.isSigningUp}>
+                onPress={handleSubmit(onValidData, onInvalidData)} loading={auth.isSigningUp}>
             Sign Up
         </Button>
         <TouchableOpacity onPress={() => {

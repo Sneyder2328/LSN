@@ -3,7 +3,7 @@ import React, {useEffect, useState} from "react";
 import {Button, TextInput, useTheme} from "react-native-paper";
 import {useDispatch, useSelector} from "react-redux";
 import {FullOverlay} from "../../components/FullOverlay";
-import {logInUser, refreshAccessToken} from "../../actions/authActions";
+import {logInUser} from "../../actions/authActions";
 import {FORM_FONT_SIZE} from "../../constants/Colors";
 import {MyAppState} from "../../reducers/rootReducer";
 
@@ -12,7 +12,7 @@ export const LogInScreen = ({navigation}: { navigation: any }) => {
     const [password, setPassword] = useState<string>('')
     const {auth} = useSelector((state: MyAppState) => state)
     const dispatch = useDispatch()
-    const { colors } = useTheme();
+    const {colors} = useTheme();
 
     useEffect(() => {
         console.log("LogInScreen isAuthenticated", auth.isAuthenticated);
@@ -27,8 +27,16 @@ export const LogInScreen = ({navigation}: { navigation: any }) => {
         }
     }, [auth.logInError])
 
-    const logIn = async () => {
+    const logIn = () => {
         console.log('Log In Clicked', username, password)
+        if (username.length === 0) {
+            alert("Please enter your username")
+            return
+        }
+        if (password.length === 0) {
+            alert("Please enter your password")
+            return
+        }
         dispatch(logInUser({username, password}))
     }
 
@@ -39,7 +47,7 @@ export const LogInScreen = ({navigation}: { navigation: any }) => {
         <TextInput style={styles.input} mode='outlined' placeholder={'Password'}
                    secureTextEntry={true} label="Password" value={password} onChangeText={setPassword}/>
         <Button
-            style={styles.btn} mode="contained" color={auth.isLoggingIn ? colors.disabled : colors.accent}
+            style={styles.btn} mode="contained" color={colors.accent}
             onPress={() => !auth.isLoggingIn && logIn()} loading={auth.isLoggingIn}>
             Log In
         </Button>
