@@ -29,7 +29,7 @@ export default class AuthService {
             email: email,
             password: password
         });
-        await this.Profile.create({
+        const newUserProfile = await this.Profile.create({
             userId,
             username: username,
             fullname: fullname,
@@ -40,7 +40,7 @@ export default class AuthService {
         const accessToken = await signJWT(user.id);
         const refreshToken = uuid.v4();
         await this.Token.create({userId, token: refreshToken});
-        return {accessToken, refreshToken};
+        return {accessToken, refreshToken, profile: newUserProfile};
     }
 
     async logInUser({username, password}) {

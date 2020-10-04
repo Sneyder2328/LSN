@@ -1,5 +1,4 @@
 import {Router} from "express";
-import path from "path";
 import {createPost, dislikePost, getPosts, likePost, removeLikeOrDislikeFromPost} from "./postService";
 import authenticate from "../../middlewares/authenticate";
 import {createPostValidationRules, likePostValidationRules, validate} from "../../middlewares/validate";
