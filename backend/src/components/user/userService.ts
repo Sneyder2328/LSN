@@ -3,15 +3,28 @@ import {UserNotFoundError} from "../../utils/errors/UserNotFoundError";
 import userRelationship from "../../utils/constants/userRelationship";
 import {Op} from "sequelize";
 import {compareByDateAsc} from "../../utils/utils";
+import {LIMIT_COMMENTS_PER_POST} from "../../utils/constants";
 
-const {Post} = models;
-
-const {Profile, UserRelationShip} = models;
+const {Post, Profile, UserRelationShip, PostImage, Comment} = models;
 
 const includePostsSorted = [
     {
         model: Post,
-        as: 'posts'
+        as: 'posts',
+        include: [
+            {
+                model: PostImage,
+                as: 'images',
+                attributes: ['url']
+            },
+            {
+                model: Comment,
+                as: 'comments',
+                limit: LIMIT_COMMENTS_PER_POST,
+                order: [['createdAt', 'DESC']],
+                include: [Profile]
+            }
+        ]
     }
 ];
 

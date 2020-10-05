@@ -17,12 +17,26 @@ const UserNotFoundError_1 = require("../../utils/errors/UserNotFoundError");
 const userRelationship_1 = __importDefault(require("../../utils/constants/userRelationship"));
 const sequelize_1 = require("sequelize");
 const utils_1 = require("../../utils/utils");
-const { Post } = database_1.models;
-const { Profile, UserRelationShip } = database_1.models;
+const constants_1 = require("../../utils/constants");
+const { Post, Profile, UserRelationShip, PostImage, Comment } = database_1.models;
 const includePostsSorted = [
     {
         model: Post,
-        as: 'posts'
+        as: 'posts',
+        include: [
+            {
+                model: PostImage,
+                as: 'images',
+                attributes: ['url']
+            },
+            {
+                model: Comment,
+                as: 'comments',
+                limit: constants_1.LIMIT_COMMENTS_PER_POST,
+                order: [['createdAt', 'DESC']],
+                include: [Profile]
+            }
+        ]
     }
 ];
 function getProfileByUsername(username, includePosts) {
