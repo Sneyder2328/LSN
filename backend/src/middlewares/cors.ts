@@ -1,7 +1,7 @@
 export const corsOptions = {
     origin:
         process.env.NODE_ENV === 'production'
-            ? [/sneyder-lsn.netlify.app/,/localhost/]
+            ? [/sneyder-lsn.netlify.app/, /localhost/]
             : [/localhost/],
     credentials: true,
     allowedHeaders: 'Content-Type, authorization, authorization-refresh-token, X-Requested-With, Accept',
