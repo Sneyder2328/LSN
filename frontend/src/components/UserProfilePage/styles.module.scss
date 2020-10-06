@@ -1,0 +1,75 @@
+@import "src/utils/variables";
+
+main {
+  margin: $navbarHeight auto 0 auto;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+
+  .pageContainer{
+    width: 90%;
+    max-width: 1190px;
+    margin: 0 auto;
+    display: flex;
+
+    .leftSection {
+      width: 290px;
+    }
+
+    .mainSection {
+      //max-width: $main-width-page;
+      width: 620px;
+      margin: 0 10px;
+      background-color: #fff;
+
+      .coverPhoto {
+        width: 100%;
+        height: 13vw;
+        margin: 0 auto;
+        object-fit: cover;
+        background-color: #5aa6fb;
+      }
+
+      .userInfo {
+        margin-left: 20px;
+        margin-top: -90px;
+        display: flex;
+        flex-direction: column;
+
+        .profilePhoto {
+          border-radius: 75px;
+          border: 4px solid #fff;
+          box-sizing: border-box;
+          width: 150px;
+          height: 150px;
+          background-color: #fff;
+          //margin: 0 auto;
+          //object-fit: cover;
+        }
+
+        .fullname {
+          font-size: 1.5rem;
+          display: block;
+          font-weight: 600;
+        }
+
+        .username {
+          font-size: 1rem;
+          color: #8e8e8e;
+          display: block;
+        }
+
+        .description {
+          margin-top: 16px;
+          font-size: 1rem;
+          color: #323232;
+        }
+      }
+    }
+
+    .rightSection {
+      width: 290px;
+    }
+  }
+
+}

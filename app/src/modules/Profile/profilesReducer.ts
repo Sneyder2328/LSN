@@ -1,8 +1,9 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import AsyncStorage from "@react-native-community/async-storage";
+import {persistReducer} from "redux-persist";
 import {HashTable} from "../../utils/utils";
 
 type Profile = {
-    username: string;
     postsIds: Array<string>;
 };
 export type ProfilesState = HashTable<Profile>;
@@ -17,10 +18,9 @@ export const profilesSlice = createSlice({
         fetchProfileRequest: (state) => {
 
         },
-        fetchProfileSuccess: (state, action: PayloadAction<{ userId: string; postIds: Array<string>; username: string }>) => {
+        fetchProfileSuccess: (state, action: PayloadAction<{ userId: string; postIds: Array<string> }>) => {
             state[action.payload.userId] = {
-                postsIds: action.payload.postIds,
-                username: action.payload.username
+                postsIds: action.payload.postIds
             }
         },
         fetchProfileError: (state) => {
@@ -29,4 +29,10 @@ export const profilesSlice = createSlice({
     }
 })
 
-export const profilesReducer = profilesSlice.reducer
+const persistConfig = {
+    key: profilesSlice.name,
+    storage: AsyncStorage
+};
+
+export const profilesReducer = persistReducer(persistConfig, profilesSlice.reducer)
+export const profilesActions = profilesSlice.actions

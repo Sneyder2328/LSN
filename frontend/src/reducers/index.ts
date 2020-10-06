@@ -1,18 +1,16 @@
 import {combineReducers} from 'redux';
 import {authReducer, AuthState} from "../components/Auth/authReducer";
 import {
-    PostActions,
     postsReducer,
     PostState
 } from "../components/Post/postReducer";
 import {newsFeedReducer, NewsFeedState} from "../components/NewsFeed/newsFeedReducer";
 import {
-    CommentActions,
     commentsReducer,
     CommentsState
 } from "../components/Comment/commentReducer";
-import { UserActions, usersReducers, UsersState} from "../components/User/userReducer";
-import {SearchActions, searchReducer, SearchState} from "../components/NavBar/searchReducer";
+import {usersReducer, UsersState} from "../components/User/userReducer";
+import {searchReducer, SearchState} from "../components/NavBar/searchReducer";
 import {profilesReducer, ProfilesState} from "../components/UserProfile/profileReducer";
 
 type EntitiesState = {
@@ -29,8 +27,6 @@ export interface AppState {
     profiles: ProfilesState;
 }
 
-export type Actions = PostActions | UserActions | CommentActions | SearchActions;
-
 export default combineReducers({
     auth: authReducer,
     newsFeed: newsFeedReducer,
@@ -38,7 +34,7 @@ export default combineReducers({
     entities: combineReducers({
         posts: postsReducer,
         comments: commentsReducer,
-        users: usersReducers,
+        users: usersReducer,
     }),
     profiles: profilesReducer
 });

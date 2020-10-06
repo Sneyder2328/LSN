@@ -38,7 +38,8 @@ const Comment: React.FC<Props> = ({comment, likeComment, dislikeComment}) => {
                  alt='comment pic'/>
             <div className='comment-box'>
                 <div>
-                    <p className='fullname'>{comment.authorProfile.fullname}</p>
+                    <a className='fullname' href={`/${comment.authorProfile.username}`}>
+                        <p>{comment.authorProfile.fullname}</p></a>
                     <p className='username'>@{comment.authorProfile.username}</p>
                 </div>
                 <p className='content'>{comment.text}</p>

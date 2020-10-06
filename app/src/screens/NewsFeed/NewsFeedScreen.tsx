@@ -3,10 +3,11 @@ import {FlatList, StyleSheet, View} from 'react-native';
 import {FAB} from 'react-native-paper'
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect} from "react";
-import {loadPosts} from "../../actions/postsActions";
-import {MyAppState} from "../../reducers/rootReducer";
 import {Post} from "../../components/Post";
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
+import {loadPosts} from "../../modules/Post/postsActions";
+import {UserObject} from "../../modules/usersReducer";
+import {MyAppState} from "../../modules/rootReducer";
 
 export const NewsFeedScreen = () => {
     const {postIds, isLoadingPosts} = useSelector((state: MyAppState) => state.entities.newsFeed.latest)
@@ -22,11 +23,16 @@ export const NewsFeedScreen = () => {
         console.log('isLoadingPosts=', isLoadingPosts);
     }, [])
 
+    const handleProfilePressed = (user: UserObject) => {
+        console.log('handleProfilePressed', user, navigation);
+        navigation.navigate("UserProfile", {user})
+        // navigation.navigate("UserProfile")
+    }
     return (
         <View style={styles.container}>
-            <FlatList style={styles.postsList} data={postIds} renderItem={({item}) => (<Post postId={item}/>)}
+            <FlatList style={styles.postsList} data={postIds}
+                      renderItem={({item}) => (<Post postId={item} onProfilePressed={handleProfilePressed}/>)}
                       keyExtractor={item => item} refreshing={isLoadingPosts} onRefresh={() => {
-                console.log("onRefresh");
                 dispatch(loadPosts());
             }}/>
             <FAB

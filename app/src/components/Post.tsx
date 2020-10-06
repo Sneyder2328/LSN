@@ -1,20 +1,25 @@
 import React from "react";
-import {Dimensions, FlatList, StyleSheet, Text, View} from "react-native";
+import {Dimensions, FlatList, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View} from "react-native";
 import {useDispatch, useSelector} from "react-redux";
-import {MyAppState} from "../reducers/rootReducer";
 import {useTimeSincePublished} from "../hooks/updateRelativeTimeHook";
 
-import {AntDesign} from '@expo/vector-icons';
 import {FontAwesome} from '@expo/vector-icons';
 
 import Image from 'react-native-scalable-image';
 import {COLOR_PRIMARY, COLOR_PRIMARY_LIGHT2} from "../constants/Colors";
 import {InteractionItem} from "./InteractionItem";
-import {dislikePost, likePost} from "../actions/postsActions";
 import {useNavigation} from "@react-navigation/native";
 import {ProfilePic} from "./ProfilePic";
+import {UserObject} from "../modules/usersReducer";
+import {MyAppState} from "../modules/rootReducer";
+import {PostMetadata} from "../modules/Post/postsReducer";
+import {dislikePost, likePost} from "../modules/Post/postsActions";
 
-export const Post: React.FC<{ postId: string }> = ({postId}) => {
+type Props = {
+    postId: string;
+    onProfilePressed: (user: UserObject) => any;
+};
+export const Post: React.FC<Props> = ({postId, onProfilePressed}) => {
     const dispatch = useDispatch()
     const navigation = useNavigation();
 
@@ -22,39 +27,42 @@ export const Post: React.FC<{ postId: string }> = ({postId}) => {
     const users = useSelector((state: MyAppState) => state.entities.users.entities)
 
     const post = entities[postId]
+    const postMeta: PostMetadata | undefined = metas[postId]
     const postAuthor = users[post.userId]
 
     const timeSincePublished = useTimeSincePublished(post.createdAt)
 
+    const postImages: Array<string> = post.images.length !== 0 ? post.images.map(value => value.url) : post.previewImages?.map((value) => value.uri) || []
+
     return (<View style={styles.container}>
-        <View style={styles.header}>
+        <TouchableOpacity style={styles.header} onPress={() => onProfilePressed(postAuthor)} activeOpacity={0.7}>
             <ProfilePic user={postAuthor} size={54}/>
-            <View style={{marginLeft: 4}}>
+            <View style={{marginLeft: 6}}>
                 <Text style={styles.username}>{postAuthor.fullname}</Text>
                 <Text style={styles.createdAt}>{timeSincePublished}</Text>
             </View>
-        </View>
-        <View style={styles.content}>
-            <Text style={styles.text}>{post.text}</Text>
-            <FlatList data={post.images} renderItem={({item}) => {
-                return <Image style={styles.imageItem} width={Dimensions.get('window').width} source={{uri: item.url}}/>
-            }} keyExtractor={(item => item.url)}/>
+        </TouchableOpacity>
+        <View style={{...styles.content, opacity: postMeta?.isUploading ? 0.4 : 1}}>
+            {post.text.trim().length !== 0 && <Text style={styles.text}>{post.text}</Text>}
+            <FlatList data={postImages} renderItem={({item}) => {
+                return <Image style={styles.imageItem} width={Dimensions.get('window').width - 32}
+                              source={{uri: item}}/>
+            }} keyExtractor={(item => item)}/>
         </View>
         <View style={styles.interactions}>
             <InteractionItem count={post.likesCount} onPress={() => {
                 dispatch(likePost(post.id, post.likeStatus === 'like'))
             }}>
-                <AntDesign name="like1" size={24}
-                           color={post.likeStatus === 'like' ? COLOR_PRIMARY : COLOR_PRIMARY_LIGHT2}/>
+                <FontAwesome name="thumbs-up" size={24}
+                             color={post.likeStatus === 'like' ? COLOR_PRIMARY : COLOR_PRIMARY_LIGHT2}/>
             </InteractionItem>
             <InteractionItem count={post.dislikesCount} onPress={() => {
                 dispatch(dislikePost(post.id, post.likeStatus === 'dislike'))
             }}>
-                <AntDesign name="dislike1" size={24}
-                           color={post.likeStatus === 'dislike' ? COLOR_PRIMARY : COLOR_PRIMARY_LIGHT2}/>
+                <FontAwesome name="thumbs-down" size={24}
+                             color={post.likeStatus === 'dislike' ? COLOR_PRIMARY : COLOR_PRIMARY_LIGHT2}/>
             </InteractionItem>
             <InteractionItem count={post.commentsCount} onPress={() => {
-                console.log('comment clicked!')
                 navigation.navigate('PostDetail', {postId})
             }}>
                 <FontAwesome name="comment" size={24} color={COLOR_PRIMARY_LIGHT2}/>
@@ -91,9 +99,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         marginTop: 8,
+        alignItems: 'center',
     },
     imageItem: {
         marginTop: 2,
-        marginBottom: 2
+        marginBottom: 2,
+        // marginRight: 68,
     }
 })

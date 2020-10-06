@@ -1,22 +1,24 @@
 import React, {useState} from "react";
-import {UserObject} from "../reducers/usersReducer";
-import {PostObject} from "../reducers/postsReducer";
 import {useDispatch} from "react-redux";
-import {CommentRequest} from "../api/commentApi";
 import {genUUID} from "../utils/utils";
-import {createComment} from "../actions/commentActions";
 import {StyleSheet, TextInput, TouchableOpacity, View} from "react-native";
 import {MaterialIcons} from "@expo/vector-icons";
 import {COLOR_PRIMARY, COLOR_PRIMARY_LIGHT2} from "../constants/Colors";
 import {ProfilePic} from "./ProfilePic";
+import {UserObject} from "../modules/usersReducer";
+import {PostObject} from "../modules/Post/postsReducer";
+import {CommentRequest} from "../modules/Comment/commentApi";
+import {createComment} from "../modules/Comment/commentActions";
 
 
 export const AddNewComment: React.FC<{ currentUser: UserObject; post: PostObject; inputRef: any }> = ({currentUser, post, inputRef}) => {
     const dispatch = useDispatch()
     const [text, setText] = useState("")
 
+    const isTextEmpty = () => text.trim().length === 0;
+
     const onSubmitComment = () => {
-        if (text.trim().length !== 0) {
+        if (!isTextEmpty()) {
             console.log('sending comment', text);
             const newComment: CommentRequest = {
                 id: genUUID(),
@@ -35,7 +37,7 @@ export const AddNewComment: React.FC<{ currentUser: UserObject; post: PostObject
         <View style={styles.commentBox}>
             <TextInput style={styles.inputComment} placeholder={'Write a comment...'} multiline={true}
                        onChangeText={setText} value={text} ref={inputRef}/>
-            <TouchableOpacity onPress={onSubmitComment} style={styles.sendComment}>
+            <TouchableOpacity onPress={onSubmitComment} disabled={isTextEmpty()} style={styles.sendComment}>
                 <MaterialIcons name="send" size={24} color={COLOR_PRIMARY} />
             </TouchableOpacity>
         </View>

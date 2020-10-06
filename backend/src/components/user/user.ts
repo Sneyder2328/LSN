@@ -21,10 +21,10 @@ import config from "../../config/config";
 
 const router = Router();
 
-router.get(endpoints.user.GET_PROFILE(':userIdentifier'), getProfileValidationRules, validate, handleErrorAsync(async (req, res) => {
+router.get(endpoints.user.GET_PROFILE(':userIdentifier'), authenticate, getProfileValidationRules, validate, handleErrorAsync(async (req, res) => {
     const userIdentifier: string = req.params.userIdentifier;
     const includePosts = req.query.includePosts == "true";
-    const user = userIdentifier.match(config.regex.uuidV4) ? await getProfileByUserId(userIdentifier, includePosts) : await getProfileByUsername(userIdentifier, includePosts);
+    const user = userIdentifier.match(config.regex.uuidV4) ? await getProfileByUserId(userIdentifier, includePosts, req.userId) : await getProfileByUsername(userIdentifier, includePosts, req.userId);
     res.json(user);
 }));
 

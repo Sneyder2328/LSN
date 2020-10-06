@@ -4,6 +4,7 @@ import userRelationship from "../../utils/constants/userRelationship";
 import {Op} from "sequelize";
 import {compareByDateAsc} from "../../utils/utils";
 import {LIMIT_COMMENTS_PER_POST} from "../../utils/constants";
+import {processPosts} from "../post/postService";
 
 const {Post, Profile, UserRelationShip, PostImage, Comment} = models;
 
@@ -28,12 +29,13 @@ const includePostsSorted = [
     }
 ];
 
-export async function getProfileByUsername(username, includePosts?: boolean) {
+export async function getProfileByUsername(username: string, includePosts: boolean, currentUserId: string) {
     let user;
-    if (includePosts === true) {
+    if (includePosts) {
         user = await Profile.findOne({where: {username}, include: includePostsSorted});
         user = user.toJSON();
-        user.posts = user.posts.sort(compareByDateAsc);
+        // user.posts = user.posts.sort(compareByDateAsc);
+        user.posts = await processPosts(user.posts, currentUserId)
     } else {
         user = await Profile.findOne({where: {username}});
     }
@@ -41,12 +43,13 @@ export async function getProfileByUsername(username, includePosts?: boolean) {
     return user;
 }
 
-export async function getProfileByUserId(userId, includePosts?: boolean) {
+export async function getProfileByUserId(userId, includePosts: boolean, currentUserId: string) {
     let user;
-    if (includePosts === true) {
+    if (includePosts) {
         user = await Profile.findByPk(userId, {include: includePostsSorted});
         user = user.toJSON();
-        user.posts = user.posts.sort(compareByDateAsc);
+        // user.posts = user.posts.sort(compareByDateAsc);
+        user.posts = await processPosts(user.posts, currentUserId)
     } else {
         user = await Profile.findByPk(userId);
     }

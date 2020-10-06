@@ -21,6 +21,42 @@ export async function createPost(postId: string, userId: string, type: string, t
     return response;
 }
 
+export const processPosts = async (posts, userId: string) => {
+    console.log('processPosts', posts, userId);
+    const postLikeStatusList = (await Promise.all(
+            posts.map(post => fetchPostLikeStatus(post.id, userId)))
+    ).filter(it => it != null);
+    console.log('postLikeStatusList', postLikeStatusList);
+
+    const commentLikeStatusList = (await Promise.all(
+            posts.map(post => post.comments.map(comment => comment.id))
+                .filter(it => it.lenght !== 0)
+                .flat()
+                .map(commentId => fetchCommentLikeStatus(commentId, userId)))
+    ).filter(it => it != null);
+    console.log('commentLikeStatusList', commentLikeStatusList);
+
+    // posts = posts.map(post => post.toJSON()).map(post => {
+    posts = posts.map(post => {
+        const postLikeStatus: any = postLikeStatusList.find((postLike: any) => postLike.postId === post.id);
+        return {
+            ...post,
+            likeStatus: postLikeStatus != null ? (postLikeStatus.isLike === true ? 'like' : 'dislike') : undefined,
+            comments: post.comments.map(comment => {
+                const commentLikeStatus: any = commentLikeStatusList.find((commentLike: any) => commentLike.commentId === comment.id);
+                comment.likeStatus = commentLikeStatus != null ? (commentLikeStatus.isLike === true ? 'like' : 'dislike') : undefined;
+                comment.authorProfile = comment.Profile;
+                delete comment.Profile;
+
+                console.log('new comment after edit', comment);
+                return comment;
+            }).sort(compareByDateDesc)
+        }
+    }).sort(compareByDateAsc);
+    console.log('now posts returning ', posts[0].comments);
+    return posts;
+};
+
 export async function getPosts(userId: string) {
     let posts = await Post.findAll({
         include: [
@@ -42,34 +78,8 @@ export async function getPosts(userId: string) {
             }
         ]
     });
-
-    const postLikeStatusList = (await Promise.all(
-            posts.map(post => fetchPostLikeStatus(post.id, userId)))
-    ).filter(it => it != null);
-    //console.log('postLikeStatusList', postLikeStatusList);
-
-    const commentLikeStatusList = (await Promise.all(
-            posts.map(post => post.comments.map(comment => comment.id))
-                .filter(it => it.lenght !== 0)
-                .flat()
-                .map(commentId => fetchCommentLikeStatus(commentId, userId)))
-    ).filter(it => it != null);
-//    console.log('commentLikeStatusList', commentLikeStatusList);
-
-    posts = posts.map(post => post.toJSON()).map(post => {
-        const postLikeStatus: any = postLikeStatusList.find((postLike: any) => postLike.postId === post.id);
-        return {
-            ...post,
-            likeStatus: postLikeStatus != null ? (postLikeStatus.isLike === true ? 'like' : 'dislike') : undefined,
-            comments: post.comments.map(comment => {
-                const commentLikeStatus: any = commentLikeStatusList.find((commentLike: any) => commentLike.commentId === comment.id);
-                comment.likeStatus = commentLikeStatus != null ? (commentLikeStatus.isLike === true ? 'like' : 'dislike') : undefined;
-                comment.authorProfile = comment.Profile;
-                delete comment.Profile;
-                return comment;
-            }).sort(compareByDateDesc)
-        }
-    }).sort(compareByDateAsc);
+    posts = posts.map(post => post.toJSON())
+    posts = await processPosts(posts, userId);
 
     if (!posts) return [];
     return posts;

@@ -11,17 +11,17 @@ import {
 import React, {useRef} from "react";
 import {useRoute} from "@react-navigation/native";
 import {InteractionItem} from "../../components/InteractionItem";
-import {dislikePost, likePost} from "../../actions/postsActions";
 import {AntDesign, FontAwesome} from "@expo/vector-icons";
 import {COLOR_PRIMARY, COLOR_PRIMARY_LIGHT2} from "../../constants/Colors";
 import {useDispatch, useSelector} from "react-redux";
 import {useTimeSincePublished} from "../../hooks/updateRelativeTimeHook";
 import Image from 'react-native-scalable-image';
 import {Comment} from "../../components/Comment";
-import {MyAppState} from "../../reducers/rootReducer";
 import {AddNewComment} from "../../components/AddNewComment";
-import {loadPreviousComments} from "../../actions/commentActions";
 import {ProfilePic} from "../../components/ProfilePic";
+import {loadPreviousComments} from "../../modules/Comment/commentActions";
+import {MyAppState} from "../../modules/rootReducer";
+import {dislikePost, likePost} from "../../modules/Post/postsActions";
 
 
 const LoadMoreComments: React.FC<{ onLoadMoreComments: () => any; isLoadingPreviousComments: boolean }> = ({onLoadMoreComments, isLoadingPreviousComments}) => {
@@ -72,7 +72,7 @@ export const PostDetail = () => {
         <View style={styles.content}>
             <Text style={styles.text}>{post.text}</Text>
             <FlatList data={post.images} style={styles.imagesList} renderItem={({item}) => {
-                return <Image style={styles.imageItem} width={Dimensions.get('window').width} source={{uri: item.url}}/>
+                return <Image style={styles.imageItem} width={Dimensions.get('window').width-16} source={{uri: item.url}}/>
             }} keyExtractor={(item => item.url)}/>
         </View>
         <View style={styles.interactions}>

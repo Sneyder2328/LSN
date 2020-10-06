@@ -1,7 +1,6 @@
 import {HashTable} from "../../utils/utils";
-import {SET_USERS} from "../../actions/types";
-import {Actions} from "../../reducers";
 import {Profile} from "../Post/Post";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 export type UsersState = {
     entities: HashTable<UserObject>;
@@ -11,29 +10,26 @@ export type UsersState = {
 export interface UserObject extends Profile {
 }
 
-type SetUsers = {
-    type: 'SET_USERS';
-    users: HashTable<UserObject>
-}
-
-export type UserActions = SetUsers;
-
 export const initialUsersState: UsersState = {
     entities: {},
     metas: {}
 };
 
-export const usersReducers = (state: UsersState = initialUsersState, action: Actions): UsersState => {
-    switch (action.type) {
-        case SET_USERS:
-            return {
-                ...state,
-                entities: {
-                    ...state.entities,
-                    ...action.users
-                }
-            };
-        default:
-            return state;
+export const usersSlice = createSlice({
+    name: 'users',
+    initialState: initialUsersState,
+    reducers: {
+        setUsers: (state, action: PayloadAction<HashTable<UserObject>>) => {
+            state.entities = {
+                ...state.entities,
+                ...action.payload
+            }
+        },
+        setUser: (state, action: PayloadAction<UserObject>) => {
+            state.entities[action.payload.userId] = action.payload
+        }
     }
-};
+})
+
+export const usersReducer = usersSlice.reducer
+export const usersActions = usersSlice.actions

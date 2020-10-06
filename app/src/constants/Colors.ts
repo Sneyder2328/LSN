@@ -5,6 +5,7 @@ export const COLOR_ACCENT = '#ff3d00'
 export const COLOR_PRIMARY_DARK = '#1565C0'
 export const COLOR_PRIMARY_LIGHT = '#67daff'
 export const COLOR_PRIMARY_LIGHT2 = '#4fe3fc'
+export const COLOR_TEXT_CAPTION = '#939393'
 export const FORM_FONT_SIZE = 18;
 
 export default {

@@ -1,21 +1,19 @@
-import {PostObject, PostRequest, postsSlice} from "../reducers/postsReducer"
-import {usersSlice} from "../reducers/usersReducer"
-import {commentsSlice} from "../reducers/commentsReducer"
 
-const {setUsers} = usersSlice.actions
-const {setComments} = commentsSlice.actions
+import {UserObject, usersActions} from "../usersReducer";
+import {CommentObject, commentsActions} from "../Comment/commentsReducer";
+const {setUsers} = usersActions
+const {setComments} = commentsActions
 import {normalize} from "normalizr";
-import {PostApi} from "../api/postApi";
-import {HashTable} from "../utils/utils";
+import {AppThunk} from "../../store";
+import {postActions, PostObject, PostRequest} from "./postsReducer";
+import {PostApi} from "./postApi";
 import {post} from "../api/schema";
-import {AppThunk} from "../store";
-import {UserObject} from "../reducers/usersReducer";
-import {CommentObject} from "../reducers/commentsReducer";
+import {HashTable} from "../../utils/utils";
 
 const {
     loadPostsRequest, loadPostsSuccess, loadPostsError, interactPostError, interactPostRequest,
     interactPostSuccess, createPostError, createPostRequest, createPostSuccess
-} = postsSlice.actions
+} = postActions
 
 export const createPost = (postData: PostRequest): AppThunk => async (dispatch) => {
     console.log('createPost', postData);

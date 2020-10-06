@@ -1,11 +1,9 @@
-import {
-    CREATE_POST_ERROR,
-    CREATE_POST_REQUEST,
-    CREATE_POST_SUCCESS, LOAD_POSTS_ERROR,
-    LOAD_POSTS_REQUEST,
-    LOAD_POSTS_SUCCESS
-} from "../../actions/types";
-import {Actions} from "../../reducers";
+import {createSlice} from "@reduxjs/toolkit";
+import {postActions} from "../Post/postReducer";
+const {
+    loadPostsRequest, loadPostsSuccess, loadPostsError,
+    createPostRequest, createPostSuccess, createPostError
+} = postActions
 
 type NewsFeedList = {
     postIds: Array<string>
@@ -18,7 +16,7 @@ export interface NewsFeedState {
     latest: NewsFeedList
 }
 
-const initialState: NewsFeedState = {
+const initialStateNewsFeed: NewsFeedState = {
     isCreatingPost: false,
     latest: {
         isLoadingPosts: false,
@@ -30,56 +28,41 @@ const initialState: NewsFeedState = {
     }
 };
 
-export const newsFeedReducer = (state: NewsFeedState = initialState, action: Actions): NewsFeedState => {
-    switch (action.type) {
-        case CREATE_POST_REQUEST:
-            return {
-                ...state,
-                isCreatingPost: true,
-                latest: {
-                    ...state.latest,
-                    postIds: [action.payload.postId, ...state.latest.postIds]
-                },
-                top: {
-                    ...state.top,
-                    postIds: [action.payload.postId, ...state.top.postIds]
-                }
-            };
-        case CREATE_POST_SUCCESS:
-            return {
-                ...state,
-                isCreatingPost: false
-            };
-        case CREATE_POST_ERROR:
-            return {
-                ...state,
-                isCreatingPost: false
-            };
-        case LOAD_POSTS_REQUEST:
-            return {
-                ...state,
-                [action.payload.section]: {
-                    ...state[action.payload.section],
-                    isLoadingPosts: true
-                }
-            };
-        case LOAD_POSTS_SUCCESS:
-            return {
-                ...state,
-                [action.payload.section]: {
-                    postIds: action.payload.allIds,
-                    isLoadingPosts: false
-                }
-            };
-        case LOAD_POSTS_ERROR:
-            return {
-                ...state,
-                [action.payload.section]: {
-                    ...state.latest,
-                    isLoadingPosts: false
-                }
-            };
-        default:
-            return state;
+const newsFeedSlice = createSlice({
+    name: 'newsFeed',
+    initialState: initialStateNewsFeed,
+    reducers: {},
+    extraReducers: builder => {
+        builder.addCase(loadPostsSuccess, (state, action) => {
+            state[action.payload.section] = {
+                postIds: action.payload.allIds,
+                isLoadingPosts: false
+            }
+        }).addCase(loadPostsRequest, (state, action) => {
+            state[action.payload.section] = {
+                ...state[action.payload.section],
+                isLoadingPosts: true
+            }
+        }).addCase(loadPostsError, (state, action) => {
+            state[action.payload.section] = {
+                ...state[action.payload.section],
+                isLoadingPosts: false
+            }
+        }).addCase(createPostRequest, (state, action) => {
+            state.isCreatingPost = true
+            state.latest = {
+                ...state.latest,
+                postIds: [action.payload.postId, ...state.latest.postIds]
+            }
+            state.top = {
+                ...state.top,
+                postIds: [action.payload.postId, ...state.top.postIds]
+            }
+        }).addCase(createPostSuccess, (state, action) => {
+            state.isCreatingPost = false
+        }).addCase(createPostError, (state, action) => {
+            state.isCreatingPost = false
+        })
     }
-};
+})
+export const newsFeedReducer = newsFeedSlice.reducer

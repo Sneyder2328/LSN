@@ -5,12 +5,13 @@ import {createStackNavigator} from "@react-navigation/stack";
 import {LogInScreen} from "../screens/LogIn/LogInScreen";
 import {SignUpScreen} from "../screens/SignUp/SignUpScreen";
 import {HomeScreen} from "../screens/Home/HomeScreen";
-import {MyAppState} from "../reducers/rootReducer";
 import {useDispatch, useSelector} from "react-redux";
-import {logOutUser} from "../actions/authActions";
 import {FullOverlay} from "./FullOverlay";
 import {CreatePostScreen} from "../screens/Home/CreatePost/CreatePostScreen";
 import {PostDetail} from "../screens/PostDetail/PostDetail";
+import {ProfileScreen} from "../screens/ProfileScreen/ProfileScreen";
+import {MyAppState} from "../modules/rootReducer";
+import {logOutUser} from "../modules/Auth/authActions";
 
 const Stack = createStackNavigator();
 
@@ -63,12 +64,15 @@ export const AppNavigator = ({theme}) => {
                     // }}/>
                 })}/>
             <Stack.Screen
+                name="UserProfile"
+                options={{
+                    title: '',
+                    headerTransparent: true,
+                }}
+                component={ProfileScreen}/>
+            <Stack.Screen
                 name="PostDetail"
-                component={PostDetail}
-                // options={{
-                //     header
-                // }}
-            />
+                component={PostDetail}/>
         </Stack.Navigator>
         <FullOverlay isVisible={auth.isLoggingOut}/>
     </NavigationContainer>)

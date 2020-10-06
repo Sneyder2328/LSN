@@ -1,9 +1,9 @@
 import axios from "axios";
-import {store} from "../store";
-import {authSlice} from "../reducers/authReducer";
-import {MyAppState} from "../reducers/rootReducer";
+import {authActions} from "../Auth/authReducer";
+import {MyAppState} from "../rootReducer";
+import {store} from "../../store";
+const {logOutSuccess, refreshAccessTokenSuccess} = authActions
 
-const {logOutError, logOutSuccess, refreshAccessTokenSuccess} = authSlice.actions
 // const REACT_APP_BASE_URL = 'http://localhost:3030'
 const REACT_APP_BASE_URL = "https://lasocialnetwork.herokuapp.com"
 

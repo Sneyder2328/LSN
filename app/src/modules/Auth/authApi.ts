@@ -1,4 +1,4 @@
-import {transport} from "./index";
+import {transport} from "../api";
 
 export const AuthApi = {
     async signUp(userData: { username: string; fullname: string; password: string; email: string; }) {

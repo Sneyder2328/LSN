@@ -1,9 +1,10 @@
 import {combineReducers} from "@reduxjs/toolkit";
-import {authReducer, AuthState} from "./authReducer";
-import {postsReducer, PostState} from "./postsReducer";
+
+import {authReducer, AuthState} from "./Auth/authReducer";
+import {postsReducer, PostState} from "./Post/postsReducer";
+import {newsFeedReducer, NewsFeedState} from "./NewsFeed/newsFeedReducer";
 import {usersReducer, UsersState} from "./usersReducer";
-import {newsFeedReducer, NewsFeedState} from "./newsFeedReducer";
-import {commentsReducer, CommentsState} from "./commentsReducer";
+import {commentsReducer, CommentsState} from "./Comment/commentsReducer";
 
 export interface MyAppState {
     auth: AuthState;

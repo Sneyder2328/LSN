@@ -1,4 +1,4 @@
-import {transport} from "./index";
+import {transport} from "../api";
 
 export type CommentRequest = {
     postId: string;

@@ -4,10 +4,8 @@ import {createLogger} from 'redux-logger';
 import AsyncStorage from '@react-native-community/async-storage';
 // @ts-ignore
 import thunk from 'redux-thunk';
-import {MyAppState, rootReducer} from "./reducers/rootReducer";
-import autoMergeLevel2 from "redux-persist/es/stateReconciler/autoMergeLevel2";
-import {migrations} from "./reducers/migrations";
 import {Action, ThunkAction} from "@reduxjs/toolkit";
+import {MyAppState, rootReducer} from "./modules/rootReducer";
 
 
 

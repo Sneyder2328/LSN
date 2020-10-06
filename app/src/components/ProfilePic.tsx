@@ -1,6 +1,6 @@
 import React from "react";
-import {UserObject} from "../reducers/usersReducer";
 import {Avatar} from "react-native-paper";
+import {UserObject} from "../modules/usersReducer";
 
 export const ProfilePic: React.FC<{user: UserObject; size: number; styles?: any}> = ({user, size, styles}) =>{
     return <Avatar.Image

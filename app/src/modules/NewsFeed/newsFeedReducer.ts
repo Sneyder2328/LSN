@@ -1,10 +1,10 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {postsSlice} from "./postsReducer";
 
+import {postActions} from "../Post/postsReducer";
 const {
     loadPostsRequest, loadPostsSuccess, loadPostsError,
     createPostRequest, createPostSuccess, createPostError
-} = postsSlice.actions
+} = postActions
 import AsyncStorage from "@react-native-community/async-storage";
 import {persistReducer} from "redux-persist";
 

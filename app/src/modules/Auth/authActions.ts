@@ -1,14 +1,13 @@
-import {AuthApi} from "../api/authApi";
-
 import JwtDecode from 'jwt-decode';
-import {MyAppState} from "../reducers/rootReducer";
+import {authActions} from "./authReducer";
+import {AppThunk} from "../../store";
+import {usersActions} from "../usersReducer";
+import {AuthApi} from "./authApi";
+import {MyAppState} from "../rootReducer";
 import {setRefreshTokenHeaders} from "../api";
-import {AppThunk} from "../store";
-import {authSlice} from "../reducers/authReducer";
-import {usersSlice} from "../reducers/usersReducer";
-const {setUser} = usersSlice.actions
 
-const {logOutRequest, logOutError, logOutSuccess, logInError, logInRequest, signInSuccess, signUpError, signUpRequest} = authSlice.actions
+const {logOutRequest, logOutError, logOutSuccess, logInError, logInRequest, signInSuccess, signUpError, signUpRequest} = authActions
+const {setUser} = usersActions
 
 export type SignUpCredentials = { username: string; fullname: string; password: string; email: string; };
 
@@ -28,14 +27,6 @@ export const signUpUser = (userData: SignUpCredentials): AppThunk => async (disp
     try {
         const response = await AuthApi.signUp(userData);
         processSignInResponse({dispatch, response})
-        // if (response.data.access === true && response.data.profile) {
-        //     const accessToken = response.headers['authorization'];
-        //     console.log("accessToken", accessToken);
-        //     const refreshToken = response.headers['authorization-refresh-token'];
-        //     const userId: string = JwtDecode<{ id: string }>(accessToken).id
-        //     dispatch(setUser(response.data.profile))
-        //     dispatch(signInSuccess({userId, accessToken, refreshToken}));
-        // }
     } catch (err) {
         console.log("signUpError:", err);
         const error = err?.response?.data?.message || 'Network connection error'
@@ -50,14 +41,6 @@ export const logInUser = (credentials: LoginCredentials): AppThunk => async (dis
     try {
         const response = await AuthApi.logIn(credentials);
         processSignInResponse({dispatch, response})
-        // if (response.data.access === true && response.data.profile) {
-        //     const accessToken = response.headers['authorization'];
-        //     console.log("accessToken", accessToken);
-        //     const refreshToken = response.headers['authorization-refresh-token'];
-        //     const userId: string = JwtDecode<{ id: string }>(accessToken).id
-        //     dispatch(setUser(response.data.profile))
-        //     dispatch(signInSuccess({userId, accessToken, refreshToken}));
-        // }
     } catch (err) {
         console.log("logInError:", err);
         const error = err?.response?.data?.message || 'Network connection error'

@@ -1,21 +1,10 @@
-import {
-    CREATE_POST_SUCCESS,
-    LOAD_POSTS_SUCCESS,
-    CREATE_COMMENT_REQUEST,
-    CREATE_COMMENT_ERROR,
-    CREATE_COMMENT_SUCCESS,
-    LOAD_COMMENTS_REQUEST,
-    LOAD_COMMENTS_ERROR,
-    LOAD_COMMENTS_SUCCESS,
-    INTERACT_POST_REQUEST,
-    INTERACT_POST_ERROR,
-    INTERACT_POST_SUCCESS,
-    CREATE_POST_REQUEST
-} from "../../actions/types";
+import {commentsActions} from "../Comment/commentReducer";
 import {Post} from "./Post";
 import {HashTable} from "../../utils/utils";
-import {Actions, AppState} from "../../reducers";
+import {AppState} from "../../reducers";
 import {createSelector} from "reselect";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+const {loadCommentsSuccess, loadCommentsError, loadCommentsRequest, createCommentError, createCommentRequest, createCommentSuccess} = commentsActions
 
 export type PostImage = {
     url: string;
@@ -47,256 +36,148 @@ export type PostState = {
     metas: HashTable<PostMetadata>;
 };
 
-type CreatePostRequest = {
-    type: 'CREATE_POST_REQUEST';
-    payload: {
-        postId: string;
-        text: string;
-        imageFiles: Array<File>;
-        userId: string;
-    }
-};
-type CreatePostSuccess = {
-    type: 'CREATE_POST_SUCCESS';
-    postCreated: PostObject
-};
-type CreatePostError = {
-    type: 'CREATE_POST_ERROR';
-    error: string
-};
-export type LoadPostsRequest = {
-    type: 'LOAD_POSTS_REQUEST'
-    payload: {
-        section: 'top' | 'latest';
-    };
-};
-export type LoadPostsSuccess = {
-    type: 'LOAD_POSTS_SUCCESS';
-    payload: {
-        posts: HashTable<PostObject>;
-        section: 'top' | 'latest';
-        allIds: Array<string>;
-    };
-};
-export type LoadPostsError = {
-    type: 'LOAD_POSTS_ERROR';
-    payload: {
-        section: 'top' | 'latest';
-    };
-};
-
-type InteractPostRequest = {
-    type: 'INTERACT_POST_REQUEST';
-    postId: string;
-    typeInteraction: 'like' | 'unlike' | 'dislike' | 'undislike';
-}
-
-type InteractPostSuccess = {
-    type: 'INTERACT_POST_SUCCESS';
-    post: {
-        id: string;
-        likesCount: number;
-        dislikesCount: number;
-    };
-    typeInteraction: 'like' | 'unlike' | 'dislike' | 'undislike';
-}
-
-type InteractPostError = {
-    type: 'INTERACT_POST_ERROR';
-    postId: string;
-    typeInteraction: 'like' | 'unlike' | 'dislike' | 'undislike';
-}
-
-export type PostActions =
-    CreatePostRequest
-    | CreatePostSuccess
-    | CreatePostError
-    | LoadPostsRequest
-    | LoadPostsSuccess
-    | LoadPostsError
-    | InteractPostRequest
-    | InteractPostSuccess
-    | InteractPostError
-
 export const initialPostsState: PostState = {
     entities: {},
     metas: {}
 };
 
-export const postsReducer = (state: PostState = initialPostsState, action: Actions): PostState => {
-    switch (action.type) {
-        case INTERACT_POST_REQUEST:
-            return {
-                ...state,
-                metas: {
-                    ...state.metas,
-                    [action.postId]: {
-                        ...state.metas[action.postId],
-                        likeStatus: (action.typeInteraction === "like" || action.typeInteraction === "dislike") ? action.typeInteraction : undefined
-                    }
-                }
+export const postsSlice = createSlice({
+    name: "posts",
+    initialState: initialPostsState,
+    reducers: {
+        setPosts: (state, action: PayloadAction<HashTable<PostObject>>) => {
+            state.entities = {
+                ...state.entities,
+                ...action.payload
+            }
+        },
+        loadPostsRequest: (state, action: PayloadAction<{ section: 'top' | 'latest'; }>) => {
+
+        },
+        loadPostsSuccess: (state, action: PayloadAction<{
+            posts: HashTable<PostObject>;
+            section: 'top' | 'latest';
+            allIds: Array<string>;
+        }>) => {
+            state.entities = {
+                ...state.entities,
+                ...action.payload.posts
+            }
+        },
+        loadPostsError: (state, action: PayloadAction<{ section: 'top' | 'latest'; }>) => {
+
+        },
+        interactPostRequest: (state, action: PayloadAction<{ postId: string; typeInteraction: string }>) => {
+            state.metas[action.payload.postId] = {
+                ...state.metas[action.payload.postId],
+                likeStatus: (action.payload.typeInteraction === "like" || action.payload.typeInteraction === "dislike") ? action.payload.typeInteraction : undefined
+            }
+        },
+        interactPostSuccess: (state, action: PayloadAction<{
+            post: {
+                id: string;
+                likesCount: number;
+                dislikesCount: number;
             };
-        case INTERACT_POST_SUCCESS:
-            return {
-                ...state,
-                entities: {
-                    ...state.entities,
-                    [action.post.id]: {
-                        ...state.entities[action.post.id],
-                        likeStatus: (action.typeInteraction === "like" || action.typeInteraction === "dislike") ? action.typeInteraction : undefined,
-                        likesCount: action.post.likesCount,
-                        dislikesCount: action.post.dislikesCount,
-                    }
-                }
-            };
-        case INTERACT_POST_ERROR:
-            return {
-                ...state,
-                metas: {
-                    ...state.metas,
-                    [action.postId]: {
-                        ...state.metas[action.postId],
-                        likeStatus: undefined
-                    }
-                }
-            };
-        case CREATE_POST_REQUEST:
-            return {
-                ...state,
-                metas: {
-                    ...state.metas,
-                    [action.payload.postId]: {
-                        isLoadingPreviousComments: false,
-                        isCreatingComment: false,
-                        likeStatus: undefined,
-                        isUploading: true
-                    }
-                },
-                entities: {
-                    ...state.entities,
-                    [action.payload.postId]: {
-                        likeStatus: undefined,
-                        likesCount: 0,
-                        dislikesCount: 0,
-                        commentsCount: 0,
-                        comments: [],
-                        createdAt: new Date().getTime(),
-                        id: action.payload.postId,
-                        text: action.payload.text,
-                        images: [],
-                        previewImages: action.payload.imageFiles.map((imgFile) => (imgFile)),
-                        userId: action.payload.userId
-                    }
-                }
-            };
-        case CREATE_POST_SUCCESS:
-            return {
-                ...state,
-                entities: {
-                    ...state.entities,
-                    [action.postCreated.id]: action.postCreated
-                },
-                metas: {
-                    ...state.metas,
-                    [action.postCreated.id]: {
-                        ...state.metas[action.postCreated.id],
-                        isUploading: false
-                    }
-                }
-            };
-        case LOAD_POSTS_SUCCESS:
-            return {
-                ...state,
-                entities: {
-                    ...state.entities,
-                    ...action.payload.posts
-                }
-            };
-        case CREATE_COMMENT_REQUEST:
-            return {
-                ...state,
-                metas: {
-                    ...state.metas,
-                    [action.postId]: {
-                        ...state.metas[action.postId],
-                        isCreatingComment: true
-                    }
-                }
-            };
-        case CREATE_COMMENT_SUCCESS:
-            return {
-                ...state,
-                entities: {
-                    ...state.entities,
-                    [action.comment.postId]: {
-                        ...state.entities[action.comment.postId],
-                        comments: [...state.entities[action.comment.postId].comments, action.comment.id],
-                        commentsCount: state.entities[action.comment.postId].commentsCount + 1
-                    }
-                },
-                metas: {
-                    ...state.metas,
-                    [action.comment.postId]: {
-                        ...state.metas[action.comment.postId],
-                        isCreatingComment: false
-                    }
-                }
-            };
-        case CREATE_COMMENT_ERROR:
-            return {
-                ...state,
-                metas: {
-                    ...state.metas,
-                    [action.postId]: {
-                        ...state.metas[action.postId],
-                        isCreatingComment: false
-                    }
-                } // need to update errors as well with some error message
-            };
-        case LOAD_COMMENTS_REQUEST:
-            return {
-                ...state,
-                metas: {
-                    ...state.metas,
-                    [action.postId]: {
-                        ...state.metas[action.postId],
-                        isLoadingPreviousComments: true
-                    }
-                }
-            };
-        case LOAD_COMMENTS_ERROR:
-            return {
-                ...state,
-                metas: {
-                    ...state.metas,
-                    [action.postId]: {
-                        ...state.metas[action.postId],
-                        isLoadingPreviousComments: false
-                    }
-                }// need to update errors as well with some error message
-            };
-        case LOAD_COMMENTS_SUCCESS:
-            return {
-                ...state,
-                entities: {
-                    ...state.entities,
-                    [action.payload.postId]: {
-                        ...state.entities[action.payload.postId],
-                        comments: [...action.payload.newCommentsIds, ...state.entities[action.payload.postId].comments]
-                    }
-                },
-                metas: {
-                    ...state.metas,
-                    [action.payload.postId]: {
-                        ...state.metas[action.payload.postId],
-                        isLoadingPreviousComments: false
-                    }
-                }
-            };
-        default:
-            return state;
+            typeInteraction: 'like' | 'unlike' | 'dislike' | 'undislike';
+        }>) => {
+            state.entities[action.payload.post.id] = {
+                ...state.entities[action.payload.post.id],
+                likeStatus: (action.payload.typeInteraction === "like" || action.payload.typeInteraction === "dislike") ? action.payload.typeInteraction : undefined,
+                likesCount: action.payload.post.likesCount,
+                dislikesCount: action.payload.post.dislikesCount
+            }
+        },
+        interactPostError: (state, action: PayloadAction<{ postId: string; typeInteraction: string }>) => {
+            state.metas[action.payload.postId] = {
+                ...state.metas[action.payload.postId],
+                likeStatus: undefined
+            }
+        },
+        createPostRequest: (state, action: PayloadAction<{
+            postId: string;
+            text: string;
+            imageFiles: Array<File>;
+            userId: string;
+        }>) => {
+            state.metas[action.payload.postId] = {
+                isLoadingPreviousComments: false,
+                isCreatingComment: false,
+                likeStatus: undefined,
+                isUploading: true
+            }
+            state.entities[action.payload.postId] = {
+                likeStatus: undefined,
+                likesCount: 0,
+                dislikesCount: 0,
+                commentsCount: 0,
+                comments: [],
+                createdAt: new Date().getTime(),
+                id: action.payload.postId,
+                text: action.payload.text,
+                images: [],
+                previewImages: action.payload.imageFiles.map((imgFile) => (imgFile)),
+                userId: action.payload.userId
+            }
+        },
+        createPostSuccess: (state, action: PayloadAction<{ postCreated: PostObject }>) => {
+            state.entities[action.payload.postCreated.id] = action.payload.postCreated
+            state.metas[action.payload.postCreated.id] = {
+                ...state.metas[action.payload.postCreated.id],
+                isUploading: false
+            }
+        },
+        createPostError: (state, action: PayloadAction<{ error: string }>) => {
+
+        }
+    },
+    extraReducers: builder => {
+        builder.addCase(loadCommentsSuccess, (state, action) => {
+            state.entities[action.payload.postId] = {
+                ...state.entities[action.payload.postId],
+                comments: [...action.payload.newCommentsIds, ...state.entities[action.payload.postId].comments]
+            }
+            state.metas[action.payload.postId] = {
+                ...state.metas[action.payload.postId],
+                isLoadingPreviousComments: false
+            }
+        }).addCase(loadCommentsError, (state, action) => {
+            state.metas[action.payload.postId] = {
+                ...state.metas[action.payload.postId],
+                isLoadingPreviousComments: false
+            }
+        }).addCase(loadCommentsRequest, (state, action) => {
+            state.metas[action.payload.postId] = {
+                ...state.metas[action.payload.postId],
+                isLoadingPreviousComments: true
+            }
+        }).addCase(createCommentRequest, (state, action) => {
+            state.metas[action.payload.postId] = {
+                ...state.metas[action.payload.postId],
+                isCreatingComment: true
+            }
+        }).addCase(createCommentError, (state, action) => {
+            state.metas[action.payload.postId] = {
+                ...state.metas[action.payload.postId],
+                isCreatingComment: false
+            }
+        }).addCase(createCommentSuccess, (state, action) => {
+            state.entities[action.payload.comment.postId] = {
+                ...state.entities[action.payload.comment.postId],
+                comments: [...state.entities[action.payload.comment.postId].comments, action.payload.comment.id],
+                commentsCount: state.entities[action.payload.comment.postId].commentsCount + 1
+            }
+            state.metas[action.payload.comment.postId] = {
+                ...state.metas[action.payload.comment.postId],
+                isCreatingComment: false
+            }
+        })
     }
-};
+})
+
+
+export const postsReducer = postsSlice.reducer
+export const postActions = postsSlice.actions
 
 const selectPostObject = (state: AppState, postId: string) => {
     return state.entities.posts.entities[postId];

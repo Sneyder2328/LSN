@@ -33,6 +33,30 @@ function createPost(postId, userId, type, text, images) {
     });
 }
 exports.createPost = createPost;
+exports.processPosts = (posts, userId) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('processPosts', posts, userId);
+    const postLikeStatusList = (yield Promise.all(posts.map(post => fetchPostLikeStatus(post.id, userId)))).filter(it => it != null);
+    console.log('postLikeStatusList', postLikeStatusList);
+    const commentLikeStatusList = (yield Promise.all(posts.map(post => post.comments.map(comment => comment.id))
+        .filter(it => it.lenght !== 0)
+        .flat()
+        .map(commentId => commentService_1.fetchCommentLikeStatus(commentId, userId)))).filter(it => it != null);
+    console.log('commentLikeStatusList', commentLikeStatusList);
+    // posts = posts.map(post => post.toJSON()).map(post => {
+    posts = posts.map(post => {
+        const postLikeStatus = postLikeStatusList.find((postLike) => postLike.postId === post.id);
+        return Object.assign(Object.assign({}, post), { likeStatus: postLikeStatus != null ? (postLikeStatus.isLike === true ? 'like' : 'dislike') : undefined, comments: post.comments.map(comment => {
+                const commentLikeStatus = commentLikeStatusList.find((commentLike) => commentLike.commentId === comment.id);
+                comment.likeStatus = commentLikeStatus != null ? (commentLikeStatus.isLike === true ? 'like' : 'dislike') : undefined;
+                comment.authorProfile = comment.Profile;
+                delete comment.Profile;
+                console.log('new comment after edit', comment);
+                return comment;
+            }).sort(utils_1.compareByDateDesc) });
+    }).sort(utils_1.compareByDateAsc);
+    console.log('now posts returning ', posts[0].comments);
+    return posts;
+});
 function getPosts(userId) {
     return __awaiter(this, void 0, void 0, function* () {
         let posts = yield Post.findAll({
@@ -55,23 +79,8 @@ function getPosts(userId) {
                 }
             ]
         });
-        const postLikeStatusList = (yield Promise.all(posts.map(post => fetchPostLikeStatus(post.id, userId)))).filter(it => it != null);
-        //console.log('postLikeStatusList', postLikeStatusList);
-        const commentLikeStatusList = (yield Promise.all(posts.map(post => post.comments.map(comment => comment.id))
-            .filter(it => it.lenght !== 0)
-            .flat()
-            .map(commentId => commentService_1.fetchCommentLikeStatus(commentId, userId)))).filter(it => it != null);
-        //    console.log('commentLikeStatusList', commentLikeStatusList);
-        posts = posts.map(post => post.toJSON()).map(post => {
-            const postLikeStatus = postLikeStatusList.find((postLike) => postLike.postId === post.id);
-            return Object.assign(Object.assign({}, post), { likeStatus: postLikeStatus != null ? (postLikeStatus.isLike === true ? 'like' : 'dislike') : undefined, comments: post.comments.map(comment => {
-                    const commentLikeStatus = commentLikeStatusList.find((commentLike) => commentLike.commentId === comment.id);
-                    comment.likeStatus = commentLikeStatus != null ? (commentLikeStatus.isLike === true ? 'like' : 'dislike') : undefined;
-                    comment.authorProfile = comment.Profile;
-                    delete comment.Profile;
-                    return comment;
-                }).sort(utils_1.compareByDateDesc) });
-        }).sort(utils_1.compareByDateAsc);
+        posts = posts.map(post => post.toJSON());
+        posts = yield exports.processPosts(posts, userId);
         if (!posts)
             return [];
         return posts;

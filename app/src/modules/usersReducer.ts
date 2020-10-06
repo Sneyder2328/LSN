@@ -44,3 +44,4 @@ const persistConfig = {
 };
 
 export const usersReducer = persistReducer(persistConfig, usersSlice.reducer)
+export const usersActions = usersSlice.actions

@@ -1,13 +1,13 @@
 import React from "react";
 import {StyleSheet, Text, View} from "react-native";
 import {useDispatch, useSelector} from "react-redux";
-import {MyAppState} from "../reducers/rootReducer";
 import {InteractionItem} from "./InteractionItem";
 import {AntDesign} from "@expo/vector-icons";
 import {COLOR_PRIMARY, COLOR_PRIMARY_LIGHT2} from "../constants/Colors";
 import {useTimeSincePublished} from "../hooks/updateRelativeTimeHook";
-import {dislikeComment, likeComment} from "../actions/commentActions";
 import {ProfilePic} from "./ProfilePic";
+import {MyAppState} from "../modules/rootReducer";
+import {dislikeComment, likeComment} from "../modules/Comment/commentActions";
 
 export const Comment: React.FC<{ commentId: string }> = ({commentId}) => {
     const dispatch = useDispatch()

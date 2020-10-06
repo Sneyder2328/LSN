@@ -1,10 +1,11 @@
-import {HashTable, ImageFile} from "../utils/utils";
+
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import AsyncStorage from "@react-native-community/async-storage";
 import {persistReducer} from "redux-persist";
-import {commentsSlice} from "./commentsReducer";
+import {commentsActions} from "../Comment/commentsReducer";
+import {HashTable, ImageFile} from "../../utils/utils";
 
-const {loadCommentsSuccess, loadCommentsError, loadCommentsRequest, createCommentError, createCommentRequest, createCommentSuccess} = commentsSlice.actions
+const {loadCommentsSuccess, loadCommentsError, loadCommentsRequest, createCommentError, createCommentRequest, createCommentSuccess} = commentsActions
 
 export type PostImage = {
     url: string;
@@ -20,7 +21,7 @@ export interface PostObject {
     createdAt: any;
     comments: Array<string>;
     images: Array<PostImage>;
-    previewImages?: Array<File>;
+    previewImages?: Array<{ uri: string }>;
     likeStatus: 'like' | 'dislike' | undefined;
 }
 
@@ -52,6 +53,12 @@ export const postsSlice = createSlice({
     name: "posts",
     initialState: initialPostsState,
     reducers: {
+        setPosts: (state, action: PayloadAction<HashTable<PostObject>>) => {
+            state.entities = {
+                ...state.entities,
+                ...action.payload
+            }
+        },
         loadPostsRequest: (state, action: PayloadAction<{ section: 'top' | 'latest'; }>) => {
 
         },
@@ -117,7 +124,7 @@ export const postsSlice = createSlice({
                 id: action.payload.postId,
                 text: action.payload.text,
                 images: [],
-                // previewImages: action.payload.imageFiles.map((imgFile) => (imgFile)),
+                previewImages: action.payload.imageFiles.map((imgFile) => ({uri: imgFile.uri})),
                 userId: action.payload.userId
             }
         },
@@ -182,3 +189,4 @@ const persistConfig = {
 };
 
 export const postsReducer = persistReducer(persistConfig, postsSlice.reducer);
+export const postActions = postsSlice.actions

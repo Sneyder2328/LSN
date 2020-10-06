@@ -11,7 +11,7 @@ import {getTokens, removeTokens, isTokenExpired} from "../utils/tokensManager";
 import {removeAuthTokenHeaders, setAccessTokenHeaders} from "../utils/setAccessTokenHeaders";
 import {loggedOut, setCurrentUser} from "./Auth/authActions";
 import {ONE_WEEK_IN_MILLIS} from "../utils/constants";
-import UserProfilePage from "./UserProfilePage/UserProfilePage";
+import {UserProfilePage} from "./UserProfilePage/UserProfilePage";
 
 const {accessToken, refreshToken, dateRefreshTokenIssued} = getTokens();
 const tokensExist = accessToken && refreshToken && dateRefreshTokenIssued;

@@ -118,7 +118,7 @@ const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComment
                      src={postResponse.authorProfile.profilePhotoUrl || 'https://miro.medium.com/max/280/1*MccriYX-ciBniUzRKAUsAw.png'}
                      alt='post pic'/>
                 <div>
-                    <p className='fullname'>{postResponse.authorProfile.fullname}</p>
+                    <a className='fullname' href={`/${postResponse.authorProfile.username}`}><p>{postResponse.authorProfile.fullname}</p></a>
                     <p className='username'>@{postResponse.authorProfile.username}</p>
                     <p className='time-published'>{timeSincePublished}</p>
                 </div>

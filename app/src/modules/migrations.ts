@@ -1,4 +1,4 @@
-import {MyAppState} from "./mainReducer";
+import {MyAppState} from "./rootReducer";
 
 export const migrations = {
     0: (state: MyAppState) => {

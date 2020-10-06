@@ -10,3 +10,8 @@ export const post = new schema.Entity('posts', {
     authorProfile: user,
     comments: [comment]
 });
+export const profile = new schema.Entity('profile', {
+    posts: [post]
+},{
+    idAttribute: "userId"
+})

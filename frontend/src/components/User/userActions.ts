@@ -1,17 +1,9 @@
-import {HashTable} from "../../utils/utils";
-import {UserActions, UserObject} from "./userReducer";
-import {SET_USERS} from "../../actions/types";
-import {Actions} from "../../reducers";
+import {UserObject, usersActions} from "./userReducer";
 import {UserApi} from "./userApi";
+import {AppThunk} from "../../store";
+const {setUsers} = usersActions
 
-export const setUsers = (users: HashTable<UserObject>): UserActions => {
-    return {
-        type: SET_USERS,
-        users
-    };
-};
-
-export const getUserBasicInfo = (userId: string) => async (dispatch: (actions: Actions) => any) => {
+export const getUserBasicInfo = (userId: string): AppThunk => async (dispatch) => {
     const response = await UserApi.getUserProfile(userId);
     const user = response.data as UserObject;
     dispatch(setUsers({
@@ -19,7 +11,7 @@ export const getUserBasicInfo = (userId: string) => async (dispatch: (actions: A
     }));
 };
 
-export const getProfileDataWithPosts = (userId: string) => async (dispatch: (actions: Actions) => any) => {
+export const getProfileDataWithPosts = (userId: string): AppThunk => async (dispatch) => {
     const response = await UserApi.getUserProfile(userId);
     const user = response.data as UserObject;
     dispatch(setUsers({

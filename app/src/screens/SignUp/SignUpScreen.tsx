@@ -3,10 +3,10 @@ import React, {useEffect, useState} from "react";
 import {Button, TextInput, useTheme} from "react-native-paper";
 import {FORM_FONT_SIZE} from "../../constants/Colors";
 import {useDispatch, useSelector} from "react-redux";
-import {MyAppState} from "../../reducers/rootReducer";
-import {signUpUser} from "../../actions/authActions";
 import {FieldErrors, useForm} from 'react-hook-form'
 import {FullOverlay} from "../../components/FullOverlay";
+import {MyAppState} from "../../modules/rootReducer";
+import {signUpUser} from "../../modules/Auth/authActions";
 
 type SignUpFormParams = { username: string, password: string, email: string, fullname: string };
 
@@ -19,7 +19,7 @@ export const SignUpScreen = ({navigation}: { navigation: any }) => {
     const dispatch = useDispatch()
     const {colors} = useTheme();
 
-    const {register, handleSubmit, setValue} = useForm< SignUpFormParams>()
+    const {register, handleSubmit, setValue} = useForm<SignUpFormParams>()
 
     useEffect(() => {
         console.log("SignUpScreen isAuthenticated", auth.isAuthenticated);
@@ -77,13 +77,16 @@ export const SignUpScreen = ({navigation}: { navigation: any }) => {
 
     return (<ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>LSN</Text>
-        <TextInput style={styles.input} mode='outlined' label="Full name" placeholder={'Full name'}
-                   value={fullname} onChangeText={setFullname}/>
-        <TextInput style={styles.input} mode='outlined' label="Username" placeholder={'Username'}
-                   value={username} onChangeText={setUsername}/>
-        <TextInput style={styles.input} mode='outlined' label="Email" placeholder={'Email'}
-                   value={email} onChangeText={setEmail}/>
-        <TextInput style={styles.input} mode='outlined' label="Password"
+        <TextInput style={styles.input} mode='outlined' label="Full name" placeholder={'Full name'} autoCorrect={false}
+                   value={fullname} onChangeText={setFullname} returnKeyType={'next'} autoCapitalize={'words'}/>
+        <TextInput style={styles.input} mode='outlined' label="Username" placeholder={'Username'} autoCorrect={false}
+                   value={username} onChangeText={setUsername} returnKeyType={'next'} autoCapitalize={'none'}
+                   autoCompleteType={'username'}/>
+        <TextInput style={styles.input} mode='outlined' label="Email" placeholder={'Email'} autoCorrect={false}
+                   value={email} onChangeText={setEmail} returnKeyType={'next'} autoCapitalize={'none'}
+                   keyboardType={'email-address'} autoCompleteType={'email'}/>
+        <TextInput style={styles.input} mode='outlined' label="Password" returnKeyType={'send'}
+                   autoCapitalize={'none'} autoCorrect={false} autoCompleteType={'password'}
                    secureTextEntry={true} placeholder={'Password'}
                    value={password} onChangeText={setPassword}/>
         <Button style={styles.btn} mode="contained" color={auth.isSigningUp ? colors.disabled : colors.accent}

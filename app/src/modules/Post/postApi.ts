@@ -1,12 +1,5 @@
-import {transport} from "./index";
-import {PostRequest} from "../reducers/postsReducer";
-import {Platform} from "react-native";
-
-const options = {
-    maxSizeMB: 2,
-    maxWidthOrHeight: 960,
-    useWebWorker: true
-};
+import {transport} from "../api";
+import {PostRequest} from "./postsReducer";
 
 export const PostApi = {
     async createPost(content: PostRequest) {

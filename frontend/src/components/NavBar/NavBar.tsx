@@ -11,7 +11,7 @@ const NavBar: React.FC<{ isLoggingOut: boolean; logOutUser: () => any }> = ({isL
         <div className='nav-container'>
             <div className='nav-bar'>
                 <div className='news-feed-type'>
-                    <ul className='selected'><a href='#'>Top</a></ul>
+                    <ul className='selected'><a href='/'>Top</a></ul>
                     <ul><a href='#'>Latest</a></ul>
                 </div>
                 <div className='logo-container'>

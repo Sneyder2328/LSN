@@ -1,7 +1,7 @@
 import {persistReducer} from "redux-persist";
 import AsyncStorage from "@react-native-community/async-storage";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {HashTable} from "../utils/utils";
+import {HashTable} from "../../utils/utils";
 
 export interface CommentObject {
     id: string;
@@ -95,3 +95,4 @@ const persistConfig = {
 };
 
 export const commentsReducer = persistReducer(persistConfig, commentsSlice.reducer)
+export const commentsActions = commentsSlice.actions

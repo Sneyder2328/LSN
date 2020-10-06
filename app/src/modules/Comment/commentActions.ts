@@ -1,14 +1,14 @@
 import {normalize} from "normalizr";
-import {CommentApi, CommentRequest} from "../api/commentApi";
-import {AppThunk} from "../store";
+import {CommentObject, commentsActions} from "./commentsReducer";
+import {CommentApi, CommentRequest} from "./commentApi";
+import {AppThunk} from "../../store";
 import {comment} from "../api/schema";
-import {CommentObject, commentsSlice} from "../reducers/commentsReducer";
 
 const {
-    createCommentRequest, createCommentError, loadCommentsRequest, setComments,
+    createCommentRequest, createCommentError, loadCommentsRequest,
     createCommentSuccess, loadCommentsError, loadCommentsSuccess, interactCommentError,
     interactCommentRequest, interactCommentSuccess
-} = commentsSlice.actions
+} = commentsActions
 
 export const createComment = (commentData: CommentRequest): AppThunk => async (dispatch) => {
     try {
@@ -16,7 +16,6 @@ export const createComment = (commentData: CommentRequest): AppThunk => async (d
         const response = await CommentApi.createComment(commentData);
         const normalizedData = normalize(response.data, comment);
         console.log('createComment normalizedData=', normalizedData);
-
         // @ts-ignore
         dispatch(createCommentSuccess({comment: normalizedData.entities['comments'][commentData.id] as CommentObject}));
     } catch (err) {

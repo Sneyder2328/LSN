@@ -81,3 +81,4 @@ const persistConfig = {
 };
 
 export const authReducer = persistReducer(persistConfig, authSlice.reducer);
+export const authActions = authSlice.actions

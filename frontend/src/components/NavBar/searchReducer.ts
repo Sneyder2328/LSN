@@ -1,6 +1,5 @@
 import {HashTable, HashTableArray} from "../../utils/utils";
-import {Actions} from "../../reducers";
-import {SEARCH_USER_REQUEST, SEARCH_USER_SUCCESS} from "../../actions/types";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 export type UserSearch = {
     userId: string;
@@ -14,53 +13,39 @@ export type SearchState = {
     isSearching: boolean;
 };
 
-type SearchUserRequest = {
-    type: 'SEARCH_USER_REQUEST'
-};
-
-type SearchUserSuccess = {
-    type: 'SEARCH_USER_SUCCESS';
-    payload: {
-        users: HashTable<UserSearch>;
-        query: string;
-        queryResults: Array<string>;
-    }
-};
-
-type SearchUserError = {
-    type: 'SEARCH_USER_ERROR'
-};
-
-export type SearchActions =
-    SearchUserRequest
-    | SearchUserSuccess
-    | SearchUserError;
-
 const initialSearchState: SearchState = {
     users: {},
     queries: {},
     isSearching: false
 };
-export const searchReducer = (state: SearchState = initialSearchState, action: Actions): SearchState => {
-    switch (action.type) {
-        case SEARCH_USER_REQUEST:
-            return {
-                ...state,
-                isSearching: true
-            };
-        case SEARCH_USER_SUCCESS:
-            return {
-                isSearching: false,
-                queries: {
-                    ...state.queries,
-                    [action.payload.query]: action.payload.queryResults
-                },
-                users: {
-                    ...state.users,
-                    ...action.payload.users
-                }
-            };
-        default:
-            return state;
+
+export const searchSlice = createSlice({
+    name: 'search',
+    initialState: initialSearchState,
+    reducers: {
+        searchUserRequest: (state) => {
+            state.isSearching = true
+        },
+        searchUserSuccess: (state, action: PayloadAction<{
+            users: HashTable<UserSearch>;
+            query: string;
+            queryResults: Array<string>;
+        }>) => {
+            state.isSearching = false
+            state.queries = {
+                ...state.queries,
+                [action.payload.query]: action.payload.queryResults
+            }
+            state.users = {
+                ...state.users,
+                ...action.payload.users
+            }
+        },
+        searchUserError: (state) => {
+            state.isSearching = false
+        }
     }
-};
+})
+
+export const searchReducer = searchSlice.reducer
+export const searchActions = searchSlice.actions

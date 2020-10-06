@@ -1,16 +1,16 @@
 import React, {useEffect, useState} from "react";
-import {Alert, FlatList, Image, Platform, StyleSheet, TextInput, TouchableOpacity, View} from "react-native";
+import {FlatList, Platform, StyleSheet, TextInput, TouchableOpacity, View} from "react-native";
 import {ProfilePic} from "../../../components/ProfilePic";
 import {useDispatch, useSelector} from "react-redux";
-import {MyAppState} from "../../../reducers/rootReducer";
 import {useNavigation} from "@react-navigation/native";
 import {FontAwesome5} from '@expo/vector-icons';
 import {PostButton} from "../../../components/PostButton";
-import {createPost} from "../../../actions/postsActions";
 import {genUUID, ImageFile} from "../../../utils/utils";
 import * as ImagePicker from 'expo-image-picker';
 import {COLOR_PRIMARY} from "../../../constants/Colors";
 import {PreviewImage} from "../../../components/PreviewImage";
+import {MyAppState} from "../../../modules/rootReducer";
+import {createPost} from "../../../modules/Post/postsActions";
 
 const optionsForImage = {
     allowsEditing: true,

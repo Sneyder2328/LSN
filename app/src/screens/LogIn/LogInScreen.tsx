@@ -3,9 +3,9 @@ import React, {useEffect, useState} from "react";
 import {Button, TextInput, useTheme} from "react-native-paper";
 import {useDispatch, useSelector} from "react-redux";
 import {FullOverlay} from "../../components/FullOverlay";
-import {logInUser} from "../../actions/authActions";
 import {FORM_FONT_SIZE} from "../../constants/Colors";
-import {MyAppState} from "../../reducers/rootReducer";
+import {MyAppState} from "../../modules/rootReducer";
+import {logInUser} from "../../modules/Auth/authActions";
 
 export const LogInScreen = ({navigation}: { navigation: any }) => {
     const [username, setUsername] = useState<string>('')
@@ -28,7 +28,6 @@ export const LogInScreen = ({navigation}: { navigation: any }) => {
     }, [auth.logInError])
 
     const logIn = () => {
-        console.log('Log In Clicked', username, password)
         if (username.length === 0) {
             alert("Please enter your username")
             return
@@ -42,10 +41,12 @@ export const LogInScreen = ({navigation}: { navigation: any }) => {
 
     return (<ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>LSN</Text>
-        <TextInput style={styles.input} mode='outlined' placeholder={'Username'}
-                   label="Username" value={username} onChangeText={setUsername}/>
-        <TextInput style={styles.input} mode='outlined' placeholder={'Password'}
-                   secureTextEntry={true} label="Password" value={password} onChangeText={setPassword}/>
+        <TextInput style={styles.input} mode='outlined' placeholder={'Username'} autoCorrect={false}
+                   label="Username" value={username} onChangeText={setUsername}
+                   returnKeyType={'next'} autoCapitalize={'none'}/>
+        <TextInput style={styles.input} mode='outlined' placeholder={'Password'} autoCorrect={false}
+                   secureTextEntry={true} label="Password" value={password} onChangeText={setPassword}
+                   returnKeyType={'send'} autoCapitalize={'none'}/>
         <Button
             style={styles.btn} mode="contained" color={colors.accent}
             onPress={() => !auth.isLoggingIn && logIn()} loading={auth.isLoggingIn}>

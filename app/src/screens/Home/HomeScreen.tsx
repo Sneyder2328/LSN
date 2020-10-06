@@ -1,13 +1,13 @@
 import * as React from 'react';
 
 import {useSelector} from "react-redux";
-import {MyAppState} from "../../reducers/rootReducer";
 import {useEffect} from "react";
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs'
 import {NewsFeedNavigator} from "../NewsFeed/NewsFeedNavigator";
 import {SearchNavigator} from "../Search/SearchNavigator";
 import {useNavigation, useRoute} from "@react-navigation/native";
 import {MaterialIcons} from '@expo/vector-icons';
+import {MyAppState} from "../../modules/rootReducer";
 
 // export function getHeaderTitle(route: any) {
 //     // If the focused route is not found, we need to assume it's the initial screen

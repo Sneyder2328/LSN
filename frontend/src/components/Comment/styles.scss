@@ -1,79 +1,88 @@
 @import "src/utils/variables";
 
-.news-feed {
-  .comments-container {
-    margin-top: 6px;
-    padding: 0 2px;
-    border-left: 2px #61dafb solid;
+.comments-container {
+  margin-top: 6px;
+  padding: 0 2px;
+  border-left: 2px #61dafb solid;
 
-    .comment {
+  .comment {
+    display: flex;
+    padding: 4px 8px;
+
+    .avatar {
+      width: $thumbnailImgDimen+-8px;
+      height: $thumbnailImgDimen+-8px;
+      margin-right: 6px;
+      border-radius: 50%;
+    }
+
+    .comment-box {
+      width: 100%;
+    }
+
+    .fullname {
+      font-size: 0.87rem;
+      padding-top: 3px;
+      margin: 0;
+      text-decoration: none;
+      color: #000;
+
+      :hover {
+        text-decoration: underline;
+        color: #383838;
+      }
+
+      p {
+        margin: 0;
+        display: inline;
+      }
+    }
+
+    .username {
+      font-size: 0.84rem;
+      padding-top: 3px;
+      margin: 0 0 0 4px;
+      color: #9992a0;
+      display: inline;
+    }
+
+    .content {
+      margin: 0;
+      padding: 5px 0;
+      font-size: 0.9rem;
+    }
+
+    .interact-comment {
       display: flex;
-      padding: 4px 8px;
+      margin: 6px 0;
+      font-size: 1rem;
+      user-select: none;
 
-      .avatar {
-        width: $thumbnailImgDimen+-8px;
-        height: $thumbnailImgDimen+-8px;
-        margin-right: 6px;
-        border-radius: 50%;
+      span {
+        cursor: pointer;
+        color: $interactColor;
+        text-align: center;
+        margin: 0 6px;
+
+        i {
+          margin-right: 6px;
+        }
       }
 
-      .comment-box {
-        width: 100%;
+      span:hover {
+        color: $interactHoveredColor;
       }
 
-      .fullname {
-        font-size: 0.87rem;
-        padding-top: 3px;
-        margin: 0;
-        display: inline;
+      .selected {
+        color: $interactHoveredColor;
       }
 
-      .username {
-        font-size: 0.84rem;
-        padding-top: 3px;
-        margin: 0 0 0 4px;
+      .time-published {
+        font-size: 0.75rem;
         color: #9992a0;
-        display: inline;
-      }
-
-      .content {
-        margin: 0;
-        padding: 5px 0;
-        font-size: 0.9rem;
-      }
-
-      .interact-comment {
-        display: flex;
-        margin: 6px 0;
-        font-size: 1rem;
-        user-select: none;
-
-        span {
-          cursor: pointer;
-          color: $interactColor;
-          text-align: center;
-          margin: 0 6px;
-
-          i {
-            margin-right: 6px;
-          }
-        }
-
-        span:hover {
-          color: $interactHoveredColor;
-        }
-
-        .selected {
-          color: $interactHoveredColor;
-        }
-
-        .time-published {
-          font-size: 0.75rem;
-          color: #9992a0;
-          padding: 0;
-          margin: 3px 0 0 0;
-          display: block;
-        }
+        padding: 0;
+        margin: 3px 0 0 0;
+        display: block;
       }
     }
   }

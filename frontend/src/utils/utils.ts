@@ -1,4 +1,5 @@
 import uuid from "uuid";
+import {useEffect, useState} from "react";
 
 type HasDate = {
     createdAt: string;
@@ -38,3 +39,28 @@ export const readImgFileContent = (imgFile: ImageFile): Promise<ImageFile> => (n
     reader.addEventListener('error', reject);
     reader.readAsDataURL(imgFile.file);
 }));
+
+
+const getWindowDimensions = () => {
+    const { innerWidth: width, innerHeight: height } = window;
+    return {
+        width,
+        height
+    };
+};
+
+
+export const useWindowDimensions = () =>{
+    const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
+
+    useEffect(() => {
+        function handleResize() {
+            setWindowDimensions(getWindowDimensions());
+        }
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    return windowDimensions;
+}
