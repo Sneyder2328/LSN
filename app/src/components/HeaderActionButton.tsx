@@ -2,9 +2,10 @@ import {Text, TouchableHighlight} from "react-native";
 import React from "react";
 
 type Props = {
+    title: string;
     onPress: () => any;
 }
-export const PostButton: React.FC<Props> = ({onPress}) => {
+export const HeaderActionButton: React.FC<Props> = ({title, onPress}) => {
     return (<TouchableHighlight
         underlayColor={"#43bcfa"}
         onPress={onPress}
@@ -17,6 +18,6 @@ export const PostButton: React.FC<Props> = ({onPress}) => {
             color: '#fff',
             fontWeight: 'bold',
             fontSize: 19,
-        }}>POST</Text>
+        }}>{title}</Text>
     </TouchableHighlight>)
 }

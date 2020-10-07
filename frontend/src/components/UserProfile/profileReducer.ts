@@ -7,7 +7,6 @@ type Profile = {
 };
 export type ProfilesState = HashTable<Profile>;
 
-
 const initialProfilesState: ProfilesState = {};
 
 export const profilesSlice = createSlice({

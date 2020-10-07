@@ -27,6 +27,16 @@ router.get(endpoints_1.default.user.GET_PROFILE(':userIdentifier'), authenticate
     const user = userIdentifier.match(config_1.default.regex.uuidV4) ? yield userService_1.getProfileByUserId(userIdentifier, includePosts, req.userId) : yield userService_1.getProfileByUsername(userIdentifier, includePosts, req.userId);
     res.json(user);
 })));
+router.put(endpoints_1.default.user.UPDATE_PROFILE(':userId'), authenticate_1.default, validate_1.getProfileValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.params.userId;
+    if (req.userId !== userId) {
+        res.status(httpResponseCodes_1.default.FORBIDDEN).send({ error: "You cannot edit someone else's profile" });
+    }
+    else {
+        const user = yield userService_1.updateProfile(userId, req.body);
+        res.json(user);
+    }
+})));
 router.get(endpoints_1.default.user.SEARCH, authenticate_1.default, validate_1.searchUserValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const query = req.query.query;
     if (query.length < 2)

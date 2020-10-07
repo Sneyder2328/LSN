@@ -57,6 +57,14 @@ export async function getProfileByUserId(userId, includePosts: boolean, currentU
     return user;
 }
 
+export async function updateProfile(userId: string,
+                                    {
+                                        username, fullname, description,
+                                        profilePhotoUrl, coverPhotoUrl
+                                    }) {
+    return Profile.update({username, fullname, description, profilePhotoUrl, coverPhotoUrl}, {where: {userId}});
+}
+
 export async function searchUser(query: string) {
     return Profile.findAll({
         attributes: ['userId', 'username', 'fullname', 'profilePhotoUrl'],

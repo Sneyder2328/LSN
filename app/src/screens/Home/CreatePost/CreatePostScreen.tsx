@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from "react";
 import {FlatList, Platform, StyleSheet, TextInput, TouchableOpacity, View} from "react-native";
-import {ProfilePic} from "../../../components/ProfilePic";
+import {ProfilePhoto} from "../../../components/ProfilePhoto";
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigation} from "@react-navigation/native";
 import {FontAwesome5} from '@expo/vector-icons';
-import {PostButton} from "../../../components/PostButton";
+import {HeaderActionButton} from "../../../components/HeaderActionButton";
 import {genUUID, ImageFile} from "../../../utils/utils";
 import * as ImagePicker from 'expo-image-picker';
 import {COLOR_PRIMARY} from "../../../constants/Colors";
@@ -37,7 +37,7 @@ export const CreatePostScreen = () => {
 
     useEffect(() => {
         navigation.setOptions({
-            headerRight: () => (<PostButton onPress={() => {
+            headerRight: () => (<HeaderActionButton title={'POST'} onPress={() => {
                 console.log('post', imageFiles)
                 if (text.length === 0 && imageFiles.length === 0) return
                 dispatch(createPost({id: genUUID(), imageFiles, text, userId}))
@@ -99,7 +99,7 @@ export const CreatePostScreen = () => {
 
     return (<View style={styles.container}>
         <View style={styles.header}>
-            <ProfilePic user={currentUser} size={avatarDimens}/>
+            <ProfilePhoto profilePhotoUrl={currentUser.profilePhotoUrl} size={avatarDimens}/>
             <TextInput placeholder={"What's happening?"} style={styles.input} autoFocus={true}
                        multiline={true} onChangeText={setText} value={text}/>
         </View>

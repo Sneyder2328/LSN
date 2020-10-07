@@ -9,6 +9,7 @@ exports.default = {
     },
     user: {
         GET_PROFILE: (username) => `/users/${username}`,
+        UPDATE_PROFILE: (userId) => `/users/${userId}`,
         SEND_FRIEND_REQUEST: (receiverUserId) => `/users/${receiverUserId}/friends`,
         GET_FRIEND_REQUESTS: '/me/friends/incoming',
         RESPOND_TO_FRIEND_REQUEST: (senderUserId) => `/users/${senderUserId}/friends`,

@@ -30,7 +30,11 @@ export const fetchProfile = (userIdentifier: string, includePosts: boolean): any
         dispatch(setUsers(normalizedData.entities['users'] as HashTable<UserObject>));
         dispatch(setComments(comments))
         dispatch(setPosts(posts))
-        dispatch(fetchProfileSuccess({userId: profileObj.userId, postIds: profileObj.posts, username: profileObj.username}))
+        dispatch(fetchProfileSuccess({
+            userId: profileObj.userId,
+            postIds: profileObj.posts,
+            username: profileObj.username
+        }))
         delete profileObj.posts
         dispatch(setUser(profileObj))
     } catch (err) {

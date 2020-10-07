@@ -10,6 +10,7 @@ import {signUpUser} from "../../modules/Auth/authActions";
 
 type SignUpFormParams = { username: string, password: string, email: string, fullname: string };
 
+export const SignUpScreenName = "SignUpScreen"
 export const SignUpScreen = ({navigation}: { navigation: any }) => {
     const [username, setUsername] = useState<string>('')
     const [fullname, setFullname] = useState<string>('')

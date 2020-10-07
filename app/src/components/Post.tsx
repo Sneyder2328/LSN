@@ -9,7 +9,7 @@ import Image from 'react-native-scalable-image';
 import {COLOR_PRIMARY, COLOR_PRIMARY_LIGHT2} from "../constants/Colors";
 import {InteractionItem} from "./InteractionItem";
 import {useNavigation} from "@react-navigation/native";
-import {ProfilePic} from "./ProfilePic";
+import {ProfilePhoto} from "./ProfilePhoto";
 import {UserObject} from "../modules/usersReducer";
 import {MyAppState} from "../modules/rootReducer";
 import {PostMetadata} from "../modules/Post/postsReducer";
@@ -18,8 +18,9 @@ import {dislikePost, likePost} from "../modules/Post/postsActions";
 type Props = {
     postId: string;
     onProfilePressed: (user: UserObject) => any;
+    style?: any;
 };
-export const Post: React.FC<Props> = ({postId, onProfilePressed}) => {
+export const Post: React.FC<Props> = ({postId, onProfilePressed, style}) => {
     const dispatch = useDispatch()
     const navigation = useNavigation();
 
@@ -34,9 +35,9 @@ export const Post: React.FC<Props> = ({postId, onProfilePressed}) => {
 
     const postImages: Array<string> = post.images.length !== 0 ? post.images.map(value => value.url) : post.previewImages?.map((value) => value.uri) || []
 
-    return (<View style={styles.container}>
+    return (<View style={{...styles.container, ...style}}>
         <TouchableOpacity style={styles.header} onPress={() => onProfilePressed(postAuthor)} activeOpacity={0.7}>
-            <ProfilePic user={postAuthor} size={54}/>
+            <ProfilePhoto profilePhotoUrl={postAuthor.profilePhotoUrl} size={54}/>
             <View style={{marginLeft: 6}}>
                 <Text style={styles.username}>{postAuthor.fullname}</Text>
                 <Text style={styles.createdAt}>{timeSincePublished}</Text>

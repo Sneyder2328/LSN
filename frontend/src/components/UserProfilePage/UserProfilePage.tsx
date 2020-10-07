@@ -4,13 +4,10 @@ import {useDispatch, useSelector} from "react-redux";
 import {UserObject} from "../User/userReducer";
 import {fetchProfile} from "../UserProfile/profileActions";
 import {AppState} from "../../reducers";
-import {useWindowDimensions} from "../../utils/utils";
-// import styles from './styles/.'
 import styles from './styles.module.scss'
 import Post from "../Post/Post";
-// import * from "../../../public/ic_person"
 
-const aspectRatio = 2.7;
+// const aspectRatio = 2.7;
 
 type Props = {
     user: UserObject;
@@ -21,9 +18,6 @@ export const UserProfilePage: React.FC<Props> = ({user, match}) => {
     const {username} = params;
     const dispatch = useDispatch()
 
-    const {height, width} = useWindowDimensions();
-
-    const posts = useSelector((state: AppState) => state.entities.posts.entities)
     const users = useSelector((state: AppState) => state.entities.users.entities)
     const profiles = useSelector((state: AppState) => state.profiles)
 

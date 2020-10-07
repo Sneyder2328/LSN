@@ -7,6 +7,7 @@ import {FORM_FONT_SIZE} from "../../constants/Colors";
 import {MyAppState} from "../../modules/rootReducer";
 import {logInUser} from "../../modules/Auth/authActions";
 
+export const LogInScreenName = "LogInScreen"
 export const LogInScreen = ({navigation}: { navigation: any }) => {
     const [username, setUsername] = useState<string>('')
     const [password, setPassword] = useState<string>('')

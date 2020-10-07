@@ -1,6 +1,7 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import AsyncStorage from '@react-native-community/async-storage';
 import {persistReducer} from "redux-persist";
+import {UserObject} from "../usersReducer";
 
 export interface AuthState {
     accessToken?: string;
@@ -11,8 +12,10 @@ export interface AuthState {
     isSigningUp: boolean;
     isLoggingOut: boolean;
     userId?: string;
-    signUpError?: string; // new in version 0
+    signUpError?: string;
     logInError?: string;
+    isUpdatingProfile? : boolean;
+    updateProfileError?: string;
 }
 
 const initialAuthState: AuthState = {
@@ -70,6 +73,16 @@ export const authSlice = createSlice({
             //     ...state,
             //     isLoggingOut: false
             // };
+        },
+        updateProfileRequest: (state) => {
+            state.isUpdatingProfile = true
+        },
+        updateProfileSuccess: (state) => {
+            state.isUpdatingProfile = false
+        },
+        updateProfileError: (state, action: PayloadAction<string>) => {
+            state.isUpdatingProfile = false
+            state.updateProfileError = action.payload
         }
     }
 })

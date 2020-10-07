@@ -9,8 +9,8 @@ import {DefaultTheme as NavigationDefaultTheme} from "@react-navigation/native";
 import {Provider as PaperProvider, DefaultTheme as PaperDefaultTheme} from 'react-native-paper';
 import {Provider} from "react-redux";
 import {persistor, store} from "./src/store";
-import {AppNavigator} from "./src/components/AppNavigator";
 import {removeAuthTokenHeaders, setAccessTokenHeaders} from "./src/modules/api";
+import {AppNavigator} from "./src/screens/AppNavigator";
 
 // export default function App() {
 //     const isLoadingComplete = useCachedResources();

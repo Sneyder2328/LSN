@@ -1,35 +1,61 @@
-import React, {useEffect} from 'react';
-import {Image, StyleSheet, Text, useWindowDimensions, View} from "react-native";
-import {useRoute} from '@react-navigation/native';
-import {ProfilePic} from "../../components/ProfilePic";
-import {COLOR_PRIMARY, COLOR_TEXT_CAPTION} from "../../constants/Colors";
-import {useDispatch} from "react-redux";
+import React, {useEffect, useState} from 'react';
+import {FlatList, StyleSheet, Text, View} from "react-native";
+import {useNavigation, useRoute} from '@react-navigation/native';
+import {ProfilePhoto} from "../../components/ProfilePhoto";
+import {COLOR_ACCENT, COLOR_PRIMARY, COLOR_TEXT_CAPTION} from "../../constants/Colors";
+import {useDispatch, useSelector} from "react-redux";
 import {fetchProfile} from "../../modules/Profile/profilesActions";
 import {UserObject} from "../../modules/usersReducer";
+import {Post} from "../../components/Post";
+import {MyAppState} from "../../modules/rootReducer";
+import {CoverPhoto} from "../../components/CoverPhoto";
+import {Button} from "react-native-paper";
+import {EditProfileScreenName} from "../EditProfile/EditProfileScreen";
 
-const aspectRatio = 2.8;
 
 export const ProfileScreen = () => {
-    const width = useWindowDimensions().width
     const route = useRoute()
     const dispatch = useDispatch()
-
+    const navigation = useNavigation();
 
     // @ts-ignore
     const userProfile: UserObject = route.params.user
     console.log('userProfile', userProfile);
 
-    useEffect(()=>{
+    useEffect(() => {
         console.log('useEffect userProfile', userProfile);
         dispatch(fetchProfile(userProfile.username, true))
-    }, [userProfile])
+    }, [dispatch])
 
-    const coverPicSource = userProfile.coverPhotoUrl.length !== 0 ? {uri: userProfile.coverPhotoUrl} : {}
-    const profilePicSource = userProfile.profilePhotoUrl.length !== 0 ? {uri: userProfile.coverPhotoUrl} : {}
+    const currentUserId = useSelector((state: MyAppState) => state.auth.userId)
+    const postsByProfile = useSelector((state: MyAppState) => state.profiles)
+    const [postsIds, setPostsIds] = useState<Array<string>>([])
 
-    return (<View>
-        <Image source={coverPicSource} width={width} height={width / aspectRatio} style={{backgroundColor: COLOR_PRIMARY}}/>
-        <ProfilePic user={userProfile} size={84} styles={{marginTop: -36, marginLeft: 16}}/>
+    useEffect(() => {
+        const postsIdsLoaded = postsByProfile[userProfile.userId]?.postsIds;
+        if (postsIdsLoaded) {
+            console.log('setPostsIds', postsIdsLoaded);
+            setPostsIds(postsIdsLoaded)
+        }
+    }, [postsByProfile])
+
+    const handleProfilePressed = (user: UserObject) => navigation.navigate("UserProfile", {user})
+
+    const HeaderComponents = <>
+        <CoverPhoto coverPhotoUrl={userProfile.coverPhotoUrl}/>
+        <View style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginLeft: 12,
+            marginRight: 12,
+        }}>
+            <ProfilePhoto profilePhotoUrl={userProfile.profilePhotoUrl} size={86} styles={{marginTop: -36}}/>
+            {currentUserId === userProfile.userId &&
+            <Button mode="contained" onPress={() => navigation.navigate(EditProfileScreenName)} color={COLOR_ACCENT}
+                    style={{
+                        alignSelf: 'flex-end',
+                    }}>Edit profile</Button>}
+        </View>
         <View style={{marginLeft: 16, marginTop: 4}}>
             <Text style={styles.fullname}>
                 {userProfile.fullname}
@@ -40,10 +66,22 @@ export const ProfileScreen = () => {
             <Text style={styles.description}>
                 {userProfile.description}
             </Text>
-        </View>
+        </View></>;
+    return (<View style={styles.container}>
+        <FlatList style={styles.postsList} data={postsIds}
+                  renderItem={({item}) => (<Post
+                      postId={item}
+                      onProfilePressed={handleProfilePressed}
+                      style={{margin: 8}}/>)}
+                  keyExtractor={item => item} ListHeaderComponent={HeaderComponents}
+                  ListHeaderComponentStyle={{padding: 0}}/>
     </View>)
 }
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#e3f3ff'
+    },
     username: {
         fontSize: 15,
         color: COLOR_TEXT_CAPTION
@@ -53,5 +91,14 @@ const styles = StyleSheet.create({
     },
     description: {
         fontSize: 16
-    }
+    },
+    coverPhoto: {
+        backgroundColor: COLOR_PRIMARY
+    },
+    postsList: {
+        // backgroundColor: '#0f0',
+        // flex: 1,
+        // padding: 8,
+        marginBottom: 8,
+    },
 })

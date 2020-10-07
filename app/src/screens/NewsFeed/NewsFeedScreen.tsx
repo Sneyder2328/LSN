@@ -15,18 +15,12 @@ export const NewsFeedScreen = () => {
     const navigation = useNavigation();
 
     useEffect(() => {
-        console.log('fetching posts!!');
         dispatch(loadPosts());
     }, []);
-
-    useEffect(() => {
-        console.log('isLoadingPosts=', isLoadingPosts);
-    }, [])
 
     const handleProfilePressed = (user: UserObject) => {
         console.log('handleProfilePressed', user, navigation);
         navigation.navigate("UserProfile", {user})
-        // navigation.navigate("UserProfile")
     }
     return (
         <View style={styles.container}>

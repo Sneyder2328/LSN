@@ -1,4 +1,6 @@
 import {transport} from "../api";
+import {UserObject} from "../usersReducer";
+import {AxiosResponse} from "axios";
 
 export const AuthApi = {
     async signUp(userData: { username: string; fullname: string; password: string; email: string; }) {
@@ -27,5 +29,8 @@ export const AuthApi = {
     // },
     async logOut() {
         return await transport.delete('/sessions/')
+    },
+    async updateProfile(user: UserObject): Promise<AxiosResponse<UserObject>> {
+        return await transport.put(`/users/${user.userId}`, user)
     }
 };

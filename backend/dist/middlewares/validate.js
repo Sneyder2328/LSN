@@ -33,6 +33,19 @@ exports.getProfileValidationRules = [
         return value.match(config_1.default.regex.uuidV4) || value.match("^[a-zA-Z0-9]+$");
     }).withMessage("userIdentifier provided is not alphanumeric nor uuidV4")
 ];
+exports.updateProfileValidationRules = [
+    express_validator_1.param('userId').trim().escape().custom((value) => {
+        return value.match(config_1.default.regex.uuidV4) || value.match("^[a-zA-Z0-9]+$");
+    }).withMessage("userId provided is not uuidV4"),
+    express_validator_1.body('username').trim().escape()
+        .isAlphanumeric().withMessage('Username can only contain alphanumeric characters(A-Z, 0-9)')
+        .isLength({ min: 5 }).withMessage('Username must be at least 5 characters long'),
+    express_validator_1.body('fullname').customSanitizer(trimInside()).escape().isString()
+        .isLength({ min: 5 }).withMessage('Full name must be at least 5 characters long'),
+    express_validator_1.body('description').trim().isString().escape(),
+    express_validator_1.body('coverPhotoUrl').trim().isString().escape(),
+    express_validator_1.body('profilePhotoUrl').trim().isString().escape()
+];
 exports.searchUserValidationRules = [
     express_validator_1.query('query').isString().exists()
 ];

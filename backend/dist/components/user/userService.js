@@ -75,6 +75,12 @@ function getProfileByUserId(userId, includePosts, currentUserId) {
     });
 }
 exports.getProfileByUserId = getProfileByUserId;
+function updateProfile(userId, { username, fullname, description, profilePhotoUrl, coverPhotoUrl }) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return Profile.update({ username, fullname, description, profilePhotoUrl, coverPhotoUrl }, { where: { userId } });
+    });
+}
+exports.updateProfile = updateProfile;
 function searchUser(query) {
     return __awaiter(this, void 0, void 0, function* () {
         return Profile.findAll({

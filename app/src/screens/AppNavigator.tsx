@@ -1,17 +1,18 @@
-import {HomeMenu} from "./HomeMenu";
 import {NavigationContainer} from "@react-navigation/native";
 import React from "react";
 import {createStackNavigator} from "@react-navigation/stack";
-import {LogInScreen} from "../screens/LogIn/LogInScreen";
-import {SignUpScreen} from "../screens/SignUp/SignUpScreen";
-import {HomeScreen} from "../screens/Home/HomeScreen";
 import {useDispatch, useSelector} from "react-redux";
-import {FullOverlay} from "./FullOverlay";
-import {CreatePostScreen} from "../screens/Home/CreatePost/CreatePostScreen";
-import {PostDetail} from "../screens/PostDetail/PostDetail";
-import {ProfileScreen} from "../screens/ProfileScreen/ProfileScreen";
 import {MyAppState} from "../modules/rootReducer";
 import {logOutUser} from "../modules/Auth/authActions";
+import {EditProfileScreen, EditProfileScreenName} from "./EditProfile/EditProfileScreen";
+import {PostDetail} from "./PostDetail/PostDetail";
+import {ProfileScreen} from "./ProfileScreen/ProfileScreen";
+import {CreatePostScreen} from "./Home/CreatePost/CreatePostScreen";
+import {HomeMenu} from "../components/HomeMenu";
+import {HomeScreen} from "./Home/HomeScreen";
+import {LogInScreen} from "./LogIn/LogInScreen";
+import {SignUpScreen} from "./SignUp/SignUpScreen";
+import {FullOverlay} from "../components/FullOverlay";
 
 const Stack = createStackNavigator();
 
@@ -73,6 +74,13 @@ export const AppNavigator = ({theme}) => {
             <Stack.Screen
                 name="PostDetail"
                 component={PostDetail}/>
+            <Stack.Screen
+                name={EditProfileScreenName}
+                component={EditProfileScreen}
+                options={{
+                    title: 'Edit Profile',
+                    headerTransparent: true,
+                }}/>
         </Stack.Navigator>
         <FullOverlay isVisible={auth.isLoggingOut}/>
     </NavigationContainer>)

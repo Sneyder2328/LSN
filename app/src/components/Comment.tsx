@@ -5,7 +5,7 @@ import {InteractionItem} from "./InteractionItem";
 import {AntDesign} from "@expo/vector-icons";
 import {COLOR_PRIMARY, COLOR_PRIMARY_LIGHT2} from "../constants/Colors";
 import {useTimeSincePublished} from "../hooks/updateRelativeTimeHook";
-import {ProfilePic} from "./ProfilePic";
+import {ProfilePhoto} from "./ProfilePhoto";
 import {MyAppState} from "../modules/rootReducer";
 import {dislikeComment, likeComment} from "../modules/Comment/commentActions";
 
@@ -20,7 +20,7 @@ export const Comment: React.FC<{ commentId: string }> = ({commentId}) => {
     console.log('Comment=', commentId, comment, commentAuthor);
 
     return <View style={styles.container}>
-        <ProfilePic user={commentAuthor} size={48}/>
+        <ProfilePhoto profilePhotoUrl={commentAuthor.profilePhotoUrl} size={48}/>
         <View style={{marginLeft: 6, marginTop: 2}}>
             <Text style={styles.username}>{commentAuthor.fullname}</Text>
             <Text>{comment.text}</Text>

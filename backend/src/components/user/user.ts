@@ -5,7 +5,7 @@ import {
     getProfileByUsername,
     handleFriendRequest,
     searchUser,
-    sendFriendRequest
+    sendFriendRequest, updateProfile
 } from "./userService";
 import {
     acceptFriendRequestValidationRules,
@@ -26,6 +26,16 @@ router.get(endpoints.user.GET_PROFILE(':userIdentifier'), authenticate, getProfi
     const includePosts = req.query.includePosts == "true";
     const user = userIdentifier.match(config.regex.uuidV4) ? await getProfileByUserId(userIdentifier, includePosts, req.userId) : await getProfileByUsername(userIdentifier, includePosts, req.userId);
     res.json(user);
+}));
+
+router.put(endpoints.user.UPDATE_PROFILE(':userId'), authenticate, getProfileValidationRules, validate, handleErrorAsync(async (req, res) => {
+    const userId: string = req.params.userId;
+    if (req.userId !== userId) {
+        res.status(httpCodes.FORBIDDEN).send({error: "You cannot edit someone else's profile"});
+    } else {
+        const user = await updateProfile(userId, req.body)
+        res.json(user);
+    }
 }));
 
 router.get(endpoints.user.SEARCH, authenticate, searchUserValidationRules, validate, handleErrorAsync(async (req, res) => {

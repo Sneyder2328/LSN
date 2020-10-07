@@ -15,5 +15,5 @@ export const ProfileApi = {
      */
     async fetchProfile(userIdentifier: string, includePosts: boolean): Promise<AxiosResponse<ProfileResponse>> {
         return await transport.get(`/users/${userIdentifier}`, {params: {includePosts}})
-    },
+    }
 }

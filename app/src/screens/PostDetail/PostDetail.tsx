@@ -18,7 +18,7 @@ import {useTimeSincePublished} from "../../hooks/updateRelativeTimeHook";
 import Image from 'react-native-scalable-image';
 import {Comment} from "../../components/Comment";
 import {AddNewComment} from "../../components/AddNewComment";
-import {ProfilePic} from "../../components/ProfilePic";
+import {ProfilePhoto} from "../../components/ProfilePhoto";
 import {loadPreviousComments} from "../../modules/Comment/commentActions";
 import {MyAppState} from "../../modules/rootReducer";
 import {dislikePost, likePost} from "../../modules/Post/postsActions";
@@ -63,7 +63,7 @@ export const PostDetail = () => {
     }
 
     let HeaderComponents = <><View style={styles.header}>
-        <ProfilePic user={postAuthor} size={54}/>
+        <ProfilePhoto profilePhotoUrl={postAuthor.profilePhotoUrl} size={54}/>
         <View style={{marginLeft: 4}}>
             <Text style={styles.username}>{postAuthor.fullname}</Text>
             <Text style={styles.createdAt}>{timeSincePublished}</Text>

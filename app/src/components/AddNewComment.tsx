@@ -4,7 +4,7 @@ import {genUUID} from "../utils/utils";
 import {StyleSheet, TextInput, TouchableOpacity, View} from "react-native";
 import {MaterialIcons} from "@expo/vector-icons";
 import {COLOR_PRIMARY, COLOR_PRIMARY_LIGHT2} from "../constants/Colors";
-import {ProfilePic} from "./ProfilePic";
+import {ProfilePhoto} from "./ProfilePhoto";
 import {UserObject} from "../modules/usersReducer";
 import {PostObject} from "../modules/Post/postsReducer";
 import {CommentRequest} from "../modules/Comment/commentApi";
@@ -33,7 +33,7 @@ export const AddNewComment: React.FC<{ currentUser: UserObject; post: PostObject
     }
 
     return <View style={styles.container}>
-        <ProfilePic user={currentUser} size={48}/>
+        <ProfilePhoto profilePhotoUrl={currentUser.profilePhotoUrl} size={48}/>
         <View style={styles.commentBox}>
             <TextInput style={styles.inputComment} placeholder={'Write a comment...'} multiline={true}
                        onChangeText={setText} value={text} ref={inputRef}/>

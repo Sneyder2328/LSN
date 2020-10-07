@@ -5,6 +5,7 @@ import {postsReducer, PostState} from "./Post/postsReducer";
 import {newsFeedReducer, NewsFeedState} from "./NewsFeed/newsFeedReducer";
 import {usersReducer, UsersState} from "./usersReducer";
 import {commentsReducer, CommentsState} from "./Comment/commentsReducer";
+import {profilesReducer, ProfilesState} from "./Profile/profilesReducer";
 
 export interface MyAppState {
     auth: AuthState;
@@ -12,8 +13,9 @@ export interface MyAppState {
         posts: PostState;
         newsFeed: NewsFeedState;
         users: UsersState;
-        comments: CommentsState
-    }
+        comments: CommentsState;
+    },
+    profiles: ProfilesState;
 }
 
 export const rootReducer = combineReducers({
@@ -24,4 +26,5 @@ export const rootReducer = combineReducers({
         users: usersReducer,
         comments: commentsReducer,
     }),
+    profiles: profilesReducer
 });
