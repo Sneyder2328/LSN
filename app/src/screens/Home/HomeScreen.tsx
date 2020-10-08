@@ -23,8 +23,10 @@ export const getHeaderOptions = (route: any) => {
     const routeName = getFocusedRouteNameFromRoute(route) ?? 'NewsFeed';
     console.log('routeName=', routeName);
     switch (routeName) {
-        // case 'NewsFeed':
-        //     return 'News feed';
+        case 'MyProfile':
+            return {
+                title: 'My Profile'
+            };
         case 'Search':
             console.log('in Search');
             return {

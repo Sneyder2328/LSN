@@ -77,7 +77,8 @@ function getProfileByUserId(userId, includePosts, currentUserId) {
 exports.getProfileByUserId = getProfileByUserId;
 function updateProfile(userId, { username, fullname, description, profilePhotoUrl, coverPhotoUrl }) {
     return __awaiter(this, void 0, void 0, function* () {
-        return Profile.update({ username, fullname, description, profilePhotoUrl, coverPhotoUrl }, { where: { userId } });
+        yield Profile.update({ username, fullname, description, profilePhotoUrl, coverPhotoUrl }, { where: { userId } });
+        return yield Profile.findByPk(userId);
     });
 }
 exports.updateProfile = updateProfile;

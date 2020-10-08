@@ -61,7 +61,8 @@ export async function updateProfile(userId: string,
                                         username, fullname, description,
                                         profilePhotoUrl, coverPhotoUrl
                                     }) {
-    return Profile.update({username, fullname, description, profilePhotoUrl, coverPhotoUrl}, {where: {userId}});
+    await Profile.update({username, fullname, description, profilePhotoUrl, coverPhotoUrl}, {where: {userId}});
+    return await Profile.findByPk(userId)
 }
 
 export async function searchUser(query: string) {
