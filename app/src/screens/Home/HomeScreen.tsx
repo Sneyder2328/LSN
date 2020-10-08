@@ -4,29 +4,57 @@ import {useSelector} from "react-redux";
 import {useEffect} from "react";
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs'
 import {NewsFeedNavigator} from "../NewsFeed/NewsFeedNavigator";
-import {SearchNavigator} from "../Search/SearchNavigator";
-import {useNavigation, useRoute} from "@react-navigation/native";
+import {useNavigation, useRoute, getFocusedRouteNameFromRoute} from "@react-navigation/native";
 import {MaterialIcons} from '@expo/vector-icons';
 import {MyAppState} from "../../modules/rootReducer";
+import {ProfileScreen} from "../ProfileScreen/ProfileScreen";
+import {SearchScreen} from "../Search/SearchScreen";
+import {Searchbar, Appbar} from "react-native-paper";
+import {View, Text} from "react-native";
+import {HomeMenu} from "../../components/HomeMenu";
+import {logOutUser} from "../../modules/Auth/authActions";
+import {COLOR_PRIMARY, COLOR_PRIMARY_DARK} from "../../constants/Colors";
+import {SearchBar} from "../../components/SearchBar";
 
-// export function getHeaderTitle(route: any) {
-//     // If the focused route is not found, we need to assume it's the initial screen
-//     // This can happen during if there hasn't been any navigation inside the screen
-//     // In our case, it's "Feed" as that's the first screen inside the navigator
-//     const routeName = getFocusedRouteNameFromRoute(route) ?? 'NewsFeed';
-//
-//     switch (routeName) {
-//         case 'NewsFeed':
-//             return 'News feed';
-//         case 'Search':
-//             return 'Search';
-//     }
-// }
+export const getHeaderOptions = (route: any) => {
+    // If the focused route is not found, we need to assume it's the initial screen
+    // This can happen during if there hasn't been any navigation inside the screen
+    // In our case, it's "Feed" as that's the first screen inside the navigator
+    const routeName = getFocusedRouteNameFromRoute(route) ?? 'NewsFeed';
+    console.log('routeName=', routeName);
+    switch (routeName) {
+        // case 'NewsFeed':
+        //     return 'News feed';
+        case 'Search':
+            console.log('in Search');
+            return {
+                title: '',
+                header: () => {
+                    return (<View>
+                        <Appbar.Header>
+                            {/*<Appbar.Action icon="magnify" onPress={() => {}} />*/}
+                            {/*<Searchbar placeholder="Search" value={''} iconColor={'#fff'} style={{*/}
+                            {/*    backgroundColor: COLOR_PRIMARY,*/}
+                            {/*    flex: 1,*/}
+                            {/*    borderRadius: 22,*/}
+                            {/*    color: '#fff',*/}
+                            {/*}} inputStyle={{*/}
+                            {/*    color: '#ffffff',*/}
+                            {/*}} placeholderTextColor={'#efefef'}/>*/}
+                            <SearchBar/>
+                            <HomeMenu onPress={() => console.log('logout attempt')}/>
+                        </Appbar.Header>
+                    </View>)
+                },
+            }
+    }
+    return {}
+};
 
 const BottomTab = createMaterialTopTabNavigator<{
     NewsFeed: undefined;
     Search: undefined;
-    Profile: undefined;
+    MyProfile: undefined;
     Notifications: undefined;
 }>();
 
@@ -84,21 +112,23 @@ export const HomeScreen = () => {
             />
             <BottomTab.Screen
                 name="Search"
-                component={SearchNavigator}
+                component={SearchScreen}
                 options={{
+                    title: 'Search',
                     tabBarIcon: ({color}: { color: string }) => <TabBarIcon name="search" color={color}/>,
                 }}
             />
             <BottomTab.Screen
-                name="Profile"
-                component={SearchNavigator}
+                name="MyProfile"
+                component={ProfileScreen}
                 options={{
                     tabBarIcon: ({color}: { color: string }) => <TabBarIcon name="person" color={color}/>,
+                    title: '',
                 }}
             />
             <BottomTab.Screen
                 name="Notifications"
-                component={SearchNavigator}
+                component={SearchScreen}
                 options={{
                     tabBarIcon: ({color}: { color: string }) => <TabBarIcon name="notifications" color={color}/>,
                 }}

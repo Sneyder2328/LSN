@@ -11,7 +11,7 @@ import {
     acceptFriendRequestValidationRules,
     getFriendRequestValidationRules,
     getProfileValidationRules, searchUserValidationRules,
-    sendFriendRequestValidationRules, validate
+    sendFriendRequestValidationRules, updateProfileValidationRules, validate
 } from "../../middlewares/validate";
 import {handleErrorAsync} from "../../middlewares/handleErrorAsync";
 import authenticate from "../../middlewares/authenticate";
@@ -28,7 +28,7 @@ router.get(endpoints.user.GET_PROFILE(':userIdentifier'), authenticate, getProfi
     res.json(user);
 }));
 
-router.put(endpoints.user.UPDATE_PROFILE(':userId'), authenticate, getProfileValidationRules, validate, handleErrorAsync(async (req, res) => {
+router.put(endpoints.user.UPDATE_PROFILE(':userId'), authenticate, updateProfileValidationRules, validate, handleErrorAsync(async (req, res) => {
     const userId: string = req.params.userId;
     if (req.userId !== userId) {
         res.status(httpCodes.FORBIDDEN).send({error: "You cannot edit someone else's profile"});

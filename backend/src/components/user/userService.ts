@@ -2,7 +2,6 @@ import {models} from "../../database/database";
 import {UserNotFoundError} from "../../utils/errors/UserNotFoundError";
 import userRelationship from "../../utils/constants/userRelationship";
 import {Op} from "sequelize";
-import {compareByDateAsc} from "../../utils/utils";
 import {LIMIT_COMMENTS_PER_POST} from "../../utils/constants";
 import {processPosts} from "../post/postService";
 

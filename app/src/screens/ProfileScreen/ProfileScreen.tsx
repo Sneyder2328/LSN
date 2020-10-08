@@ -18,16 +18,18 @@ export const ProfileScreen = () => {
     const dispatch = useDispatch()
     const navigation = useNavigation();
 
+    const currentUserId = useSelector((state: MyAppState) => state.auth.userId)
+    const users = useSelector((state: MyAppState) => state.entities.users.entities)
     // @ts-ignore
-    const userProfile: UserObject = route.params.user
+    const userProfile: UserObject = route?.params?.user ? route.params.user : users[currentUserId]
     console.log('userProfile', userProfile);
+
 
     useEffect(() => {
         console.log('useEffect userProfile', userProfile);
         dispatch(fetchProfile(userProfile.username, true))
     }, [dispatch])
 
-    const currentUserId = useSelector((state: MyAppState) => state.auth.userId)
     const postsByProfile = useSelector((state: MyAppState) => state.profiles)
     const [postsIds, setPostsIds] = useState<Array<string>>([])
 

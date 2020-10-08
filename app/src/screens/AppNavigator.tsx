@@ -9,10 +9,11 @@ import {PostDetail} from "./PostDetail/PostDetail";
 import {ProfileScreen} from "./ProfileScreen/ProfileScreen";
 import {CreatePostScreen} from "./Home/CreatePost/CreatePostScreen";
 import {HomeMenu} from "../components/HomeMenu";
-import {HomeScreen} from "./Home/HomeScreen";
+import {getHeaderOptions, HomeScreen} from "./Home/HomeScreen";
 import {LogInScreen} from "./LogIn/LogInScreen";
 import {SignUpScreen} from "./SignUp/SignUpScreen";
 import {FullOverlay} from "../components/FullOverlay";
+import { Searchbar } from 'react-native-paper';
 
 const Stack = createStackNavigator();
 
@@ -45,11 +46,12 @@ export const AppNavigator = ({theme}) => {
             <Stack.Screen
                 name="Home"
                 component={HomeScreen}
-                options={(route) => ({
+                options={({route}) => ({
                     headerTintColor: '#fff',
                     // headerTitle: getHeaderTitle(route),
                     // title: 'LSN',
-                    headerRight: () => <HomeMenu onPress={() => dispatch(logOutUser())}/>
+                    headerRight: () => (<HomeMenu onPress={() => dispatch(logOutUser())}/>),
+                    ...getHeaderOptions(route),
                 })}/>
             <Stack.Screen
                 name="CreatePost"

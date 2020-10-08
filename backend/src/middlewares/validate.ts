@@ -35,9 +35,8 @@ export const getProfileValidationRules = [
 ];
 
 export const updateProfileValidationRules = [
-    param('userId').trim().escape().custom((value: string) => {
-        return value.match(config.regex.uuidV4) || value.match("^[a-zA-Z0-9]+$");
-    }).withMessage("userId provided is not uuidV4"),
+    param('userId').trim().escape().custom((value: string) => value.match(config.regex.uuidV4))
+        .withMessage("userId provided is not uuidV4"),
     body('username').trim().escape()
         .isAlphanumeric().withMessage('Username can only contain alphanumeric characters(A-Z, 0-9)')
         .isLength({min: 5}).withMessage('Username must be at least 5 characters long'),

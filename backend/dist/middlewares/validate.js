@@ -34,9 +34,8 @@ exports.getProfileValidationRules = [
     }).withMessage("userIdentifier provided is not alphanumeric nor uuidV4")
 ];
 exports.updateProfileValidationRules = [
-    express_validator_1.param('userId').trim().escape().custom((value) => {
-        return value.match(config_1.default.regex.uuidV4) || value.match("^[a-zA-Z0-9]+$");
-    }).withMessage("userId provided is not uuidV4"),
+    express_validator_1.param('userId').trim().escape().custom((value) => value.match(config_1.default.regex.uuidV4))
+        .withMessage("userId provided is not uuidV4"),
     express_validator_1.body('username').trim().escape()
         .isAlphanumeric().withMessage('Username can only contain alphanumeric characters(A-Z, 0-9)')
         .isLength({ min: 5 }).withMessage('Username must be at least 5 characters long'),

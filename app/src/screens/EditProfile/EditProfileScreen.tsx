@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {StyleSheet, Text, View} from "react-native";
+import {StyleSheet, View} from "react-native";
 import {ProfilePhoto} from "../../components/ProfilePhoto";
 import {useDispatch, useSelector} from "react-redux";
 import {MyAppState} from "../../modules/rootReducer";
