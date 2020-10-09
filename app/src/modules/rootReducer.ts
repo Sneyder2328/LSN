@@ -6,12 +6,14 @@ import {newsFeedReducer, NewsFeedState} from "./NewsFeed/newsFeedReducer";
 import {usersReducer, UsersState} from "./usersReducer";
 import {commentsReducer, CommentsState} from "./Comment/commentsReducer";
 import {profilesReducer, ProfilesState} from "./Profile/profilesReducer";
+import {searchReducer, SearchState} from "./Search/searchReducer";
 
 export interface MyAppState {
     auth: AuthState;
+    newsFeed: NewsFeedState;
+    search: SearchState;
     entities: {
         posts: PostState;
-        newsFeed: NewsFeedState;
         users: UsersState;
         comments: CommentsState;
     },
@@ -20,9 +22,10 @@ export interface MyAppState {
 
 export const rootReducer = combineReducers({
     auth: authReducer,
+    newsFeed: newsFeedReducer,
+    search: searchReducer,
     entities: combineReducers({
         posts: postsReducer,
-        newsFeed: newsFeedReducer,
         users: usersReducer,
         comments: commentsReducer,
     }),

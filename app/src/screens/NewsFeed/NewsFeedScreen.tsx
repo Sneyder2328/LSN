@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
-import {FAB} from 'react-native-paper'
+import {FAB} from 'react-native-paper';
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect} from "react";
 import {Post} from "../../components/Post";
@@ -10,7 +10,7 @@ import {UserObject} from "../../modules/usersReducer";
 import {MyAppState} from "../../modules/rootReducer";
 
 export const NewsFeedScreen = () => {
-    const {postIds, isLoadingPosts} = useSelector((state: MyAppState) => state.entities.newsFeed.latest)
+    const {postIds, isLoadingPosts} = useSelector((state: MyAppState) => state.newsFeed.latest)
     const dispatch = useDispatch()
     const navigation = useNavigation();
 

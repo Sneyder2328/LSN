@@ -1,7 +1,6 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import AsyncStorage from '@react-native-community/async-storage';
 import {persistReducer} from "redux-persist";
-import {UserObject} from "../usersReducer";
 
 export interface AuthState {
     accessToken?: string;
@@ -79,6 +78,7 @@ export const authSlice = createSlice({
         },
         updateProfileSuccess: (state) => {
             state.isUpdatingProfile = false
+            state.updateProfileError = undefined
         },
         updateProfileError: (state, action: PayloadAction<string>) => {
             state.isUpdatingProfile = false

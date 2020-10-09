@@ -1,10 +1,9 @@
 import {
     ActivityIndicator,
     Dimensions,
-    FlatList, ScrollView,
+    FlatList,
     StyleSheet,
     Text,
-    TextInput,
     TouchableHighlight,
     View
 } from "react-native";

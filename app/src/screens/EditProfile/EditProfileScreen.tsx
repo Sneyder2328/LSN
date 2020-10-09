@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {StyleSheet, View} from "react-native";
+import {Alert, StyleSheet, View} from "react-native";
 import {ProfilePhoto} from "../../components/ProfilePhoto";
 import {useDispatch, useSelector} from "react-redux";
 import {MyAppState} from "../../modules/rootReducer";
@@ -10,6 +10,13 @@ import {HeaderActionButton} from "../../components/HeaderActionButton";
 import {useNavigation} from "@react-navigation/native";
 import {updateProfile} from "../../modules/Auth/authActions";
 import {FullOverlay} from "../../components/FullOverlay";
+import {FieldErrors, useForm} from "react-hook-form";
+
+type EditProfileParams = {
+    username: string;
+    fullname: string;
+    description: string;
+};
 
 export const EditProfileScreenName = "EditProfile"
 export const EditProfileScreen = () => {
@@ -19,22 +26,67 @@ export const EditProfileScreen = () => {
     const userId: string = useSelector((state: MyAppState) => state.auth.userId)!!
     const userProfile = useSelector((state: MyAppState) => state.entities.users.entities)[userId]
     const isUpdatingProfile: boolean = useSelector((state: MyAppState) => state.auth.isUpdatingProfile) || false
+    const updateProfileError: string | undefined = useSelector((state: MyAppState) => state.auth.updateProfileError)
+
+    const {register, handleSubmit, setValue} = useForm<EditProfileParams>()
+
+    useEffect(() => {
+        if (updateProfileError) {
+            Alert.alert('There was an error updating the profile', updateProfileError)
+        }
+    }, [updateProfileError])
 
     const [username, setUsername] = useState<string>(userProfile.username)
     const [fullname, setFullname] = useState<string>(userProfile.fullname)
     const [description, setDescription] = useState<string>(userProfile.description)
 
     useEffect(() => {
+        register("fullname", {
+            required: {value: true, message: 'Please enter your full name'},
+            minLength: {value: 5, message: 'This field needs to be at least 5 characters long'}
+        })
+        register('username', {
+            required: {value: true, message: 'Please enter a username'},
+            pattern: {value: /^\w+$/, message: 'Username must contain only alphanumeric values'},
+            minLength: {value: 5, message: 'Username must be at least 5 characters long'}
+        })
+        register('description', {
+            maxLength: {value: 500, message: 'Description must be at most 500 characters long'}
+        })
+    }, [register])
+
+    useEffect(() => {
+        setValue("username", username)
+        setValue("fullname", fullname)
+        setValue("description", description)
+    }, [username, fullname, description])
+
+    const handleSave = async ({fullname, username, description}: EditProfileParams) => {
+        const updated = await dispatch(updateProfile(userId, fullname, username, description, '', ''))
+        console.log('updated=', updated);
+        // @ts-ignore
+        if (updated === true) {
+            console.log('going bak!!!');
+            navigation.goBack()
+        }
+    };
+
+    const onValidData = async (data: EditProfileParams) => {
+        console.log('onValidData', data);
+        if (!isUpdatingProfile) {
+            await handleSave(data)
+        }
+    }
+    const onInvalidData = (errors: FieldErrors) => {
+        console.log('onInvalidData', errors);
+        if (!isUpdatingProfile) {
+            alert(Object.values(errors)[0].message)
+        }
+    }
+
+    useEffect(() => {
         navigation.setOptions({
-            headerRight: () => (<HeaderActionButton title={'SAVE'} onPress={async () => {
-                const updated = await dispatch(updateProfile(userId, fullname, username, description, '', ''))
-                console.log('updated=', updated);
-                // @ts-ignore
-                if (updated === true) {
-                    console.log('going bak!!!');
-                    navigation.goBack()
-                }
-            }}/>)
+            headerRight: () => (<HeaderActionButton title={'SAVE'} onPress={handleSubmit(onValidData, onInvalidData)}/>)
         })
     }, [fullname, username, description])
 

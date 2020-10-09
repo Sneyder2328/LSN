@@ -13,7 +13,7 @@ import {getHeaderOptions, HomeScreen} from "./Home/HomeScreen";
 import {LogInScreen} from "./LogIn/LogInScreen";
 import {SignUpScreen} from "./SignUp/SignUpScreen";
 import {FullOverlay} from "../components/FullOverlay";
-import { Searchbar } from 'react-native-paper';
+import {createDrawerNavigator} from "@react-navigation/drawer";
 
 const Stack = createStackNavigator();
 
@@ -26,6 +26,19 @@ const Stack = createStackNavigator();
 
 //<Text onPress={showMenu}>Show menu</Text>
 
+const Drawer = createDrawerNavigator();
+
+function MyDrawer() {
+    return (
+        <Drawer.Navigator>
+            <Drawer.Screen
+                name="Feed"
+
+                component={ProfileScreen}
+            />
+        </Drawer.Navigator>
+    );
+}
 
 // @ts-ignore
 export const AppNavigator = ({theme}) => {
@@ -48,8 +61,6 @@ export const AppNavigator = ({theme}) => {
                 component={HomeScreen}
                 options={({route}) => ({
                     headerTintColor: '#fff',
-                    // headerTitle: getHeaderTitle(route),
-                    // title: 'LSN',
                     headerRight: () => (<HomeMenu onPress={() => dispatch(logOutUser())}/>),
                     ...getHeaderOptions(route),
                 })}/>
@@ -58,13 +69,6 @@ export const AppNavigator = ({theme}) => {
                 component={CreatePostScreen}
                 options={({route, navigation}) => ({
                     title: 'Create post',
-                    // headerRight: () => <PostButton onPress={()=> {
-                    //     console.log('post', route)
-                    //     // @ts-ignore
-                    //     dispatch(createPost({id:genUUID(), imageFiles: [], text: route.params.text, userId: route.params.userId}))
-                    //     navigation.goBack()
-                    //
-                    // }}/>
                 })}/>
             <Stack.Screen
                 name="UserProfile"

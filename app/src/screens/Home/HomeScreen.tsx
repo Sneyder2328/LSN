@@ -9,11 +9,9 @@ import {MaterialIcons} from '@expo/vector-icons';
 import {MyAppState} from "../../modules/rootReducer";
 import {ProfileScreen} from "../ProfileScreen/ProfileScreen";
 import {SearchScreen} from "../Search/SearchScreen";
-import {Searchbar, Appbar} from "react-native-paper";
-import {View, Text} from "react-native";
+import {Appbar} from "react-native-paper";
+import {View} from "react-native";
 import {HomeMenu} from "../../components/HomeMenu";
-import {logOutUser} from "../../modules/Auth/authActions";
-import {COLOR_PRIMARY, COLOR_PRIMARY_DARK} from "../../constants/Colors";
 import {SearchBar} from "../../components/SearchBar";
 
 export const getHeaderOptions = (route: any) => {
@@ -34,7 +32,6 @@ export const getHeaderOptions = (route: any) => {
                 header: () => {
                     return (<View>
                         <Appbar.Header>
-                            {/*<Appbar.Action icon="magnify" onPress={() => {}} />*/}
                             {/*<Searchbar placeholder="Search" value={''} iconColor={'#fff'} style={{*/}
                             {/*    backgroundColor: COLOR_PRIMARY,*/}
                             {/*    flex: 1,*/}
@@ -102,8 +99,7 @@ export const HomeScreen = () => {
                     width: 28,
                     height: 28,
                 }
-            }}
-        >
+            }}>
             <BottomTab.Screen
                 name="NewsFeed"
                 component={NewsFeedNavigator}

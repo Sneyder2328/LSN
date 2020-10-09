@@ -45,20 +45,13 @@ export const ProfileScreen = () => {
 
     const HeaderComponents = <>
         <CoverPhoto coverPhotoUrl={userProfile.coverPhotoUrl}/>
-        <View style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginLeft: 12,
-            marginRight: 12,
-        }}>
+        <View style={styles.containerPicAndBtn}>
             <ProfilePhoto profilePhotoUrl={userProfile.profilePhotoUrl} size={86} styles={{marginTop: -36}}/>
             {currentUserId === userProfile.userId &&
             <Button mode="contained" onPress={() => navigation.navigate(EditProfileScreenName)} color={COLOR_ACCENT}
-                    style={{
-                        alignSelf: 'flex-end',
-                    }}>Edit profile</Button>}
+                    style={styles.editBtn}>Edit profile</Button>}
         </View>
-        <View style={{marginLeft: 16, marginTop: 4}}>
+        <View style={styles.profileData}>
             <Text style={styles.fullname}>
                 {userProfile.fullname}
             </Text>
@@ -92,15 +85,27 @@ const styles = StyleSheet.create({
         fontSize: 18,
     },
     description: {
-        fontSize: 16
+        fontSize: 16,
+        marginTop: 6,
+        marginBottom: 8,
     },
     coverPhoto: {
         backgroundColor: COLOR_PRIMARY
     },
     postsList: {
-        // backgroundColor: '#0f0',
-        // flex: 1,
-        // padding: 8,
         marginBottom: 8,
     },
+    editBtn: {
+        alignSelf: 'flex-end',
+    },
+    containerPicAndBtn: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginLeft: 12,
+        marginRight: 12,
+    },
+    profileData: {
+        marginLeft: 16,
+        marginTop: 4
+    }
 })
