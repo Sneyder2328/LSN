@@ -13,6 +13,7 @@ import {Appbar} from "react-native-paper";
 import {View} from "react-native";
 import {HomeMenu} from "../../components/HomeMenu";
 import {SearchBar} from "../../components/SearchBar";
+import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 
 export const getHeaderOptions = (route: any) => {
     // If the focused route is not found, we need to assume it's the initial screen
@@ -41,7 +42,7 @@ export const getHeaderOptions = (route: any) => {
                             {/*    color: '#ffffff',*/}
                             {/*}} placeholderTextColor={'#efefef'}/>*/}
                             <SearchBar/>
-                            <HomeMenu onPress={() => console.log('logout attempt')}/>
+                            {/*<HomeMenu onPress={() => console.log('logout attempt')}/>*/}
                         </Appbar.Header>
                     </View>)
                 },
@@ -56,18 +57,24 @@ const BottomTab = createMaterialTopTabNavigator<{
     MyProfile: undefined;
     Notifications: undefined;
 }>();
+// const BottomTab = createBottomTabNavigator<{
+//     NewsFeed: undefined;
+//     Search: undefined;
+//     MyProfile: undefined;
+//     Notifications: undefined;
+// }>();
 
 export const HomeScreen = () => {
     const {isAuthenticated} = useSelector((state: MyAppState) => state.auth)
     const navigation = useNavigation();
     const route = useRoute()
 
-    useEffect(() => {
-        if (!isAuthenticated) {
-            // @ts-ignore
-            navigation.replace('LogIn')
-        }
-    }, [isAuthenticated])
+    // useEffect(() => {
+    //     if (!isAuthenticated) {
+    //         // @ts-ignore
+    //         navigation.replace('LogIn')
+    //     }
+    // }, [isAuthenticated])
 
     // React.useLayoutEffect(() => {
     //     console.log('route=', getHeaderTitle(route));

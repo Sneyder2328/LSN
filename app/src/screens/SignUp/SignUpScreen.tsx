@@ -23,15 +23,8 @@ export const SignUpScreen = ({navigation}: { navigation: any }) => {
     const {register, handleSubmit, setValue} = useForm<SignUpFormParams>()
 
     useEffect(() => {
-        console.log("SignUpScreen isAuthenticated", auth.isAuthenticated);
-        if (auth.isAuthenticated) {
-            navigation.replace('Home')
-        }
-    }, [auth.isAuthenticated])
-
-    useEffect(() => {
         if (auth.signUpError) {
-            Alert.alert('Signup Failed', auth.signUpError)
+            Alert.alert('Sign up Failed', auth.signUpError)
         }
     }, [auth.signUpError])
 

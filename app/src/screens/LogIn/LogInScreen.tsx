@@ -15,12 +15,12 @@ export const LogInScreen = ({navigation}: { navigation: any }) => {
     const dispatch = useDispatch()
     const {colors} = useTheme();
 
-    useEffect(() => {
-        console.log("LogInScreen isAuthenticated", auth.isAuthenticated);
-        if (auth.isAuthenticated) {
-            navigation.replace('Home')
-        }
-    }, [auth.isAuthenticated])
+    // useEffect(() => {
+    //     console.log("LogInScreen isAuthenticated", auth.isAuthenticated);
+    //     if (auth.isAuthenticated) {
+    //         navigation.replace('Home')
+    //     }
+    // }, [auth.isAuthenticated])
 
     useEffect(() => {
         if (auth.logInError) {
