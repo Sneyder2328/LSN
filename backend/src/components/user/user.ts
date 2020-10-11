@@ -36,11 +36,11 @@ const parser = multer({
     storage,
     limits: {fileSize: MAX_IMG_FILE_SIZE}
 });
-// const imageUpload = parser.fields([
-//     { name: 'imageProfile', maxCount: 1 },
-//     { name: 'imageCover', maxCount: 1 }
-// ]);
-const imageUpload = parser.single('imageProfile');
+const imageUpload = parser.fields([
+    { name: 'imageProfile', maxCount: 1 },
+    { name: 'imageCover', maxCount: 1 }
+]);
+// const imageUpload = parser.single('imageProfile');
 
 const router = Router();
 
@@ -56,7 +56,8 @@ router.put(endpoints.user.UPDATE_PROFILE(':userId'), authenticate, imageUpload, 
     if (req.userId !== userId) {
         res.status(httpCodes.FORBIDDEN).send({error: "You cannot edit someone else's profile"});
     } else {
-        const user = await updateProfile(userId, req.body, req.file)
+        const user = await updateProfile(userId, req.body, req.files)
+        // const user = await updateProfile(userId, req.body)
         res.json(user);
     }
 }));

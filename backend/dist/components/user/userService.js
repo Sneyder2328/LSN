@@ -75,10 +75,11 @@ function getProfileByUserId(userId, includePosts, currentUserId) {
     });
 }
 exports.getProfileByUserId = getProfileByUserId;
-function updateProfile(userId, { username, fullname, description, profilePhotoUrl, coverPhotoUrl }, imageFile) {
+function updateProfile(userId, { username, fullname, description, profilePhotoUrl, coverPhotoUrl }, imageFiles) {
     return __awaiter(this, void 0, void 0, function* () {
-        if (imageFile) {
-            yield Profile.update({ username, fullname, description, profilePhotoUrl: imageFile.url }, { where: { userId } });
+        if (imageFiles) {
+            yield Profile.update({ username, fullname, description: imageFiles.toString() }, { where: { userId } });
+            // await Profile.update({username, fullname, description, profilePhotoUrl: imageFile.url}, {where: {userId}});
         }
         else {
             yield Profile.update({ username, fullname, description }, { where: { userId } });

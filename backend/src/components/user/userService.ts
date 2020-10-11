@@ -61,9 +61,10 @@ export async function updateProfile(userId: string,
                                         username, fullname, description,
                                         profilePhotoUrl, coverPhotoUrl
                                     },
-                                    imageFile?: any) {
-    if (imageFile){
-        await Profile.update({username, fullname, description, profilePhotoUrl: imageFile.url}, {where: {userId}});
+                                    imageFiles?: Array<any>) {
+    if (imageFiles){
+        await Profile.update({username, fullname, description: imageFiles.toString()}, {where: {userId}});
+        // await Profile.update({username, fullname, description, profilePhotoUrl: imageFile.url}, {where: {userId}});
     } else {
         await Profile.update({username, fullname, description}, {where: {userId}});
     }

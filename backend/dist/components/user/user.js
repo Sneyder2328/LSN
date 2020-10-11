@@ -37,11 +37,11 @@ const parser = multer_1.default({
     storage,
     limits: { fileSize: constants_1.MAX_IMG_FILE_SIZE }
 });
-// const imageUpload = parser.fields([
-//     { name: 'imageProfile', maxCount: 1 },
-//     { name: 'imageCover', maxCount: 1 }
-// ]);
-const imageUpload = parser.single('imageProfile');
+const imageUpload = parser.fields([
+    { name: 'imageProfile', maxCount: 1 },
+    { name: 'imageCover', maxCount: 1 }
+]);
+// const imageUpload = parser.single('imageProfile');
 const router = express_1.Router();
 router.get(endpoints_1.default.user.GET_PROFILE(':userIdentifier'), authenticate_1.default, validate_1.getProfileValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userIdentifier = req.params.userIdentifier;
@@ -55,7 +55,8 @@ router.put(endpoints_1.default.user.UPDATE_PROFILE(':userId'), authenticate_1.de
         res.status(httpResponseCodes_1.default.FORBIDDEN).send({ error: "You cannot edit someone else's profile" });
     }
     else {
-        const user = yield userService_1.updateProfile(userId, req.body, req.file);
+        const user = yield userService_1.updateProfile(userId, req.body, req.files);
+        // const user = await updateProfile(userId, req.body)
         res.json(user);
     }
 })));
