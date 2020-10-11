@@ -11,12 +11,13 @@ import {MyAppState} from "../../modules/rootReducer";
 import {CoverPhoto} from "../../components/CoverPhoto";
 import {Button} from "react-native-paper";
 import {EditProfileScreenName} from "../EditProfile/EditProfileScreen";
-
+import {StackNavigationProp} from "@react-navigation/stack";
+import {ScreensParamsList} from "../AppNavigator";
 
 export const ProfileScreen = () => {
     const route = useRoute()
     const dispatch = useDispatch()
-    const navigation = useNavigation();
+    const navigation = useNavigation<StackNavigationProp<ScreensParamsList, 'UserProfile'>>();
 
     const currentUserId = useSelector((state: MyAppState) => state.auth.userId)
     const users = useSelector((state: MyAppState) => state.entities.users.entities)
@@ -36,19 +37,22 @@ export const ProfileScreen = () => {
     useEffect(() => {
         const postsIdsLoaded = postsByProfile[userProfile.userId]?.postsIds;
         if (postsIdsLoaded) {
-            console.log('setPostsIds', postsIdsLoaded);
             setPostsIds(postsIdsLoaded)
         }
     }, [postsByProfile])
 
     const handleProfilePressed = (user: UserObject) => navigation.navigate("UserProfile", {user})
 
-    const HeaderComponents = <>
+    const handleProfileAction = () => navigation.navigate(EditProfileScreenName);
+     // Edit profile
+     // Send friend request
+     // Message1
+    const HeaderComponents = (<>
         <CoverPhoto coverPhotoUrl={userProfile.coverPhotoUrl}/>
         <View style={styles.containerPicAndBtn}>
-            <ProfilePhoto profilePhotoUrl={userProfile.profilePhotoUrl} size={86} styles={{marginTop: -36}}/>
+            <ProfilePhoto profilePhotoUrl={userProfile.profilePhotoUrl} size={86} style={{marginTop: -36}}/>
             {currentUserId === userProfile.userId &&
-            <Button mode="contained" onPress={() => navigation.navigate(EditProfileScreenName)} color={COLOR_ACCENT}
+            <Button mode="contained" onPress={handleProfileAction} color={COLOR_ACCENT}
                     style={styles.editBtn}>Edit profile</Button>}
         </View>
         <View style={styles.profileData}>
@@ -61,7 +65,8 @@ export const ProfileScreen = () => {
             <Text style={styles.description}>
                 {userProfile.description}
             </Text>
-        </View></>;
+        </View>
+    </>)
     return (<View style={styles.container}>
         <FlatList style={styles.postsList} data={postsIds}
                   renderItem={({item}) => (<Post

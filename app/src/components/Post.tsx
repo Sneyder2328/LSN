@@ -1,5 +1,5 @@
 import React from "react";
-import {Dimensions, FlatList, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View} from "react-native";
+import {Dimensions, FlatList, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {useDispatch, useSelector} from "react-redux";
 import {useTimeSincePublished} from "../hooks/updateRelativeTimeHook";
 

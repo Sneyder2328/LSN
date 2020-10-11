@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {TextEditor} from "../commons/TextEditor";
-import {connect} from "react-redux";
+import {connect, useDispatch, useSelector} from "react-redux";
 import {PostRequest} from "../Post/Post";
 import {createPost} from "../Post/postActions";
 import './styles.scss'
@@ -12,11 +12,12 @@ import {genUUID, ImageFile, readImgFileContent} from "../../utils/utils";
 import {AppState} from "../../reducers";
 
 type Props = {
-    createPost: (post: PostRequest) => any;
-    userId: string;
+
 };
 
-const CreatePost: React.FC<Props> = ({userId, createPost}) => {
+export const CreatePost: React.FC<Props> = () => {
+    const dispatch = useDispatch()
+    const userId: string = useSelector((state: AppState) => state.auth.userId!!)
     const [text, setText] = useState<string>('');
     const [cleanTextEditor, setCleanTextEditor] = useState<boolean>(false);
     const [imageFiles, setImageFiles] = useState<Array<ImageFile>>([]);
@@ -28,7 +29,7 @@ const CreatePost: React.FC<Props> = ({userId, createPost}) => {
             text,
             imageFiles: imageFiles.map(it => it.file)
         };
-        createPost(newPost);
+        dispatch(createPost(newPost));
         setImageFiles([]);
         setCleanTextEditor(true);
     };
@@ -95,9 +96,3 @@ const CreatePost: React.FC<Props> = ({userId, createPost}) => {
         </div>
     );
 };
-
-const mapStateToProps = (state: AppState) => {
-    return {userId: state.auth.userId};
-};
-
-export default connect(mapStateToProps, {createPost})(CreatePost)

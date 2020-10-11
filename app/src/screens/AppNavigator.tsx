@@ -8,7 +8,6 @@ import {EditProfileScreen, EditProfileScreenName} from "./EditProfile/EditProfil
 import {PostDetail} from "./PostDetail/PostDetail";
 import {ProfileScreen} from "./ProfileScreen/ProfileScreen";
 import {CreatePostScreen} from "./Home/CreatePost/CreatePostScreen";
-import {HomeMenu} from "../components/HomeMenu";
 import {getHeaderOptions, HomeScreen} from "./Home/HomeScreen";
 import {LogInScreen} from "./LogIn/LogInScreen";
 import {SignUpScreen} from "./SignUp/SignUpScreen";
@@ -18,8 +17,18 @@ import {Text, View} from "react-native";
 import {Feather} from '@expo/vector-icons';
 import {ProfilePhoto} from "../components/ProfilePhoto";
 import {COLOR_PRIMARY} from "../constants/Colors";
+import {UserObject} from "../modules/usersReducer";
 
-const Stack = createStackNavigator();
+export type ScreensParamsList = {
+    Home: undefined;
+    CreatePost: undefined;
+    UserProfile: {
+        user?: UserObject
+    };
+    PostDetail: undefined;
+    EditProfile: undefined;
+};
+const Stack = createStackNavigator<ScreensParamsList>();
 
 const Drawer = createDrawerNavigator();
 
@@ -134,53 +143,53 @@ export const AppNavigator = ({theme}) => {
 }
 
 // @ts-ignore
-export const AppNavigator2 = ({theme}) => {
-    console.log("rendering AppNavigator");
-    const dispatch = useDispatch()
-
-    const {auth} = useSelector((state: MyAppState) => state)
-
-    return (<NavigationContainer theme={theme}>
-        <Stack.Navigator initialRouteName={auth.isAuthenticated ? 'Home' : 'LogIn'}
-                         screenOptions={{headerTintColor: '#fff'}}>
-            <Stack.Screen
-                name="LogIn"
-                component={LogInScreen}/>
-            <Stack.Screen
-                name="SignUp"
-                component={SignUpScreen}/>
-            <Stack.Screen
-                name="Home"
-                component={HomeScreen}
-                options={({route}) => ({
-                    headerTintColor: '#fff',
-                    headerRight: () => (<HomeMenu onPress={() => dispatch(logOutUser())}/>),
-                    ...getHeaderOptions(route),
-                })}/>
-            <Stack.Screen
-                name="CreatePost"
-                component={CreatePostScreen}
-                options={({route, navigation}) => ({
-                    title: 'Create post',
-                })}/>
-            <Stack.Screen
-                name="UserProfile"
-                options={{
-                    title: '',
-                    headerTransparent: true,
-                }}
-                component={ProfileScreen}/>
-            <Stack.Screen
-                name="PostDetail"
-                component={PostDetail}/>
-            <Stack.Screen
-                name={EditProfileScreenName}
-                component={EditProfileScreen}
-                options={{
-                    title: 'Edit Profile',
-                    headerTransparent: true,
-                }}/>
-        </Stack.Navigator>
-        <FullOverlay isVisible={auth.isLoggingOut}/>
-    </NavigationContainer>)
-}
+// export const AppNavigator2 = ({theme}) => {
+//     console.log("rendering AppNavigator");
+//     const dispatch = useDispatch()
+//
+//     const {auth} = useSelector((state: MyAppState) => state)
+//
+//     return (<NavigationContainer theme={theme}>
+//         <Stack.Navigator initialRouteName={auth.isAuthenticated ? 'Home' : 'LogIn'}
+//                          screenOptions={{headerTintColor: '#fff'}}>
+//             <Stack.Screen
+//                 name="LogIn"
+//                 component={LogInScreen}/>
+//             <Stack.Screen
+//                 name="SignUp"
+//                 component={SignUpScreen}/>
+//             <Stack.Screen
+//                 name="Home"
+//                 component={HomeScreen}
+//                 options={({route}) => ({
+//                     headerTintColor: '#fff',
+//                     headerRight: () => (<HomeMenu onPress={() => dispatch(logOutUser())}/>),
+//                     ...getHeaderOptions(route),
+//                 })}/>
+//             <Stack.Screen
+//                 name="CreatePost"
+//                 component={CreatePostScreen}
+//                 options={({route, navigation}) => ({
+//                     title: 'Create post',
+//                 })}/>
+//             <Stack.Screen
+//                 name="UserProfile"
+//                 options={{
+//                     title: '',
+//                     headerTransparent: true,
+//                 }}
+//                 component={ProfileScreen}/>
+//             <Stack.Screen
+//                 name="PostDetail"
+//                 component={PostDetail}/>
+//             <Stack.Screen
+//                 name={EditProfileScreenName}
+//                 component={EditProfileScreen}
+//                 options={{
+//                     title: 'Edit Profile',
+//                     headerTransparent: true,
+//                 }}/>
+//         </Stack.Navigator>
+//         <FullOverlay isVisible={auth.isLoggingOut}/>
+//     </NavigationContainer>)
+// }

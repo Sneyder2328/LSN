@@ -1,19 +1,20 @@
 import React, {useEffect} from "react";
 import NewsFeed from "../NewsFeed/NewsFeed";
-import CreatePost from "../CreatePost/CreatePost";
+import {CreatePost} from "../CreatePost/CreatePost";
 import './styles.scss'
 import NavBar from "../NavBar/NavBar";
-import DashBoardProfile from "../DashBoardProfile/DashBoardProfile";
-import {connect} from "react-redux";
+import {DashBoardProfile} from "../DashBoardProfile/DashBoardProfile";
+import {useDispatch, useSelector} from "react-redux";
 import {AppState} from "../../reducers";
 import {getUserBasicInfo} from "../User/userActions";
 
-type Props = { userId: string, getUserProfileData: (userId: string) => any };
+export const NewsFeedPage = () => {
+    const dispatch = useDispatch()
+    const userId: string = useSelector((state: AppState) => state.auth.userId!!)
 
-const Home: React.FC<Props> = ({userId, getUserProfileData}) => {
     useEffect(() => {
-        getUserProfileData(userId);
-    }, [userId]);
+        dispatch(getUserBasicInfo(userId))
+    }, [userId, dispatch]);
 
     return (
         <div>
@@ -34,9 +35,3 @@ const Home: React.FC<Props> = ({userId, getUserProfileData}) => {
         </div>
     );
 };
-const mapStateToProps = (state: AppState) => {
-    return {
-        userId: state.auth.userId
-    }
-};
-export default connect(mapStateToProps, {getUserProfileData: getUserBasicInfo})(Home);

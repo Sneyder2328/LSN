@@ -1,12 +1,13 @@
-import {Image, StyleSheet, useWindowDimensions} from "react-native";
+import {Image, ImageStyle, StyleSheet, useWindowDimensions} from "react-native";
 import React from "react";
 import {COLOR_PRIMARY} from "../constants/Colors";
 
 type Props = {
     coverPhotoUrl? : string;
+    style?: ImageStyle;
 }
 const coverPhotoAspectRatio = 2.8;
-export const CoverPhoto: React.FC<Props> = ({coverPhotoUrl}) => {
+export const CoverPhoto: React.FC<Props> = ({coverPhotoUrl, style}) => {
     const width = useWindowDimensions().width
 
     const coverPicSource = coverPhotoUrl?.length !== 0 ? {uri: coverPhotoUrl} : {}
@@ -15,7 +16,7 @@ export const CoverPhoto: React.FC<Props> = ({coverPhotoUrl}) => {
         <Image source={coverPicSource}
                width={width}
                height={width / coverPhotoAspectRatio}
-               style={styles.coverPhoto}/>
+               style={[styles.coverPhoto, style]}/>
     )
 }
 const styles = StyleSheet.create({

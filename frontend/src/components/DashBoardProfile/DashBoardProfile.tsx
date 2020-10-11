@@ -1,28 +1,24 @@
 import React from "react";
-import {connect} from "react-redux";
+import {useSelector} from "react-redux";
 import {AppState} from "../../reducers";
-import {UserObject} from "../User/userReducer";
-import './styles.scss'
+import styles from './styles.module.scss'
 
-const DashBoardProfile: React.FC<{ currentUser: UserObject }> = ({currentUser}) => {
+export const DashBoardProfile = () => {
+    const userId: string = useSelector((state: AppState) => state.auth.userId!!)
+    const users = useSelector((state: AppState) => state.entities.users.entities)
+    const currentUser = users[userId]
 
     return (
-        <div className='dashboard-profile'>
-            <img className='cover-photo' src="https://newevolutiondesigns.com/images/freebies/galaxy-facebook-cover-1.jpg"
+        <div className={styles.dashboardProfile}>
+            <img className={styles.coverPhoto}
+                 src="https://newevolutiondesigns.com/images/freebies/galaxy-facebook-cover-1.jpg"
             />
-            <img className='profile-photo' src="https://miro.medium.com/max/280/1*MccriYX-ciBniUzRKAUsAw.png"/>
-            <div className='profile-name'>
-                <p className='fullname'>{currentUser && currentUser.fullname}</p>
-                <p className='username'>{currentUser && "@"+currentUser.username}</p>
+            <img className={styles.profilePhoto} src="https://miro.medium.com/max/280/1*MccriYX-ciBniUzRKAUsAw.png"/>
+            <div className={styles.profileName}>
+                <p className={styles.fullname}>{currentUser && currentUser.fullname}</p>
+                <p className={styles.username}>{currentUser && "@" + currentUser.username}</p>
             </div>
-            <p>{currentUser && currentUser.description}</p>
+            <p className={styles.description}>{currentUser && currentUser.description}</p>
         </div>
     );
 };
-
-const mapStateToProps = (state: AppState) => {
-    return {
-        currentUser: state.entities.users.entities[state.auth.userId]
-    }
-};
-export default connect(mapStateToProps, {})(DashBoardProfile);

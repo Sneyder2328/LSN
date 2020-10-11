@@ -21,8 +21,6 @@ const {
 } = authActions
 const {setUser} = usersActions
 
-export type SignUpCredentials = { username: string; fullname: string; password: string; email: string; };
-
 const processSignInResponse = ({dispatch, response}: { dispatch: any, response: any }) => {
     if (response.data.access === true && response.data.profile) {
         const accessToken = response.headers['authorization'];
@@ -33,6 +31,8 @@ const processSignInResponse = ({dispatch, response}: { dispatch: any, response: 
         dispatch(signInSuccess({userId, accessToken, refreshToken}));
     }
 }
+
+export type SignUpCredentials = { username: string; fullname: string; password: string; email: string; };
 
 export const signUpUser = (userData: SignUpCredentials): AppThunk => async (dispatch) => {
     dispatch(signUpRequest())
@@ -80,7 +80,7 @@ export const updateProfile = (userId: string, fullname: string, username: string
     })
 }
 
-export const logOutUser = () => async (dispatch: Function, getState: () => MyAppState) => {
+export const logOutUser = (): AppThunk => async (dispatch: Function, getState: () => MyAppState) => {
     dispatch(logOutRequest());
     try {
         const {refreshToken} = getState().auth;

@@ -1,9 +1,12 @@
 import {createSlice} from "@reduxjs/toolkit";
 import {postActions} from "../Post/postReducer";
+import {authActions} from "../Auth/authReducer";
+
 const {
     loadPostsRequest, loadPostsSuccess, loadPostsError,
     createPostRequest, createPostSuccess, createPostError
 } = postActions
+const {logOutSuccess} = authActions
 
 type NewsFeedList = {
     postIds: Array<string>
@@ -62,6 +65,8 @@ const newsFeedSlice = createSlice({
             state.isCreatingPost = false
         }).addCase(createPostError, (state, action) => {
             state.isCreatingPost = false
+        }).addCase(logOutSuccess,_ => {
+            return initialStateNewsFeed
         })
     }
 })

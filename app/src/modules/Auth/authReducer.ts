@@ -6,7 +6,7 @@ export interface AuthState {
     accessToken?: string;
     refreshToken?: string;
     // expiresOn
-    isAuthenticated: boolean; // isLoggedIn
+    isAuthenticated: boolean;
     isLoggingIn: boolean;
     isSigningUp: boolean;
     isLoggingOut: boolean;
@@ -60,18 +60,10 @@ export const authSlice = createSlice({
         },
         logOutRequest: (state) => {
             state.isLoggingOut = true
-            // return {
-            //     ...state,
-            //     isLoggingOut: true
-            // };
         },
         logOutSuccess: (state) => initialAuthState,
         logOutError: (state) => {
             state.isLoggingOut = false
-            // return {
-            //     ...state,
-            //     isLoggingOut: false
-            // };
         },
         updateProfileRequest: (state) => {
             state.isUpdatingProfile = true

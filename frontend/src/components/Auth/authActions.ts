@@ -3,77 +3,101 @@ import {ACCESS_TOKEN, REFRESH_TOKEN} from "../../utils/constants";
 import {removeAuthTokenHeaders, setAccessTokenHeaders, setRefreshTokenHeaders} from "../../utils/setAccessTokenHeaders";
 import * as jwt_decode from 'jwt-decode';
 import {getTokens, removeTokens, setTokens} from "../../utils/tokensManager";
-import {LOG_IN_ERROR, LOG_OUT_REQUEST, LOG_OUT_SUCCESS, SET_CURRENT_USER, SIGN_UP_ERROR} from "../../actions/types";
-import {AuthActions, loginAction, logOutSuccess} from "./authReducer";
+import {authActions} from "./authReducer";
+import {AppThunk} from "../../store";
+import {AppState} from "../../reducers";
+import JwtDecode from "jwt-decode";
+import {usersActions} from "../User/userReducer";
+
+const {
+    updateProfileSuccess,
+    updateProfileRequest,
+    refreshAccessTokenSuccess,
+    logOutRequest,
+    signUpRequest,
+    logInRequest,
+    signUpError,
+    logOutSuccess,
+    logInError,
+    logOutError,
+    signInSuccess
+} = authActions
+const {setUser} = usersActions
+
+
+const processSignInResponse = ({dispatch, response}: { dispatch: any, response: any }) => {
+    if (response.data.access === true && response.data.profile) {
+        const accessToken = response.headers['authorization'];
+        console.log("accessToken", accessToken);
+        const refreshToken = response.headers['authorization-refresh-token'];
+        const userId: string = JwtDecode<{ id: string }>(accessToken).id
+        dispatch(setUser(response.data.profile))
+        dispatch(signInSuccess({userId, accessToken, refreshToken}));
+    }
+}
 
 export type SignUpCredentials = { username: string; fullname: string; password: string; email: string; };
 
-export const signUpUser = (userData: SignUpCredentials) => async (dispatch: (actions: AuthActions) => any) => {
+export const signUpUser = (userData: SignUpCredentials): AppThunk => async (dispatch) => {
+    dispatch(signUpRequest())
     try {
         const response = await AuthApi.signUp(userData);
-        if (response.data.access === true) {
-            const accessToken = response.headers[ACCESS_TOKEN];
-            const refreshToken = response.headers[REFRESH_TOKEN];
-            setAccessTokenHeaders(accessToken);
-            setTokens(accessToken, refreshToken);
-            // @ts-ignore
-            dispatch(setCurrentUser(jwt_decode(accessToken).id));
-        }
+        processSignInResponse({dispatch, response})
+        // if (response.data.access === true) {
+        //     const accessToken = response.headers[ACCESS_TOKEN];
+        //     const refreshToken = response.headers[REFRESH_TOKEN];
+        //     setAccessTokenHeaders(accessToken);
+        //     setTokens(accessToken, refreshToken);
+        //     // @ts-ignore
+        //     dispatch(setCurrentUser(jwt_decode(accessToken).id));
+        // }
     } catch (err) {
         console.log("error:", err);
-        dispatch({
-            type: SIGN_UP_ERROR,
-            payload: {fieldName: err.response.data.error, message: err.response.data.message}
-        });
+        const error = err?.response?.data?.error || 'Network connection error'
+        const message = err?.response?.data?.message || 'Network connection error'
+        dispatch(signUpError({fieldName: error, message}))
     }
 };
 
 export type LoginCredentials = { username: string; password: string; };
 
-export const logInUser = (credentials: LoginCredentials) => async (dispatch: (actions: AuthActions) => any) => {
+export const logInUser = (credentials: LoginCredentials): AppThunk => async (dispatch) => {
+    dispatch(logInRequest());
     try {
         const response = await AuthApi.logIn(credentials);
-        if (response.data.access === true) {
-            const accessToken = response.headers[ACCESS_TOKEN];
-            const refreshToken = response.headers[REFRESH_TOKEN];
-            setAccessTokenHeaders(accessToken);
-            setTokens(accessToken, refreshToken);
-            // @ts-ignore
-            dispatch(setCurrentUser(jwt_decode(accessToken).id));
-        }
+        processSignInResponse({dispatch, response})
+        // if (response.data.access === true) {
+        //     const accessToken = response.headers[ACCESS_TOKEN];
+        //     const refreshToken = response.headers[REFRESH_TOKEN];
+        //     setAccessTokenHeaders(accessToken);
+        //     setTokens(accessToken, refreshToken);
+        //     // @ts-ignore
+        //     dispatch(setCurrentUser(jwt_decode(accessToken).id));
+        // }
     } catch (err) {
         console.log("error:", err);
-        dispatch({
-            type: LOG_IN_ERROR,
-            payload: {fieldName: err.response.data.error, message: err.response.data.message}
-        });
+        const error = err?.response?.data?.error || 'Network connection error'
+        const message = err?.response?.data?.message || 'Network connection error'
+        dispatch(logInError({fieldName: error, message}))
     }
 };
 
-// Set logged in user
-export const setCurrentUser = (decoded: string): loginAction => {
-    return {
-        type: SET_CURRENT_USER,
-        payload: decoded
-    };
-};
 
-
-// Log user out
-export const logOutUser = () => async (dispatch: Function) => {
+export const logOutUser = (): AppThunk => async (dispatch: Function, getState: () => AppState) => {
+    dispatch(logOutRequest());
     try {
-        dispatch({type: LOG_OUT_REQUEST});
-        const {refreshToken} = getTokens();
-        setRefreshTokenHeaders(refreshToken);
+        // const {refreshToken} = getTokens();
+        // setRefreshTokenHeaders(refreshToken);
+        // await AuthApi.logOut();
+        // removeAuthTokenHeaders();
+        // removeTokens();
+        // dispatch(loggedOut());
+        const {refreshToken} = getState().auth;
+        setRefreshTokenHeaders(refreshToken!!);
         await AuthApi.logOut();
-        removeAuthTokenHeaders();
-        removeTokens();
-        dispatch(loggedOut());
+        dispatch(logOutSuccess());
     } catch (err) {
         console.log("error logging out", err);
+        dispatch(logOutError());
     }
-};
-
-export const loggedOut = (): logOutSuccess => {
-    return {type: LOG_OUT_SUCCESS};
 };

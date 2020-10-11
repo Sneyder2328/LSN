@@ -11,6 +11,7 @@ import {useNavigation} from "@react-navigation/native";
 import {updateProfile} from "../../modules/Auth/authActions";
 import {FullOverlay} from "../../components/FullOverlay";
 import {FieldErrors, useForm} from "react-hook-form";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 type EditProfileParams = {
     username: string;
@@ -91,9 +92,17 @@ export const EditProfileScreen = () => {
     }, [fullname, username, description])
 
     return (<View>
-        <CoverPhoto coverPhotoUrl={userProfile.coverPhotoUrl}/>
-        <ProfilePhoto profilePhotoUrl={userProfile.profilePhotoUrl} size={84}
-                      styles={{marginTop: -36, marginLeft: 16}}/>
+        <View style={{}}>
+            <CoverPhoto coverPhotoUrl={userProfile.coverPhotoUrl}/>
+            <MaterialCommunityIcons name="camera-outline" size={24} color={COLOR_PRIMARY} style={{
+
+            }} />
+        </View>
+        <View>
+            <ProfilePhoto profilePhotoUrl={userProfile.profilePhotoUrl} size={84}
+                          style={{marginTop: -36, marginLeft: 16}}/>
+            <MaterialCommunityIcons name="camera-outline" size={24} color={COLOR_PRIMARY} />
+        </View>
         <TextInput style={styles.input} mode='outlined' label="Full name" placeholder={'Full name'} autoCorrect={false}
                    value={fullname} onChangeText={setFullname} returnKeyType={'next'} autoCapitalize={'words'}/>
         <TextInput style={styles.input} mode='outlined' label="Username" placeholder={'Username'} autoCorrect={false}

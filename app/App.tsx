@@ -63,7 +63,7 @@ export default () => {
 
 let currentValue: string | undefined
 
-function handleChange() {
+const handleChange = () => {
     const previousValue = currentValue
     currentValue = store.getState().auth.accessToken
 
@@ -75,6 +75,6 @@ function handleChange() {
             removeAuthTokenHeaders()
         }
     }
-}
+};
 
 store.subscribe(handleChange)

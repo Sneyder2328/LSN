@@ -2,44 +2,58 @@ import React from 'react';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import AuthForm from "./Auth";
 import {Provider} from 'react-redux';
-import NewsFeedPage from "./NewsFeedPage";
-import AuthRoute from "./commons/AuthRoute";
+import {NewsFeedPage} from "./NewsFeedPage";
+import {AuthRoute} from "./commons/AuthRoute";
 import {PageNotFound} from "./commons/PageNotFound";
-import store from "../store";
-import jwt_decode from 'jwt-decode';
-import {getTokens, removeTokens, isTokenExpired} from "../utils/tokensManager";
+import {persistor, store} from "../store";
 import {removeAuthTokenHeaders, setAccessTokenHeaders} from "../utils/setAccessTokenHeaders";
-import {loggedOut, setCurrentUser} from "./Auth/authActions";
-import {ONE_WEEK_IN_MILLIS} from "../utils/constants";
 import {UserProfilePage} from "./UserProfilePage/UserProfilePage";
+import {PersistGate} from "redux-persist/integration/react";
 
-const {accessToken, refreshToken, dateRefreshTokenIssued} = getTokens();
-const tokensExist = accessToken && refreshToken && dateRefreshTokenIssued;
+// const tokensExist = accessToken && refreshToken && dateRefreshTokenIssued;
 
-if (!tokensExist || isTokenExpired(dateRefreshTokenIssued, ONE_WEEK_IN_MILLIS)) {
-    removeAuthTokenHeaders();
-    removeTokens();
-    // clear current profile
-    store.dispatch(loggedOut());
-} else {
-    setAccessTokenHeaders(accessToken);
-    const decoded = jwt_decode<{ id: string }>(accessToken);
-    store.dispatch(setCurrentUser(decoded.id));
-}
+// if (!tokensExist || isTokenExpired(dateRefreshTokenIssued, ONE_WEEK_IN_MILLIS)) {
+//     removeAuthTokenHeaders();
+//     removeTokens();
+//     // clear current profile
+//     store.dispatch(loggedOut());
+// } else {
+//     setAccessTokenHeaders(accessToken);
+//     const decoded = jwt_decode<{ id: string }>(accessToken);
+//     store.dispatch(setCurrentUser(decoded.id));
+// }
 
-const App = () => {
+export const App = () => {
     return (
         <Provider store={store}>
-            <BrowserRouter>
-                <Switch>
-                    <Route exact path='/login' component={AuthForm}/>
-                    <AuthRoute exact path='/' component={NewsFeedPage}/>
-                    <AuthRoute path='/:username' component={UserProfilePage}/>
-                    <Route path='*' component={PageNotFound}/>
-                </Switch>
-            </BrowserRouter>
+            <PersistGate loading={null} persistor={persistor}>
+                <BrowserRouter>
+                    <Switch>
+                        <Route exact path='/login' component={AuthForm}/>
+                        <AuthRoute exact path='/' component={NewsFeedPage}/>
+                        <AuthRoute path='/:username' component={UserProfilePage}/>
+                        <Route path='*' component={PageNotFound}/>
+                    </Switch>
+                </BrowserRouter>
+            </PersistGate>
         </Provider>
     );
 };
 
-export default App;
+let currentValue: string | undefined
+
+const handleChange = () => {
+    const previousValue = currentValue
+    currentValue = store.getState().auth.accessToken
+
+    if (previousValue !== currentValue) {
+        console.log('accessToken changed from', previousValue, 'to', currentValue)
+        if (currentValue) {
+            setAccessTokenHeaders(currentValue);
+        } else if (previousValue) {
+            removeAuthTokenHeaders()
+        }
+    }
+};
+
+store.subscribe(handleChange)

@@ -1,24 +1,20 @@
 import React from "react";
 import {Redirect, Route} from "react-router-dom";
-import {connect} from "react-redux";
 import {AppState} from "../../reducers";
+import {useSelector} from "react-redux";
+
 
 // @ts-ignore
-const AuthRoute = ({isLoggedIn, component: Component, ...rest}) => {
-    return <Route {...rest} render={(props: any) => (
-        isLoggedIn ? <Component {...props}/>
+export const AuthRoute = ({component: Component, ...rest}) => {
+    const isAuthenticated = useSelector((state: AppState) => state.auth.isAuthenticated)
+
+    return (<Route {...rest} render={(props: any) => (
+        isAuthenticated ? <Component {...props}/>
             : <Redirect to={
                 {
                     pathname: '/login',
                     state: {from: props.location}
                 }
             }/>
-    )}
-    />
+    )}/>)
 };
-
-const mapStateToProps = (state: AppState) => ({
-    isLoggedIn: state.auth.isAuthenticated
-});
-
-export default connect(mapStateToProps)(AuthRoute);

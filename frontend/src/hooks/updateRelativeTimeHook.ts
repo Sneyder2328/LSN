@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 // @ts-ignore
 import * as moment_shortformat from "moment-shortformat";
-import moment from "moment";
+import {formatDistanceStrict} from "date-fns";
 
 export const useTimeSincePublishedShort = (createdAt: string) => {
     const dateEntityCreated = new Date(createdAt).getTime();
@@ -22,13 +22,15 @@ export const useTimeSincePublishedShort = (createdAt: string) => {
 
 export const useTimeSincePublished = (createdAt: string) => {
     const dateEntityCreated = new Date(createdAt).getTime();
-
-    const [timeSincePublished, setTimeSincePublished] = useState<string>(moment(dateEntityCreated).fromNow());
+    const options = {
+        addSuffix: true
+    }
+    const [timeSincePublished, setTimeSincePublished] = useState<string>(formatDistanceStrict(new Date(dateEntityCreated), new Date(), options));
 
     useEffect(() => {
         const interval = setInterval(() => {
-            setTimeSincePublished(moment(dateEntityCreated).fromNow());
-        }, 60_000);
+            setTimeSincePublished(formatDistanceStrict(new Date(dateEntityCreated), new Date(), options));
+        }, 60000);
         return () => clearInterval(interval);
     }, []);
 

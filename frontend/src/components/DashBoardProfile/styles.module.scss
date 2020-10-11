@@ -1,13 +1,13 @@
 @import "src/utils/variables";
 
-.dashboard-profile {
+.dashboardProfile {
   background-color: #fff;
 
-  .cover-photo {
+  .coverPhoto {
     width: 100%;
   }
 
-  .profile-photo {
+  .profilePhoto {
     width: $thumbnailImgDimen+22px;
     background: white; // remove this later
     margin: -33px 0 0 10px;
@@ -15,7 +15,7 @@
     border: 2px solid #fff;
   }
 
-  .profile-name {
+  .profileName {
     display: inline-block;
     padding: 10px 5px;
 
@@ -33,5 +33,10 @@
       font-size: 0.9rem;
       color: #97a5af;
     }
+  }
+
+  .description {
+    margin-top: 2px;
+    padding: 0 16px 16px;
   }
 }
