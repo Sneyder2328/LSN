@@ -20,6 +20,28 @@ const authenticate_1 = __importDefault(require("../../middlewares/authenticate")
 const endpoints_1 = __importDefault(require("../../utils/constants/endpoints"));
 const httpResponseCodes_1 = __importDefault(require("../../utils/constants/httpResponseCodes"));
 const config_1 = __importDefault(require("../../config/config"));
+const multer_1 = __importDefault(require("multer"));
+const constants_1 = require("../../utils/constants");
+const cloudinaryConfig_1 = require("../../config/cloudinaryConfig");
+const multer_storage_cloudinary_1 = __importDefault(require("multer-storage-cloudinary"));
+const storage = multer_storage_cloudinary_1.default({
+    cloudinary: cloudinaryConfig_1.cloudinary,
+    folder: 'postImages',
+    allowedFormats: ['jpg', 'png', "jpeg"],
+    filename: function (req, file, cb) {
+        cb(null, file.originalname.substring(0, file.originalname.length - 4) + '-' + Date.now());
+    },
+    transformation: [{ width: 960, height: 960, crop: 'limit' }]
+});
+const parser = multer_1.default({
+    storage,
+    limits: { fileSize: constants_1.MAX_IMG_FILE_SIZE }
+});
+// const imageUpload = parser.fields([
+//     { name: 'imageProfile', maxCount: 1 },
+//     { name: 'imageCover', maxCount: 1 }
+// ]);
+const imageUpload = parser.single('imageProfile');
 const router = express_1.Router();
 router.get(endpoints_1.default.user.GET_PROFILE(':userIdentifier'), authenticate_1.default, validate_1.getProfileValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userIdentifier = req.params.userIdentifier;
@@ -27,13 +49,13 @@ router.get(endpoints_1.default.user.GET_PROFILE(':userIdentifier'), authenticate
     const user = userIdentifier.match(config_1.default.regex.uuidV4) ? yield userService_1.getProfileByUserId(userIdentifier, includePosts, req.userId) : yield userService_1.getProfileByUsername(userIdentifier, includePosts, req.userId);
     res.json(user);
 })));
-router.put(endpoints_1.default.user.UPDATE_PROFILE(':userId'), authenticate_1.default, validate_1.updateProfileValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.put(endpoints_1.default.user.UPDATE_PROFILE(':userId'), authenticate_1.default, imageUpload, validate_1.updateProfileValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.params.userId;
     if (req.userId !== userId) {
         res.status(httpResponseCodes_1.default.FORBIDDEN).send({ error: "You cannot edit someone else's profile" });
     }
     else {
-        const user = yield userService_1.updateProfile(userId, req.body);
+        const user = yield userService_1.updateProfile(userId, req.body, req.file);
         res.json(user);
     }
 })));

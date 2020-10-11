@@ -60,8 +60,13 @@ export async function updateProfile(userId: string,
                                     {
                                         username, fullname, description,
                                         profilePhotoUrl, coverPhotoUrl
-                                    }) {
-    await Profile.update({username, fullname, description, profilePhotoUrl, coverPhotoUrl}, {where: {userId}});
+                                    },
+                                    imageFile?: any) {
+    if (imageFile){
+        await Profile.update({username, fullname, description, profilePhotoUrl: imageFile.url}, {where: {userId}});
+    } else {
+        await Profile.update({username, fullname, description}, {where: {userId}});
+    }
     return await Profile.findByPk(userId)
 }
 

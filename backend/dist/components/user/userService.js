@@ -75,9 +75,14 @@ function getProfileByUserId(userId, includePosts, currentUserId) {
     });
 }
 exports.getProfileByUserId = getProfileByUserId;
-function updateProfile(userId, { username, fullname, description, profilePhotoUrl, coverPhotoUrl }) {
+function updateProfile(userId, { username, fullname, description, profilePhotoUrl, coverPhotoUrl }, imageFile) {
     return __awaiter(this, void 0, void 0, function* () {
-        yield Profile.update({ username, fullname, description, profilePhotoUrl, coverPhotoUrl }, { where: { userId } });
+        if (imageFile) {
+            yield Profile.update({ username, fullname, description, profilePhotoUrl: imageFile.url }, { where: { userId } });
+        }
+        else {
+            yield Profile.update({ username, fullname, description }, { where: { userId } });
+        }
         return yield Profile.findByPk(userId);
     });
 }

@@ -18,6 +18,29 @@ import authenticate from "../../middlewares/authenticate";
 import endpoints from "../../utils/constants/endpoints";
 import httpCodes from "../../utils/constants/httpResponseCodes";
 import config from "../../config/config";
+import multer from "multer";
+import {MAX_IMG_FILE_SIZE, MAX_IMGS_PER_UPLOAD} from "../../utils/constants";
+import {cloudinary} from "../../config/cloudinaryConfig";
+import cloudinaryStorage from "multer-storage-cloudinary";
+
+const storage = cloudinaryStorage({
+    cloudinary,
+    folder: 'postImages',
+    allowedFormats: ['jpg', 'png', "jpeg"],
+    filename: function (req, file, cb) {
+        cb(null, file.originalname.substring(0, file.originalname.length - 4) + '-' + Date.now())
+    },
+    transformation: [{width: 960, height: 960, crop: 'limit'}]
+});
+const parser = multer({
+    storage,
+    limits: {fileSize: MAX_IMG_FILE_SIZE}
+});
+// const imageUpload = parser.fields([
+//     { name: 'imageProfile', maxCount: 1 },
+//     { name: 'imageCover', maxCount: 1 }
+// ]);
+const imageUpload = parser.single('imageProfile');
 
 const router = Router();
 
@@ -28,12 +51,12 @@ router.get(endpoints.user.GET_PROFILE(':userIdentifier'), authenticate, getProfi
     res.json(user);
 }));
 
-router.put(endpoints.user.UPDATE_PROFILE(':userId'), authenticate, updateProfileValidationRules, validate, handleErrorAsync(async (req, res) => {
+router.put(endpoints.user.UPDATE_PROFILE(':userId'), authenticate, imageUpload, updateProfileValidationRules, validate, handleErrorAsync(async (req, res) => {
     const userId: string = req.params.userId;
     if (req.userId !== userId) {
         res.status(httpCodes.FORBIDDEN).send({error: "You cannot edit someone else's profile"});
     } else {
-        const user = await updateProfile(userId, req.body)
+        const user = await updateProfile(userId, req.body, req.file)
         res.json(user);
     }
 }));
