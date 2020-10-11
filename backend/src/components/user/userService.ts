@@ -58,12 +58,21 @@ export async function getProfileByUserId(userId, includePosts: boolean, currentU
 
 export async function updateProfile(userId: string,
                                     {
-                                        username, fullname, description,
-                                        profilePhotoUrl, coverPhotoUrl
+                                        username, fullname, description
                                     },
                                     imageFiles?: Array<any>) {
     if (imageFiles){
-        await Profile.update({username, fullname, description: imageFiles.toString()}, {where: {userId}});
+        const profilePhotoUrl = imageFiles['imageProfile'][0]?.url
+        const coverPhotoUrl = imageFiles['imageCover'][0]?.url
+        if (profilePhotoUrl && coverPhotoUrl){
+            await Profile.update({username, fullname, description, profilePhotoUrl, coverPhotoUrl}, {where: {userId}});
+        }
+        else if (profilePhotoUrl){
+            await Profile.update({username, fullname, description, profilePhotoUrl}, {where: {userId}});
+        }
+        else if (coverPhotoUrl){
+            await Profile.update({username, fullname, description, coverPhotoUrl}, {where: {userId}});
+        }
         // await Profile.update({username, fullname, description, profilePhotoUrl: imageFile.url}, {where: {userId}});
     } else {
         await Profile.update({username, fullname, description}, {where: {userId}});
