@@ -60,10 +60,10 @@ export async function updateProfile(userId: string,
                                     {
                                         username, fullname, description
                                     },
-                                    imageFiles?: { imageProfile: Array<any>;  imageCover: Array<any> }) {
+                                    imageFiles?: { imageProfile?: Array<any>;  imageCover?: Array<any> }) {
     if (imageFiles) {
-        const profilePhotoUrl = imageFiles?.imageProfile[0]?.url
-        const coverPhotoUrl = imageFiles?.imageCover[0]?.url
+        const profilePhotoUrl = imageFiles?.imageProfile?.[0]?.url
+        const coverPhotoUrl = imageFiles?.imageCover?.[0]?.url
         if (profilePhotoUrl && coverPhotoUrl) {
             await Profile.update({username, fullname, description, profilePhotoUrl, coverPhotoUrl}, {where: {userId}});
         } else if (profilePhotoUrl) {
