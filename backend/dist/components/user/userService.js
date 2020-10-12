@@ -111,21 +111,19 @@ function getFriendShipBetweenUsers(currentUserId, otherUserId) {
 function updateProfile(userId, { username, fullname, description }, imageFiles) {
     var _a, _b, _c, _d, _e, _f;
     return __awaiter(this, void 0, void 0, function* () {
-        if (imageFiles) {
-            const profilePhotoUrl = (_c = (_b = (_a = imageFiles) === null || _a === void 0 ? void 0 : _a.imageProfile) === null || _b === void 0 ? void 0 : _b[0]) === null || _c === void 0 ? void 0 : _c.url;
-            const coverPhotoUrl = (_f = (_e = (_d = imageFiles) === null || _d === void 0 ? void 0 : _d.imageCover) === null || _e === void 0 ? void 0 : _e[0]) === null || _f === void 0 ? void 0 : _f.url;
-            if (profilePhotoUrl && coverPhotoUrl) {
-                yield Profile.update({ username, fullname, description, profilePhotoUrl, coverPhotoUrl }, { where: { userId } });
-            }
-            else if (profilePhotoUrl) {
-                yield Profile.update({ username, fullname, description, profilePhotoUrl }, { where: { userId } });
-            }
-            else if (coverPhotoUrl) {
-                yield Profile.update({ username, fullname, description, coverPhotoUrl }, { where: { userId } });
-            }
-            // await Profile.update({username, fullname, description, profilePhotoUrl: imageFile.url}, {where: {userId}});
+        const profilePhotoUrl = (_c = (_b = (_a = imageFiles) === null || _a === void 0 ? void 0 : _a.imageProfile) === null || _b === void 0 ? void 0 : _b[0]) === null || _c === void 0 ? void 0 : _c.url;
+        const coverPhotoUrl = (_f = (_e = (_d = imageFiles) === null || _d === void 0 ? void 0 : _d.imageCover) === null || _e === void 0 ? void 0 : _e[0]) === null || _f === void 0 ? void 0 : _f.url;
+        if (profilePhotoUrl && coverPhotoUrl) {
+            yield Profile.update({ username, fullname, description, profilePhotoUrl, coverPhotoUrl }, { where: { userId } });
+        }
+        else if (profilePhotoUrl) {
+            yield Profile.update({ username, fullname, description, profilePhotoUrl }, { where: { userId } });
+        }
+        else if (coverPhotoUrl) {
+            yield Profile.update({ username, fullname, description, coverPhotoUrl }, { where: { userId } });
         }
         else {
+            console.log('updating only', username, fullname, description);
             yield Profile.update({ username, fullname, description }, { where: { userId } });
         }
         return yield Profile.findByPk(userId);
