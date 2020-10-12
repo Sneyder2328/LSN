@@ -1,5 +1,8 @@
 import {HashTable, HashTableArray} from "../../utils/utils";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {authActions} from "../Auth/authReducer";
+
+const {logOutSuccess} = authActions
 
 export type UserSearch = {
     userId: string;
@@ -13,7 +16,7 @@ export type SearchState = {
     isSearching: boolean;
 };
 
-const initialSearchState: SearchState = {
+const initialState: SearchState = {
     users: {},
     queries: {},
     isSearching: false
@@ -21,7 +24,7 @@ const initialSearchState: SearchState = {
 
 export const searchSlice = createSlice({
     name: 'search',
-    initialState: initialSearchState,
+    initialState,
     reducers: {
         searchUserRequest: (state) => {
             state.isSearching = true
@@ -44,6 +47,9 @@ export const searchSlice = createSlice({
         searchUserError: (state) => {
             state.isSearching = false
         }
+    },
+    extraReducers: builder => {
+        builder.addCase(logOutSuccess, _ => initialState)
     }
 })
 

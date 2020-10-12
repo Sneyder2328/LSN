@@ -4,7 +4,10 @@ import {HashTable} from "../../utils/utils";
 import {AppState} from "../../reducers";
 import {createSelector} from "reselect";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {authActions} from "../Auth/authReducer";
+
 const {loadCommentsSuccess, loadCommentsError, loadCommentsRequest, createCommentError, createCommentRequest, createCommentSuccess} = commentsActions
+const {logOutSuccess} = authActions
 
 export type PostImage = {
     url: string;
@@ -20,7 +23,6 @@ export interface PostObject extends Post {
     comments: Array<string>;
     images: Array<PostImage>;
     previewImages?: Array<File>;
-    //authorProfile: Profile; delete this one while normalizing with normalizr
     likeStatus: 'like' | 'dislike' | undefined;
 }
 
@@ -36,14 +38,14 @@ export type PostState = {
     metas: HashTable<PostMetadata>;
 };
 
-export const initialPostsState: PostState = {
+const initialState: PostState = {
     entities: {},
     metas: {}
 };
 
 export const postsSlice = createSlice({
     name: "posts",
-    initialState: initialPostsState,
+    initialState,
     reducers: {
         setPosts: (state, action: PayloadAction<HashTable<PostObject>>) => {
             state.entities = {
@@ -171,7 +173,7 @@ export const postsSlice = createSlice({
                 ...state.metas[action.payload.comment.postId],
                 isCreatingComment: false
             }
-        })
+        }).addCase(logOutSuccess, _ => initialState)
     }
 })
 

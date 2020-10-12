@@ -2,6 +2,9 @@ import {createSelector} from 'reselect'
 import {HashTable} from "../../utils/utils";
 import {AppState} from "../../reducers";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {authActions} from "../Auth/authReducer";
+
+const {logOutSuccess} = authActions
 
 export interface CommentObject {
     id: string;
@@ -18,6 +21,7 @@ export interface CommentObject {
 
 export interface CommentMetadata {
     likeStatus: 'like' | 'dislike' | undefined;
+    isUploading: boolean;
 }
 
 export type CommentsState = {
@@ -25,14 +29,14 @@ export type CommentsState = {
     metas: HashTable<CommentMetadata>;
 };
 
-export const initialCommentsState: CommentsState = {
+const initialState: CommentsState = {
     entities: {},
     metas: {}
 };
 
 export const commentsSlice = createSlice({
     name: 'comments',
-    initialState: initialCommentsState,
+    initialState,
     reducers: {
         loadCommentsRequest: (state, action: PayloadAction<{ postId: string }>) => {
 
@@ -85,6 +89,9 @@ export const commentsSlice = createSlice({
                 likeStatus: undefined
             }
         }
+    },
+    extraReducers: builder => {
+        builder.addCase(logOutSuccess, _ => initialState)
     }
 })
 

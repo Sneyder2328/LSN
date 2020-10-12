@@ -1,5 +1,8 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {HashTable} from "../../utils/utils";
+import {authActions} from "../Auth/authReducer";
+
+const {logOutSuccess} = authActions
 
 type Profile = {
     username: string;
@@ -7,11 +10,11 @@ type Profile = {
 };
 export type ProfilesState = HashTable<Profile>;
 
-const initialProfilesState: ProfilesState = {};
+const initialState: ProfilesState = {};
 
 export const profilesSlice = createSlice({
     name: 'profiles',
-    initialState: initialProfilesState,
+    initialState,
     reducers: {
         fetchProfileRequest: (state) => {
 
@@ -25,6 +28,9 @@ export const profilesSlice = createSlice({
         fetchProfileError: (state) => {
 
         }
+    },
+    extraReducers: builder => {
+        builder.addCase(logOutSuccess, _ => initialState)
     }
 })
 

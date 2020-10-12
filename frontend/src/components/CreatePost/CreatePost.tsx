@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {TextEditor} from "../commons/TextEditor";
-import {connect, useDispatch, useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {PostRequest} from "../Post/Post";
 import {createPost} from "../Post/postActions";
 import './styles.scss'

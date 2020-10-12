@@ -65,9 +65,8 @@ const newsFeedSlice = createSlice({
             state.isCreatingPost = false
         }).addCase(createPostError, (state, action) => {
             state.isCreatingPost = false
-        }).addCase(logOutSuccess,_ => {
-            return initialStateNewsFeed
-        })
+        }).addCase(logOutSuccess, _ => initialStateNewsFeed)
     }
 })
+
 export const newsFeedReducer = newsFeedSlice.reducer

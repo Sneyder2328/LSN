@@ -1,6 +1,9 @@
 import {HashTable} from "../../utils/utils";
 import {Profile} from "../Post/Post";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {authActions} from "../Auth/authReducer";
+
+const {logOutSuccess} = authActions
 
 export type UsersState = {
     entities: HashTable<UserObject>;
@@ -10,14 +13,14 @@ export type UsersState = {
 export interface UserObject extends Profile {
 }
 
-export const initialUsersState: UsersState = {
+const initialState: UsersState = {
     entities: {},
     metas: {}
 };
 
 export const usersSlice = createSlice({
     name: 'users',
-    initialState: initialUsersState,
+    initialState: initialState,
     reducers: {
         setUsers: (state, action: PayloadAction<HashTable<UserObject>>) => {
             state.entities = {
@@ -28,6 +31,9 @@ export const usersSlice = createSlice({
         setUser: (state, action: PayloadAction<UserObject>) => {
             state.entities[action.payload.userId] = action.payload
         }
+    },
+    extraReducers: builder => {
+        builder.addCase(logOutSuccess, _ => initialState)
     }
 })
 
