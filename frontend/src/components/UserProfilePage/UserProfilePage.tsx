@@ -75,15 +75,17 @@ export const UserProfilePage: React.FC<Props> = ({match}) => {
 
                     </div>
                     <div className={styles.mainSection + ' mainSection'}>
-                        <CoverPhoto className={styles.coverPhoto} url={userProfile.coverPhotoUrl}/>
-                        <div className={styles.userInfo}>
-                            <div className={styles.photoAndActionsContainer}>
-                                <ProfilePhoto className={styles.profilePhoto} url={userProfile.profilePhotoUrl}/>
-                                <a className={styles.actionBtn} onClick={handleUserAction}>{actionName}</a>
+                        <div className={styles.profileWrapper}>
+                            <CoverPhoto className={styles.coverPhoto} url={userProfile.coverPhotoUrl}/>
+                            <div className={styles.userInfo}>
+                                <div className={styles.photoAndActionsContainer}>
+                                    <ProfilePhoto className={styles.profilePhoto} url={userProfile.profilePhotoUrl}/>
+                                    <a className={styles.actionBtn} onClick={handleUserAction}>{actionName}</a>
+                                </div>
+                                <span className={styles.fullname}>{userProfile.fullname}</span>
+                                <span className={styles.username}>@{userProfile.username}</span>
+                                <span className={styles.description}>{userProfile.description}</span>
                             </div>
-                            <span className={styles.fullname}>{userProfile.fullname}</span>
-                            <span className={styles.username}>@{userProfile.username}</span>
-                            <span className={styles.description}>{userProfile.description}</span>
                         </div>
                         <div>
                             {userPosts && userPosts.map((postId: string) => <Post postId={postId} key={postId}/>)}

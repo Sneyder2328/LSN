@@ -22,6 +22,11 @@ main {
       //margin: 0 10px;
       background-color: transparent;
 
+      .profileWrapper {
+        border-radius: $radius;
+        background-color: #fff;
+      }
+
       .coverPhoto {
         width: 100%;
         height: 190px;
@@ -31,14 +36,12 @@ main {
       }
 
       .userInfo {
-        background-color: #fff;
         padding-left: 20px;
         padding-right: 20px;
         padding-bottom: 20px;
         margin-top: -80px;
         display: flex;
         flex-direction: column;
-        border-radius: 8px;
 
         .photoAndActionsContainer {
           //background-color: #2c80d0;
