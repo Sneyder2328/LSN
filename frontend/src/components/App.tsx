@@ -9,19 +9,7 @@ import {persistor, store} from "../store";
 import {removeAuthTokenHeaders, setAccessTokenHeaders} from "../utils/setAccessTokenHeaders";
 import {UserProfilePage} from "./UserProfilePage/UserProfilePage";
 import {PersistGate} from "redux-persist/integration/react";
-
-// const tokensExist = accessToken && refreshToken && dateRefreshTokenIssued;
-
-// if (!tokensExist || isTokenExpired(dateRefreshTokenIssued, ONE_WEEK_IN_MILLIS)) {
-//     removeAuthTokenHeaders();
-//     removeTokens();
-//     // clear current profile
-//     store.dispatch(loggedOut());
-// } else {
-//     setAccessTokenHeaders(accessToken);
-//     const decoded = jwt_decode<{ id: string }>(accessToken);
-//     store.dispatch(setCurrentUser(decoded.id));
-// }
+import {ModalContainer} from "./Modals/ModalContainer";
 
 export const App = () => {
     return (
@@ -35,6 +23,7 @@ export const App = () => {
                         <Route path='*' component={PageNotFound}/>
                     </Switch>
                 </BrowserRouter>
+                <ModalContainer />
             </PersistGate>
         </Provider>
     );

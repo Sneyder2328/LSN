@@ -1,7 +1,7 @@
 import React, {useEffect} from "react";
 import NewsFeed from "../NewsFeed/NewsFeed";
 import {CreatePost} from "../CreatePost/CreatePost";
-import './styles.scss'
+import styles from './styles.module.scss'
 import NavBar from "../NavBar/NavBar";
 import {DashBoardProfile} from "../DashBoardProfile/DashBoardProfile";
 import {useDispatch, useSelector} from "react-redux";
@@ -19,16 +19,16 @@ export const NewsFeedPage = () => {
     return (
         <div>
             <NavBar/>
-            <main className='page-outer'>
-                <div className='page-container'>
-                    <div className='left-section'>
+            <main>
+                <div className={styles.pageContainer + ' pageContainer'}>
+                    <div className={styles.leftSection + ' leftSection'}>
                         <DashBoardProfile/>
                     </div>
-                    <div className='main-section'>
+                    <div className={styles.mainSection + ' mainSection'}>
                         <CreatePost/>
                         <NewsFeed/>
                     </div>
-                    <div className='right-section'>
+                    <div className={styles.rightSection + ' rightSection'}>
                     </div>
                 </div>
             </main>

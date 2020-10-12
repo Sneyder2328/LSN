@@ -1,8 +1,5 @@
-import {AuthApi} from "./authApi";
-import {ACCESS_TOKEN, REFRESH_TOKEN} from "../../utils/constants";
-import {removeAuthTokenHeaders, setAccessTokenHeaders, setRefreshTokenHeaders} from "../../utils/setAccessTokenHeaders";
-import * as jwt_decode from 'jwt-decode';
-import {getTokens, removeTokens, setTokens} from "../../utils/tokensManager";
+import {AuthApi, ProfileRequest} from "./authApi";
+import {setRefreshTokenHeaders} from "../../utils/setAccessTokenHeaders";
 import {authActions} from "./authReducer";
 import {AppThunk} from "../../store";
 import {AppState} from "../../reducers";
@@ -12,7 +9,7 @@ import {usersActions} from "../User/userReducer";
 const {
     updateProfileSuccess,
     updateProfileRequest,
-    refreshAccessTokenSuccess,
+    updateProfileError,
     logOutRequest,
     signUpRequest,
     logInRequest,
@@ -43,14 +40,6 @@ export const signUpUser = (userData: SignUpCredentials): AppThunk => async (disp
     try {
         const response = await AuthApi.signUp(userData);
         processSignInResponse({dispatch, response})
-        // if (response.data.access === true) {
-        //     const accessToken = response.headers[ACCESS_TOKEN];
-        //     const refreshToken = response.headers[REFRESH_TOKEN];
-        //     setAccessTokenHeaders(accessToken);
-        //     setTokens(accessToken, refreshToken);
-        //     // @ts-ignore
-        //     dispatch(setCurrentUser(jwt_decode(accessToken).id));
-        // }
     } catch (err) {
         console.log("error:", err);
         const error = err?.response?.data?.error || 'Network connection error'
@@ -66,14 +55,6 @@ export const logInUser = (credentials: LoginCredentials): AppThunk => async (dis
     try {
         const response = await AuthApi.logIn(credentials);
         processSignInResponse({dispatch, response})
-        // if (response.data.access === true) {
-        //     const accessToken = response.headers[ACCESS_TOKEN];
-        //     const refreshToken = response.headers[REFRESH_TOKEN];
-        //     setAccessTokenHeaders(accessToken);
-        //     setTokens(accessToken, refreshToken);
-        //     // @ts-ignore
-        //     dispatch(setCurrentUser(jwt_decode(accessToken).id));
-        // }
     } catch (err) {
         console.log("error:", err);
         const error = err?.response?.data?.error || 'Network connection error'
@@ -82,16 +63,27 @@ export const logInUser = (credentials: LoginCredentials): AppThunk => async (dis
     }
 };
 
+export const updateProfile = (user: ProfileRequest): AppThunk => async (dispatch) => {
+    console.log('updateProfile user=', user);
+    return new Promise<boolean>(async (resolve) => {
+        dispatch(updateProfileRequest())
+        try {
+            const response = await AuthApi.updateProfile(user)
+            console.log('updateProfile response', response);
+            dispatch(setUser(response.data))
+            dispatch(updateProfileSuccess())
+            resolve(true)
+        } catch (err) {
+            console.log('updateProfile err', err);
+            dispatch(updateProfileError(err.toString()))
+            resolve(false)
+        }
+    })
+}
 
 export const logOutUser = (): AppThunk => async (dispatch: Function, getState: () => AppState) => {
     dispatch(logOutRequest());
     try {
-        // const {refreshToken} = getTokens();
-        // setRefreshTokenHeaders(refreshToken);
-        // await AuthApi.logOut();
-        // removeAuthTokenHeaders();
-        // removeTokens();
-        // dispatch(loggedOut());
         const {refreshToken} = getState().auth;
         setRefreshTokenHeaders(refreshToken!!);
         await AuthApi.logOut();

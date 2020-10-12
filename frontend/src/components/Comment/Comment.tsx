@@ -7,6 +7,7 @@ import {selectComment} from "./commentReducer";
 import {useTimeSincePublishedShort} from "../../hooks/updateRelativeTimeHook";
 import {dislikeComment, likeComment} from "./commentActions";
 import classNames from "classnames";
+import {ProfilePhoto} from "../commons/ProfilePhoto";
 
 export interface CommentResponse {
     id: string;
@@ -33,9 +34,7 @@ const Comment: React.FC<Props> = ({comment, likeComment, dislikeComment}) => {
 
     return (
         <div className='comment'>
-            <img className='avatar'
-                 src={'https://miro.medium.com/max/280/1*MccriYX-ciBniUzRKAUsAw.png'}
-                 alt='comment pic'/>
+            <ProfilePhoto url={comment.authorProfile.profilePhotoUrl} className='avatar'/>
             <div className='comment-box'>
                 <div>
                     <a className='fullname' href={`/${comment.authorProfile.username}`}>

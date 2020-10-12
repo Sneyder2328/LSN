@@ -11,6 +11,7 @@ export type UsersState = {
 };
 
 export interface UserObject extends Profile {
+    friendship: 'accepted' | 'pendingIncoming' | 'pendingOutgoing' | 'blockedIncoming' | 'blockedOutgoing' | undefined;
 }
 
 const initialState: UsersState = {
