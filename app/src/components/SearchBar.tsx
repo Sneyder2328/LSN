@@ -39,6 +39,7 @@ const styles = StyleSheet.create({
         borderRadius: 22,
         backgroundColor: 'rgba(0,0,0,0.09)',
         marginLeft: 8,
+        marginRight: 8,
     },
     input: {
         flex: 1,

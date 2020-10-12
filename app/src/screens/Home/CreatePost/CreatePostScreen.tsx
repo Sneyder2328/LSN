@@ -1,11 +1,17 @@
 import React, {useEffect, useState} from "react";
-import {FlatList, Platform, StyleSheet, TextInput, TouchableOpacity, View} from "react-native";
+import {FlatList, StyleSheet, TextInput, TouchableOpacity, View} from "react-native";
 import {ProfilePhoto} from "../../../components/ProfilePhoto";
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigation} from "@react-navigation/native";
 import {FontAwesome5} from '@expo/vector-icons';
 import {HeaderActionButton} from "../../../components/HeaderActionButton";
-import {genUUID, ImageFile} from "../../../utils/utils";
+import {
+    askPermissionForCamera,
+    askPermissionForCameraRoll,
+    genUUID,
+    getImgTypeForUri, getUri,
+    ImageFile
+} from "../../../utils/utils";
 import * as ImagePicker from 'expo-image-picker';
 import {COLOR_PRIMARY} from "../../../constants/Colors";
 import {PreviewImage} from "../../../components/PreviewImage";
@@ -19,11 +25,6 @@ const optionsForImage = {
 };
 
 const avatarDimens = 50;
-
-const getImgTypeForUri = (uri: string): string | undefined => {
-    if (uri.indexOf(".png")) return 'image/png'
-    if (uri.indexOf(".jpg") || uri.indexOf(".jpeg")) return 'image/jpeg'
-}
 
 export const CreatePostScreen = () => {
     const navigation = useNavigation()
@@ -47,22 +48,6 @@ export const CreatePostScreen = () => {
         // navigation.setParams({text, userId})
     }, [text, userId, imageFiles])
 
-    const askPermissionForCamera = async () => {
-        const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
-        if (!permissionResult.granted) {
-            alert("Permission to access camera is required!");
-        }
-        return permissionResult.granted
-    }
-
-    const askPermissionForCameraRoll = async () => {
-        const permissionResult = await ImagePicker.requestCameraRollPermissionsAsync();
-        if (!permissionResult.granted) {
-            alert("Permission to access camera roll is required!");
-        }
-        return permissionResult.granted
-    }
-
     const openImagePickerAsync = async () => {
         if (!(await askPermissionForCameraRoll())) return
         const pickerResult = await ImagePicker.launchImageLibraryAsync(optionsForImage);
@@ -80,12 +65,9 @@ export const CreatePostScreen = () => {
         console.log('pickerResult=', pickerResult);
         if (!pickerResult.cancelled && pickerResult.uri) {
             const type = getImgTypeForUri(pickerResult.uri);
-            if (!type) {
-                alert("This type of file is not supported")
-                return
-            }
+            if (!type) return alert("This type of file is not supported")
             const newImg: ImageFile = {
-                uri: Platform.OS === "android" ? pickerResult.uri : pickerResult.uri.replace("file://", ""),
+                uri: getUri(pickerResult.uri),
                 name: new Date().getTime().toString(),
                 type
             }
@@ -105,11 +87,6 @@ export const CreatePostScreen = () => {
         </View>
         <View style={styles.bottom}>
             <FlatList
-                style={{
-                    // backgroundColor: '#00f',remove
-                    // bottom: 0,
-                    // left: 0,
-                }}
                 data={imageFiles}
                 renderItem={({item}) => (<PreviewImage uri={item.uri} onImageRemoved={onImageRemoved}/>)}
                 keyExtractor={(item => item.name)} horizontal={true}/>

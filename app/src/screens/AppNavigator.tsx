@@ -54,7 +54,7 @@ const Screens = () => {
                 name="UserProfile"
                 options={{
                     title: '',
-                    headerTransparent: true,
+                    // headerTransparent: true,
                 }}
                 component={ProfileScreen}/>
             <Stack.Screen
@@ -65,7 +65,7 @@ const Screens = () => {
                 component={EditProfileScreen}
                 options={{
                     title: 'Edit Profile',
-                    headerTransparent: true,
+                    // headerTransparent: true,
                 }}/>
         </Stack.Navigator>
     )
@@ -104,7 +104,7 @@ const DrawerContent = props => {
                     onPress={() => console.log('hi Privacy')}/>
             </DrawerContentScrollView>
             <View>
-                <Text style={{fontSize: 12, marginLeft: 16}}>LSN Version 1.0</Text>
+                <Text style={{fontSize: 12, marginLeft: 16}}>LSN Version 1.0.1</Text>
                 <DrawerItem
                     label={'Log out'}
                     icon={() => (<Feather name="log-out" size={24} color="black"/>)}

@@ -2,7 +2,7 @@ import JwtDecode from 'jwt-decode';
 import {authActions} from "./authReducer";
 import {AppThunk} from "../../store";
 import {usersActions} from "../usersReducer";
-import {AuthApi} from "./authApi";
+import {AuthApi, ProfileRequest} from "./authApi";
 import {MyAppState} from "../rootReducer";
 import {setRefreshTokenHeaders} from "../api";
 
@@ -60,14 +60,12 @@ export const logInUser = (credentials: LoginCredentials): AppThunk => async (dis
     }
 };
 
-export const updateProfile = (userId: string, fullname: string, username: string, description: string, profilePhotoUrl: string,
-                              coverPhotoUrl: string): AppThunk => async (dispatch) => {
-    return new Promise<boolean>(async (resolve, reject) => {
+export const updateProfile = (user: ProfileRequest): AppThunk => async (dispatch) => {
+    console.log('updateProfile user=', user);
+    return new Promise<boolean>(async (resolve) => {
         dispatch(updateProfileRequest())
         try {
-            const response = await AuthApi.updateProfile({
-                userId, fullname, username, description, profilePhotoUrl, coverPhotoUrl
-            })
+            const response = await AuthApi.updateProfile(user)
             console.log('updateProfile response', response);
             dispatch(setUser(response.data))
             dispatch(updateProfileSuccess())
@@ -92,21 +90,3 @@ export const logOutUser = (): AppThunk => async (dispatch: Function, getState: (
         dispatch(logOutError());
     }
 };
-
-// export const refreshAccessToken = async (dispatch: Function, getState: () => MyAppState) => {
-//     try {
-//         const {refreshToken} = getState().auth;
-//         if (refreshToken) {
-//             const accessToken = await AuthApi.getNewAccessToken(refreshToken)
-//             if (accessToken) {
-//                 dispatch(refreshAccessTokenSuccess(accessToken))
-//             }
-//         } else {
-//             dispatch(logOutSuccess());
-//         }
-//     } catch (err) {
-//         console.log("error logging out", err);
-//         dispatch(logOutError());
-//     }
-//     return Promise.resolve();
-// };

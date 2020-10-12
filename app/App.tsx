@@ -29,6 +29,8 @@ import {AppNavigator} from "./src/screens/AppNavigator";
 //     }
 // }
 
+// console.log = () => {};  // hide logs
+
 const MyTheme = {
     ...PaperDefaultTheme,
     ...NavigationDefaultTheme,
@@ -44,7 +46,7 @@ const MyTheme = {
         card: COLOR_PRIMARY,
         // paperTheme
         accent: COLOR_ACCENT,
-        backdrop: '#00f',
+        // backdrop: 'rgba(141,141,141,0.33)',
         surface: '#fff',
         disabled: '#ff4b13'
     },

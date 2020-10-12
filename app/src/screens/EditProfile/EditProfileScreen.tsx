@@ -5,13 +5,21 @@ import {useDispatch, useSelector} from "react-redux";
 import {MyAppState} from "../../modules/rootReducer";
 import {COLOR_PRIMARY, COLOR_TEXT_CAPTION, FORM_FONT_SIZE} from "../../constants/Colors";
 import {CoverPhoto} from "../../components/CoverPhoto";
-import {TextInput} from "react-native-paper";
+import {TextInput, List} from "react-native-paper";
 import {HeaderActionButton} from "../../components/HeaderActionButton";
 import {useNavigation} from "@react-navigation/native";
 import {updateProfile} from "../../modules/Auth/authActions";
 import {FullOverlay} from "../../components/FullOverlay";
 import {FieldErrors, useForm} from "react-hook-form";
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import {MaterialCommunityIcons} from '@expo/vector-icons';
+import {Dialog, Portal} from 'react-native-paper';
+import {
+    getImgTypeForUri,
+    getUri,
+    ImageFile, launchCameraAsync, openImagePickerAsync
+} from "../../utils/utils";
+import * as ImagePicker from "expo-image-picker";
+import {ImagePickerResult} from "expo-image-picker";
 
 type EditProfileParams = {
     username: string;
@@ -20,6 +28,33 @@ type EditProfileParams = {
 };
 
 export const EditProfileScreenName = "EditProfile"
+
+type Prps = {
+    visible: boolean;
+    setVisibility: (visible: boolean) => void;
+    onHandlePickerResult: (pickerResult: ImagePickerResult) => void;
+    // processImageForProfile: (pickerResult: ImagePickerResult;
+}
+const PhotoPickerDialog: React.FC<Prps> = ({visible, setVisibility, onHandlePickerResult}) => {
+    // const [visible, setVisible] = useState(false)
+    const hideDialog = () => setVisibility(false)
+
+    return (<Portal>
+        <Dialog visible={visible} onDismiss={hideDialog}>
+            <Dialog.Content>
+                <List.Item title="Take photo" onPress={async () => {
+                    hideDialog()
+                    await launchCameraAsync(onHandlePickerResult)
+                }}/>
+                <List.Item title="Choose existing photo" onPress={async () => {
+                    hideDialog()
+                    await openImagePickerAsync(onHandlePickerResult)
+                }}/>
+            </Dialog.Content>
+        </Dialog>
+    </Portal>)
+}
+
 export const EditProfileScreen = () => {
     const navigation = useNavigation()
     const dispatch = useDispatch()
@@ -40,6 +75,9 @@ export const EditProfileScreen = () => {
     const [username, setUsername] = useState<string>(userProfile.username)
     const [fullname, setFullname] = useState<string>(userProfile.fullname)
     const [description, setDescription] = useState<string>(userProfile.description)
+    const [profilePhoto, setProfilePhoto] = useState<ImageFile>();
+    const [isPickingProfilePic, setIsPickingProfilePic] = useState<boolean | undefined>(undefined);
+    const [coverPhoto, setCoverPhoto] = useState<ImageFile>();
 
     useEffect(() => {
         register("fullname", {
@@ -63,13 +101,11 @@ export const EditProfileScreen = () => {
     }, [username, fullname, description])
 
     const handleSave = async ({fullname, username, description}: EditProfileParams) => {
-        const updated = await dispatch(updateProfile(userId, fullname, username, description, '', ''))
-        console.log('updated=', updated);
         // @ts-ignore
-        if (updated === true) {
-            console.log('going bak!!!');
-            navigation.goBack()
-        }
+        const updated: boolean = await dispatch(
+            updateProfile({userId, fullname, username, description, profilePhoto, coverPhoto})
+        )
+        if (updated) navigation.goBack()
     };
 
     const onValidData = async (data: EditProfileParams) => {
@@ -89,30 +125,68 @@ export const EditProfileScreen = () => {
         navigation.setOptions({
             headerRight: () => (<HeaderActionButton title={'SAVE'} onPress={handleSubmit(onValidData, onInvalidData)}/>)
         })
-    }, [fullname, username, description])
+    }, [fullname, username, description, profilePhoto, coverPhoto])
 
-    return (<View>
-        <View style={{}}>
-            <CoverPhoto coverPhotoUrl={userProfile.coverPhotoUrl}/>
-            <MaterialCommunityIcons name="camera-outline" size={24} color={COLOR_PRIMARY} style={{
+    const [visible, setVisible] = useState(false);
 
-            }} />
+    const showDialog = () => setVisible(true);
+
+    const onChangeProfilePic = () => {
+        setIsPickingProfilePic(true)
+        showDialog()
+    }
+    const onChangeCoverPic = () => {
+        setIsPickingProfilePic(false)
+        showDialog()
+    }
+
+    const processImage = (pickerResult: ImagePicker.ImagePickerResult) => {
+        console.log('pickerResult=', pickerResult);
+        if (!pickerResult.cancelled && pickerResult.uri) {
+            const type = getImgTypeForUri(pickerResult.uri);
+            if (!type) return alert("This type of file is not supported")
+            const newImg: ImageFile = {
+                uri: getUri(pickerResult.uri),
+                name: new Date().getTime().toString(),
+                type
+            }
+            if (isPickingProfilePic) {
+                setProfilePhoto(newImg)
+            } else {
+                setCoverPhoto(newImg)
+            }
+            setIsPickingProfilePic(undefined)
+        }
+    }
+
+    return (<View style={{}}>
+            {/*<CoverPhoto coverPhotoUrl={coverPhoto?.uri || userProfile.coverPhotoUrl}/>*/}
+            <View style={styles.coverPhotoContainer}>
+                {/*<CoverPhoto coverPhotoUrl={coverPhoto?.uri || userProfile.coverPhotoUrl}/>*/}
+                <CoverPhoto coverPhotoUrl={coverPhoto?.uri || userProfile.coverPhotoUrl}/>
+                <MaterialCommunityIcons name="camera-outline" size={36} color={'#fff'}
+                                        style={{position: 'absolute'}} onPress={onChangeCoverPic}/>
+            </View>
+            <View style={styles.profilePhotoContainer}>
+                <ProfilePhoto profilePhotoUrl={profilePhoto?.uri || userProfile.profilePhotoUrl} size={84}/>
+                <MaterialCommunityIcons name="camera-outline" size={30} color={COLOR_PRIMARY}
+                                        style={{position: 'absolute'}} onPress={onChangeProfilePic}/>
+            </View>
+            <TextInput style={styles.input} mode='outlined' label="Full name" placeholder={'Full name'}
+                       autoCorrect={false}
+                       value={fullname} onChangeText={setFullname} returnKeyType={'next'} autoCapitalize={'words'}/>
+            <TextInput style={styles.input} mode='outlined' label="Username" placeholder={'Username'}
+                       autoCorrect={false}
+                       value={username} onChangeText={setUsername} returnKeyType={'next'} autoCapitalize={'none'}
+                       autoCompleteType={'username'}/>
+            <TextInput style={styles.input} mode='outlined' label="Description" placeholder={'Description'}
+                       autoCorrect={false}
+                       value={description} onChangeText={setDescription} returnKeyType={'done'}/>
+            <PhotoPickerDialog visible={visible} setVisibility={(visibility) => setVisible(visibility)}
+                               onHandlePickerResult={processImage}/>
+            <FullOverlay isVisible={isUpdatingProfile}/>
         </View>
-        <View>
-            <ProfilePhoto profilePhotoUrl={userProfile.profilePhotoUrl} size={84}
-                          style={{marginTop: -36, marginLeft: 16}}/>
-            <MaterialCommunityIcons name="camera-outline" size={24} color={COLOR_PRIMARY} />
-        </View>
-        <TextInput style={styles.input} mode='outlined' label="Full name" placeholder={'Full name'} autoCorrect={false}
-                   value={fullname} onChangeText={setFullname} returnKeyType={'next'} autoCapitalize={'words'}/>
-        <TextInput style={styles.input} mode='outlined' label="Username" placeholder={'Username'} autoCorrect={false}
-                   value={username} onChangeText={setUsername} returnKeyType={'next'} autoCapitalize={'none'}
-                   autoCompleteType={'username'}/>
-        <TextInput style={styles.input} mode='outlined' label="Description" placeholder={'Description'}
-                   autoCorrect={false}
-                   value={description} onChangeText={setDescription} returnKeyType={'done'}/>
-        <FullOverlay isVisible={isUpdatingProfile}/>
-    </View>)
+    )
 }
 
 const styles = StyleSheet.create({
@@ -139,4 +213,16 @@ const styles = StyleSheet.create({
         marginTop: 16,
         fontSize: FORM_FONT_SIZE,
     },
+    profilePhotoContainer: {
+        marginTop: -36,
+        marginLeft: 16,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 84,
+    },
+    coverPhotoContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        // flex: 1,
+    }
 })
