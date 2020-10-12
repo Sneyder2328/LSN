@@ -167,9 +167,6 @@ const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComment
                 <ProfilePhoto
                     className={styles.avatar}
                     url={postResponse.authorProfile.profilePhotoUrl}/>
-                {/*<img className='avatar'*/}
-                {/*     src={postResponse.authorProfile.profilePhotoUrl || 'https://miro.medium.com/max/280/1*MccriYX-ciBniUzRKAUsAw.png'}*/}
-                {/*     alt='post pic'/>*/}
                 <div className={styles.commentEditorContainer}>
                     <TextEditor focusWhen={shouldFocusTextEditor} onChange={setCommentText}
                                 placeholder='Write a comment'
