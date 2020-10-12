@@ -43,7 +43,7 @@
       display: inline;
     }
 
-    .time-published {
+    .timePublished {
       font-size: 0.75rem;
       color: #9992a0;
       padding: 0;
@@ -101,7 +101,7 @@
     }
   }
 
-  .load-previous-comments {
+  .loadPreviousComments {
     padding: 6px 14px;
     cursor: pointer;
 
@@ -128,7 +128,7 @@
     }
   }
 
-  .new-comment {
+  .newComment {
     padding: 0;
     margin: 0 0 0 2px;
     min-height: $thumbnailImgDimen+2px;
@@ -143,14 +143,14 @@
       border-radius: 50%;
     }
 
-    .comment-editor-container {
+    .commentEditorContainer {
       width: $main-width-page+-$thumbnailImgDimen+-18px;
       min-height: $thumbnailImgDimen;
       display: flex;
       padding: 7px 2px;
       box-sizing: border-box;
 
-      .comment-editor {
+      .commentEditor {
         width: 100%;
         font-size: 0.9rem;
         box-sizing: border-box;
@@ -162,7 +162,7 @@
         cursor: text;
       }
 
-      .comment-editor:empty:before {
+      .commentEditor:empty:before {
         content: attr(placeholder);
         color: #a9a9a9;
       }

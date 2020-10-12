@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from "react";
-import './styles.scss'
 // @ts-ignore
 import uuidv4 from "uuid/v4";
 import {TextEditor} from "../commons/TextEditor";
@@ -13,6 +12,8 @@ import {useTimeSincePublished} from "../../hooks/updateRelativeTimeHook";
 import {dislikePost, likePost} from "./postActions";
 import {PostImage, selectPost} from "./postReducer";
 import {ImageFile, readImgFileContent} from "../../utils/utils";
+import styles from './styles.module.scss'
+import {ProfilePhoto} from "../commons/ProfilePhoto";
 
 export interface Profile {
     userId: string;
@@ -95,7 +96,6 @@ const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComment
     };
 
     const loadMoreComments = () => {
-        console.log('load comments for post ', postResponse.id, postResponse.comments.length);
         loadPreviousComments(postResponse.id, postResponse.comments.length, 10);
     };
 
@@ -112,19 +112,20 @@ const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComment
     };
 
     return (
-        <div className='post'>
-            <div className='userProfile'>
-                <img className='avatar'
+        <div className={styles.post}>
+            <div className={styles.userProfile}>
+                <img className={styles.avatar}
                      src={postResponse.authorProfile.profilePhotoUrl || 'https://miro.medium.com/max/280/1*MccriYX-ciBniUzRKAUsAw.png'}
                      alt='post pic'/>
                 <div>
-                    <a className='fullname' href={`/${postResponse.authorProfile.username}`}><p>{postResponse.authorProfile.fullname}</p></a>
-                    <p className='username'>@{postResponse.authorProfile.username}</p>
-                    <p className='time-published'>{timeSincePublished}</p>
+                    <a className={styles.fullname} href={`/${postResponse.authorProfile.username}`}>
+                        <p>{postResponse.authorProfile.fullname}</p></a>
+                    <p className={styles.username}>@{postResponse.authorProfile.username}</p>
+                    <p className={styles.timePublished}>{timeSincePublished}</p>
                 </div>
             </div>
-            <div className={classNames('content', {'uploading': postResponse.isUploading})}>
-                <p className='text'>{postResponse.text}</p>
+            <div className={classNames(styles.content, {'uploading': postResponse.isUploading})}>
+                <p className={styles.text}>{postResponse.text}</p>
                 <div className='images'>
                     {postResponse.images.map(image => (<img key={image.url} src={transformUrl(image.url)}/>))}
                 </div>
@@ -135,7 +136,7 @@ const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComment
                     }
                 </div>
             </div>
-            <div className='interact'>
+            <div className={styles.interact}>
                 <span onClick={() => likePost(postResponse.id, postResponse.likeStatus === 'like')}
                       className={classNames({'selected': postResponse.likeStatus === 'like'})}>
                     <i className="fas fa-thumbs-up"/>{postResponse.likesCount !== 0 && postResponse.likesCount}
@@ -152,24 +153,27 @@ const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComment
                 </span>
             </div>
             <div
-                className={classNames('load-previous-comments', {'hide': postResponse.commentsCount === postResponse.comments.length})}>
+                className={classNames(styles.loadPreviousComments, {'hide': postResponse.commentsCount === postResponse.comments.length})}>
                 <span onClick={loadMoreComments}>
-                    <i className="showMoreComments fas fa-angle-up"/>
+                    <i className={styles.showMoreComments + ' fas fa-angle-up'}/>
                     Load more comments
-                    <i className={classNames('loadingComments fas fa-spinner fa-pulse', {'hide': !postResponse.isLoadingPreviousComments})}/>
+                    <i className={classNames(styles.loadingComments + ' fas fa-spinner fa-pulse', {'hide': !postResponse.isLoadingPreviousComments})}/>
                 </span>
             </div>
             <div className={classNames('comments-container', {'hide': postResponse.comments.length === 0})}>
                 {postResponse.comments.map(id => (<Comment key={id} commentId={id}/>))}
             </div>
-            <div className='new-comment'>
-                <img className='avatar'
-                     src={postResponse.authorProfile.profilePhotoUrl || 'https://miro.medium.com/max/280/1*MccriYX-ciBniUzRKAUsAw.png'}
-                     alt='post pic'/>
-                <div className='comment-editor-container'>
+            <div className={styles.newComment}>
+                <ProfilePhoto
+                    className={styles.avatar}
+                    url={postResponse.authorProfile.profilePhotoUrl}/>
+                {/*<img className='avatar'*/}
+                {/*     src={postResponse.authorProfile.profilePhotoUrl || 'https://miro.medium.com/max/280/1*MccriYX-ciBniUzRKAUsAw.png'}*/}
+                {/*     alt='post pic'/>*/}
+                <div className={styles.commentEditorContainer}>
                     <TextEditor focusWhen={shouldFocusTextEditor} onChange={setCommentText}
                                 placeholder='Write a comment'
-                                className='comment-editor'
+                                className={styles.commentEditor}
                                 onEnter={submitComment} onEnterCleanUp={true}/>
                 </div>
 
