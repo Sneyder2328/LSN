@@ -38,6 +38,7 @@ export async function getProfileByUsername(username: string, includePosts: boole
     } else {
         user = await Profile.findOne({where: {username}});
     }
+    user.friendship = await getFriendShipBetweenUsers(currentUserId, user.userId)
     if (!user) throw new UserNotFoundError();
     return user;
 }
@@ -52,15 +53,46 @@ export async function getProfileByUserId(userId, includePosts: boolean, currentU
     } else {
         user = await Profile.findByPk(userId);
     }
+    user.friendship = await getFriendShipBetweenUsers(currentUserId, userId)
     if (!user) throw new UserNotFoundError();
     return user;
+}
+
+async function getFriendShipBetweenUsers(currentUserId: string, otherUserId: string) {
+    // 'accepted' | 'pendingIncoming' | 'pendingOutgoing' | 'blockedIncoming' | 'blockedOutgoing' | undefined;
+    let relationship = await UserRelationShip.findOne({where: {senderId: currentUserId, receiverId: otherUserId}})
+    if (relationship) {
+        switch (relationship.type) {
+            case 'friend':
+                return 'accepted'
+            case 'pending':
+                return 'pendingOutgoing'
+            case 'block':
+                return 'blockedOutgoing'
+            default:
+                throw new Error("Invalid relationship")
+        }
+    }
+    relationship = await UserRelationShip.findOne({where: {senderId: otherUserId, receiverId: currentUserId}})
+    if (relationship) {
+        switch (relationship.type) {
+            case 'friend':
+                return 'accepted'
+            case 'pending':
+                return 'pendingIncoming'
+            case 'block':
+                return 'blockedIncoming'
+            default:
+                throw new Error("Invalid relationship")
+        }
+    }
 }
 
 export async function updateProfile(userId: string,
                                     {
                                         username, fullname, description
                                     },
-                                    imageFiles?: { imageProfile?: Array<any>;  imageCover?: Array<any> }) {
+                                    imageFiles?: { imageProfile?: Array<any>; imageCover?: Array<any> }) {
     if (imageFiles) {
         const profilePhotoUrl = imageFiles?.imageProfile?.[0]?.url
         const coverPhotoUrl = imageFiles?.imageCover?.[0]?.url

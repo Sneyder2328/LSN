@@ -51,6 +51,7 @@ function getProfileByUsername(username, includePosts, currentUserId) {
         else {
             user = yield Profile.findOne({ where: { username } });
         }
+        user.friendship = yield getFriendShipBetweenUsers(currentUserId, user.userId);
         if (!user)
             throw new UserNotFoundError_1.UserNotFoundError();
         return user;
@@ -69,12 +70,44 @@ function getProfileByUserId(userId, includePosts, currentUserId) {
         else {
             user = yield Profile.findByPk(userId);
         }
+        user.friendship = yield getFriendShipBetweenUsers(currentUserId, userId);
         if (!user)
             throw new UserNotFoundError_1.UserNotFoundError();
         return user;
     });
 }
 exports.getProfileByUserId = getProfileByUserId;
+function getFriendShipBetweenUsers(currentUserId, otherUserId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        // 'accepted' | 'pendingIncoming' | 'pendingOutgoing' | 'blockedIncoming' | 'blockedOutgoing' | undefined;
+        let relationship = yield UserRelationShip.findOne({ where: { senderId: currentUserId, receiverId: otherUserId } });
+        if (relationship) {
+            switch (relationship.type) {
+                case 'friend':
+                    return 'accepted';
+                case 'pending':
+                    return 'pendingOutgoing';
+                case 'block':
+                    return 'blockedOutgoing';
+                default:
+                    throw new Error("Invalid relationship");
+            }
+        }
+        relationship = yield UserRelationShip.findOne({ where: { senderId: otherUserId, receiverId: currentUserId } });
+        if (relationship) {
+            switch (relationship.type) {
+                case 'friend':
+                    return 'accepted';
+                case 'pending':
+                    return 'pendingIncoming';
+                case 'block':
+                    return 'blockedIncoming';
+                default:
+                    throw new Error("Invalid relationship");
+            }
+        }
+    });
+}
 function updateProfile(userId, { username, fullname, description }, imageFiles) {
     var _a, _b, _c, _d, _e, _f;
     return __awaiter(this, void 0, void 0, function* () {
