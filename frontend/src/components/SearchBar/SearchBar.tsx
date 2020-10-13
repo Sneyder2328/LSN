@@ -3,6 +3,7 @@ import SearchResults from "./SearchResults";
 import {connect} from "react-redux";
 import {searchUser} from "./searchActions";
 import useOnClickOutside from 'use-onclickoutside';
+import styles from './styles.module.scss'
 
 type Props = {
     searchUser: (query: string) => any;
@@ -26,12 +27,12 @@ const SearchBar: React.FC<Props> = ({searchUser}) => {
     };
 
     return (
-        <div ref={ref} className='search-container'>
-            <div className='search-box' onClick={() => setResultsVisible(true)}>
-                <div className='search-icon'>
+        <div ref={ref} className={styles.searchContainer}>
+            <div className={styles.searchBox} onClick={() => setResultsVisible(true)}>
+                <div className={styles.searchIcon}>
                     <i className="fas fa-search"/>
                 </div>
-                <input className='search-input' placeholder='Search people' onChange={onHandleChange} value={query}/>
+                <input className={styles.searchInput} placeholder='Search people' onChange={onHandleChange} value={query}/>
             </div>
             {resultsVisible && <SearchResults query={query}/>}
         </div>

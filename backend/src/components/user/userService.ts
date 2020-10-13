@@ -32,9 +32,11 @@ export async function getProfileByUsername(username: string, includePosts: boole
     let user;
     if (includePosts) {
         user = await Profile.findOne({where: {username}, include: includePostsSorted});
-        user = user.toJSON();
-        // user.posts = user.posts.sort(compareByDateAsc);
-        user.posts = await processPosts(user.posts, currentUserId)
+        console.log('getProfileByUsername posts are', user.posts, user.posts.length);
+        if (user.posts && user.posts.length !== 0) {
+            user = user.toJSON();
+            user.posts = await processPosts(user.posts, currentUserId)
+        }
     } else {
         user = await Profile.findOne({where: {username}});
     }
@@ -47,9 +49,11 @@ export async function getProfileByUserId(userId, includePosts: boolean, currentU
     let user;
     if (includePosts) {
         user = await Profile.findByPk(userId, {include: includePostsSorted});
-        user = user.toJSON();
-        // user.posts = user.posts.sort(compareByDateAsc);
-        user.posts = await processPosts(user.posts, currentUserId)
+        console.log('getProfileByUserId posts are', user.posts);
+        if (user.posts && user.posts.length !== 0) {
+            user = user.toJSON();
+            user.posts = await processPosts(user.posts, currentUserId)
+        }
     } else {
         user = await Profile.findByPk(userId);
     }

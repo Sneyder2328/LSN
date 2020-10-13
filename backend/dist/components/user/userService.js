@@ -44,9 +44,11 @@ function getProfileByUsername(username, includePosts, currentUserId) {
         let user;
         if (includePosts) {
             user = yield Profile.findOne({ where: { username }, include: includePostsSorted });
-            user = user.toJSON();
-            // user.posts = user.posts.sort(compareByDateAsc);
-            user.posts = yield postService_1.processPosts(user.posts, currentUserId);
+            console.log('getProfileByUsername posts are', user.posts, user.posts.length);
+            if (user.posts && user.posts.length !== 0) {
+                user = user.toJSON();
+                user.posts = yield postService_1.processPosts(user.posts, currentUserId);
+            }
         }
         else {
             user = yield Profile.findOne({ where: { username } });
@@ -63,9 +65,11 @@ function getProfileByUserId(userId, includePosts, currentUserId) {
         let user;
         if (includePosts) {
             user = yield Profile.findByPk(userId, { include: includePostsSorted });
-            user = user.toJSON();
-            // user.posts = user.posts.sort(compareByDateAsc);
-            user.posts = yield postService_1.processPosts(user.posts, currentUserId);
+            console.log('getProfileByUserId posts are', user.posts);
+            if (user.posts && user.posts.length !== 0) {
+                user = user.toJSON();
+                user.posts = yield postService_1.processPosts(user.posts, currentUserId);
+            }
         }
         else {
             user = yield Profile.findByPk(userId);

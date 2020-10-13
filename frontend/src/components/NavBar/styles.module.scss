@@ -1,0 +1,102 @@
+@import "src/utils/variables";
+
+//$search-width: 270px;
+//$search-width-sm: 220px;
+
+.navContainer {
+  width: 100%;
+  background-color: #61dafb;
+  position: fixed;
+  top: 0;
+  height: $navbarHeight;
+  z-index: 5;
+
+  .navBar {
+    width: 90%;
+    max-width: 1250px;
+    margin: 0 auto;
+    height: inherit;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .newsFeedType {
+      display: flex;
+      width: 40%;
+      flex-grow: 1;
+      height: 100%;
+
+      ul {
+        color: #fff;
+        font-weight: 600;
+        font-size: 1.1rem;
+        box-sizing: border-box;
+        height: 100%;
+        margin: 0;
+        padding: 0 14px;
+        display: flex;
+        border-top: 2px solid transparent;
+        border-bottom: 2px solid transparent;
+
+        a {
+          color: #fff;
+          text-decoration: none;
+          margin: auto auto;
+        }
+      }
+
+      ul.selected {
+        border-bottom: 2px solid #2c80d0;
+      }
+    }
+
+    .logoContainer {
+      position: absolute;
+      right: 50%;
+      height: 100%;
+      width: fit-content;
+      flex-grow: 0;
+      //width: 20%;
+      display: flex;
+
+      img {
+        margin: 0 auto;
+        height: 100%;
+      }
+    }
+
+    .logOutButton {
+      width: 12%;
+      flex-grow: 0;
+      box-sizing: border-box;
+      padding: 8px 2px;
+      font-size: 1rem;
+      background-color: #4497f1;
+      border-radius: $radius;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .logOutButton:hover {
+      background-color: $btnHoveredColor;
+    }
+
+    .logOutButton:disabled {
+      background-color: $btnColorOpaque;
+    }
+
+    @media screen and (max-width: 1150px) {
+      width: 100%;
+      padding: 0 60px;
+      box-sizing: border-box;
+    }
+    @media screen and (max-width: 750px) {
+      padding: 0;
+      width: 90%;
+
+      .logOutButton {
+        font-size: 0.88rem;
+      }
+    }
+  }
+}
