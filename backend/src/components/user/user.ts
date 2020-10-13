@@ -25,10 +25,11 @@ import cloudinaryStorage from "multer-storage-cloudinary";
 
 const storage = cloudinaryStorage({
     cloudinary,
-    folder: 'postImages',
+    folder: 'usersImages',
     allowedFormats: ['jpg', 'png', "jpeg"],
     filename: function (req, file, cb) {
-        cb(null, file.originalname.substring(0, file.originalname.length - 4) + '-' + Date.now())
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+        cb(null, file.fieldname + '-' + uniqueSuffix)
     },
     transformation: [{width: 960, height: 960, crop: 'limit'}]
 });
@@ -37,8 +38,8 @@ const parser = multer({
     limits: {fileSize: MAX_IMG_FILE_SIZE}
 });
 const imageUpload = parser.fields([
-    { name: 'imageProfile', maxCount: 1 },
-    { name: 'imageCover', maxCount: 1 }
+    {name: 'imageProfile', maxCount: 1},
+    {name: 'imageCover', maxCount: 1}
 ]);
 // const imageUpload = parser.single('imageProfile');
 

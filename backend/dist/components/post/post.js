@@ -29,7 +29,8 @@ const storage = multer_storage_cloudinary_1.default({
     folder: 'postImages',
     allowedFormats: ['jpg', 'png', "jpeg"],
     filename: function (req, file, cb) {
-        cb(null, file.originalname.substring(0, file.originalname.length - 4) + '-' + Date.now());
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, file.fieldname + '-' + uniqueSuffix);
     },
     transformation: [{ width: 960, height: 960, crop: 'limit' }]
 });
