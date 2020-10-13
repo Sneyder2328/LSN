@@ -6,6 +6,7 @@ type Props = {
     preview?: ImageFile;
     className?: string
 }
+// https://res.cloudinary.com/dkflrjxwe/image/upload/ar_1,c_crop/v1602532440/postImages/photo-1423592707957-3b212afa6733-1602532431280.jpg
 const centerCrop = (url: string | undefined): string | undefined => {
     if (!url) return
     const indexOf = url.indexOf('res.cloudinary.com');

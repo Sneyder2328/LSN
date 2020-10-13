@@ -124,7 +124,7 @@ const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComment
                     <p className={styles.timePublished}>{timeSincePublished}</p>
                 </div>
             </div>
-            <div className={classNames(styles.content, {'uploading': postResponse.isUploading})}>
+            <div className={classNames(styles.content, {[styles.uploading]: postResponse.isUploading})}>
                 <p className={styles.text}>{postResponse.text}</p>
                 <div className='images'>
                     {postResponse.images.map(image => (<img key={image.url} src={transformUrl(image.url)}/>))}

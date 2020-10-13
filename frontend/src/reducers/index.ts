@@ -10,9 +10,9 @@ import {
     CommentsState
 } from "../components/Comment/commentReducer";
 import {usersReducer, UsersState} from "../components/User/userReducer";
-import {searchReducer, SearchState} from "../components/NavBar/searchReducer";
 import {profilesReducer, ProfilesState} from "../components/UserProfile/profileReducer";
 import {modalReducer, ModalState} from "../components/Modals/modalsReducer";
+import {searchReducer, SearchState} from "../components/SearchBar/searchReducer";
 
 type EntitiesState = {
     posts: PostState;

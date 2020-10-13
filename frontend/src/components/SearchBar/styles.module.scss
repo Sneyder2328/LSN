@@ -1,0 +1,116 @@
+@import "src/utils/variables";
+
+.searchContainer {
+  width: 28%;
+  max-width: 300px;
+  flex-grow: 1;
+  box-sizing: border-box;
+  padding: 0 10px;
+
+  .searchBox {
+    //text-align: center;
+
+    .searchIcon {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+
+      i {
+        font-size: 1rem;
+        color: $btnColor;
+        padding: 8px;
+      }
+    }
+
+    .searchInput {
+      width: 100%;
+      padding: 8px 16px 8px 30px;
+      box-sizing: border-box;
+      font-size: 1rem;
+      border-radius: $radius;
+      border: none;
+      outline: none;
+    }
+  }
+
+  .searchResults {
+    //width: $search-width;
+    width: 27%;
+    max-width: 280px;
+    position: absolute;
+    top: $navbarHeight;
+    max-height: 400px;
+    overflow-y: auto;
+    background-color: #fff;
+    box-shadow: rgba(101, 119, 134, 0.2) 0 0 15px, rgba(101, 119, 134, 0.15) 0 0 3px 1px;
+
+    .person {
+      margin: 0;
+      padding: 10px;
+      display: flex;
+      cursor: pointer;
+      border-bottom: 1px solid #e2e2e2;
+      text-decoration: none;
+      color: #000;
+
+      img {
+        width: $thumbnailImgDimen+-8px;
+        height: $thumbnailImgDimen+-8px;
+      }
+
+      div {
+        margin-left: 4px;
+        display: flex;
+        height: auto;
+        flex-wrap: wrap;
+        align-content: center;
+
+        p {
+          margin: 1.2px 0;
+          width: 100%;
+          font-size: 0.85rem;
+        }
+
+        .username {
+          color: #97a5af;
+        }
+      }
+    }
+  }
+}
+
+
+@media screen and (max-width: 1150px) {
+  width: 100%;
+  padding: 0 60px;
+  box-sizing: border-box;
+}
+
+@media screen and (max-width: 750px) {
+  padding: 0;
+  width: 90%;
+
+  .searchBox {
+    .searchInput {
+      font-size: 0.88rem;
+      //width: $search-width-sm;
+    }
+  }
+  .searchResults {
+    //width: $search-width-sm;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .searchBox {
+    .searchInput {
+      font-size: 0.88rem;
+      //width: $search-width-sm+-60px;
+    }
+  }
+  .searchResults {
+    //width: $search-width-sm+-60px;
+  }
+}
