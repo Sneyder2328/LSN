@@ -5,7 +5,7 @@ main {
 
   .pageContainer {
     width: 90%;
-    max-width: 1190px;
+    max-width: $max-width-container;
     margin: 0 auto;
     display: flex;
 

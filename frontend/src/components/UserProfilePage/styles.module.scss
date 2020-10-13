@@ -8,18 +8,15 @@ main {
 
   .pageContainer {
     width: 90%;
-    max-width: 1190px;
+    max-width: $max-width-container;
     margin: 0 auto;
     display: flex;
 
     .leftSection {
-      width: 290px;
+
     }
 
     .mainSection {
-      //max-width: $main-width-page;
-      //width: 620px;
-      //margin: 0 10px;
       background-color: transparent;
 
       .profileWrapper {
@@ -95,7 +92,7 @@ main {
     }
 
     .rightSection {
-      width: 290px;
+
     }
   }
 
