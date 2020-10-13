@@ -11,6 +11,8 @@ import {useForm} from "react-hook-form";
 import {ImageFile, readImgFileContent} from "../../utils/utils";
 import {MAX_FILE_SIZE} from "../../utils/constants";
 import {updateProfile} from "../Auth/authActions";
+// @ts-ignore
+import Spinner from 'react-spinkit';
 
 type EditProfileParams = {
     username: string;
@@ -24,6 +26,7 @@ export const EditProfileModal = () => {
     const [coverPhotoFile, setCoverPhotoFile] = useState<ImageFile | undefined>(undefined);
     const dispatch = useDispatch()
     const userId: string = useSelector((state: AppState) => state.auth.userId)!!
+    const isUpdatingProfile: boolean = useSelector((state: AppState) => state.auth.isUpdatingProfile) || false
     const users = useSelector((state: AppState) => state.entities.users.entities)
     const userProfile = users[userId]!!
 
@@ -120,6 +123,9 @@ export const EditProfileModal = () => {
                                maxLength: {value: 500, message: 'Description must be at most 500 characters long'}
                            })}/>
                 </div>
+                {isUpdatingProfile && <div className={styles.loading}>
+                    <Spinner name="ball-spin-fade-loader" color="aqua"/>
+                </div>}
             </ModalContent>
         </Modal>
     )

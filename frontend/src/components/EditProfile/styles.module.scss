@@ -1,3 +1,5 @@
+@import "src/utils/variables";
+
 .cameraIc {
   width: 0.1px;
   height: 0.1px;
@@ -75,4 +77,16 @@
   .description {
 
   }
+}
+
+.loading {
+  width: 100%;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  height: 100%;
+  border-radius: $radius;
+  background-color: rgba(12, 0, 1, 0.55);
 }
