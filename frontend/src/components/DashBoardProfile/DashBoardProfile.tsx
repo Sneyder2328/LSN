@@ -1,9 +1,9 @@
 import React from "react";
 import {useSelector} from "react-redux";
-import {AppState} from "../../reducers";
 import styles from './styles.module.scss'
-import {CoverPhoto} from "../commons/CoverPhoto";
-import {ProfilePhoto} from "../commons/ProfilePhoto";
+import {AppState} from "../../modules/rootReducer";
+import {CoverPhoto} from "../shared/CoverPhoto";
+import {ProfilePhoto} from "../shared/ProfilePhoto";
 
 export const DashBoardProfile = () => {
     const userId: string = useSelector((state: AppState) => state.auth.userId!!)

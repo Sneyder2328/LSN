@@ -2,7 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import compression from "compression";
 import cors from "cors";
-import router from './components/app';
+import router from './modules/app';
 import {corsOptions} from './middlewares/cors';
 import {genUUID} from "./utils/utils";
 

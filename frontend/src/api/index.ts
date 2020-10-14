@@ -1,10 +1,10 @@
 import axios from "axios";
 import {getTokens, isTokenExpired, updateAccessToken} from "../utils/tokensManager";
 import {ACCESS_TOKEN, FOURTEEN_MINUTES_IN_MILLIS, REFRESH_TOKEN} from "../utils/constants";
-import {AuthApi} from "../components/Auth/authApi";
-import {authActions} from "../components/Auth/authReducer";
-import {AppState} from "../reducers";
 import {store} from "../store";
+import {authActions} from "../modules/Auth/authReducer";
+import {AuthApi} from "../modules/Auth/authApi";
+import {AppState} from "../modules/rootReducer";
 const {logOutSuccess, refreshAccessTokenSuccess} = authActions
 
 export const transport = axios.create({

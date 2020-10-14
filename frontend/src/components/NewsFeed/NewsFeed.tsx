@@ -1,28 +1,22 @@
 import React, {useEffect} from "react";
-import {loadPosts} from "../Post/postActions";
-import {connect} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import Post from "../Post/Post";
-import {AppState} from "../../reducers";
 import './styles.scss'
+import {AppState} from "../../modules/rootReducer";
+import {loadPosts} from "../../modules/Posts/postActions";
 
-const NewsFeed: React.FC<{ postsIds: Array<string>, fetchPosts: () => any }> = ({postsIds, fetchPosts}) => {
+export const NewsFeed = () => {
+    const dispatch = useDispatch()
+    const postsIds = useSelector((state: AppState) => state.newsFeed.latest.postIds)
+
     useEffect(() => {
         console.log('fetching posts!!');
-        const loadPosts = () => {
-            fetchPosts();
-        };
-        loadPosts();
-    }, [fetchPosts]);
+        dispatch(loadPosts())
+    }, [loadPosts, dispatch]);
 
     return (
         <div className='news-feed'>
-            {postsIds && postsIds.map((postId: string) => <Post postId={postId} key={postId}/>)}
+            {postsIds?.map((postId: string) => <Post postId={postId} key={postId}/>)}
         </div>
     );
 };
-
-const mapStateToProps = (state: AppState) => ({
-    postsIds: state.newsFeed.latest.postIds//.sort(compareByDateAsc)
-});
-
-export default connect(mapStateToProps, {fetchPosts: loadPosts})(NewsFeed);

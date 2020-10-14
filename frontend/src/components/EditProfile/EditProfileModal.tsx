@@ -1,18 +1,18 @@
 import React, {useState} from "react";
 import {Modal} from "../Modals/Modal";
-import {hideModal} from "../Modals/modalsReducer";
 import {useDispatch, useSelector} from "react-redux";
-import {AppState} from "../../reducers";
 import styles from "./styles.module.scss";
-import {CoverPhoto} from "../commons/CoverPhoto";
 import {ModalContent} from "../Modals/ModalContent";
-import {ProfilePhoto} from "../commons/ProfilePhoto";
 import {useForm} from "react-hook-form";
 import {ImageFile, readImgFileContent} from "../../utils/utils";
 import {MAX_FILE_SIZE} from "../../utils/constants";
-import {updateProfile} from "../Auth/authActions";
 // @ts-ignore
 import Spinner from 'react-spinkit';
+import {AppState} from "../../modules/rootReducer";
+import {updateProfile} from "../../modules/Auth/authActions";
+import {hideModal} from "../../modules/Modal/modalsReducer";
+import {CoverPhoto} from "../shared/CoverPhoto";
+import {ProfilePhoto} from "../shared/ProfilePhoto";
 
 type EditProfileParams = {
     username: string;

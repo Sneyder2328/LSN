@@ -1,9 +1,9 @@
 import React from "react";
 import {connect} from "react-redux";
-import {AppState} from "../../reducers";
-import {UserSearch} from "./searchReducer";
 import {Link} from "react-router-dom";
 import styles from './styles.module.scss'
+import {UserSearch} from "../../modules/Search/searchReducer";
+import {AppState} from "../../modules/rootReducer";
 
 const Profile: React.FC<{ profile: UserSearch }> = ({profile}) => {
     return (

@@ -1,0 +1,22 @@
+import {transport} from "../../api";
+import {AxiosResponse} from "axios";
+import {UserObject} from "./userReducer";
+import {PostObject} from "../Posts/postReducer";
+
+export interface ProfileResponse extends UserObject {
+    posts?: Array<PostObject>;
+}
+
+export const UserApi = {
+    async getUserProfile(userId: string, includePosts?: boolean) {
+        return await transport.get(`/users/${userId}`, {params: {includePosts}});
+    },
+    /**
+     *
+     * @param userIdentifier can be the userId or username of the user whose profile is to be fetched
+     * @param includePosts whether to include the posts from the user or not in the response
+     */
+    async fetchProfile(userIdentifier: string, includePosts: boolean): Promise<AxiosResponse<ProfileResponse>> {
+        return await transport.get(`/users/${userIdentifier}`, {params: {includePosts}})
+    }
+};

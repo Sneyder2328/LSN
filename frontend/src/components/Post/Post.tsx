@@ -1,19 +1,19 @@
 import React, {useEffect, useState} from "react";
 // @ts-ignore
 import uuidv4 from "uuid/v4";
-import {TextEditor} from "../commons/TextEditor";
-import {CommentRequest} from "../Comment/commentApi";
-import {createComment, loadPreviousComments} from "../Comment/commentActions";
-import Comment from "../Comment/Comment"
 import {connect} from "react-redux";
 import classNames from "classnames";
-import {AppState} from "../../reducers";
 import {useTimeSincePublished} from "../../hooks/updateRelativeTimeHook";
-import {dislikePost, likePost} from "./postActions";
-import {PostImage, selectPost} from "./postReducer";
 import {ImageFile, readImgFileContent} from "../../utils/utils";
 import styles from './styles.module.scss'
-import {ProfilePhoto} from "../commons/ProfilePhoto";
+import {CommentsWrapper} from "../Comment/CommentsWrapper";
+import {PostImage, selectPost} from "../../modules/Posts/postReducer";
+import {CommentRequest} from "../../modules/Comment/commentApi";
+import {AppState} from "../../modules/rootReducer";
+import {createComment, loadPreviousComments} from "../../modules/Comment/commentActions";
+import {dislikePost, likePost} from "../../modules/Posts/postActions";
+import {ProfilePhoto} from "../shared/ProfilePhoto";
+import {TextEditor} from "../shared/TextEditor";
 
 export interface Profile {
     userId: string;
@@ -114,13 +114,13 @@ const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComment
     return (
         <div className={styles.post}>
             <div className={styles.userProfile}>
-                <img className={styles.avatar}
-                     src={postResponse.authorProfile.profilePhotoUrl || 'https://miro.medium.com/max/280/1*MccriYX-ciBniUzRKAUsAw.png'}
-                     alt='post pic'/>
+                <ProfilePhoto
+                    className={styles.avatar}
+                    url={postResponse?.authorProfile?.profilePhotoUrl}/>
                 <div>
-                    <a className={styles.fullname} href={`/${postResponse.authorProfile.username}`}>
-                        <p>{postResponse.authorProfile.fullname}</p></a>
-                    <p className={styles.username}>@{postResponse.authorProfile.username}</p>
+                    <a className={styles.fullname} href={`/${postResponse?.authorProfile?.username}`}>
+                        <p>{postResponse?.authorProfile?.fullname}</p></a>
+                    <p className={styles.username}>@{postResponse?.authorProfile?.username}</p>
                     <p className={styles.timePublished}>{timeSincePublished}</p>
                 </div>
             </div>
@@ -138,11 +138,11 @@ const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComment
             </div>
             <div className={styles.interact}>
                 <span onClick={() => likePost(postResponse.id, postResponse.likeStatus === 'like')}
-                      className={classNames({'selected': postResponse.likeStatus === 'like'})}>
+                      className={classNames({[styles.selected]: postResponse.likeStatus === 'like'})}>
                     <i className="fas fa-thumbs-up"/>{postResponse.likesCount !== 0 && postResponse.likesCount}
                 </span>
                 <span onClick={() => dislikePost(postResponse.id, postResponse.likeStatus === 'dislike')}
-                      className={classNames({'selected': postResponse.likeStatus === 'dislike'})}>
+                      className={classNames({[styles.selected]: postResponse.likeStatus === 'dislike'})}>
                     <i className="fas fa-thumbs-down"/>{postResponse.dislikesCount !== 0 && postResponse.dislikesCount}
                 </span>
                 <span onClick={() => setFocusInput(true)}>
@@ -153,20 +153,18 @@ const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComment
                 </span>
             </div>
             <div
-                className={classNames(styles.loadPreviousComments, {'hide': postResponse.commentsCount === postResponse.comments.length})}>
+                className={classNames(styles.loadPreviousComments, {'hide': postResponse?.commentsCount === postResponse.comments.length})}>
                 <span onClick={loadMoreComments}>
                     <i className={styles.showMoreComments + ' fas fa-angle-up'}/>
                     Load more comments
                     <i className={classNames(styles.loadingComments + ' fas fa-spinner fa-pulse', {'hide': !postResponse.isLoadingPreviousComments})}/>
                 </span>
             </div>
-            <div className={classNames('comments-container', {'hide': postResponse.comments.length === 0})}>
-                {postResponse.comments.map(id => (<Comment key={id} commentId={id}/>))}
-            </div>
+            <CommentsWrapper comments={postResponse?.comments}/>
             <div className={styles.newComment}>
                 <ProfilePhoto
                     className={styles.avatar}
-                    url={postResponse.authorProfile.profilePhotoUrl}/>
+                    url={postResponse?.authorProfile?.profilePhotoUrl}/>
                 <div className={styles.commentEditorContainer}>
                     <TextEditor focusWhen={shouldFocusTextEditor} onChange={setCommentText}
                                 placeholder='Write a comment'

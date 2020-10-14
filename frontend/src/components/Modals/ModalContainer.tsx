@@ -1,7 +1,7 @@
 import React from "react";
-import {AppState} from "../../reducers";
 import {useSelector} from "react-redux";
 import {EditProfileModal} from "../EditProfile/EditProfileModal";
+import {AppState} from "../../modules/rootReducer";
 
 export const EDIT_PROFILE_MODAL = 'EditProfile'
 

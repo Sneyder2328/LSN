@@ -1,21 +1,17 @@
 import React, {useState} from "react";
-import {TextEditor} from "../commons/TextEditor";
 import {useDispatch, useSelector} from "react-redux";
 import {PostRequest} from "../Post/Post";
-import {createPost} from "../Post/postActions";
 import './styles.scss'
 
 // @ts-ignore
 import Img from 'react-fix-image-orientation'
 import {MAX_FILE_SIZE, MAX_IMAGES_PER_POST} from "../../utils/constants";
 import {genUUID, ImageFile, readImgFileContent} from "../../utils/utils";
-import {AppState} from "../../reducers";
+import {AppState} from "../../modules/rootReducer";
+import {createPost} from "../../modules/Posts/postActions";
+import {TextEditor} from "../shared/TextEditor";
 
-type Props = {
-
-};
-
-export const CreatePost: React.FC<Props> = () => {
+export const CreatePost = () => {
     const dispatch = useDispatch()
     const userId: string = useSelector((state: AppState) => state.auth.userId!!)
     const [text, setText] = useState<string>('');

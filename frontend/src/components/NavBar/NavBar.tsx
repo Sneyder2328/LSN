@@ -1,12 +1,18 @@
 import React from "react";
-import {connect} from 'react-redux'
-import {logOutUser} from "../Auth/authActions";
-import {AppState} from "../../reducers";
+import {useDispatch, useSelector} from 'react-redux'
+
 import styles from './styles.module.scss'
 import Logo from "./../../resources/lsn-ic.png";
-import SearchBar from "../SearchBar/SearchBar";
+import {SearchBar} from "../SearchBar/SearchBar";
+import {AppState} from "../../modules/rootReducer";
+import {logOutUser} from "../../modules/Auth/authActions";
 
-const NavBar: React.FC<{ isLoggingOut: boolean; logOutUser: () => any }> = ({isLoggingOut, logOutUser}) => {
+export const NavBar = () => {
+    const dispatch = useDispatch()
+    const isLoggingOut = useSelector((state: AppState) => state.auth.isLoggingOut)
+
+    const handleLogOut = () => dispatch(logOutUser());
+
     return (
         <div className={styles.navContainer}>
             <div className={styles.navBar}>
@@ -15,17 +21,13 @@ const NavBar: React.FC<{ isLoggingOut: boolean; logOutUser: () => any }> = ({isL
                     <ul><a href='#'>Latest</a></ul>
                 </div>
                 <div className={styles.logoContainer}>
-                    <img src={Logo} />
+                    <img src={Logo}/>
                 </div>
                 <SearchBar/>
-                <button className={styles.logOutButton} disabled={isLoggingOut} onClick={logOutUser}>Log out</button>
+                <button className={styles.logOutButton} disabled={isLoggingOut}
+                        onClick={handleLogOut}>Log out
+                </button>
             </div>
         </div>
     );
 };
-
-const mapStateToProps = (state: AppState) => {
-    return {isLoggingOut: state.auth.isLoggingOut};
-};
-
-export default connect(mapStateToProps, {logOutUser})(NavBar);

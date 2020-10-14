@@ -3,12 +3,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = {
     auth: {
         LOG_IN: '/sessions',
-        SIGN_UP: '/users',
         LOG_OUT: '/sessions',
         REFRESH_TOKEN: '/tokens'
     },
     user: {
-        GET_PROFILE: (username) => `/users/${username}`,
+        SIGN_UP: '/users',
+        GET_PROFILE: (userIdentifier) => `/users/${userIdentifier}`,
         UPDATE_PROFILE: (userId) => `/users/${userId}`,
         SEND_FRIEND_REQUEST: (receiverUserId) => `/users/${receiverUserId}/friends`,
         GET_FRIEND_REQUESTS: '/me/friends/incoming',

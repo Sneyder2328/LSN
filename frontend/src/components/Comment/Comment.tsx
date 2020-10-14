@@ -2,12 +2,12 @@ import React from "react";
 import {Profile} from "../Post/Post";
 import './styles.scss'
 import {connect} from "react-redux";
-import {AppState} from "../../reducers";
-import {selectComment} from "./commentReducer";
 import {useTimeSincePublishedShort} from "../../hooks/updateRelativeTimeHook";
-import {dislikeComment, likeComment} from "./commentActions";
 import classNames from "classnames";
-import {ProfilePhoto} from "../commons/ProfilePhoto";
+import {ProfilePhoto} from "../shared/ProfilePhoto";
+import {selectComment} from "../../modules/Comment/commentReducer";
+import {AppState} from "../../modules/rootReducer";
+import {dislikeComment, likeComment} from "../../modules/Comment/commentActions";
 
 export interface CommentResponse {
     id: string;

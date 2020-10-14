@@ -1,7 +1,7 @@
 import {createStore, compose, applyMiddleware, Action} from 'redux';
 import thunk, {ThunkAction} from 'redux-thunk';
-import rootReducer, {AppState} from './reducers';
 import {persistStore} from "redux-persist";
+import {AppState, rootReducer} from "./modules/rootReducer";
 
 // @ts-ignore
 const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
