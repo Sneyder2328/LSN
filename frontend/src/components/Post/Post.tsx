@@ -155,7 +155,7 @@ const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComment
                 <span onClick={loadMoreComments}>
                     <i className={styles.showMoreComments + ' fas fa-angle-up'}/>
                     Load more comments
-                    <i className={classNames(styles.loadingComments + ' fas fa-spinner fa-pulse', {'hide': !postResponse.isLoadingPreviousComments})}/>
+                    <i className={classNames(styles.loadingComments, 'fas fa-spinner fa-pulse', {'hide': !postResponse.isLoadingPreviousComments})}/>
                 </span>
             </div>
             <CommentsWrapper comments={postResponse?.comments}/>
