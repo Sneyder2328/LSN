@@ -2,19 +2,19 @@
 
 .dashboardProfile {
   background-color: #fff;
+  border-radius: $radius;
+  margin-top: 10px;
 
   .coverPhoto {
     width: 100%;
     height: 110px;
+    border-top-left-radius: $radius;
+    border-top-right-radius: $radius;
   }
 
   .profilePhoto {
-    width: $thumbnailImgDimen+22px;
-    height: $thumbnailImgDimen+22px;
     background: white; // remove this later
     margin: -33px 0 0 10px;
-    border-radius: 50%;
-    border: 2px solid #fff;
   }
 
   .profileName {

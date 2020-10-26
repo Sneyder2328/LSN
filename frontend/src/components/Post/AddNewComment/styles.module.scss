@@ -1,0 +1,44 @@
+@import "src/utils/variables";
+
+
+.newComment {
+  padding: 0;
+  margin: 0 0 0 2px;
+  min-height: $thumbnailImgDimen+2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .avatar {
+    padding: 6px;
+  }
+
+  .commentEditorContainer {
+    width: $main-width-page+-$thumbnailImgDimen+-18px;
+    min-height: $thumbnailImgDimen;
+    display: flex;
+    padding: 7px 2px;
+    box-sizing: border-box;
+
+    .commentEditor {
+      width: 100%;
+      font-size: 0.9rem;
+      box-sizing: border-box;
+      border-radius: 18px;
+      outline: none;
+      border: 1px #61dafb solid;
+      padding: 10px;
+      overflow: hidden;
+      cursor: text;
+
+      &:focus {
+        border: 1px $btnColor solid;
+      }
+    }
+
+    .commentEditor:empty:before {
+      content: attr(placeholder);
+      color: #a9a9a9;
+    }
+  }
+}

@@ -1,0 +1,50 @@
+@import "src/utils/variables";
+
+.dropdown {
+  position: relative;
+  //text-align: right;
+
+  .dropdownMenu {
+    background-color: #fff;
+    position: absolute;
+    text-align: left;
+    z-index: 3;
+    min-width: 180px;
+    box-shadow: 0 50px 100px rgba(50, 50, 93, .1), 0 15px 35px rgba(50, 50, 93, .15), 0 5px 15px rgba(0, 0, 0, .1);
+    border-radius: $radius;
+    display: none;
+
+    &.show {
+      display: grid;
+    }
+
+    a {
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+
+      i {
+        width: 36px;
+        text-align: center;
+        color: #5aa6fb;
+      }
+
+      span {
+        display: inline-block;
+        color: #2b2b2b;
+        padding: 12px 12px 12px 0;
+      }
+
+      &:hover {
+        background-color: #eff9ff;
+        cursor: pointer;
+        border-radius: $radius;
+      }
+    }
+
+    .dropdownDivider {
+      height: 0;
+      border-top: 1px solid rgba(114, 228, 236, 0.6);
+    }
+  }
+}

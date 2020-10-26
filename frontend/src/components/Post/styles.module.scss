@@ -11,10 +11,7 @@
     padding: 8px 8px 0 8px;
 
     .avatar {
-      width: $thumbnailImgDimen;
-      height: $thumbnailImgDimen;
       margin-right: 6px;
-      border-radius: 50%;
     }
 
     .fullname {
@@ -125,47 +122,6 @@
 
     span:hover {
       text-decoration: underline;
-    }
-  }
-
-  .newComment {
-    padding: 0;
-    margin: 0 0 0 2px;
-    min-height: $thumbnailImgDimen+2px;
-    display: flex;
-    justify-content: center;
-
-    .avatar {
-      width: $thumbnailImgDimen+2px;
-      height: $thumbnailImgDimen+2px;
-      box-sizing: border-box;
-      padding: 6px;
-      border-radius: 50%;
-    }
-
-    .commentEditorContainer {
-      width: $main-width-page+-$thumbnailImgDimen+-18px;
-      min-height: $thumbnailImgDimen;
-      display: flex;
-      padding: 7px 2px;
-      box-sizing: border-box;
-
-      .commentEditor {
-        width: 100%;
-        font-size: 0.9rem;
-        box-sizing: border-box;
-        border-radius: 18px;
-        outline: none;
-        border: 1px #61dafb solid;
-        padding: 10px;
-        overflow: hidden;
-        cursor: text;
-      }
-
-      .commentEditor:empty:before {
-        content: attr(placeholder);
-        color: #a9a9a9;
-      }
     }
   }
 }

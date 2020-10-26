@@ -4,7 +4,7 @@ import './styles.scss'
 import {connect} from "react-redux";
 import {useTimeSincePublishedShort} from "../../hooks/updateRelativeTimeHook";
 import classNames from "classnames";
-import {ProfilePhoto} from "../shared/ProfilePhoto";
+import {ProfilePhoto} from "../ProfilePhoto/ProfilePhoto";
 import {selectComment} from "../../modules/Comment/commentReducer";
 import {AppState} from "../../modules/rootReducer";
 import {dislikeComment, likeComment} from "../../modules/Comment/commentActions";
@@ -34,7 +34,7 @@ const Comment: React.FC<Props> = ({comment, likeComment, dislikeComment}) => {
 
     return (
         <div className='comment'>
-            <ProfilePhoto url={comment.authorProfile.profilePhotoUrl} className='avatar'/>
+            <ProfilePhoto url={comment.authorProfile.profilePhotoUrl} className='avatar' size={'small2'}/>
             <div className='comment-box'>
                 <div>
                     <a className='fullname' href={`/${comment.authorProfile.username}`}>

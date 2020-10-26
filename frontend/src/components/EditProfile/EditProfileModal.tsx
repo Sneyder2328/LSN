@@ -11,8 +11,8 @@ import Spinner from 'react-spinkit';
 import {AppState} from "../../modules/rootReducer";
 import {updateProfile} from "../../modules/Auth/authActions";
 import {hideModal} from "../../modules/Modal/modalsReducer";
-import {CoverPhoto} from "../shared/CoverPhoto";
-import {ProfilePhoto} from "../shared/ProfilePhoto";
+import {CoverPhoto} from "../CoverPhoto/CoverPhoto";
+import {ProfilePhoto} from "../ProfilePhoto/ProfilePhoto";
 
 type EditProfileParams = {
     username: string;
@@ -95,6 +95,7 @@ export const EditProfileModal = () => {
                     <div className={styles.profilePhotoContainer}>
                         <ProfilePhoto
                             className={styles.profilePhoto}
+                            size={'large'} border={true}
                             preview={profilePhotoFile}
                             url={userProfile.profilePhotoUrl}/>
                         <input id='profileFile'

@@ -1,0 +1,17 @@
+@import "src/utils/variables";
+
+.button {
+  background-color: #5aa6fb;
+  padding: 7px 11px;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: bold;
+  margin-top: 86px;
+  margin-bottom: auto;
+
+  &:hover {
+    background-color: #2c80d0;
+    cursor: pointer;
+  }
+}

@@ -1,0 +1,43 @@
+@import "src/utils/variables";
+
+.imageProfile {
+  border-radius: 50%;
+  object-fit: cover;
+  box-sizing: border-box;
+}
+
+.large {
+  width: 150px;
+  height: 150px;
+
+  &.border {
+    border: 4px solid #fff;
+  }
+}
+
+.medium {
+  width: $thumbnailImgDimen+22px;
+  height: $thumbnailImgDimen+22px;
+
+  &.border {
+    border: 3px solid #fff;
+  }
+}
+
+.small1 {
+  width: $thumbnailImgDimen+2px;
+  height: $thumbnailImgDimen+2px;
+
+  &.border {
+    border: 2px solid #fff;
+  }
+}
+
+.small2 {
+  width: $thumbnailImgDimen+-6px;
+  height: $thumbnailImgDimen+-6px;
+
+  &.border {
+    border: 2px solid #fff;
+  }
+}

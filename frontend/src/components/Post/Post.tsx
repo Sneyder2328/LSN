@@ -1,10 +1,8 @@
 import React, {useEffect, useState} from "react";
-// @ts-ignore
-import uuidv4 from "uuid/v4";
 import {connect} from "react-redux";
 import classNames from "classnames";
 import {useTimeSincePublished} from "../../hooks/updateRelativeTimeHook";
-import {ImageFile, readImgFileContent} from "../../utils/utils";
+import {genUUID, ImageFile, readImgFileContent} from "../../utils/utils";
 import styles from './styles.module.scss'
 import {CommentsWrapper} from "../Comment/CommentsWrapper";
 import {PostImage, selectPost} from "../../modules/Posts/postReducer";
@@ -12,8 +10,8 @@ import {CommentRequest} from "../../modules/Comment/commentApi";
 import {AppState} from "../../modules/rootReducer";
 import {createComment, loadPreviousComments} from "../../modules/Comment/commentActions";
 import {dislikePost, likePost} from "../../modules/Posts/postActions";
-import {ProfilePhoto} from "../shared/ProfilePhoto";
-import {TextEditor} from "../shared/TextEditor";
+import {ProfilePhoto} from "../ProfilePhoto/ProfilePhoto";
+import {AddNewComment} from "./AddNewComment/AddNewComment";
 
 export interface Profile {
     userId: string;
@@ -60,6 +58,7 @@ type Props = {
     dislikePost: (postId: string, undo: boolean) => any;
 };
 
+
 const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComments, likePost, dislikePost}) => {
     const timeSincePublished = useTimeSincePublished(postResponse.createdAt);
     const [commentText, setCommentText] = useState<string>('');
@@ -83,16 +82,15 @@ const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComment
     }, [postResponse.previewImages]);
 
     const submitComment = () => {
-        if (commentText.trim() !== '') {
-            const newComment: CommentRequest = {
-                id: uuidv4(),
-                img: '',
-                text: commentText,
-                postId: postResponse.id,
-                type: 'text'
-            };
-            createComment(newComment)
-        }
+        if (commentText.trim() === '') return
+        const newComment: CommentRequest = {
+            id: genUUID(),
+            img: '',
+            text: commentText,
+            postId: postResponse.id,
+            type: 'text'
+        };
+        createComment(newComment)
     };
 
     const loadMoreComments = () => {
@@ -115,7 +113,7 @@ const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComment
         <div className={styles.post}>
             <div className={styles.userProfile}>
                 <ProfilePhoto
-                    className={styles.avatar}
+                    className={styles.avatar} size={"small1"}
                     url={postResponse?.authorProfile?.profilePhotoUrl}/>
                 <div>
                     <a className={styles.fullname} href={`/${postResponse?.authorProfile?.username}`}>
@@ -161,18 +159,11 @@ const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComment
                 </span>
             </div>
             <CommentsWrapper comments={postResponse?.comments}/>
-            <div className={styles.newComment}>
-                <ProfilePhoto
-                    className={styles.avatar}
-                    url={postResponse?.authorProfile?.profilePhotoUrl}/>
-                <div className={styles.commentEditorContainer}>
-                    <TextEditor focusWhen={shouldFocusTextEditor} onChange={setCommentText}
-                                placeholder='Write a comment'
-                                className={styles.commentEditor}
-                                onEnter={submitComment} onEnterCleanUp={true}/>
-                </div>
-
-            </div>
+            <AddNewComment
+                profilePhotoUrl={postResponse?.authorProfile?.profilePhotoUrl}
+                shouldFocusTextEditor={shouldFocusTextEditor}
+                onCommentContentChanged={setCommentText}
+                onSubmitComment={submitComment}/>
         </div>
     );
 };

@@ -2,6 +2,7 @@ import {HashTable} from "../../utils/utils";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {authActions} from "../Auth/authReducer";
 import {Profile} from "../../components/Post/Post";
+import {FriendRequestActionType} from "./userApi";
 
 const {logOutSuccess} = authActions
 
@@ -19,6 +20,7 @@ export type RelationShipType =
 
 export interface UserObject extends Profile {
     relationship: RelationShipType;
+    updatingRelationship?: boolean;
     postsIds?: Array<string>;
 }
 
@@ -51,6 +53,26 @@ export const usersSlice = createSlice({
         },
         fetchProfileError: (state) => {
 
+        },
+        sendFriendRequestRequest: (state, action: PayloadAction<{ receiverId: string }>) => {
+            state.entities[action.payload.receiverId].updatingRelationship = true
+        },
+        sendFriendRequestSuccess: (state, action: PayloadAction<{ receiverId: string }>) => {
+            state.entities[action.payload.receiverId].updatingRelationship = false
+            state.entities[action.payload.receiverId].relationship = 'pendingOutgoing'
+        },
+        sendFriendRequestError: (state, action: PayloadAction<{ receiverId: string }>) => {
+            state.entities[action.payload.receiverId].updatingRelationship = false
+        },
+        respondToFriendRequestRequest: (state, action: PayloadAction<{ senderId: string }>) => {
+            state.entities[action.payload.senderId].updatingRelationship = true
+        },
+        respondToFriendRequestSuccess: (state, action: PayloadAction<{ senderId: string, action: FriendRequestActionType }>) => {
+            state.entities[action.payload.senderId].updatingRelationship = false
+            state.entities[action.payload.senderId].relationship = action.payload.action === 'confirm' ? 'friend' : undefined
+        },
+        respondToFriendRequestError: (state, action: PayloadAction<{ senderId: string }>) => {
+            state.entities[action.payload.senderId].updatingRelationship = false
         }
     },
     extraReducers: builder => {

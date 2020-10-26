@@ -41,18 +41,11 @@
 
   .profilePhotoContainer {
     margin-top: -80px;
-    width: 150px;
-    height: 150px;
     display: flex;
 
-
     .profilePhoto {
-      border-radius: 75px;
-      border: 4px solid #fff;
       box-sizing: border-box;
       background-color: #fff;
-      width: 100%;
-      height: 100%;
     }
   }
 
