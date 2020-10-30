@@ -1,14 +1,14 @@
 @import "src/utils/variables";
 
 .searchContainer {
-  width: 28%;
-  max-width: 300px;
-  flex-grow: 1;
+  width: $search-width;
+  max-width: $max-search-width;
   box-sizing: border-box;
-  padding: 0 10px;
+  display: flex;
+  align-items: center;
 
   .searchBox {
-    //text-align: center;
+    width: 100%;
 
     .searchIcon {
       position: absolute;
@@ -32,13 +32,14 @@
       border-radius: $radius;
       border: none;
       outline: none;
+      //background-color: rgba(255, 255, 255, 0.19);
     }
   }
 
   .searchResults {
-    //width: $search-width;
-    width: 27%;
-    max-width: 280px;
+    width: $search-width;
+    max-width: $max-search-width;
+    //width: 27%;
     position: absolute;
     top: $navbarHeight;
     max-height: 400px;

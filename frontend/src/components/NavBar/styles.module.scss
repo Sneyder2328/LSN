@@ -22,8 +22,8 @@
 
     .newsFeedType {
       display: flex;
-      width: 40%;
-      flex-grow: 1;
+      //width: 40%;
+      //flex-grow: 1;
       height: 100%;
 
       ul {
@@ -55,7 +55,7 @@
       right: 50%;
       height: 100%;
       width: fit-content;
-      flex-grow: 0;
+      //flex-grow: 0;
       //width: 20%;
       display: flex;
 
@@ -65,9 +65,50 @@
       }
     }
 
+    .leftHeader {
+      display: flex;
+      height: 100%;
+
+      .search {
+        margin: 0 10px;
+        //max-width: 300px;
+      }
+    }
+
+    .rightHeader {
+      display: flex;
+      align-items: center;
+
+      .profileLink {
+        margin: 0 12px;
+
+        &:hover {
+          cursor: pointer;
+        }
+      }
+
+      .icon {
+        margin: 0 12px;
+        color: #fff;
+        font-size: 1.25rem;
+        background-color: rgba(96, 174, 252, 0.58);
+        border-radius: 100%;
+        width: 34px;
+        height: 34px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        &:hover {
+          cursor: pointer;;
+          background-color: #58adff;
+        }
+      }
+    }
+
     .logOutButton {
-      width: 12%;
-      flex-grow: 0;
+      //width: 12%;
+      //flex-grow: 0;
       box-sizing: border-box;
       padding: 8px 2px;
       font-size: 1rem;

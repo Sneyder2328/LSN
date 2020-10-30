@@ -4,9 +4,12 @@ import {useDispatch} from "react-redux";
 import useOnClickOutside from 'use-onclickoutside';
 import styles from './styles.module.scss'
 import {searchUser} from "../../modules/Search/searchActions";
+import classNames from "classnames";
 
-
-export const SearchBar = () => {
+type Props = {
+    className?: string;
+}
+export const SearchBar: React.FC<Props> = ({className}) => {
     const dispatch = useDispatch()
     const ref = useRef(null);
     const [resultsVisible, setResultsVisible] = useState(false);
@@ -27,7 +30,7 @@ export const SearchBar = () => {
     };
 
     return (
-        <div ref={ref} className={styles.searchContainer}>
+        <div ref={ref} className={classNames(styles.searchContainer, className)}>
             <div className={styles.searchBox} onClick={() => setResultsVisible(true)}>
                 <div className={styles.searchIcon}>
                     <i className="fas fa-search"/>

@@ -24,6 +24,10 @@ export const UserApi = {
         return await transport.post(`/users/${receiverUserId}/friends`)
     },
 
+    async removeFriendship(otherUserId: string): Promise<AxiosResponse<boolean>> {
+        return await transport.delete(`/users/${otherUserId}/friends`)
+    },
+
     async respondToFriendRequest(senderId: string, action: FriendRequestActionType): Promise<AxiosResponse> {
         return await transport.put(`/users/${senderId}/friends`, null, {params: {action}})
     },

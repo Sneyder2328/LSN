@@ -18,7 +18,8 @@ const {
     sendFriendRequestSuccess,
     respondToFriendRequestError,
     respondToFriendRequestRequest,
-    respondToFriendRequestSuccess
+    respondToFriendRequestSuccess,
+    removeFriendshipSuccess
 } = usersActions
 const {setComments} = commentsActions
 const {setPosts} = postActions
@@ -86,5 +87,16 @@ export const respondToFriendRequest = (senderId: string, action: FriendRequestAc
     } catch (err) {
         console.log('sendFriendRequest err', err);
         dispatch(respondToFriendRequestError({senderId}))
+    }
+}
+
+export const removeFriendship = (userId: string): AppThunk => async (dispatch) => {
+    try {
+        const response = await UserApi.removeFriendship(userId)
+        if (response.data)
+            dispatch(removeFriendshipSuccess({userId}))
+
+    } catch (err) {
+        console.log('removeFriendship err', err);
     }
 }

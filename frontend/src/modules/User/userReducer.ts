@@ -73,6 +73,9 @@ export const usersSlice = createSlice({
         },
         respondToFriendRequestError: (state, action: PayloadAction<{ senderId: string }>) => {
             state.entities[action.payload.senderId].updatingRelationship = false
+        },
+        removeFriendshipSuccess: (state, action: PayloadAction<{userId: string}>) => {
+            state.entities[action.payload.userId].relationship = undefined
         }
     },
     extraReducers: builder => {

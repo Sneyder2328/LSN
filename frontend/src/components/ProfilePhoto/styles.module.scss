@@ -1,6 +1,7 @@
 @import "src/utils/variables";
 
 .imageProfile {
+  background-color: #fff;
   border-radius: 50%;
   object-fit: cover;
   box-sizing: border-box;
@@ -36,6 +37,15 @@
 .small2 {
   width: $thumbnailImgDimen+-6px;
   height: $thumbnailImgDimen+-6px;
+
+  &.border {
+    border: 2px solid #fff;
+  }
+}
+
+.small3 {
+  width: $thumbnailImgDimen+-12px;
+  height: $thumbnailImgDimen+-12px;
 
   &.border {
     border: 2px solid #fff;

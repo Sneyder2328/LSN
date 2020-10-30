@@ -6,7 +6,7 @@ import {Button} from "../../../components/Button/Button";
 import React from "react";
 import {showModal} from "../../../modules/Modal/modalsReducer";
 import {EDIT_PROFILE_MODAL} from "../../../components/Modals/ModalContainer";
-import {respondToFriendRequest, sendFriendRequest} from "../../../modules/User/userActions";
+import {removeFriendship, respondToFriendRequest, sendFriendRequest} from "../../../modules/User/userActions";
 import {useDispatch, useSelector} from "react-redux";
 import {AppState} from "../../../modules/rootReducer";
 import styles from './styles.module.scss'
@@ -29,6 +29,9 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({userProfile}) => {
                 break
             case "Add Friend":
                 dispatch(sendFriendRequest(userProfile.userId))
+                break
+            case "Cancel Request":
+                dispatch(removeFriendship(userProfile.userId))
                 break
         }
     }

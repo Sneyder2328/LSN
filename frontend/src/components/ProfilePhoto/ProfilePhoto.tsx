@@ -7,7 +7,7 @@ export type ProfilePhotoProps = {
     url?: string;
     preview?: ImageFile;
     className?: string;
-    size: 'large' | 'medium' | 'small1' | 'small2';
+    size: 'large' | 'medium' | 'small1' | 'small2' | 'small3';
     border?: boolean;
 }
 // https://res.cloudinary.com/dkflrjxwe/image/upload/ar_1,c_crop/v1602532440/postImages/photo-1423592707957-3b212afa6733-1602532431280.jpg

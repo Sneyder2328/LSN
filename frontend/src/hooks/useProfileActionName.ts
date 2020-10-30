@@ -1,7 +1,9 @@
 import {RelationShipType, UserObject} from "../modules/User/userReducer";
 import {useEffect, useState} from "react";
 
-const getActionName = (currentUserId: string, profileUserId: string, relationship: RelationShipType) => {
+type ActionType = 'Edit Profile' | 'Message' | 'Respond' | 'Cancel Request' | 'Add Friend' | undefined
+
+const getActionName = (currentUserId: string, profileUserId: string, relationship: RelationShipType): ActionType => {
     console.log('getActionName', currentUserId, profileUserId, relationship);
     if (currentUserId === profileUserId)
         return 'Edit Profile'
@@ -22,7 +24,7 @@ const getActionName = (currentUserId: string, profileUserId: string, relationshi
 };
 
 export const useProfileActionName = (currentUserId: string, userProfile?: UserObject) => {
-    const [actionName, setActionName] = useState<string | undefined>(undefined)
+    const [actionName, setActionName] = useState<ActionType>(undefined)
 
     useEffect(() => {
         console.log('useProfileActionName', currentUserId, userProfile);
