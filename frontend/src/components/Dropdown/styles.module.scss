@@ -2,11 +2,12 @@
 
 .dropdown {
   position: relative;
-  //text-align: right;
 
   .dropdownMenu {
     background-color: #fff;
     position: absolute;
+    top: 110%;
+    right: 0;
     text-align: left;
     z-index: 3;
     min-width: 180px;

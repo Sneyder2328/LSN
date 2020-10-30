@@ -1,18 +1,18 @@
 import React from "react";
-import {useDispatch, useSelector} from 'react-redux'
+import {useDispatch} from 'react-redux'
 
 import styles from './styles.module.scss'
 import Logo from "./../../resources/lsn-ic.png";
 import {SearchBar} from "../SearchBar/SearchBar";
-import {AppState} from "../../modules/rootReducer";
 import {logOutUser} from "../../modules/Auth/authActions";
 import classNames from "classnames";
 import {CurrentProfileLink} from "../CurrentProfileLink/CurrentProfileLink";
+import {Link} from "react-router-dom";
+import {Dropdown} from "../Dropdown/Dropdown";
 
 export const NavBar = () => {
     const dispatch = useDispatch()
-    const isLoggingOut = useSelector((state: AppState) => state.auth.isLoggingOut)
-
+    // const isLoggingOut = useSelector((state: AppState) => state.auth.isLoggingOut)
     const handleLogOut = () => dispatch(logOutUser());
 
 
@@ -21,8 +21,12 @@ export const NavBar = () => {
             <div className={styles.navBar}>
                 <div className={styles.leftHeader}>
                     <div className={styles.newsFeedType}>
-                        <ul className={styles.selected}><a href='/'>Top</a></ul>
-                        <ul><a href='#'>Latest</a></ul>
+                        <ul className={styles.selected}>
+                            <Link to={'/'}>Top</Link>
+                        </ul>
+                        <ul>
+                            <Link to={'/'}>Latest</Link>
+                        </ul>
                     </div>
                     <SearchBar className={styles.search}/>
                 </div>
@@ -33,10 +37,21 @@ export const NavBar = () => {
                     <CurrentProfileLink className={styles.profileLink}/>
                     <i className={classNames(styles.icon, "fas fa-inbox")}/>
                     <i className={classNames(styles.icon, "fas fa-bell")}/>
-                    <i className={classNames(styles.icon, "fas fa-bars")}/>
-                    {/*<button className={styles.logOutButton} disabled={isLoggingOut}*/}
-                    {/*        onClick={handleLogOut}>Log out*/}
-                    {/*</button>*/}
+                    <Dropdown>
+                        <i className={classNames(styles.icon, "fas fa-bars")}/>
+                        <Dropdown.Item
+                            label={'Settings'}
+                            onClick={() => {
+                                // TODO (Implement this feature to send to /settings)
+                            }}
+                            icon={() => <i className="fas fa-cog"/>}/>
+                        <Dropdown.Item
+                            label={'Log out'}
+                            onClick={() => {
+                                handleLogOut()
+                            }}
+                            icon={() => <i className="fas fa-sign-out-alt"/>}/>
+                    </Dropdown>
                 </div>
             </div>
         </div>

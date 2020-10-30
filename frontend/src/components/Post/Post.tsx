@@ -12,6 +12,7 @@ import {createComment, loadPreviousComments} from "../../modules/Comment/comment
 import {dislikePost, likePost} from "../../modules/Posts/postActions";
 import {ProfilePhoto} from "../ProfilePhoto/ProfilePhoto";
 import {AddNewComment} from "./AddNewComment/AddNewComment";
+import {Link} from "react-router-dom";
 
 export interface Profile {
     userId: string;
@@ -116,8 +117,9 @@ const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComment
                     className={styles.avatar} size={"small1"}
                     url={postResponse?.authorProfile?.profilePhotoUrl}/>
                 <div>
-                    <a className={styles.fullname} href={`/${postResponse?.authorProfile?.username}`}>
-                        <p>{postResponse?.authorProfile?.fullname}</p></a>
+                    <Link to={`/${postResponse?.authorProfile?.username}`} className={styles.fullname}>
+                        <p>{postResponse?.authorProfile?.fullname}</p>
+                    </Link>
                     <p className={styles.username}>@{postResponse?.authorProfile?.username}</p>
                     <p className={styles.timePublished}>{timeSincePublished}</p>
                 </div>
