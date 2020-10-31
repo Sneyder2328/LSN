@@ -19,32 +19,41 @@ const DropDownItem: React.FC<DropdownItemProps> = ({icon, label, onSelected, onC
 
 
 export type DropdownProps = {
-
+    trigger: any;
 }
-export const Dropdown: React.FC<DropdownProps> & { Item: React.FC<DropdownItemProps>; } = ({children}) => {
+export const Dropdown: React.FC<DropdownProps> & { Item: React.FC<DropdownItemProps>; } = ({trigger, children}) => {
     const [open, setOpen] = useState<boolean>(false)
     const ref = useRef(null);
     useOnClickOutside(ref, () => {
         setOpen(false)
     });
+    // const Trigger = trigger
 
     return (<div className={styles.dropdown} ref={ref}>
+        {/*<Trigger onClick={() => {*/}
+        {/*    console.log('calling onclick!');*/}
+        {/*    setOpen(!open)*/}
+        {/*}}/>*/}
         {
-            React.Children.map(children, (child) => {
-                // @ts-ignore
-                if (isValidElement(child) && child?.type?.name !== 'DropDownItem') {
-                    return cloneElement(child, {
-                        onClick: () => setOpen(!open)
-                    })
-                }
-                return null;
+            cloneElement(trigger, {
+                onClick: () => setOpen(!open)
             })
+            // React.Children.map(children, (child) => {
+            //     console.log('child=', child);
+            //     // @ts-ignore
+            //     if (isValidElement(child) && child?.type?.name !== 'DropDownItem') {
+            //         return cloneElement(child, {
+            //             onClick: () => setOpen(!open)
+            //         })
+            //     }
+            //     return null;
+            // })
         }
         <div className={classNames(styles.dropdownMenu, {[styles.show]: open})}>
             {
                 React.Children.map(children, (child) => {
                     // @ts-ignore
-                    if (isValidElement(child) && child?.type?.name === 'DropDownItem') {
+                    if (isValidElement(child)) {
                         return cloneElement(child, {
                             onSelected: () => setOpen(!open)
                         })

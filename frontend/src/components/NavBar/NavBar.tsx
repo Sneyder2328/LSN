@@ -37,8 +37,7 @@ export const NavBar = () => {
                     <CurrentProfileLink className={styles.profileLink}/>
                     <i className={classNames(styles.icon, "fas fa-inbox")}/>
                     <i className={classNames(styles.icon, "fas fa-bell")}/>
-                    <Dropdown>
-                        <i className={classNames(styles.icon, "fas fa-bars")}/>
+                    <Dropdown trigger={<i className={classNames(styles.icon, "fas fa-bars")}/>}>
                         <Dropdown.Item
                             label={'Settings'}
                             onClick={() => {

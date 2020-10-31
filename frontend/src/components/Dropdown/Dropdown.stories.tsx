@@ -9,12 +9,14 @@ export default {
     component: Dropdown,
 } as Meta;
 
-const Template: Story<DropdownProps> = (args) => (<Dropdown {...args}>
-    <Button className={styles.actionBtn} onClick={() => console.log('hehe')}
-            label={'Click me'}/>
-    <Dropdown.Item label={'Accept'} icon={() => <i className="fas fa-check"/>}/>
-    <Dropdown.Item label={'Deny'} icon={() => <i className="fas fa-times"/>}/>
-</Dropdown>)
+const Template: Story<DropdownProps> = (args) => {
+    return (<Dropdown {...args} trigger={<Button className={styles.actionBtn} onClick={() => console.log('hehe')}
+                       label={'Click me'}/>}>
+
+        <Dropdown.Item label={'Accept'} icon={() => <i className="fas fa-check"/>}/>
+        <Dropdown.Item label={'Deny'} icon={() => <i className="fas fa-times"/>}/>
+    </Dropdown>)
+}
 
 export const DropDown = Template.bind({});
 

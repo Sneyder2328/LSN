@@ -44,11 +44,10 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({userProfile}) => {
 
     let actionButton = null
     if (actionName) {
-        actionButton = actionName === 'Respond' ? <Dropdown>
-            <Button
-                className={styles.actionBtn}
-                onClick={handleUserAction}
-                label={actionName}/>
+        actionButton = actionName === 'Respond' ? <Dropdown trigger={<Button
+            className={styles.actionBtn}
+            onClick={handleUserAction}
+            label={actionName}/>}>
             <Dropdown.Item
                 label={'Accept'}
                 onClick={() => handleResponseToFriendRequest('confirm')}
