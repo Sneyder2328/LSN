@@ -51,6 +51,9 @@ exports.searchUserValidationRules = [
 exports.sendFriendRequestValidationRules = [
     express_validator_1.param('receiverId').trim().matches(config_1.default.regex.uuidV4)
 ];
+exports.deleteFriendshipValidationRules = [
+    express_validator_1.param('otherUserId').trim().matches(config_1.default.regex.uuidV4)
+];
 const accessTokenIsValid = express_validator_1.header(config_1.default.headers.accessToken).trim().matches(config_1.default.regex.jwt).withMessage('Access token provided is not a valid JWT');
 exports.getFriendRequestValidationRules = [
     accessTokenIsValid

@@ -31,7 +31,7 @@ describe('GET /profile/:username', () => {
     }));
     it('should return a profile by username', (done) => {
         supertest_1.default(index_1.app)
-            .get(endpoints_1.default.user.GET_PROFILE(seed_1.users[0].username))
+            .get(endpoints_1.default.user.USERS(seed_1.users[0].username))
             .expect(httpResponseCodes_1.default.OK)
             .expect((res) => {
             expect(res.body.username).toBe(seed_1.users[0].username);
@@ -44,7 +44,7 @@ describe('GET /profile/:username', () => {
     });
     it('should return a profile by userId', (done) => {
         supertest_1.default(index_1.app)
-            .get(endpoints_1.default.user.GET_PROFILE(seed_1.users[0].id))
+            .get(endpoints_1.default.user.USERS(seed_1.users[0].id))
             .expect(httpResponseCodes_1.default.OK)
             .expect((res) => {
             expect(res.body.username).toBe(seed_1.users[0].username);
@@ -57,7 +57,7 @@ describe('GET /profile/:username', () => {
     });
     it('should not return a profile with an inexisting username', (done) => {
         supertest_1.default(index_1.app)
-            .get(endpoints_1.default.user.GET_PROFILE(seed_1.users[1].username))
+            .get(endpoints_1.default.user.USERS(seed_1.users[1].username))
             .expect(httpResponseCodes_1.default.NOT_FOUND)
             .expect((res) => {
             expect(res.body.error).toBe(errors_1.default.USER_NOT_FOUND_ERROR);
@@ -67,7 +67,7 @@ describe('GET /profile/:username', () => {
     });
     it('should not return a profile with an inexisting userId', (done) => {
         supertest_1.default(index_1.app)
-            .get(endpoints_1.default.user.GET_PROFILE(seed_1.users[1].id))
+            .get(endpoints_1.default.user.USERS(seed_1.users[1].id))
             .expect(httpResponseCodes_1.default.NOT_FOUND)
             .expect((res) => {
             expect(res.body.error).toBe(errors_1.default.USER_NOT_FOUND_ERROR);
@@ -122,7 +122,7 @@ describe('POST /sendFriendRequest', () => {
     }));
     it('should send a friend request', (done) => {
         supertest_1.default(index_1.app)
-            .post(endpoints_1.default.user.SEND_FRIEND_REQUEST(seed_1.users[1].id))
+            .post(endpoints_1.default.user.FRIENDS(seed_1.users[1].id))
             .set(config_1.default.headers.accessToken, accessToken)
             .expect(httpResponseCodes_1.default.CREATED)
             .end(done);

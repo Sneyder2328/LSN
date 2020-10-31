@@ -1,24 +1,33 @@
 import {postActions, PostObject} from "../Post/postsReducer";
 import {CommentObject, commentsActions} from "../Comment/commentsReducer";
-import {profilesActions} from "./profilesReducer";
 import {AppThunk} from "../../store";
-import {ProfileApi} from "./profileApi";
 import {normalize} from "normalizr";
 import {profile} from "../api/schema";
 import {HashTable} from "../../utils/utils";
-import {UserObject, usersActions} from "../usersReducer";
-
-const {setUsers, setUser} = usersActions
+import {UserObject, usersActions} from "./usersReducer";
+import {FriendRequestActionType, UserApi} from "./userApi";
+const {
+    setUser,
+    setUsers,
+    fetchProfileSuccess,
+    fetchProfileRequest,
+    fetchProfileError,
+    sendFriendRequestError,
+    sendFriendRequestRequest,
+    sendFriendRequestSuccess,
+    respondToFriendRequestError,
+    respondToFriendRequestRequest,
+    respondToFriendRequestSuccess
+} = usersActions
 const {setPosts} = postActions
 const {setComments} = commentsActions
-const {fetchProfileError, fetchProfileRequest, fetchProfileSuccess} = profilesActions
 
 
 export const fetchProfile = (userIdentifier: string, includePosts: boolean): AppThunk => async (dispatch) => {
     console.log('fetchProfile', userIdentifier, includePosts);
     dispatch(fetchProfileRequest())
     try {
-        const response = await ProfileApi.fetchProfile(userIdentifier, includePosts)
+        const response = await UserApi.fetchProfile(userIdentifier, includePosts)
 
         const normalizedData = normalize(response.data, profile)
         console.log('normalizedData', normalizedData);
@@ -39,5 +48,42 @@ export const fetchProfile = (userIdentifier: string, includePosts: boolean): App
     } catch (err) {
         console.log('fetchProfile err', err);
         dispatch(fetchProfileError())
+    }
+}
+
+
+export const getUserBasicInfo = (userId: string): AppThunk => async (dispatch) => {
+    const response = await UserApi.fetchProfile(userId, false);
+    const user = response.data as UserObject;
+    dispatch(setUsers({
+        [user.userId]: user
+    }))
+}
+
+export const sendFriendRequest = (receiverId: string): AppThunk => async (dispatch) => {
+    dispatch(sendFriendRequestRequest({receiverId}))
+    try {
+        const response = await UserApi.sendFriendRequest(receiverId)
+        if (response.data)
+            dispatch(sendFriendRequestSuccess({receiverId}))
+        else
+            dispatch(sendFriendRequestError({receiverId}))
+    } catch (err) {
+        console.log('sendFriendRequest err', err);
+        dispatch(sendFriendRequestError({receiverId}))
+    }
+}
+
+export const respondToFriendRequest = (senderId: string, action: FriendRequestActionType): AppThunk => async (dispatch) => {
+    dispatch(respondToFriendRequestRequest({senderId}))
+    try {
+        const response = await UserApi.respondToFriendRequest(senderId, action)
+        if (response.data)
+            dispatch(respondToFriendRequestSuccess({senderId, action}))
+        else
+            dispatch(respondToFriendRequestError({senderId}))
+    } catch (err) {
+        console.log('sendFriendRequest err', err);
+        dispatch(respondToFriendRequestError({senderId}))
     }
 }

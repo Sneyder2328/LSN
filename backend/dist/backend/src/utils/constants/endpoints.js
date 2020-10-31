@@ -8,8 +8,8 @@ exports.default = {
         REFRESH_TOKEN: '/tokens'
     },
     user: {
-        GET_PROFILE: (username) => `/users/${username}`,
-        SEND_FRIEND_REQUEST: (receiverUserId) => `/users/${receiverUserId}/friends`,
+        USERS: (username) => `/users/${username}`,
+        FRIENDS: (receiverUserId) => `/users/${receiverUserId}/friends`,
         GET_FRIEND_REQUESTS: '/me/friends/incoming',
         RESPOND_TO_FRIEND_REQUEST: (senderUserId) => `/users/${senderUserId}/friends`,
         SEARCH: '/users'

@@ -1,8 +1,6 @@
 import {createStore, applyMiddleware} from 'redux';
-import {persistStore, persistReducer, createMigrate} from 'redux-persist';
+import {persistStore} from 'redux-persist';
 import {createLogger} from 'redux-logger';
-import AsyncStorage from '@react-native-community/async-storage';
-// @ts-ignore
 import thunk from 'redux-thunk';
 import {Action, ThunkAction} from "@reduxjs/toolkit";
 import {MyAppState, rootReducer} from "./modules/rootReducer";

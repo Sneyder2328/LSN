@@ -6,9 +6,9 @@ export default {
     },
     user: {
         SIGN_UP: '/users',
-        GET_PROFILE: (userIdentifier) => `/users/${userIdentifier}`,
+        USERS: (userIdentifier) => `/users/${userIdentifier}`,
         UPDATE_PROFILE: (userId) => `/users/${userId}`,
-        SEND_FRIEND_REQUEST: (receiverUserId) => `/users/${receiverUserId}/friends`,
+        FRIENDS: (userId) => `/users/${userId}/friends`,
         GET_FRIEND_REQUESTS: '/me/friends/incoming',
         RESPOND_TO_FRIEND_REQUEST: (senderUserId) => `/users/${senderUserId}/friends`,
         SEARCH: '/users'

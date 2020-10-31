@@ -1,13 +1,16 @@
 import {AxiosResponse} from "axios";
-import {UserObject} from "../usersReducer";
 import {PostObject} from "../Post/postsReducer";
 import {transport} from "../api";
+import {UserObject} from "./usersReducer";
 
 export interface ProfileResponse extends UserObject {
     posts?: Array<PostObject>;
 }
-
-export const ProfileApi = {
+export type FriendRequestActionType = 'confirm'|'deny'
+export const UserApi = {
+    // async getUserProfile(userId: string, includePosts?: boolean) {
+    //     return await transport.get(`/users/${userId}`, {params: {includePosts}});
+    // },
     /**
      *
      * @param userIdentifier can be the userId or username of the user whose profile is to be fetched
@@ -15,5 +18,17 @@ export const ProfileApi = {
      */
     async fetchProfile(userIdentifier: string, includePosts: boolean): Promise<AxiosResponse<ProfileResponse>> {
         return await transport.get(`/users/${userIdentifier}`, {params: {includePosts}})
-    }
-}
+    },
+
+    async sendFriendRequest(receiverUserId: string): Promise<AxiosResponse<boolean>> {
+        return await transport.post(`/users/${receiverUserId}/friends`)
+    },
+
+    async respondToFriendRequest(senderId: string, action: FriendRequestActionType): Promise<AxiosResponse> {
+        return await transport.put(`/users/${senderId}/friends`, null, {params: {action}})
+    },
+
+    // async getFriendRequests(): Promise<AxiosResponse<boolean>> {
+    //     return await transport.post(`/users/${receiverUserId}/friends`)
+    // },
+};

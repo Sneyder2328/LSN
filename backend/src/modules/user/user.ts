@@ -6,7 +6,7 @@ import {
     updateProfile
 } from "./userService";
 import {
-    acceptFriendRequestValidationRules,
+    acceptFriendRequestValidationRules, deleteFriendshipValidationRules,
     getFriendRequestValidationRules,
     getProfileValidationRules, searchUserValidationRules,
     sendFriendRequestValidationRules, updateProfileValidationRules, validate
@@ -20,7 +20,7 @@ import multer from "multer";
 import {MAX_IMG_FILE_SIZE} from "../../utils/constants";
 import {cloudinary} from "../../config/cloudinaryConfig";
 import cloudinaryStorage from "multer-storage-cloudinary";
-import {getFriendRequests, handleFriendRequest, sendFriendRequest} from "./relationshipService";
+import {deleteFriendship, getFriendRequests, handleFriendRequest, sendFriendRequest} from "./relationshipService";
 
 const storage = cloudinaryStorage({
     cloudinary,
@@ -46,7 +46,7 @@ const router = Router();
 /**
  * Get user's profile basic data
  */
-router.get(endpoints.user.GET_PROFILE(':userIdentifier'), authenticate, getProfileValidationRules, validate, handleErrorAsync(async (req, res) => {
+router.get(endpoints.user.USERS(':userIdentifier'), authenticate, getProfileValidationRules, validate, handleErrorAsync(async (req, res) => {
     const userIdentifier: string = req.params.userIdentifier;
     const includePosts = req.query.includePosts == "true";
     const user = userIdentifier.match(config.regex.uuidV4) ? await getProfileByUserId(userIdentifier, includePosts, req.userId) : await getProfileByUsername(userIdentifier, includePosts, req.userId);
@@ -80,9 +80,25 @@ router.get(endpoints.user.SEARCH, authenticate, searchUserValidationRules, valid
 /**
  * Send a friend request to another user (receiverId)
  */
-router.post(endpoints.user.SEND_FRIEND_REQUEST(':receiverId'), authenticate, sendFriendRequestValidationRules, validate, handleErrorAsync(async (req, res) => {
+router.post(endpoints.user.FRIENDS(':receiverId'), authenticate, sendFriendRequestValidationRules, validate, handleErrorAsync(async (req, res) => {
     const fRequestSent = await sendFriendRequest(req.userId, req.params.receiverId);
     res.status(httpCodes.CREATED).send(fRequestSent);
+}));
+
+/**
+ * Respond to friend request received from another user (senderId)
+ */
+router.put(endpoints.user.RESPOND_TO_FRIEND_REQUEST(':senderId'), authenticate, acceptFriendRequestValidationRules, validate, handleErrorAsync(async (req, res) => {
+    const response = await handleFriendRequest(req.userId, req.params.senderId, req.query.action);
+    res.json(response);
+}));
+
+/**
+ * Remove a friendship(either pending or current) with another user
+ */
+router.delete(endpoints.user.FRIENDS(':otherUserId'), authenticate, deleteFriendshipValidationRules, validate, handleErrorAsync(async (req, res) => {
+    const deleted = await deleteFriendship(req.userId, req.params.otherUserId);
+    res.status(httpCodes.OK).send(deleted);
 }));
 
 /**
@@ -91,14 +107,6 @@ router.post(endpoints.user.SEND_FRIEND_REQUEST(':receiverId'), authenticate, sen
 router.get(endpoints.user.GET_FRIEND_REQUESTS, authenticate, getFriendRequestValidationRules, validate, handleErrorAsync(async (req, res) => {
     const friendRequests = await getFriendRequests(req.userId);
     res.json(friendRequests);
-}));
-
-/**
- * Respond to friend request received from another user (senderId)
- */
-router.put(endpoints.user.RESPOND_TO_FRIEND_REQUEST(':senderId'), authenticate, acceptFriendRequestValidationRules, validate, handleErrorAsync(async (req, res) => {
-    const accepted = await handleFriendRequest(req.userId, req.params.senderId, req.query.action);
-    res.json(accepted);
 }));
 
 export default router;

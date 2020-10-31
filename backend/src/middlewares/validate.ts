@@ -55,6 +55,10 @@ export const sendFriendRequestValidationRules = [
     param('receiverId').trim().matches(config.regex.uuidV4)
 ];
 
+export const deleteFriendshipValidationRules = [
+    param('otherUserId').trim().matches(config.regex.uuidV4)
+];
+
 const accessTokenIsValid = header(config.headers.accessToken).trim().matches(config.regex.jwt).withMessage('Access token provided is not a valid JWT');
 
 export const getFriendRequestValidationRules = [

@@ -43,6 +43,7 @@ export const NavBar = () => {
                             label={'Settings'}
                             onClick={() => {
                                 // TODO (Implement this feature to send to /settings)
+                                console.log('Settings clicked!');
                             }}
                             icon={() => <i className="fas fa-cog"/>}/>
                         <Dropdown.Item

@@ -1,10 +1,10 @@
 import JwtDecode from 'jwt-decode';
 import {authActions} from "./authReducer";
 import {AppThunk} from "../../store";
-import {usersActions} from "../usersReducer";
 import {AuthApi, ProfileRequest} from "./authApi";
 import {MyAppState} from "../rootReducer";
 import {setRefreshTokenHeaders} from "../api";
+import {usersActions} from "../User/usersReducer";
 
 const {
     logOutRequest,

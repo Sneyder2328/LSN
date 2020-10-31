@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import {useSelector} from "react-redux";
-import {useEffect} from "react";
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs'
 import {NewsFeedNavigator} from "../NewsFeed/NewsFeedNavigator";
 import {useNavigation, useRoute, getFocusedRouteNameFromRoute} from "@react-navigation/native";
@@ -11,9 +10,7 @@ import {ProfileScreen} from "../ProfileScreen/ProfileScreen";
 import {SearchScreen} from "../Search/SearchScreen";
 import {Appbar} from "react-native-paper";
 import {View} from "react-native";
-import {HomeMenu} from "../../components/HomeMenu";
 import {SearchBar} from "../../components/SearchBar";
-import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 
 export const getHeaderOptions = (route: any) => {
     // If the focused route is not found, we need to assume it's the initial screen

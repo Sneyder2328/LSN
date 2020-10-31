@@ -16,6 +16,7 @@ const userRelationship_1 = __importDefault(require("../../utils/constants/userRe
 const AppError_1 = require("../../utils/errors/AppError");
 const httpResponseCodes_1 = __importDefault(require("../../utils/constants/httpResponseCodes"));
 const database_1 = require("../../database/database");
+const sequelize_1 = __importDefault(require("sequelize"));
 const { UserRelationShip } = database_1.models;
 /**
  * Returns the type of relationship(if any) between two users by their id's
@@ -71,6 +72,19 @@ function sendFriendRequest(senderId, receiverId) {
     });
 }
 exports.sendFriendRequest = sendFriendRequest;
+const Op = sequelize_1.default.Op;
+function deleteFriendship(currentUserId, otherUserId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return (yield UserRelationShip.destroy({
+            where: {
+                [Op.or]: [
+                    { receiverId: currentUserId, senderId: otherUserId }, { receiverId: otherUserId, senderId: currentUserId }
+                ]
+            }
+        })) !== 0;
+    });
+}
+exports.deleteFriendship = deleteFriendship;
 /**
  * Get incoming friend requests in pending status by userId
  * @param userId

@@ -3,6 +3,8 @@ import userRelationship from "../../utils/constants/userRelationship";
 import {AppError} from "../../utils/errors/AppError";
 import responseCodes from "../../utils/constants/httpResponseCodes";
 import {models} from "../../database/database";
+import Sequelize from "sequelize";
+
 const {UserRelationShip} = models;
 type RelationShipType =
     'friend'
@@ -61,6 +63,17 @@ export async function getRelationshipType(currentUserId: string, otherUserId: st
 export async function sendFriendRequest(senderId: string, receiverId: string): Promise<boolean> {
     const fRequest = await UserRelationShip.create({senderId, receiverId, type: userRelationship.PENDING});
     return fRequest !== null;
+}
+
+const Op = Sequelize.Op;
+export async function deleteFriendship(currentUserId: string, otherUserId: string): Promise<boolean> {
+    return (await UserRelationShip.destroy({
+        where: {
+            [Op.or]: [
+                {receiverId: currentUserId, senderId: otherUserId}, {receiverId: otherUserId, senderId: currentUserId}
+            ]
+        }
+    })) !== 0;
 }
 
 /**
