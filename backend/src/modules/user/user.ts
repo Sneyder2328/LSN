@@ -7,7 +7,7 @@ import {
 } from "./userService";
 import {
     acceptFriendRequestValidationRules, deleteFriendshipValidationRules,
-    getFriendRequestValidationRules,
+    getFriendRequestValidationRules, getFriendsByUserValidationRules,
     getProfileValidationRules, searchUserValidationRules,
     sendFriendRequestValidationRules, updateProfileValidationRules, validate
 } from "../../middlewares/validate";
@@ -20,7 +20,13 @@ import multer from "multer";
 import {MAX_IMG_FILE_SIZE} from "../../utils/constants";
 import {cloudinary} from "../../config/cloudinaryConfig";
 import cloudinaryStorage from "multer-storage-cloudinary";
-import {deleteFriendship, getFriendRequests, handleFriendRequest, sendFriendRequest} from "./relationshipService";
+import {
+    deleteFriendship,
+    getCurrentFriends,
+    getFriendRequests,
+    handleFriendRequest,
+    sendFriendRequest
+} from "./relationshipService";
 
 const storage = cloudinaryStorage({
     cloudinary,
@@ -53,18 +59,19 @@ router.get(endpoints.user.USERS(':userIdentifier'), authenticate, getProfileVali
     res.json(user);
 }));
 
+const verifyParamIdMatches = (identifier: string) => (req, res, next) => {
+    if (req.userId !== req.params[identifier]) {
+        return res.status(httpCodes.FORBIDDEN).send({error: "userId does not correspond with the authentication"});
+    }
+    next()
+}
 
 /**
  * Update current logged in user's profile basic data
  */
-router.put(endpoints.user.UPDATE_PROFILE(':userId'), authenticate, imageUpload, updateProfileValidationRules, validate, handleErrorAsync(async (req, res) => {
-    const userId: string = req.params.userId;
-    if (req.userId !== userId) {
-        res.status(httpCodes.FORBIDDEN).send({error: "You cannot edit someone else's profile"});
-    } else {
-        const user = await updateProfile(userId, req.body, req.files)
-        res.json(user);
-    }
+router.put(endpoints.user.UPDATE_PROFILE(':userId'), authenticate, verifyParamIdMatches('userId'), imageUpload, updateProfileValidationRules, validate, handleErrorAsync(async (req, res) => {
+    const user = await updateProfile(req.userId, req.body, req.files)
+    res.json(user);
 }));
 
 /**
@@ -108,5 +115,13 @@ router.get(endpoints.user.GET_FRIEND_REQUESTS, authenticate, getFriendRequestVal
     const friendRequests = await getFriendRequests(req.userId);
     res.json(friendRequests);
 }));
+
+/**
+ * Get all current friends of the user
+ */
+router.get(endpoints.USERS_USER_ID_FRIENDS(':userId'), authenticate, getFriendsByUserValidationRules, validate, verifyParamIdMatches('userId'), handleErrorAsync(async (req, res) => {
+    const friends = await getCurrentFriends(req.userId);
+    res.json(friends);
+}))
 
 export default router;

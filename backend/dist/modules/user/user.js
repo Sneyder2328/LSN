@@ -53,18 +53,18 @@ router.get(endpoints_1.default.user.USERS(':userIdentifier'), authenticate_1.def
     const user = userIdentifier.match(config_1.default.regex.uuidV4) ? yield userService_1.getProfileByUserId(userIdentifier, includePosts, req.userId) : yield userService_1.getProfileByUsername(userIdentifier, includePosts, req.userId);
     res.json(user);
 })));
+const verifyParamIdMatches = (identifier) => (req, res, next) => {
+    if (req.userId !== req.params[identifier]) {
+        return res.status(httpResponseCodes_1.default.FORBIDDEN).send({ error: "userId does not correspond with the authentication" });
+    }
+    next();
+};
 /**
  * Update current logged in user's profile basic data
  */
-router.put(endpoints_1.default.user.UPDATE_PROFILE(':userId'), authenticate_1.default, imageUpload, validate_1.updateProfileValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const userId = req.params.userId;
-    if (req.userId !== userId) {
-        res.status(httpResponseCodes_1.default.FORBIDDEN).send({ error: "You cannot edit someone else's profile" });
-    }
-    else {
-        const user = yield userService_1.updateProfile(userId, req.body, req.files);
-        res.json(user);
-    }
+router.put(endpoints_1.default.user.UPDATE_PROFILE(':userId'), authenticate_1.default, verifyParamIdMatches('userId'), imageUpload, validate_1.updateProfileValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield userService_1.updateProfile(req.userId, req.body, req.files);
+    res.json(user);
 })));
 /**
  * Search for users whose full name matches a given query
@@ -103,5 +103,12 @@ router.delete(endpoints_1.default.user.FRIENDS(':otherUserId'), authenticate_1.d
 router.get(endpoints_1.default.user.GET_FRIEND_REQUESTS, authenticate_1.default, validate_1.getFriendRequestValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const friendRequests = yield relationshipService_1.getFriendRequests(req.userId);
     res.json(friendRequests);
+})));
+/**
+ * Get all current friends of the user
+ */
+router.get(endpoints_1.default.USERS_USER_ID_FRIENDS(':userId'), authenticate_1.default, validate_1.getFriendsByUserValidationRules, validate_1.validate, verifyParamIdMatches('userId'), handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const friends = yield relationshipService_1.getCurrentFriends(req.userId);
+    res.json(friends);
 })));
 exports.default = router;

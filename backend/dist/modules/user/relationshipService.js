@@ -95,6 +95,35 @@ function getFriendRequests(userId) {
     });
 }
 exports.getFriendRequests = getFriendRequests;
+/**
+ * Get current friends by userId
+ * @param userId
+ */
+function getCurrentFriends(userId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const friendsUserSent = yield database_1.sequelize.query(`SELECT userId, username, profilePhotoUrl, fullname, coverPhotoUrl, description FROM Profile
+JOIN User_Relationship UR ON userId = UR.receiverId
+WHERE UR.senderId = '${userId}' AND UR.type = 'friend'`, {
+            // @ts-ignore
+            type: database_1.sequelize.QueryTypes.SELECT
+        });
+        const friendsUserReceived = yield database_1.sequelize.query(`SELECT userId, username, profilePhotoUrl, fullname, coverPhotoUrl, description FROM Profile
+JOIN User_Relationship UR ON userId = UR.senderId
+WHERE UR.receiverId = '${userId}' AND UR.type = 'friend'`, {
+            // @ts-ignore
+            type: database_1.sequelize.QueryTypes.SELECT
+        });
+        return [...friendsUserSent, ...friendsUserReceived];
+        // return UserRelationShip.findAll({
+        //     where: {
+        //         // [Op.or]: [{receiverId: userId}, {senderId: userId}],
+        //         senderId: userId,
+        //         type: userRelationship.FRIEND
+        //     },
+        // });
+    });
+}
+exports.getCurrentFriends = getCurrentFriends;
 function handleFriendRequest(receiverId, senderId, action) {
     return __awaiter(this, void 0, void 0, function* () {
         if (action === 'confirm')

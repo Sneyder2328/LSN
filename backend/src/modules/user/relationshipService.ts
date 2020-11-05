@@ -2,7 +2,7 @@ import userRelationship from "../../utils/constants/userRelationship";
 
 import {AppError} from "../../utils/errors/AppError";
 import responseCodes from "../../utils/constants/httpResponseCodes";
-import {models} from "../../database/database";
+import {models, sequelize} from "../../database/database";
 import Sequelize from "sequelize";
 
 const {UserRelationShip} = models;
@@ -66,6 +66,7 @@ export async function sendFriendRequest(senderId: string, receiverId: string): P
 }
 
 const Op = Sequelize.Op;
+
 export async function deleteFriendship(currentUserId: string, otherUserId: string): Promise<boolean> {
     return (await UserRelationShip.destroy({
         where: {
@@ -82,6 +83,33 @@ export async function deleteFriendship(currentUserId: string, otherUserId: strin
  */
 export async function getFriendRequests(userId: string) {
     return UserRelationShip.findAll({where: {receiverId: userId, type: userRelationship.PENDING}});
+}
+
+/**
+ * Get current friends by userId
+ * @param userId
+ */
+export async function getCurrentFriends(userId: string) {
+    const friendsUserSent = await sequelize.query(`SELECT userId, username, profilePhotoUrl, fullname, coverPhotoUrl, description FROM Profile
+JOIN User_Relationship UR ON userId = UR.receiverId
+WHERE UR.senderId = '${userId}' AND UR.type = 'friend'`, {
+        // @ts-ignore
+        type: sequelize.QueryTypes.SELECT
+    })
+    const friendsUserReceived = await sequelize.query(`SELECT userId, username, profilePhotoUrl, fullname, coverPhotoUrl, description FROM Profile
+JOIN User_Relationship UR ON userId = UR.senderId
+WHERE UR.receiverId = '${userId}' AND UR.type = 'friend'`, {
+        // @ts-ignore
+        type: sequelize.QueryTypes.SELECT
+    })
+    return [...friendsUserSent, ...friendsUserReceived]
+    // return UserRelationShip.findAll({
+    //     where: {
+    //         // [Op.or]: [{receiverId: userId}, {senderId: userId}],
+    //         senderId: userId,
+    //         type: userRelationship.FRIEND
+    //     },
+    // });
 }
 
 export async function handleFriendRequest(receiverId, senderId, action: 'confirm' | 'deny') {

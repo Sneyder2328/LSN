@@ -1,4 +1,5 @@
 export default {
+    USERS_USER_ID_FRIENDS: (userId: string) => `/users/${userId}/friends`,
     auth: {
         LOG_IN: '/sessions',
         LOG_OUT: '/sessions',
@@ -11,7 +12,7 @@ export default {
         FRIENDS: (userId) => `/users/${userId}/friends`,
         GET_FRIEND_REQUESTS: '/me/friends/incoming',
         RESPOND_TO_FRIEND_REQUEST: (senderUserId) => `/users/${senderUserId}/friends`,
-        SEARCH: '/users'
+        SEARCH: '/users',
     },
     post: {
         CREATE_POST: '/posts',
