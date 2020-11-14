@@ -1,0 +1,41 @@
+@import "src/utils/variables";
+
+.legalInfo {
+  font-size: 0.9rem;
+  color: #636363;
+  margin-bottom: 12px;
+
+  .links {
+    display: flex;
+
+    a {
+      display: flex;
+      align-items: center;
+
+      &:hover {
+        cursor: pointer;
+        text-decoration: underline;
+        color: #262626;
+      }
+
+      &:after {
+        content: '';
+        width: 4px;
+        height: 4px;
+        margin-left: 6px;
+        margin-right: 6px;
+        border-radius: 4px;
+        background-color: #636363;
+      }
+
+      &:last-of-type:after {
+        display: none;
+      }
+    }
+  }
+
+  p {
+    margin: 4px 0;
+    padding: 0;
+  }
+}

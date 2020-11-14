@@ -15,3 +15,9 @@ export const profile = new schema.Entity('profile', {
 },{
     idAttribute: "userId"
 })
+
+export const conversation = new schema.Entity('conversations', {
+    authorProfile: user
+}, {
+    idAttribute: "conversationId"
+})

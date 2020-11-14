@@ -89,7 +89,6 @@ export const EditProfileModal = () => {
                            onChange={onHandleCoverImg}
                            accept=".png, .jpg, .jpeg"/>
                     <label htmlFor='coverFile'><i className="fas fa-camera"/></label>
-                    {/*<i>X</i>*/}
                 </div>
                 <div className={styles.userInfo}>
                     <div className={styles.profilePhotoContainer}>

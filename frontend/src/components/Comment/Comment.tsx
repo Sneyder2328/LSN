@@ -8,7 +8,6 @@ import {ProfilePhoto} from "../ProfilePhoto/ProfilePhoto";
 import {selectComment} from "../../modules/Comment/commentReducer";
 import {AppState} from "../../modules/rootReducer";
 import {dislikeComment, likeComment} from "../../modules/Comment/commentActions";
-import styles from "../Post/styles.module.scss";
 import {Link} from "react-router-dom";
 
 export interface CommentResponse {

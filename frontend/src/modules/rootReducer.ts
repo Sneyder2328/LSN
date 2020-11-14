@@ -6,11 +6,12 @@ import {modalReducer, ModalState} from "./Modal/modalsReducer";
 import {commentsReducer, CommentsState} from "./Comment/commentReducer";
 import {usersReducer, UsersState} from "./User/userReducer";
 import {postsReducer, PostState} from "./Posts/postReducer";
+import {messagesReducer, MessagesState} from "./Messages/messagesReducer";
 
 type EntitiesState = {
     posts: PostState;
     comments: CommentsState;
-    users: UsersState
+    users: UsersState;
 };
 
 export interface AppState {
@@ -18,6 +19,7 @@ export interface AppState {
     newsFeed: NewsFeedState
     entities: EntitiesState;
     search: SearchState;
+    messages: MessagesState;
     modal: ModalState;
 }
 
@@ -26,6 +28,7 @@ export const rootReducer = combineReducers({
     newsFeed: newsFeedReducer,
     search: searchReducer,
     modal: modalReducer,
+    messages: messagesReducer,
     entities: combineReducers({
         posts: postsReducer,
         comments: commentsReducer,

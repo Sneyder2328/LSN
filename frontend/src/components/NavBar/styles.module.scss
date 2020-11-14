@@ -52,15 +52,14 @@
 
     .logoContainer {
       position: absolute;
-      right: 50%;
+      left: 50%;
       height: 100%;
       width: fit-content;
-      //flex-grow: 0;
-      //width: 20%;
       display: flex;
 
       img {
-        margin: 0 auto;
+        position: relative;
+        left: -50%;
         height: 100%;
       }
     }
@@ -90,7 +89,7 @@
       .icon {
         margin: 0 12px;
         color: #fff;
-        font-size: 1.25rem;
+        font-size: 1.2rem;
         background-color: rgba(96, 174, 252, 0.58);
         border-radius: 100%;
         width: 34px;

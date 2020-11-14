@@ -10,10 +10,13 @@ import {genUUID, ImageFile, readImgFileContent} from "../../utils/utils";
 import {AppState} from "../../modules/rootReducer";
 import {createPost} from "../../modules/Posts/postActions";
 import {TextEditor} from "../shared/TextEditor";
+import {ProfilePhoto} from "../ProfilePhoto/ProfilePhoto";
 
 export const CreatePost = () => {
     const dispatch = useDispatch()
     const userId: string = useSelector((state: AppState) => state.auth.userId!!)
+    const users = useSelector((state: AppState) => state.entities.users.entities)
+    const user = users[userId]
     const [text, setText] = useState<string>('');
     const [cleanTextEditor, setCleanTextEditor] = useState<boolean>(false);
     const [imageFiles, setImageFiles] = useState<Array<ImageFile>>([]);
@@ -66,8 +69,9 @@ export const CreatePost = () => {
         <div className='create-post'>
             <span className='title'>Create post</span>
             <div className='content'>
-                <img className='avatar' src='https://miro.medium.com/max/280/1*MccriYX-ciBniUzRKAUsAw.png'
-                     alt='profile avatar'/>
+                <ProfilePhoto size={'small1'} url={user?.profilePhotoUrl}/>
+                {/*<img className='avatar' src='https://miro.medium.com/max/280/1*MccriYX-ciBniUzRKAUsAw.png'*/}
+                {/*     alt='profile avatar'/>*/}
                 <TextEditor className='editor' onChange={setText} cleanUpWhen={shouldCleanUpTextEditor}
                             placeholder="What's happening?"/>
             </div>

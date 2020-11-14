@@ -1,0 +1,78 @@
+@import "src/utils/variables";
+
+.suggestions {
+  margin-bottom: 12px;
+  background-color: #fff;
+  padding: 12px 14px;
+  border-radius: $radius;
+
+  .title {
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+
+  .list {
+    margin-top: 10px;
+
+    .suggestion {
+      display: flex;
+      align-items: center;
+      margin: 6px 0;
+
+      &:last-of-type {
+        margin-bottom: 0;
+      }
+
+      .userDetails {
+        margin-left: 10px;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+
+        .fullname {
+          font-size: 1rem;
+          color: #151515;
+          font-weight: 500;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+
+        .username {
+          margin-left: 6px;
+          font-size: 0.95rem;
+          color: #848484;
+        }
+
+        .actions {
+          margin-top: 4px;
+          width: 100%;
+
+          button {
+            font-size: 0.87rem;
+            background-color: #0da6f6;
+            border-radius: $radius*2;
+            padding: 2.5px 8px;
+            margin-right: 8px;
+            color: #f7fffc;
+            letter-spacing: 0;
+
+            &:hover {
+              background-color: #0083c6;
+            }
+
+            &.remove {
+              background-color: #FD7272;
+            }
+
+            &.remove:hover {
+              background-color: #fc4040;
+            }
+          }
+
+        }
+      }
+    }
+  }
+}

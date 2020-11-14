@@ -10,9 +10,8 @@ export const NewsFeed = () => {
     const postsIds = useSelector((state: AppState) => state.newsFeed.latest.postIds)
 
     useEffect(() => {
-        console.log('fetching posts!!');
         dispatch(loadPosts())
-    }, [loadPosts, dispatch]);
+    }, [dispatch]);
 
     return (
         <div className='news-feed'>

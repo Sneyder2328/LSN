@@ -54,6 +54,8 @@
       margin: 0 0 0 50px;
       padding: 0 10px 10px 10px;
       white-space: pre-wrap;
+      //noinspection CssInvalidPropertyValue
+      overflow-wrap: anywhere;
     }
 
     img {

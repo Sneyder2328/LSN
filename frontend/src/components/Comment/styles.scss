@@ -47,6 +47,8 @@
       margin: 0;
       padding: 5px 0;
       font-size: 0.9rem;
+      //noinspection CssInvalidPropertyValue
+      overflow-wrap: anywhere;
     }
 
     .interact-comment {

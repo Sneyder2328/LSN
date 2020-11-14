@@ -18,7 +18,7 @@ export interface AuthState {
     updateProfileError?: string;
 }
 
-const initialAuthState = {
+const initialState = {
     isAuthenticated: false,
     isLoggingOut: false,
     isSigningUp: false,
@@ -27,7 +27,7 @@ const initialAuthState = {
 
 export const authSlice = createSlice({
     name: 'auth',
-    initialState: initialAuthState,
+    initialState,
     reducers: {
         logInRequest: (state) => {
             state.isLoggingIn = true
@@ -62,7 +62,7 @@ export const authSlice = createSlice({
         logOutRequest: (state) => {
             state.isLoggingOut = true
         },
-        logOutSuccess: () => initialAuthState,
+        logOutSuccess: () => initialState,
         logOutError: (state) => {
             state.isLoggingOut = false
         },

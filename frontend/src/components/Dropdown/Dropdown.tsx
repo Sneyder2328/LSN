@@ -20,36 +20,25 @@ const DropDownItem: React.FC<DropdownItemProps> = ({icon, label, onSelected, onC
 
 export type DropdownProps = {
     trigger: any;
+    title?: string;
+    className?: string;
 }
-export const Dropdown: React.FC<DropdownProps> & { Item: React.FC<DropdownItemProps>; } = ({trigger, children}) => {
+export const Dropdown: React.FC<DropdownProps> & { Item: React.FC<DropdownItemProps>; }
+= ({className, trigger, title, children}) => {
     const [open, setOpen] = useState<boolean>(false)
     const ref = useRef(null);
     useOnClickOutside(ref, () => {
         setOpen(false)
     });
-    // const Trigger = trigger
 
-    return (<div className={styles.dropdown} ref={ref}>
-        {/*<Trigger onClick={() => {*/}
-        {/*    console.log('calling onclick!');*/}
-        {/*    setOpen(!open)*/}
-        {/*}}/>*/}
+    return (<div className={classNames(styles.dropdown)} ref={ref}>
         {
             cloneElement(trigger, {
                 onClick: () => setOpen(!open)
             })
-            // React.Children.map(children, (child) => {
-            //     console.log('child=', child);
-            //     // @ts-ignore
-            //     if (isValidElement(child) && child?.type?.name !== 'DropDownItem') {
-            //         return cloneElement(child, {
-            //             onClick: () => setOpen(!open)
-            //         })
-            //     }
-            //     return null;
-            // })
         }
-        <div className={classNames(styles.dropdownMenu, {[styles.show]: open})}>
+        <div className={classNames(styles.dropdownMenu, className, {[styles.show]: open})}>
+            {title && <span className={styles.title}>{title}</span>}
             {
                 React.Children.map(children, (child) => {
                     // @ts-ignore

@@ -23,26 +23,26 @@ export const App = () => {
                         <Route path='*' component={PageNotFound}/>
                     </Switch>
                 </BrowserRouter>
-                <ModalContainer />
+                <ModalContainer/>
             </PersistGate>
         </Provider>
     );
 };
 
-let currentValue: string | undefined
+let currentAccessToken: string | undefined
 
 const handleChange = () => {
-    const previousValue = currentValue
-    currentValue = store.getState().auth.accessToken
-
-    if (previousValue !== currentValue) {
-        console.log('accessToken changed from', previousValue, 'to', currentValue)
-        if (currentValue) {
-            setAccessTokenHeaders(currentValue);
-        } else if (previousValue) {
+    const previousAccessToken = currentAccessToken
+    currentAccessToken = store.getState().auth.accessToken
+    if (previousAccessToken !== currentAccessToken) {
+        console.log('accessToken changed from', previousAccessToken, 'to', currentAccessToken)
+        if (currentAccessToken) {
+            setAccessTokenHeaders(currentAccessToken);
+        } else if (previousAccessToken) {
             removeAuthTokenHeaders()
         }
     }
 };
 
 store.subscribe(handleChange)
+// store.s

@@ -6,11 +6,14 @@ import {FriendRequestActionType} from "./userApi";
 
 const {logOutSuccess} = authActions
 
+export type UserSuggestion = { userId: string; relatedness: number };
 export type UsersState = {
     entities: HashTable<UserObject>;
-    metas: HashTable<any>;
+    metas: HashTable<UserMetadata>;
+    // contacts: Array<string>;
+    suggestions: Array<UserSuggestion>
 };
-export type RelationShipType =
+export type RelationshipType =
     'friend'
     | 'pendingIncoming'
     | 'pendingOutgoing'
@@ -19,19 +22,35 @@ export type RelationShipType =
     | undefined;
 
 export interface UserObject extends Profile {
-    relationship: RelationShipType;
+
+}
+
+// export interface UserObject extends Profile {
+//     relationship: RelationshipType;
+//     updatingRelationship?: boolean;
+//     isOnline?: boolean;
+//     postsIds?: Array<string>;
+// }
+
+export interface UserMetadata {
+    relationship?: RelationshipType;
+    isOnline?: boolean;
     updatingRelationship?: boolean;
     postsIds?: Array<string>;
+    friendsIds?: Array<string>;
+    // photosIds: Array<string>;// TODO
 }
 
 const initialState: UsersState = {
     entities: {},
-    metas: {}
+    metas: {},
+    // contacts: [],
+    suggestions: []
 };
 
 export const usersSlice = createSlice({
     name: 'users',
-    initialState: initialState,
+    initialState,
     reducers: {
         setUsers: (state, action: PayloadAction<HashTable<UserObject>>) => {
             state.entities = {
@@ -49,33 +68,53 @@ export const usersSlice = createSlice({
 
         },
         fetchProfileSuccess: (state, action: PayloadAction<{ userId: string; postIds: Array<string> }>) => {
-            state.entities[action.payload.userId].postsIds = action.payload.postIds
+            state.metas[action.payload.userId] = {
+                ...state.metas[action.payload.userId],
+                postsIds: action.payload.postIds
+            }
         },
         fetchProfileError: (state) => {
 
         },
+        fetchFriendsSuccess: (state, action: PayloadAction<{ userId: string; friends: Array<string> }>) => {
+            // state.metas[action.payload.userId]
+            //     ? state.metas[action.payload.userId].friendsIds = action.payload.friends
+            //     : state.metas[action.payload.userId] = {
+            //         friendsIds: action.payload.friends
+            //     }
+            state.metas[action.payload.userId] = {
+                ...state.metas[action.payload.userId],
+                friendsIds: action.payload.friends
+            }
+        },
         sendFriendRequestRequest: (state, action: PayloadAction<{ receiverId: string }>) => {
-            state.entities[action.payload.receiverId].updatingRelationship = true
+            state.metas[action.payload.receiverId].updatingRelationship = true
         },
         sendFriendRequestSuccess: (state, action: PayloadAction<{ receiverId: string }>) => {
-            state.entities[action.payload.receiverId].updatingRelationship = false
-            state.entities[action.payload.receiverId].relationship = 'pendingOutgoing'
+            state.metas[action.payload.receiverId].updatingRelationship = false
+            state.metas[action.payload.receiverId].relationship = 'pendingOutgoing'
         },
         sendFriendRequestError: (state, action: PayloadAction<{ receiverId: string }>) => {
-            state.entities[action.payload.receiverId].updatingRelationship = false
+            state.metas[action.payload.receiverId].updatingRelationship = false
         },
         respondToFriendRequestRequest: (state, action: PayloadAction<{ senderId: string }>) => {
-            state.entities[action.payload.senderId].updatingRelationship = true
+            state.metas[action.payload.senderId].updatingRelationship = true
         },
         respondToFriendRequestSuccess: (state, action: PayloadAction<{ senderId: string, action: FriendRequestActionType }>) => {
-            state.entities[action.payload.senderId].updatingRelationship = false
-            state.entities[action.payload.senderId].relationship = action.payload.action === 'confirm' ? 'friend' : undefined
+            state.metas[action.payload.senderId].updatingRelationship = false
+            state.metas[action.payload.senderId].relationship = action.payload.action === 'confirm' ? 'friend' : undefined
         },
         respondToFriendRequestError: (state, action: PayloadAction<{ senderId: string }>) => {
-            state.entities[action.payload.senderId].updatingRelationship = false
+            state.metas[action.payload.senderId].updatingRelationship = false
         },
-        removeFriendshipSuccess: (state, action: PayloadAction<{userId: string}>) => {
-            state.entities[action.payload.userId].relationship = undefined
+        removeFriendshipSuccess: (state, action: PayloadAction<{ userId: string }>) => {
+            state.metas[action.payload.userId].relationship = undefined
+        },
+        fetchUserSuggestionsSuccess: (state, action: PayloadAction<{ suggestions: Array<UserSuggestion> }>) => {
+            state.suggestions = action.payload.suggestions
+        },
+        removeUserSuggestedSuccess: (state, action: PayloadAction<{ userSuggestedId: string }>) => {
+            state.suggestions = state.suggestions.filter((suggestion) => suggestion.userId !== action.payload.userSuggestedId)
         }
     },
     extraReducers: builder => {

@@ -1,0 +1,31 @@
+@import "src/utils/variables";
+
+.trends {
+  background-color: #fff;
+  border-radius: $radius;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+
+  .title {
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+
+  .list {
+
+    .hashtag {
+      display: block;
+      margin: 8px 0;
+      color: #0da6f6;
+
+      &:hover {
+        cursor: pointer;
+        text-decoration: underline;
+      }
+
+      &:last-of-type {
+        margin-bottom: 0;
+      }
+    }
+  }
+}

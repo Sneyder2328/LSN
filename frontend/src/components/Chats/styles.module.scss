@@ -1,0 +1,106 @@
+@import "src/utils/variables";
+
+.chats {
+  width: 280px;
+  min-height: 40px;
+  margin-right: 16px;
+  box-shadow: 0 2px 4px rgba(100, 100, 100, 0.5);
+  border-top-right-radius: $radius;
+  border-top-left-radius: $radius;
+
+  .header {
+    border-top-right-radius: $radius;
+    border-top-left-radius: $radius;
+    background-color: #469EFA;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 40px;
+    padding: 8px 12px;
+
+    &:hover {
+      cursor: pointer;
+    }
+
+    .details {
+      display: flex;
+      align-items: center;
+
+      .title {
+        color: #fff;
+        font-size: 1rem;
+        font-weight: 500;
+      }
+
+      .dot {
+        width: 9.5px;
+        height: 9.5px;
+        margin-left: 8px;
+        background-color: #0f0;
+        border-radius: 5px;
+      }
+    }
+
+    .control {
+      display: flex;
+      align-items: center;
+
+      i {
+        color: #fff;
+        font-size: 1rem;
+      }
+    }
+  }
+}
+
+.search {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  padding: 0 8px;
+  border-top: 1px solid #b6b6b6;
+
+  i {
+    color: #b6b6b6;
+    font-size: 1rem;
+  }
+
+  .searchInput {
+    color: #404040;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    padding: 2px 4px;
+
+    &::placeholder {
+      color: #b6b6b6;
+    }
+  }
+}
+
+.contacts {
+  background-color: #fff;
+  padding: 3px 0;
+
+  .contact {
+    padding: 3px 6px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgba(43, 43, 43, 0.08);
+
+    &:last-of-type {
+      border-bottom: none;
+    }
+
+    &:hover {
+      cursor: pointer;
+      background-color: rgba(0, 0, 120, 0.065);
+    }
+
+    .fullname {
+      font-size: 1rem;
+      margin-left: 8px;
+    }
+  }
+}

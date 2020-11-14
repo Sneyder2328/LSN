@@ -1,9 +1,9 @@
-import {RelationShipType, UserObject} from "../modules/User/userReducer";
+import {RelationshipType, UserMetadata, UserObject} from "../modules/User/userReducer";
 import {useEffect, useState} from "react";
 
 type ActionType = 'Edit Profile' | 'Message' | 'Respond' | 'Cancel Request' | 'Add Friend' | undefined
 
-const getActionName = (currentUserId: string, profileUserId: string, relationship: RelationShipType): ActionType => {
+const getActionName = (currentUserId: string, profileUserId: string, relationship: RelationshipType): ActionType => {
     console.log('getActionName', currentUserId, profileUserId, relationship);
     if (currentUserId === profileUserId)
         return 'Edit Profile'
@@ -23,13 +23,13 @@ const getActionName = (currentUserId: string, profileUserId: string, relationshi
     }
 };
 
-export const useProfileActionName = (currentUserId: string, userProfile?: UserObject) => {
+export const useProfileActionName = (currentUserId: string, userProfile?: UserObject, userMetadata?: UserMetadata) => {
     const [actionName, setActionName] = useState<ActionType>(undefined)
 
     useEffect(() => {
         console.log('useProfileActionName', currentUserId, userProfile);
-        userProfile && setActionName(getActionName(currentUserId, userProfile.userId, userProfile.relationship))
-    }, [currentUserId, userProfile])
+        userProfile && userMetadata && setActionName(getActionName(currentUserId, userProfile.userId, userMetadata.relationship))
+    }, [currentUserId, userProfile, userMetadata])
 
     return actionName
 }

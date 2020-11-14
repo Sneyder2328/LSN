@@ -64,3 +64,11 @@ export const useWindowDimensions = () =>{
 
     return windowDimensions;
 }
+
+export const convertToHashTable = <T>(array: Array<T>, idKey: string = 'id'): HashTable<T> => {
+    return array.map((biz: any) => {
+        return {[biz[idKey]]: biz}
+    }).reduce((pv: HashTable<T>, nv: HashTable<T>) => {
+        return {...pv, ...nv}
+    });
+};

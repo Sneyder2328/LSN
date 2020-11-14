@@ -1,0 +1,33 @@
+@import "src/utils/variables";
+
+.friends {
+  background-color: #fff;
+  border-radius: $radius;
+  padding: 10px 12px;
+
+  .title {
+    font-weight: 600;
+    font-size: 1.2rem;
+  }
+
+  .list {
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 10px 10px;
+
+    .friend {
+
+      .photo {
+        border-radius: 4px;
+        width: 100%;
+        height: auto;
+      }
+
+      .fullname {
+        font-size: 0.8rem;
+        font-weight: 500;
+      }
+    }
+  }
+}

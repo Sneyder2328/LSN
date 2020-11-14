@@ -2,7 +2,7 @@ import {UserObject, usersActions} from "./userReducer";
 import {FriendRequestActionType, UserApi} from "./userApi";
 import {AppThunk} from "../../store";
 import {normalize} from "normalizr";
-import {profile} from "../../api/schema";
+import {profile, user} from "../../api/schema";
 import {HashTable} from "../../utils/utils";
 import {CommentObject, commentsActions} from "../Comment/commentReducer";
 import {postActions, PostObject} from "../Posts/postReducer";
@@ -19,7 +19,8 @@ const {
     respondToFriendRequestError,
     respondToFriendRequestRequest,
     respondToFriendRequestSuccess,
-    removeFriendshipSuccess
+    removeFriendshipSuccess,
+    fetchFriendsSuccess
 } = usersActions
 const {setComments} = commentsActions
 const {setPosts} = postActions
@@ -29,9 +30,7 @@ export const fetchProfile = (userIdentifier: string, includePosts: boolean): App
     dispatch(fetchProfileRequest())
     try {
         const response = await UserApi.fetchProfile(userIdentifier, includePosts)
-        console.log('response', response.data);
         const normalizedData = normalize(response.data, profile)
-        console.log('normalizedData', normalizedData);
 
         const posts = normalizedData.entities['posts'] as HashTable<PostObject>
         const comments = normalizedData.entities['comments'] as HashTable<CommentObject>
@@ -39,7 +38,6 @@ export const fetchProfile = (userIdentifier: string, includePosts: boolean): App
         const profileObj = profileHashTable[normalizedData.result]
         profileObj.postIds = [...profileObj.posts]
         delete profileObj.posts
-        console.log('profileObj', profileObj);
         dispatch(setUsers(normalizedData.entities['users'] as HashTable<UserObject>));
         dispatch(setUser(profileObj))
         dispatch(setComments(comments))
@@ -55,11 +53,15 @@ export const fetchProfile = (userIdentifier: string, includePosts: boolean): App
 }
 
 export const getUserBasicInfo = (userId: string): AppThunk => async (dispatch) => {
-    const response = await UserApi.fetchProfile(userId, false);
-    const user = response.data as UserObject;
-    dispatch(setUsers({
-        [user.userId]: user
-    }))
+    try {
+        const response = await UserApi.fetchProfile(userId, false);
+        const user = response.data as UserObject;
+        dispatch(setUsers({
+            [user.userId]: user
+        }))
+    } catch (err) {
+        console.log('getUserBasicInfo err', err);
+    }
 }
 
 export const sendFriendRequest = (receiverId: string): AppThunk => async (dispatch) => {
@@ -95,8 +97,54 @@ export const removeFriendship = (userId: string): AppThunk => async (dispatch) =
         const response = await UserApi.removeFriendship(userId)
         if (response.data)
             dispatch(removeFriendshipSuccess({userId}))
-
     } catch (err) {
         console.log('removeFriendship err', err);
+    }
+}
+
+export const fetchFriends = (userId: string): AppThunk => async (dispatch) => {
+    try {
+        const response = await UserApi.fetchFriends(userId)
+        if (response.data) {
+            const data = normalize(response.data, [user])
+            dispatch(setUsers(data.entities['users'] as HashTable<UserObject>));
+            dispatch(fetchFriendsSuccess({userId, friends: data.result}))
+        }
+
+    } catch (err) {
+        console.log('fetchFriends err', err);
+    }
+}
+
+export const fetchUsersSuggestions = (): AppThunk => async (dispatch, getState) => {
+    try {
+        const response = await UserApi.fetchUsersSuggestions(getState().auth.userId!)
+        if (response.data) {
+            dispatch(usersActions.fetchUserSuggestionsSuccess({
+                suggestions: response.data.map(({userId, relatedness}) => ({
+                    userId,
+                    relatedness
+                }))
+            }))
+            const data = normalize(response.data.map(
+                ({userId, fullname, username, profilePhotoUrl, coverPhotoUrl, description}) => ({
+                    userId, fullname, username, profilePhotoUrl, coverPhotoUrl, description
+                })), [user])
+            dispatch(setUsers(data.entities.users as HashTable<UserObject>))
+        }
+    } catch (err) {
+        console.log('fetchUsersSuggestions err', err);
+    }
+}
+
+
+export const removeUserSuggestion = (userSuggestedId: string): AppThunk => async (dispatch) => {
+    try {
+        const response = await UserApi.removeUserSuggestion(userSuggestedId)
+        if (response.data) {
+            dispatch(usersActions.removeUserSuggestedSuccess({userSuggestedId}))
+        }
+    } catch (err) {
+        console.log('removeUserSuggestion err', err);
     }
 }

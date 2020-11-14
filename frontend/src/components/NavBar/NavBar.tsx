@@ -9,6 +9,7 @@ import classNames from "classnames";
 import {CurrentProfileLink} from "../CurrentProfileLink/CurrentProfileLink";
 import {Link} from "react-router-dom";
 import {Dropdown} from "../Dropdown/Dropdown";
+import {ConversationsList} from "./Conversations/ConversationsList";
 
 export const NavBar = () => {
     const dispatch = useDispatch()
@@ -31,11 +32,22 @@ export const NavBar = () => {
                     <SearchBar className={styles.search}/>
                 </div>
                 <div className={styles.logoContainer}>
-                    <img src={Logo}/>
+                    <span style={{
+                        fontWeight: 600,
+                        width: '48px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        height: '46px',
+                        backgroundColor: '#469EFA',
+                        borderRadius: '50%',
+                        color: '#fff'
+                    }}>LSN</span>
+                    {/*<img src={Logo}/>*/}
                 </div>
                 <div className={styles.rightHeader}>
                     <CurrentProfileLink className={styles.profileLink}/>
-                    <i className={classNames(styles.icon, "fas fa-inbox")}/>
+                    <ConversationsList/>
                     <i className={classNames(styles.icon, "fas fa-bell")}/>
                     <Dropdown trigger={<i className={classNames(styles.icon, "fas fa-bars")}/>}>
                         <Dropdown.Item

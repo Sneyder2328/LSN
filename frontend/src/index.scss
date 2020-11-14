@@ -3,8 +3,31 @@
 html, body {
   padding: 0;
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: 'Roboto', Arial, sans-serif;
   background-color: #e9ebee;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+}
+
+.selectableBackground {
+  border-radius: 100%;
+  display: flex;
+  padding: 8px;
+  width: 30px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  transition: background 150ms ease-in-out;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.14);
+  }
 }
 
 button {
@@ -19,6 +42,10 @@ button {
   transition: background 250ms ease-in-out,
   transform 350ms ease;
   outline: none;
+
+  &:hover {
+    box-shadow: 0 0 5px rgba(81, 167, 232, .5);
+  }
 }
 
 .hide {
@@ -27,14 +54,16 @@ button {
 
 .leftSection {
   width: $secondary-section_width;
+  margin: 12px 0;
 }
 
 .mainSection {
   width: $main-width-page;
-  margin: 0 10px;
-  background-color: #fff;
+  margin: 12px;
+  background-color: transparent;
 }
 
 .rightSection {
   width: $secondary-section_width;
+  margin: 12px 0;
 }

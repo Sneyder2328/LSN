@@ -30,6 +30,7 @@
       padding: 10px;
       overflow: hidden;
       cursor: text;
+      overflow-wrap: break-word;
 
       &:focus {
         border: 1px $btnColor solid;

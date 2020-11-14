@@ -1,0 +1,136 @@
+@import "src/utils/variables";
+
+$height-chat: 44px;
+
+.bubbleChat {
+  margin-right: 16px;
+  width: 300px;
+  min-height: $height-chat;
+  box-shadow: 0 2px 4px rgba(100, 100, 100, 0.5);
+  border-top-right-radius: $radius;
+  border-top-left-radius: $radius;
+
+  .header {
+    background-color: #0da6f6;
+    min-height: $height-chat;
+    border-top-right-radius: $radius;
+    border-top-left-radius: $radius;
+    padding: 0 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &:hover {
+      cursor: pointer;
+    }
+
+    .userDetails {
+      display: flex;
+      align-items: center;
+
+      .title {
+        color: #fff;
+        font-size: 1rem;
+        margin-left: 10px;
+        font-weight: 500;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+
+      i {
+        color: #fff;
+        font-size: 1rem;
+        //width: 30px;
+        //height: 30px;
+        //display: flex;
+        //align-items: center;
+        //justify-content: center;
+        //
+        //&:hover {
+        //  background-color: rgba(255, 255, 255, 0.14);
+        //}
+      }
+    }
+  }
+
+  .content {
+    background-color: #fff;
+    padding: 8px 8px 0;
+    display: flex;
+    flex-wrap: wrap;
+    max-height: 350px;
+    overflow-y: auto;
+
+    &:after {
+      content: '';
+      display: block;
+      width: 100%;
+      height: 8px;
+    }
+  }
+
+  .footer {
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border-top: 1px solid #b6b6b6;
+
+    .inputMessage {
+      border: none;
+      outline: none;
+      width: 100%;
+      font-size: 1rem;
+      padding: 6px 10px;
+      overflow: hidden;
+      cursor: text;
+      overflow-wrap: break-word;
+
+      &:empty:before {
+        content: attr(placeholder);
+        color: #b6b6b6;
+      }
+
+      //&::placeholder {
+      //  color: #b6b6b6;
+      //}
+    }
+  }
+}
+
+
+.message {
+  width: 100%;
+  margin: 4px 0;
+  display: flex;
+  align-items: center;
+
+  .text {
+    max-width: 65%;
+    padding: 10px 12px;
+    font-size: 0.88rem;
+    line-height: normal;
+    border-radius: $radius*2;
+    background-color: #0da6f6;
+    color: #f7fffc;
+    margin: 0 0 0 auto;
+    //noinspection CssInvalidPropertyValue
+    overflow-wrap: anywhere;
+  }
+
+}
+
+.message.received {
+  .text {
+    background-color: #E4E6EB;
+    color: #313131;
+    margin: 0 8px;
+  }
+}
