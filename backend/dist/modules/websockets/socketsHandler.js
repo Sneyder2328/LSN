@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const utils_1 = require("../../utils/utils");
 const database_1 = require("../../database/database");
+const messagesService_1 = require("../message/messagesService");
 const { Token } = database_1.models;
 const CREATE_MESSAGE_EVENT = 'createMessage';
 const NEW_MESSAGE_EVENT = 'newMessage';
@@ -31,6 +32,8 @@ exports.handleSocket = (io) => {
             const token = yield Token.findByPk(message.senderToken);
             if (!token)
                 return callback("Token passed is not existent");
+            const { conversationId } = yield messagesService_1.getConversationId(token.userId, message.recipientId);
+            yield messagesService_1.sendMessage({ id: message.id, conversationId, userId: token.userId, content: message.content });
             io.to(message.recipientId).to(token.userId).emit(NEW_MESSAGE_EVENT, {
                 id: message.id,
                 senderId: token.userId,

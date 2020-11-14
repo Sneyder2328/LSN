@@ -116,6 +116,10 @@ export const getMessagesValidationRules = [
     param('otherUserId').trim().matches(config.regex.uuidV4),
 ]
 
+export const deleteMessageValidationRules = [
+    param('messageId').trim().matches(config.regex.uuidV4),
+]
+
 export function validate(req, res, next) {
     const errors = validationResult(req);
     if (errors.isEmpty()) return next();

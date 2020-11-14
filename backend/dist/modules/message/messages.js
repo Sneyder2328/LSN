@@ -20,7 +20,10 @@ const handleErrorAsync_1 = require("../../middlewares/handleErrorAsync");
 const messagesService_1 = require("./messagesService");
 const router = express_1.Router();
 exports.messagesRouter = router;
-router.get('/messages/:otherUserId', authenticate_1.default, validate_1.getMessagesValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+/** ?offsetCreatedAt='date'&limit='number'
+ * Get messages in conversation with other user
+ */
+router.get('/conversations/:otherUserId/messages', authenticate_1.default, validate_1.getMessagesValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const messages = yield messagesService_1.getMessages(req.userId, req.params.otherUserId);
     res.status(httpResponseCodes_1.default.OK).send(messages);
 })));
@@ -30,4 +33,13 @@ router.get('/messages/:otherUserId', authenticate_1.default, validate_1.getMessa
 router.get('/conversations/', authenticate_1.default, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const conversations = yield messagesService_1.getConversations(req.userId);
     res.status(httpResponseCodes_1.default.OK).send(conversations);
+})));
+/**
+ * Delete a message given its id
+ * Use soft-delete in case of deleting it for a single user
+ * Otherwise, use hard delete
+ */
+router.delete('/messages/:messageId', authenticate_1.default, validate_1.deleteMessageValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const deleted = yield messagesService_1.deleteMessage(req.userId, req.params.messageId, req.query.deleteFor);
+    res.status(httpResponseCodes_1.default.OK).send(deleted != undefined);
 })));

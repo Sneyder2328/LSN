@@ -99,6 +99,9 @@ exports.createCommentValidationRules = [
 exports.getMessagesValidationRules = [
     express_validator_1.param('otherUserId').trim().matches(config_1.default.regex.uuidV4),
 ];
+exports.deleteMessageValidationRules = [
+    express_validator_1.param('messageId').trim().matches(config_1.default.regex.uuidV4),
+];
 function validate(req, res, next) {
     const errors = express_validator_1.validationResult(req);
     if (errors.isEmpty())

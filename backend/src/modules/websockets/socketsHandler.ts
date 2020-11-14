@@ -1,6 +1,7 @@
 import socketIO from "socket.io";
 import {isRealString} from "../../utils/utils";
-import {models} from "../../database/database";
+import {models, sequelize} from "../../database/database";
+import {getConversationId, sendMessage} from "../message/messagesService";
 
 const {Token} = models
 
@@ -29,6 +30,12 @@ export const handleSocket = (io: socketIO.Server) => {
             console.log(CREATE_MESSAGE_EVENT, message);
             const token = await Token.findByPk(message.senderToken);
             if (!token) return callback("Token passed is not existent");
+
+            const {conversationId} = await getConversationId(token.userId, message.recipientId)
+            await sendMessage(
+                {id: message.id, conversationId, userId: token.userId, content: message.content}
+            )
+
             io.to(message.recipientId).to(token.userId).emit(NEW_MESSAGE_EVENT, {
                 id: message.id,
                 senderId: token.userId,
