@@ -4,6 +4,14 @@ import httpCodes from "../utils/constants/httpResponseCodes";
 
 const trimInside = () => str => str.replace(/\s\s/g, ' ');
 
+export const removeUserSuggestionValidationRules = [
+    param('suggestedUserId').trim().matches(config.regex.uuidV4)
+];
+
+export const paramUserIdValidationRules = [
+    param('userId').trim().matches(config.regex.uuidV4)
+];
+
 export const signUpValidationRules = [
     body('username').trim().escape()
         .isAlphanumeric().withMessage('Username can only contain alphanumeric characters(A-Z, 0-9)')
@@ -103,6 +111,10 @@ export const createCommentValidationRules = [
     body('text').not().isEmpty().trim().escape(),
     body('img').escape()
 ];
+
+export const getMessagesValidationRules = [
+    param('otherUserId').trim().matches(config.regex.uuidV4),
+]
 
 export function validate(req, res, next) {
     const errors = validationResult(req);

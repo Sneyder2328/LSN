@@ -124,6 +124,33 @@ WHERE UR.receiverId = '${userId}' AND UR.type = 'friend'`, {
     });
 }
 exports.getCurrentFriends = getCurrentFriends;
+/**
+ * Get users suggestions for a given userId
+ * @param userId
+ */
+function getUserSuggestions(userId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return database_1.sequelize.query(`SELECT userSuggestedId as userId, relatedness, 
+description, fullname, username, profilePhotoUrl, coverPhotoUrl
+FROM User_Suggestion US JOIN Profile P ON P.userId=US.userSuggestedId
+WHERE status='active' AND US.userId='${userId}'`, {
+            // @ts-ignore
+            type: database_1.sequelize.QueryTypes.SELECT
+        });
+    });
+}
+exports.getUserSuggestions = getUserSuggestions;
+function removeUserSuggestion(userId, suggestedUserId) {
+    var _a;
+    return __awaiter(this, void 0, void 0, function* () {
+        const updated = yield database_1.sequelize.query(`UPDATE User_Suggestion SET status='removed' 
+WHERE userId='${userId}' AND userSuggestedId='${suggestedUserId}'`);
+        console.log('removeUserSuggestion', userId, suggestedUserId, updated);
+        // @ts-ignore
+        return ((_a = updated[0]) === null || _a === void 0 ? void 0 : _a.affectedRows) === 1;
+    });
+}
+exports.removeUserSuggestion = removeUserSuggestion;
 function handleFriendRequest(receiverId, senderId, action) {
     return __awaiter(this, void 0, void 0, function* () {
         if (action === 'confirm')

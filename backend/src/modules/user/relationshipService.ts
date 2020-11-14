@@ -112,6 +112,28 @@ WHERE UR.receiverId = '${userId}' AND UR.type = 'friend'`, {
     // });
 }
 
+/**
+ * Get users suggestions for a given userId
+ * @param userId
+ */
+export async function getUserSuggestions(userId: string) {
+    return sequelize.query(`SELECT userSuggestedId as userId, relatedness, 
+description, fullname, username, profilePhotoUrl, coverPhotoUrl
+FROM User_Suggestion US JOIN Profile P ON P.userId=US.userSuggestedId
+WHERE status='active' AND US.userId='${userId}'`, {
+        // @ts-ignore
+        type: sequelize.QueryTypes.SELECT
+    })
+}
+
+export async function removeUserSuggestion(userId: string, suggestedUserId: string): Promise<boolean> {
+    const updated = await sequelize.query(`UPDATE User_Suggestion SET status='removed' 
+WHERE userId='${userId}' AND userSuggestedId='${suggestedUserId}'`)
+    console.log('removeUserSuggestion', userId, suggestedUserId, updated);
+    // @ts-ignore
+    return updated[0]?.affectedRows === 1
+}
+
 export async function handleFriendRequest(receiverId, senderId, action: 'confirm' | 'deny') {
     if (action === 'confirm')
         return UserRelationShip.update({type: userRelationship.FRIEND}, {where: {receiverId, senderId}});

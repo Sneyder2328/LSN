@@ -22,7 +22,6 @@ export async function createPost(postId: string, userId: string, type: string, t
 }
 
 export const processPosts = async (posts, userId: string) => {
-    console.log('processPosts', posts, userId);
     const postLikeStatusList = (await Promise.all(
             posts.map(post => fetchPostLikeStatus(post.id, userId)))
     ).filter(it => it != null);

@@ -34,7 +34,6 @@ function createPost(postId, userId, type, text, images) {
 }
 exports.createPost = createPost;
 exports.processPosts = (posts, userId) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('processPosts', posts, userId);
     const postLikeStatusList = (yield Promise.all(posts.map(post => fetchPostLikeStatus(post.id, userId)))).filter(it => it != null);
     // console.log('postLikeStatusList', postLikeStatusList);
     const commentLikeStatusList = (yield Promise.all(posts.map(post => post.comments.map(comment => comment.id))

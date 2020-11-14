@@ -7,17 +7,14 @@ import {corsOptions} from './middlewares/cors';
 import {genUUID} from "./utils/utils";
 import http from "http";
 import socketIO from 'socket.io';
+import {handleSocket} from "./modules/websockets/socketsHandler";
 
 export const app = express();
 export const server = http.createServer(app);
-const io = socketIO(server);
+const io: socketIO.Server = socketIO(server);
 const port = process.env.PORT || 3030;
 
-
-io.on('connection', socket => {
-    console.log('new user connected', socket);
-})
-
+handleSocket(io)
 app.use(compression()); // compress all responses
 app.use(cors(corsOptions));
 app.use(bodyParser.json());

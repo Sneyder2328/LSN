@@ -38,3 +38,6 @@ exports.verifyPassword = (password, hashedPassword) => __awaiter(void 0, void 0,
 });
 exports.compareByDateDesc = (one, two) => new Date(one.createdAt).getTime() - new Date(two.createdAt).getTime();
 exports.compareByDateAsc = (one, two) => new Date(two.createdAt).getTime() - new Date(one.createdAt).getTime();
+exports.isRealString = (str) => {
+    return typeof str === 'string' && str.trim().length > 0;
+};

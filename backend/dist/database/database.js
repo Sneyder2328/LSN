@@ -10,6 +10,7 @@ const associations_1 = __importDefault(require("./associations"));
 // @ts-ignore
 exports.sequelize = new sequelize_1.Sequelize(config_1.default.orm.database, config_1.default.orm.user, config_1.default.orm.password, {
     host: config_1.default.orm.host,
+    logging: false,
     dialect: config_1.default.orm.dialect,
     dialectOptions: { timezone: config_1.default.orm.timeZone },
     define: {

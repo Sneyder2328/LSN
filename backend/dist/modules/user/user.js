@@ -25,6 +25,7 @@ const constants_1 = require("../../utils/constants");
 const cloudinaryConfig_1 = require("../../config/cloudinaryConfig");
 const multer_storage_cloudinary_1 = __importDefault(require("multer-storage-cloudinary"));
 const relationshipService_1 = require("./relationshipService");
+const verifyParamId_1 = require("../../middlewares/verifyParamId");
 const storage = multer_storage_cloudinary_1.default({
     cloudinary: cloudinaryConfig_1.cloudinary,
     folder: 'usersImages',
@@ -53,16 +54,10 @@ router.get(endpoints_1.default.user.USERS(':userIdentifier'), authenticate_1.def
     const user = userIdentifier.match(config_1.default.regex.uuidV4) ? yield userService_1.getProfileByUserId(userIdentifier, includePosts, req.userId) : yield userService_1.getProfileByUsername(userIdentifier, includePosts, req.userId);
     res.json(user);
 })));
-const verifyParamIdMatches = (identifier) => (req, res, next) => {
-    if (req.userId !== req.params[identifier]) {
-        return res.status(httpResponseCodes_1.default.FORBIDDEN).send({ error: "userId does not correspond with the authentication" });
-    }
-    next();
-};
 /**
  * Update current logged in user's profile basic data
  */
-router.put(endpoints_1.default.user.UPDATE_PROFILE(':userId'), authenticate_1.default, verifyParamIdMatches('userId'), imageUpload, validate_1.updateProfileValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.put(endpoints_1.default.user.UPDATE_PROFILE(':userId'), authenticate_1.default, verifyParamId_1.verifyParamIdMatchesLoggedUser('userId'), imageUpload, validate_1.updateProfileValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield userService_1.updateProfile(req.userId, req.body, req.files);
     res.json(user);
 })));
@@ -105,10 +100,24 @@ router.get(endpoints_1.default.user.GET_FRIEND_REQUESTS, authenticate_1.default,
     res.json(friendRequests);
 })));
 /**
- * Get all current friends of the user
+ * Get all current friends of a given user
  */
-router.get(endpoints_1.default.USERS_USER_ID_FRIENDS(':userId'), authenticate_1.default, validate_1.getFriendsByUserValidationRules, validate_1.validate, verifyParamIdMatches('userId'), handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const friends = yield relationshipService_1.getCurrentFriends(req.userId);
+router.get(endpoints_1.default.USERS_USER_ID_FRIENDS(':userId'), authenticate_1.default, validate_1.getFriendsByUserValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const friends = yield relationshipService_1.getCurrentFriends(req.params.userId);
     res.json(friends);
+})));
+/**
+ * Get active users suggestions of the user
+ */
+router.get('/suggestions/:userId', authenticate_1.default, validate_1.paramUserIdValidationRules, validate_1.validate, verifyParamId_1.verifyParamIdMatchesLoggedUser('userId'), handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const usersSuggestions = yield relationshipService_1.getUserSuggestions(req.userId);
+    res.json(usersSuggestions);
+})));
+/**
+ * Delete an user suggestion from the logged user's suggestions
+ */
+router.delete('/suggestions/:suggestedUserId', authenticate_1.default, validate_1.removeUserSuggestionValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const updated = yield relationshipService_1.removeUserSuggestion(req.userId, req.params.suggestedUserId);
+    res.status(httpResponseCodes_1.default.OK).send(updated);
 })));
 exports.default = router;

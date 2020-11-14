@@ -7,6 +7,12 @@ const config_1 = __importDefault(require("../config/config"));
 const express_validator_1 = require("express-validator");
 const httpResponseCodes_1 = __importDefault(require("../utils/constants/httpResponseCodes"));
 const trimInside = () => str => str.replace(/\s\s/g, ' ');
+exports.removeUserSuggestionValidationRules = [
+    express_validator_1.param('suggestedUserId').trim().matches(config_1.default.regex.uuidV4)
+];
+exports.paramUserIdValidationRules = [
+    express_validator_1.param('userId').trim().matches(config_1.default.regex.uuidV4)
+];
 exports.signUpValidationRules = [
     express_validator_1.body('username').trim().escape()
         .isAlphanumeric().withMessage('Username can only contain alphanumeric characters(A-Z, 0-9)')
@@ -89,6 +95,9 @@ exports.createCommentValidationRules = [
     express_validator_1.body('id').exists().escape(),
     express_validator_1.body('text').not().isEmpty().trim().escape(),
     express_validator_1.body('img').escape()
+];
+exports.getMessagesValidationRules = [
+    express_validator_1.param('otherUserId').trim().matches(config_1.default.regex.uuidV4),
 ];
 function validate(req, res, next) {
     const errors = express_validator_1.validationResult(req);

@@ -41,7 +41,7 @@ function getProfileByUsername(username, includePosts, currentUserId) {
         let user;
         if (includePosts) {
             user = yield Profile.findOne({ where: { username }, include: includePostsSorted });
-            console.log('getProfileByUsername posts are', user.posts, user.posts.length);
+            // console.log('getProfileByUsername posts are', user.posts, user.posts.length);
             if (user.posts && user.posts.length !== 0) {
                 user = user.toJSON();
                 user.posts = yield postService_1.processPosts(user.posts, currentUserId);
@@ -62,7 +62,7 @@ function getProfileByUserId(userId, includePosts, currentUserId) {
         let user;
         if (includePosts) {
             user = yield Profile.findByPk(userId, { include: includePostsSorted });
-            console.log('getProfileByUserId posts are', user.posts);
+            // console.log('getProfileByUserId posts are', user.posts);
             if (user.posts && user.posts.length !== 0) {
                 user = user.toJSON();
                 user.posts = yield postService_1.processPosts(user.posts, currentUserId);
@@ -93,7 +93,7 @@ function updateProfile(userId, { username, fullname, description }, imageFiles) 
             yield Profile.update({ username, fullname, description, coverPhotoUrl }, { where: { userId } });
         }
         else {
-            console.log('updating only', username, fullname, description);
+            // console.log('updating only', username, fullname, description);
             yield Profile.update({ username, fullname, description }, { where: { userId } });
         }
         return yield Profile.findByPk(userId);
