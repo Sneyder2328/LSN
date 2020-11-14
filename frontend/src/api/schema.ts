@@ -21,3 +21,5 @@ export const conversation = new schema.Entity('conversations', {
 }, {
     idAttribute: "conversationId"
 })
+
+export const message = new schema.Entity('messages')

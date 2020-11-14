@@ -9,6 +9,7 @@ import {Link} from "react-router-dom";
 import {TextEditor} from "../shared/TextEditor";
 import {genUUID} from "../../utils/utils";
 import {Message} from "./Message";
+import {fetchMessages} from "../../modules/Messages/messagesActions";
 
 export const BubbleChat: React.FC<{ chat: ActiveChat }> = ({chat}) => {
     // const [isOpen, setIsOpen] = useState<Boolean>(chat.isOpen)
@@ -19,6 +20,10 @@ export const BubbleChat: React.FC<{ chat: ActiveChat }> = ({chat}) => {
     const messages = messagesByUser[chat.userId]
 
     const scrollToBottom = () => messagesEndRef?.current?.scrollIntoView({behavior: 'smooth'})
+
+    useEffect(() => {
+        dispatch(fetchMessages(chat.userId))
+    }, [dispatch, chat.userId])
 
     useEffect(() => {
         const offset = 70
@@ -38,7 +43,10 @@ export const BubbleChat: React.FC<{ chat: ActiveChat }> = ({chat}) => {
             dispatch(messagesActions.openBubbleChat({userId: chat.userId}))
     }
 
-    const closeBubbleChat = () => dispatch(messagesActions.closeBubbleChat({userId: chat.userId}))
+    const closeBubbleChat = (e: Event) => {
+        e.stopPropagation()
+        dispatch(messagesActions.closeBubbleChat({userId: chat.userId}))
+    }
 
     const onSubmitMessage = () => {
         console.log('onSubmitMessage', contentMessage);
@@ -55,11 +63,11 @@ export const BubbleChat: React.FC<{ chat: ActiveChat }> = ({chat}) => {
         }))
     }
 
-    return (<div className={classNames(styles.bubbleChat, {'open': chat.isOpen})}>
+    return (<div className={classNames(styles.bubbleChat, {[styles.hide]: !chat.isOpen})}>
         <div className={styles.header} onClick={toggleBubbleChat}>
             <div className={styles.userDetails}>
                 <ProfilePhoto size={'small3'} url={user.profilePhotoUrl}/>
-                <Link to={`/${user.username}`}><span className={styles.title}>{user.fullname}</span></Link>
+                <Link to={`/${user.username}`} ><span className={styles.title}>{user.fullname}</span></Link>
             </div>
             <div className={styles.controls}>
                 {chat.isOpen && <div className={'selectableBackground'}>
@@ -70,9 +78,11 @@ export const BubbleChat: React.FC<{ chat: ActiveChat }> = ({chat}) => {
                 </div>
             </div>
         </div>
-        <div className={classNames(styles.content, {'hide': !chat.isOpen})}>
+        <div className={classNames(styles.content, {[styles.hide]: !chat.isOpen})}>
             {
-                messages?.map((messageId) => <Message key={messageId} messageId={messageId}/>)
+                messages && [...messages]
+                    .sort((msg1, msg2) => new Date(msg1.createdAt).getTime() - new Date(msg2.createdAt).getTime())
+                    .map(({messageId}) => <Message key={messageId} messageId={messageId}/>)
             }
             <div ref={messagesEndRef}/>
         </div>

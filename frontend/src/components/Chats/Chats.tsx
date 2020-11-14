@@ -18,7 +18,7 @@ export const Chats = () => {
         userId && dispatch(fetchFriends(userId))
     }, [dispatch, userId])
 
-    return (<div className={styles.chats}>
+    return (<div className={classNames(styles.chats)}>
         <div className={styles.header} onClick={() => setIsOpen(!isOpen)}>
             <div className={styles.details}>
                 <span className={styles.title}>Chat</span>
@@ -36,11 +36,11 @@ export const Chats = () => {
                 </div>
             </div>
         </div>
-        <div className={classNames(styles.contacts, {'hide': !isOpen})}>
+        <div className={classNames(styles.contacts, {[styles.hide]: !isOpen})}>
             {
-                friends.map((userId)=><Contact key={userId} userId={userId}/>)
+                friends.map((userId) => <Contact key={userId} userId={userId}/>)
             }
         </div>
-        <Search className={classNames({'hide': !isOpen})}/>
+        <Search className={classNames({[styles.hide]: !isOpen})}/>
     </div>)
 }

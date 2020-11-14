@@ -11,11 +11,15 @@ export const Message: React.FC<{ messageId: string }> = ({messageId}) => {
     const messages = useSelector((state: AppState) => state.messages.entities)
     if (!users || !messages) return null
     const message = messages[messageId]
-    const interlocutorId: string = userId === message.recipientId ? message.senderId : message.recipientId
+    const isReceived = userId === message.recipientId;
+    const interlocutorId: string = isReceived ? message.senderId : message.recipientId
     const interlocutor = users[interlocutorId]
 
-    return (<div className={classNames(styles.message, {[styles.received]: userId === message.recipientId})}>
-        {userId === message.recipientId && <ProfilePhoto size={'small3'} url={interlocutor.profilePhotoUrl}/>}
+    return (<div className={classNames(styles.message, {[styles.received]: isReceived})}>
+        {isReceived && <ProfilePhoto size={'small3'} url={interlocutor.profilePhotoUrl}/>}
         <span className={styles.text}>{message.content}</span>
+        {isReceived && <div>
+            ...
+        </div>}
     </div>)
 }

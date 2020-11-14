@@ -4,11 +4,28 @@ $height-chat: 44px;
 
 .bubbleChat {
   margin-right: 16px;
-  width: 300px;
+  width: 310px;
+  //transition: width 250ms ease-in-out;
+  transition: width 250ms ease-in-out, transform 300ms ease;
   min-height: $height-chat;
   box-shadow: 0 2px 4px rgba(100, 100, 100, 0.5);
   border-top-right-radius: $radius;
   border-top-left-radius: $radius;
+
+  &.hide {
+    width: 230px;
+
+    .userDetails {
+      a {
+        pointer-events: none !important;
+        cursor: default !important;
+
+        &:hover {
+          text-decoration: none !important;
+        }
+      }
+    }
+  }
 
   .header {
     background-color: #0da6f6;
@@ -67,6 +84,12 @@ $height-chat: 44px;
     flex-wrap: wrap;
     max-height: 350px;
     overflow-y: auto;
+    transition: max-height 250ms ease-in-out, transform 300ms ease;
+
+    &.hide {
+      max-height: 0;
+      padding: 0;
+    }
 
     &:after {
       content: '';

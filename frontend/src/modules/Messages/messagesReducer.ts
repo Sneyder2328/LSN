@@ -20,7 +20,7 @@ export type ConversationObject = { conversationId: string; interlocutorId: strin
 
 export interface MessagesState {
     entities: HashTable<MessageObject>; // messages
-    users: HashTable<Array<string>>; // hashtable with a list of messages ids for each user
+    users: HashTable<Array<{ messageId: string, createdAt: any }>>; // hashtable with a list of messages ids for each user
     conversations: {
         isLoading: boolean;
         entities: HashTable<ConversationObject>;
@@ -69,9 +69,15 @@ export const messagesSlice = createSlice({
         newMessageSuccess: (state, action: PayloadAction<{ message: MessageObject; interlocutorId: string }>) => {
             state.entities[action.payload.message.id] = action.payload.message
             if (state.users[action.payload.interlocutorId]) {
-                state.users[action.payload.interlocutorId] = [...state.users[action.payload.interlocutorId], action.payload.message.id]
+                state.users[action.payload.interlocutorId] = [
+                    ...state.users[action.payload.interlocutorId],
+                    {messageId: action.payload.message.id, createdAt: action.payload.message.createdAt}
+                ]
             } else {
-                state.users[action.payload.interlocutorId] = [action.payload.message.id]
+                state.users[action.payload.interlocutorId] = [{
+                    messageId: action.payload.message.id,
+                    createdAt: action.payload.message.createdAt
+                }]
             }
         },
         fetchConversationsRequest: (state) => {
@@ -83,6 +89,16 @@ export const messagesSlice = createSlice({
         },
         fetchConversationsError: (state) => {
             state.conversations.isLoading = false
+        },
+        fetchMessagesSuccess: (state, action: PayloadAction<{ messages: HashTable<MessageObject>; otherUserId: string }>) => {
+            state.entities = {
+                ...state.entities,
+                ...action.payload.messages
+            }
+            state.users[action.payload.otherUserId] = Object.values(action.payload.messages).map(({id, createdAt}) => ({
+                messageId: id,
+                createdAt
+            }))
         }
     }
 })

@@ -39,8 +39,7 @@ button {
   cursor: pointer;
   text-align: center;
   letter-spacing: 0.8px;
-  transition: background 250ms ease-in-out,
-  transform 350ms ease;
+  transition: background 250ms ease-in-out, transform 350ms ease;
   outline: none;
 
   &:hover {
