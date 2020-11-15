@@ -41,16 +41,17 @@ function getProfileByUsername(username, includePosts, currentUserId) {
         let user;
         if (includePosts) {
             user = yield Profile.findOne({ where: { username }, include: includePostsSorted });
+            user = user.toJSON();
             // console.log('getProfileByUsername posts are', user.posts, user.posts.length);
             if (user.posts && user.posts.length !== 0) {
-                user = user.toJSON();
                 user.posts = yield postService_1.processPosts(user.posts, currentUserId);
             }
+            user.relationship = yield relationshipService_1.getRelationshipType(currentUserId, user.userId);
         }
         else {
             user = yield Profile.findOne({ where: { username } });
+            user.setDataValue('relationship', yield relationshipService_1.getRelationshipType(currentUserId, user.userId));
         }
-        user.relationship = yield relationshipService_1.getRelationshipType(currentUserId, user.userId);
         if (!user)
             throw new UserNotFoundError_1.UserNotFoundError();
         return user;
@@ -63,15 +64,16 @@ function getProfileByUserId(userId, includePosts, currentUserId) {
         if (includePosts) {
             user = yield Profile.findByPk(userId, { include: includePostsSorted });
             // console.log('getProfileByUserId posts are', user.posts);
+            user = user.toJSON();
             if (user.posts && user.posts.length !== 0) {
-                user = user.toJSON();
                 user.posts = yield postService_1.processPosts(user.posts, currentUserId);
             }
+            user.relationship = yield relationshipService_1.getRelationshipType(currentUserId, userId);
         }
         else {
             user = yield Profile.findByPk(userId);
+            user.setDataValue('relationship', yield relationshipService_1.getRelationshipType(currentUserId, userId));
         }
-        user.relationship = yield relationshipService_1.getRelationshipType(currentUserId, userId);
         if (!user)
             throw new UserNotFoundError_1.UserNotFoundError();
         return user;

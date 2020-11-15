@@ -33,15 +33,16 @@ export async function getProfileByUsername(username: string, includePosts: boole
     let user;
     if (includePosts) {
         user = await Profile.findOne({where: {username}, include: includePostsSorted});
+        user = user.toJSON()
         // console.log('getProfileByUsername posts are', user.posts, user.posts.length);
         if (user.posts && user.posts.length !== 0) {
-            user = user.toJSON();
             user.posts = await processPosts(user.posts, currentUserId)
         }
+        user.relationship = await getRelationshipType(currentUserId, user.userId)
     } else {
         user = await Profile.findOne({where: {username}});
+        user.setDataValue('relationship', await getRelationshipType(currentUserId, user.userId))
     }
-    user.relationship = await getRelationshipType(currentUserId, user.userId)
     if (!user) throw new UserNotFoundError();
     return user;
 }
@@ -51,14 +52,15 @@ export async function getProfileByUserId(userId, includePosts: boolean, currentU
     if (includePosts) {
         user = await Profile.findByPk(userId, {include: includePostsSorted});
         // console.log('getProfileByUserId posts are', user.posts);
+        user = user.toJSON();
         if (user.posts && user.posts.length !== 0) {
-            user = user.toJSON();
             user.posts = await processPosts(user.posts, currentUserId)
         }
+        user.relationship = await getRelationshipType(currentUserId, userId)
     } else {
         user = await Profile.findByPk(userId);
+        user.setDataValue('relationship', await getRelationshipType(currentUserId, userId))
     }
-    user.relationship = await getRelationshipType(currentUserId, userId)
     if (!user) throw new UserNotFoundError();
     return user;
 }

@@ -81,28 +81,70 @@ UPDATE message SET deletedFor='${userId}}'
 WHERE id='${messageId}'`)
 }
 
+/**
+ * Get conversations by a given user
+ * @param userId
+ */
 export const getConversations = async (userId: string) => {
-    const conversations: any = await sequelize.query(`
-SELECT C.userTwoId as interlocutorId, C.id as conversationId, 
+    const outgoingConversations: any = await sequelize.query(`SELECT M.id as messageId, M.userId as senderId, M.replyTo as replyTo, M.content as content, 
+M.typeContent as typeContent, M.createdAt as createdAt, M.status as 'status',
+C.userTwoId as interlocutorId, C.id as conversationId, 
 P.username as username, P.fullname as fullname, P.description as description,
 P.coverPhotoUrl as coverPhotoUrl, P.profilePhotoUrl as profilePhotoUrl, P.userId as userId
-FROM Conversation C JOIN Profile P ON P.userId=C.userTwoId
-WHERE userOneId='${userId}' UNION 
-SELECT C.userOneId as interlocutorId, C.id as conversationId, 
-P.username as username, P.fullname as fullname, P.description as description,
-P.coverPhotoUrl as coverPhotoUrl, P.profilePhotoUrl as profilePhotoUrl, P.userId as userId
-FROM Conversation C JOIN Profile P ON P.userId=C.userOneId
-WHERE userTwoId='${userId}';
-`, {
+FROM Conversation C JOIN Profile P ON P.userId=C.userTwoId JOIN Message M ON M.conversationId=C.id
+WHERE userOneId='${userId}'
+ORDER BY createdAt DESC LIMIT 1`, {
         // @ts-ignore
         type: sequelize.QueryTypes.SELECT
     })
-    return conversations.map(({interlocutorId, conversationId, username, fullname, description, coverPhotoUrl, profilePhotoUrl, userId}) => {
+    const incomingConversations: any = await sequelize.query(`SELECT M.id as messageId, M.userId as senderId, M.replyTo as replyTo, M.content as content, 
+M.typeContent as typeContent, M.createdAt as createdAt, M.status as 'status',
+C.userOneId as interlocutorId, C.id as conversationId, 
+P.username as username, P.fullname as fullname, P.description as description,
+P.coverPhotoUrl as coverPhotoUrl, P.profilePhotoUrl as profilePhotoUrl, P.userId as userId
+FROM Conversation C JOIN Profile P ON P.userId=C.userOneId JOIN Message M ON M.conversationId=C.id
+WHERE userTwoId='${userId}'
+ORDER BY createdAt DESC LIMIT 1`, {
+        // @ts-ignore
+        type: sequelize.QueryTypes.SELECT
+    })
+//     const conversations: any = await sequelize.query(`
+// SELECT M.id as messageId, M.userId as senderId, M.replyTo as replyTo, M.content as content,
+// M.typeContent as typeContent, M.createdAt as createdAt, M.status as 'status',
+// C.userTwoId as interlocutorId, C.id as conversationId,
+// P.username as username, P.fullname as fullname, P.description as description,
+// P.coverPhotoUrl as coverPhotoUrl, P.profilePhotoUrl as profilePhotoUrl, P.userId as userId
+// FROM Conversation C JOIN Profile P ON P.userId=C.userTwoId JOIN Message M ON M.conversationId=C.id
+// WHERE userOneId='${userId}' ORDER BY M.createdAt DESC LIMIT 1
+// UNION
+// SELECT M.id as messageId, M.userId as senderId, M.replyTo as replyTo, M.content as content,
+// M.typeContent as typeContent, M.createdAt as createdAt, M.status as 'status',
+// C.userOneId as interlocutorId, C.id as conversationId,
+// P.username as username, P.fullname as fullname, P.description as description,
+// P.coverPhotoUrl as coverPhotoUrl, P.profilePhotoUrl as profilePhotoUrl, P.userId as userId
+// FROM Conversation C JOIN Profile P ON P.userId=C.userOneId JOIN Message M ON M.conversationId=C.id
+// WHERE userTwoId='${userId}' ORDER BY M.createdAt DESC LIMIT 1
+// `, {
+//         // @ts-ignore
+//         type: sequelize.QueryTypes.SELECT
+//     })
+    return [...outgoingConversations, ...incomingConversations].map((
+        {
+            interlocutorId, conversationId,
+            username, fullname, description, coverPhotoUrl, profilePhotoUrl, userId,
+            messageId, senderId, content, typeContent, status, createdAt, replyTo
+        }) => {
         return {
             conversationId,
             interlocutorId,
             authorProfile: {
                 userId, username, fullname, description, coverPhotoUrl, profilePhotoUrl
+            },
+            message: {
+                id: messageId,
+                senderId,
+                content, typeContent, status, createdAt, replyTo,
+                recipientId: userId === senderId ? interlocutorId : senderId
             }
         }
     }) || []
