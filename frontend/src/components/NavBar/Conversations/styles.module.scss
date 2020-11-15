@@ -3,6 +3,7 @@
 .conversation {
   display: flex;
   padding: 4px 6px;
+  align-items: center;
 
   &:first-of-type {
     margin-top: 4px;
@@ -24,6 +25,7 @@
     }
 
     .lastMessage {
+      margin-top: 2px;
       font-size: 0.95rem;
       color: #8e8e8e;
       display: block;

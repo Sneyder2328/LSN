@@ -24,9 +24,10 @@ export const fetchConversations = (): AppThunk => async (dispatch) => {
         const normalizedData = normalize(response.data, [conversation]);
         console.log(normalizedData)
         const conversations = normalizedData.entities.conversations as HashTable<ConversationObject> | null
+        const messages = normalizedData.entities.conversations as HashTable<MessageObject> | undefined
         const users = normalizedData.entities.users as HashTable<UserObject> | null
         users && dispatch(usersActions.setUsers(users))
-        conversations && dispatch(messagesActions.fetchConversationsSuccess(conversations))
+        conversations && dispatch(messagesActions.fetchConversationsSuccess({conversations, messages}))
     } catch (err) {
         console.log('fetchConversations err', err)
         dispatch(messagesActions.fetchConversationsError())

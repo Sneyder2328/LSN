@@ -88,9 +88,13 @@ export const messagesSlice = createSlice({
         fetchConversationsRequest: (state) => {
             state.conversations.isLoading = true
         },
-        fetchConversationsSuccess: (state, action: PayloadAction<HashTable<ConversationObject>>) => {
+        fetchConversationsSuccess: (state, action: PayloadAction<{ conversations: HashTable<ConversationObject>; messages?: HashTable<MessageObject> }>) => {
             state.conversations.isLoading = false
-            state.conversations.entities = action.payload
+            state.entities = {
+                ...state.entities,
+                ...action.payload.messages
+            }
+            state.conversations.entities = action.payload.conversations
         },
         fetchConversationsError: (state) => {
             state.conversations.isLoading = false

@@ -1,6 +1,5 @@
 import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {messagesActions} from "../../../modules/Messages/messagesReducer";
 import {fetchConversations} from "../../../modules/Messages/messagesActions";
 import {AppState} from "../../../modules/rootReducer";
 import {Conversation} from "./Conversation";
@@ -24,11 +23,5 @@ export const ConversationsList = () => {
                 return <Conversation key={conversation.conversationId} conversationId={conversation.conversationId}/>
             })
         }
-        {/*<div*/}
-        {/*    onClick={() => {*/}
-        {/*        console.log('ok clicked!');*/}
-        {/*    }}>*/}
-        {/*    OKK*/}
-        {/*</div>*/}
     </Dropdown>)
 }

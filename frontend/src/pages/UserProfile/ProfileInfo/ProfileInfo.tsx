@@ -12,6 +12,7 @@ import {AppState} from "../../../modules/rootReducer";
 import styles from './styles.module.scss'
 import {useProfileActionName} from "../../../hooks/useProfileActionName";
 import {FriendRequestActionType} from "../../../modules/User/userApi";
+import {messagesActions} from "../../../modules/Messages/messagesReducer";
 
 export type ProfileInfoProps = {
     userProfile?: UserObject;
@@ -33,11 +34,13 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({userProfile}) => {
             case "Cancel Request":
                 dispatch(removeFriendship(userProfile.userId))
                 break
+            case "Message":
+                dispatch(messagesActions.openBubbleChat({userId: userProfile.userId}))
+                break
         }
     }
 
     const handleResponseToFriendRequest = (action: FriendRequestActionType) => {
-        console.log('handleResponseToFriendRequest', action);
         if (!userProfile) return
         dispatch(respondToFriendRequest(userProfile.userId, action))
     };

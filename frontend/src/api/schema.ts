@@ -16,10 +16,17 @@ export const profile = new schema.Entity('profile', {
     idAttribute: "userId"
 })
 
-export const conversation = new schema.Entity('conversations', {
-    authorProfile: user
-}, {
-    idAttribute: "conversationId"
-})
-
 export const message = new schema.Entity('messages')
+
+export const conversation = new schema.Entity('conversations', {
+    authorProfile: user,
+    message: message,
+}, {
+    idAttribute: "conversationId",
+    processStrategy: (entity) => {
+        return {
+            ...entity,
+            lastMessageId: entity.message.id
+        }
+    }
+})
