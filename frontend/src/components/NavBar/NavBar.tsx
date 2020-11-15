@@ -1,8 +1,7 @@
-import React from "react";
-import {useDispatch} from 'react-redux'
+import React, {useEffect} from "react";
+import {useDispatch, useSelector} from 'react-redux'
 
 import styles from './styles.module.scss'
-import Logo from "./../../resources/lsn-ic.png";
 import {SearchBar} from "../SearchBar/SearchBar";
 import {logOutUser} from "../../modules/Auth/authActions";
 import classNames from "classnames";
@@ -10,10 +9,16 @@ import {CurrentProfileLink} from "../CurrentProfileLink/CurrentProfileLink";
 import {Link} from "react-router-dom";
 import {Dropdown} from "../Dropdown/Dropdown";
 import {ConversationsList} from "./Conversations/ConversationsList";
+import {AppState} from "../../modules/rootReducer";
+import {getUserBasicInfo} from "../../modules/User/userActions";
 
 export const NavBar = () => {
     const dispatch = useDispatch()
-    // const isLoggingOut = useSelector((state: AppState) => state.auth.isLoggingOut)
+    const userId: string = useSelector((state: AppState) => state.auth.userId!!)
+
+    useEffect(() => {
+        dispatch(getUserBasicInfo(userId))
+    }, [userId, dispatch]);
     const handleLogOut = () => dispatch(logOutUser());
 
 

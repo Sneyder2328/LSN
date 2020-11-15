@@ -28,7 +28,7 @@ const processSignInResponse = ({dispatch, response}: { dispatch: any, response: 
         console.log("accessToken", accessToken);
         const refreshToken = response.headers['authorization-refresh-token'];
         const userId: string = JwtDecode<{ id: string }>(accessToken).id
-        dispatch(setUser(response.data.profile))
+        dispatch(setUser({user: response.data.profile}))
         dispatch(signInSuccess({userId, accessToken, refreshToken}));
     }
 }
@@ -70,7 +70,7 @@ export const updateProfile = (user: ProfileRequest): AppThunk => async (dispatch
         try {
             const response = await AuthApi.updateProfile(user)
             console.log('updateProfile response', response);
-            dispatch(setUser(response.data))
+            dispatch(setUser({user: response.data}))
             dispatch(updateProfileSuccess())
             resolve(true)
         } catch (err) {

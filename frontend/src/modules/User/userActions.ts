@@ -38,8 +38,9 @@ export const fetchProfile = (userIdentifier: string, includePosts: boolean): App
         const profileObj = profileHashTable[normalizedData.result]
         profileObj.postIds = [...profileObj.posts]
         delete profileObj.posts
+        console.log('profileObj', profileObj)
         dispatch(setUsers(normalizedData.entities['users'] as HashTable<UserObject>));
-        dispatch(setUser(profileObj))
+        dispatch(setUser({user: profileObj, meta: {relationship: profileObj.relationship}}))
         dispatch(setComments(comments))
         dispatch(setPosts(posts))
         dispatch(fetchProfileSuccess({

@@ -71,13 +71,6 @@ import {Trends} from "../../components/Trends/Trends";
 // }
 
 export const NewsFeedPage = () => {
-    const dispatch = useDispatch()
-    const userId: string = useSelector((state: AppState) => state.auth.userId!!)
-
-    useEffect(() => {
-        dispatch(getUserBasicInfo(userId))
-    }, [userId, dispatch]);
-
     return (
         <div>
             <NavBar/>

@@ -60,7 +60,7 @@
   background-color: #fff;
   padding: 0 8px;
   border-top: 1px solid #b6b6b6;
-  transition: opacity 150ms ease-in-out, min-height 250ms ease-in-out, transform 300ms ease;
+  transition: opacity 150ms ease, min-height 250ms ease, transform 300ms ease;
 
 
   &.hide {
@@ -92,7 +92,7 @@
   background-color: #fff;
   padding: 3px 0;
   max-height: 400px;
-  transition: max-height 250ms ease-in-out, transform 300ms ease;
+  transition: max-height 250ms ease, transform 300ms ease;
   overflow-y: auto;
 
   &.hide {

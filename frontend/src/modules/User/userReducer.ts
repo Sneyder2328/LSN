@@ -58,10 +58,14 @@ export const usersSlice = createSlice({
                 ...action.payload
             }
         },
-        setUser: (state, action: PayloadAction<UserObject>) => {
-            state.entities[action.payload.userId] = {
-                ...state.entities[action.payload.userId],
-                ...action.payload
+        setUser: (state, action: PayloadAction<{user: UserObject; meta?: UserMetadata}>) => {
+            state.entities[action.payload.user.userId] = {
+                ...state.entities[action.payload.user.userId],
+                ...action.payload.user
+            }
+            state.metas[action.payload.user.userId] = {
+                ...state.metas[action.payload.user.userId],
+                ...action.payload.meta
             }
         },
         fetchProfileRequest: (state) => {
@@ -117,8 +121,11 @@ export const usersSlice = createSlice({
             state.suggestions = state.suggestions.filter((suggestion) => suggestion.userId !== action.payload.userSuggestedId)
         }
     },
-    extraReducers: builder => {
-        builder.addCase(logOutSuccess, _ => initialState)
+    // extraReducers: builder => {
+    //     builder.addCase(logOutSuccess, _ =>  initialState)
+    // }
+    extraReducers: {
+        [authActions.logOutSuccess.type]: _ => initialState
     }
 })
 

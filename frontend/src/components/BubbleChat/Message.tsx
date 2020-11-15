@@ -4,6 +4,8 @@ import {AppState} from "../../modules/rootReducer";
 import {ProfilePhoto} from "../ProfilePhoto/ProfilePhoto";
 import styles from './styles.module.scss'
 import classNames from "classnames";
+import {MessageReceived} from "./MessageReceived";
+import {MessageSent} from "./MessageSent";
 
 export const Message: React.FC<{ messageId: string }> = ({messageId}) => {
     const userId = useSelector((state: AppState) => state.auth.userId)
@@ -15,11 +17,8 @@ export const Message: React.FC<{ messageId: string }> = ({messageId}) => {
     const interlocutorId: string = isReceived ? message.senderId : message.recipientId
     const interlocutor = users[interlocutorId]
 
-    return (<div className={classNames(styles.message, {[styles.received]: isReceived})}>
-        {isReceived && <ProfilePhoto size={'small3'} url={interlocutor.profilePhotoUrl}/>}
-        <span className={styles.text}>{message.content}</span>
-        {isReceived && <div>
-            ...
-        </div>}
-    </div>)
+    if (isReceived) return <MessageReceived message={message} interlocutor={interlocutor}/>
+    return <MessageSent message={message} interlocutor={interlocutor}/>
+    // return (<div className={classNames(styles.message, {[styles.received]: isReceived})}>
+    // </div>)
 }

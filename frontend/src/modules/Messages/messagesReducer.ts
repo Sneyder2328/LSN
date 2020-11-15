@@ -2,6 +2,7 @@ import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {HashTable} from "../../utils/utils";
 import storage from "redux-persist/lib/storage";
 import {persistReducer} from "redux-persist";
+import {authActions} from "../Auth/authReducer";
 
 export interface MessageObject {
     id: string;
@@ -16,7 +17,11 @@ export interface MessageObject {
 
 export type ActiveChat = { isOpen: boolean; userId: string };
 
-export type ConversationObject = { conversationId: string; interlocutorId: string; }
+export type ConversationObject = {
+    conversationId: string;
+    interlocutorId: string;
+    lastMessageId?: string;
+}
 
 export interface MessagesState {
     entities: HashTable<MessageObject>; // messages
@@ -100,6 +105,9 @@ export const messagesSlice = createSlice({
                 createdAt
             }))
         }
+    },
+    extraReducers: {
+        [authActions.logOutSuccess.type]: _ => initialState
     }
 })
 

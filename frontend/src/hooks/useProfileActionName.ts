@@ -1,5 +1,7 @@
-import {RelationshipType, UserMetadata, UserObject} from "../modules/User/userReducer";
+import {RelationshipType, UserObject} from "../modules/User/userReducer";
 import {useEffect, useState} from "react";
+import {useSelector} from "react-redux";
+import {AppState} from "../modules/rootReducer";
 
 type ActionType = 'Edit Profile' | 'Message' | 'Respond' | 'Cancel Request' | 'Add Friend' | undefined
 
@@ -23,12 +25,15 @@ const getActionName = (currentUserId: string, profileUserId: string, relationshi
     }
 };
 
-export const useProfileActionName = (currentUserId: string, userProfile?: UserObject, userMetadata?: UserMetadata) => {
+export const useProfileActionName = (currentUserId: string, userProfile?: UserObject) => {
+    const usersMetadata = useSelector((state: AppState) => state.entities.users.metas)
+    console.log('joderrr', usersMetadata)
     const [actionName, setActionName] = useState<ActionType>(undefined)
+    const userMetadata = usersMetadata[userProfile?.userId || ''];
 
     useEffect(() => {
-        console.log('useProfileActionName', currentUserId, userProfile);
-        userProfile && userMetadata && setActionName(getActionName(currentUserId, userProfile.userId, userMetadata.relationship))
+        console.log('useProfileActionName', currentUserId, userProfile, 'meta=', userMetadata);
+        userProfile && setActionName(getActionName(currentUserId, userProfile.userId, userMetadata?.relationship))
     }, [currentUserId, userProfile, userMetadata])
 
     return actionName
