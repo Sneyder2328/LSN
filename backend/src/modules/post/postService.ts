@@ -1,15 +1,20 @@
-import {models} from "../../database/database";
+import {models, sequelize} from "../../database/database";
 import {LIMIT_COMMENTS_PER_POST} from "../../utils/constants";
 import {compareByDateAsc, compareByDateDesc, genUUID} from "../../utils/utils";
 import {PostNotCreatedError} from "../../utils/errors/PostNotCreatedError";
 import {LikesInfo} from "../../utils/types";
 import {fetchCommentLikeStatus} from "../comment/commentService";
+import {AppError} from "../../utils/errors/AppError";
+import responseCodes from "../../utils/constants/httpResponseCodes";
+import {ActivityType, generateNotification} from "../notification/notificationService";
+import {POST_CREATED, postEmitter} from "./postEmitter";
 
 const {Comment, Post, PostLike, Profile, PostImage} = models;
 
 export async function createPost(postId: string, userId: string, type: string, text: string, images?: Array<string>) {
     const post = await Post.create({id: postId, userId, type, text});
     if (!post) throw new PostNotCreatedError();
+    postEmitter.emit(POST_CREATED, {postId, text})
     const response = post.toJSON();
     response.authorProfile = (await Profile.findByPk(userId)).toJSON();
     response.comments = [];
@@ -52,7 +57,9 @@ export const processPosts = async (posts, userId: string) => {
     return posts;
 };
 
-export async function getPosts(userId: string) {
+export async function getPostsBySection(userId: string, section: string, offset: string, limit: string) {
+    console.log('offset', offset, 'limit', limit);
+    
     let posts = await Post.findAll({
         include: [
             {
@@ -62,7 +69,71 @@ export async function getPosts(userId: string) {
             {
                 model: PostImage,
                 as: 'images',
-                attributes: ['url']
+                attributes: ['url', 'id']
+            },
+            {
+                model: Comment,
+                as: 'comments',
+                limit: LIMIT_COMMENTS_PER_POST,
+                order: [['createdAt', 'DESC']],
+                include: [Profile]
+            }
+        ],
+        order: [['createdAt', 'DESC']],
+        // offset,
+        limit: [parseInt(offset), parseInt(limit)]
+    });
+    posts = posts.map(post => post.toJSON());
+    posts = await processPosts(posts, userId);
+
+    if (!posts) return [];
+    return posts;
+}
+
+export async function getPostsByHashtag(userId: string, hashtag: string, offset: string, limit: number) {
+    console.log('offset', offset, 'limit', limit);
+    
+    let posts = await Post.findAll({
+        include: [
+            {
+                model: Profile,
+                as: 'authorProfile'
+            },
+            {
+                model: PostImage,
+                as: 'images',
+                attributes: ['url', 'id']
+            },
+            {
+                model: Comment,
+                as: 'comments',
+                limit: LIMIT_COMMENTS_PER_POST,
+                order: [['createdAt', 'DESC']],
+                include: [Profile]
+            }
+        ],
+        order: [['createdAt', 'DESC']],
+        // offset,
+        limit: [parseInt(offset), limit]
+    });
+    posts = posts.map(post => post.toJSON());
+    posts = await processPosts(posts, userId);
+
+    if (!posts) return [];
+    return posts;
+}
+
+export async function getPost(userId: string, postId: string) {
+    let post = await Post.findByPk(postId, {
+        include: [
+            {
+                model: Profile,
+                as: 'authorProfile'
+            },
+            {
+                model: PostImage,
+                as: 'images',
+                attributes: ['url', 'id']
             },
             {
                 model: Comment,
@@ -73,11 +144,36 @@ export async function getPosts(userId: string) {
             }
         ]
     });
-    posts = posts.map(post => post.toJSON())
-    posts = await processPosts(posts, userId);
+    if (!post) throw new AppError(responseCodes.NOT_FOUND, 'Not found', 'Post not found')
+    post = post.toJSON()
+    post = await processPosts([post], userId);
 
-    if (!posts) return [];
-    return posts;
+    if (!post[0]) return {};
+    return post[0];
+}
+
+export async function getPostPreview(postId: string) {
+    let post = await Post.findByPk(postId);
+    if (!post) throw new AppError(responseCodes.NOT_FOUND, 'Not found', 'Post not found')
+    return post;
+}
+
+export async function getPostFromPhoto(userId: string, photoId: string) {
+    const postImage = await PostImage.findByPk(photoId)
+    if (!postImage) throw new AppError(responseCodes.NOT_FOUND, 'Not found', 'photo not found')
+    return getPost(userId, postImage.postId)
+}
+
+export async function getPostAuthorId(postId: string) {
+    const result = await sequelize.query(`SELECT U.userId as userId
+FROM Post P
+         JOIN Profile U ON P.userId = U.userId
+WHERE P.id = '${postId}'`, {
+        // @ts-ignore
+        type: sequelize.QueryTypes.SELECT
+    })
+    // @ts-ignore
+    return result[0]?.userId
 }
 
 // @ts-ignore
@@ -92,6 +188,8 @@ export async function dislikePost(userId, postId): Promise<LikesInfo | false> {
 }
 
 async function interactWithPost(userId, postId, isLike: boolean): Promise<LikesInfo | false> {
+    const postAuthorId = await getPostAuthorId(postId)
+    generateNotification(postId, postAuthorId, userId, ActivityType.POST_LIKED, postId);
     // @ts-ignore
     const currentPostLike = await PostLike.findOne({where: {userId, postId}});
     if (currentPostLike) {
@@ -118,4 +216,44 @@ async function findPostLikesInfoByPk(postId: string): Promise<LikesInfo> {
     return await Post.findByPk(postId, {
         attributes: ['id', 'likesCount', 'dislikesCount']
     });
+}
+
+export async function getTrendingHashtags() {
+    const hashtags: any = await sequelize.query(`
+SELECT COUNT(*) as count, name
+FROM Hashtag H
+         JOIN Hashtag_POST HP ON H.id = HP.hashtagId
+         JOIN Post P ON P.id = HP.postId
+WHERE P.createdAt >= CURRENT_DATE()
+GROUP BY name
+ORDER BY COUNT(*) DESC
+LIMIT 7;`, {
+        // @ts-ignore
+        type: sequelize.QueryTypes.SELECT
+    })
+    return hashtags
+}
+
+export async function getHashtag(hashtag: string) {
+    const hashtags: any = await sequelize.query(`
+SELECT id as hashtagId FROM Hashtag 
+WHERE name = '${hashtag}'  
+LIMIT 1
+`, {
+        // @ts-ignore
+        type: sequelize.QueryTypes.SELECT
+    })
+    return hashtags?.[0]?.hashtagId
+}
+
+export async function saveHashtag(id: string, name: string) {
+    const resultInsert = await sequelize.query(`
+INSERT INTO Hashtag(id, name) 
+VALUES('${id}', '${name}')`)
+}
+
+export async function saveHashtagPost(hashtagId: string, postId: string) {
+    const resultInsert = await sequelize.query(`
+INSERT INTO Hashtag_Post(hashtagId, postId) 
+VALUES('${hashtagId}', '${postId}')`)
 }

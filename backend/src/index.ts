@@ -11,7 +11,7 @@ import {handleSocket} from "./modules/websockets/socketsHandler";
 
 export const app = express();
 export const server = http.createServer(app);
-const io: socketIO.Server = socketIO(server);
+export const io: socketIO.Server = socketIO(server);
 const port = process.env.PORT || 3030;
 
 handleSocket(io)

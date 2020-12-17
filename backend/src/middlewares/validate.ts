@@ -82,6 +82,14 @@ export const likePostValidationRules = [
     param('postId').trim().matches(config.regex.uuidV4)
 ];
 
+export const getPostValidationRules = [
+    param('postId').trim().matches(config.regex.uuidV4)
+];
+
+export const getPhotoValidationRules = [
+    param('photoId').trim().matches(config.regex.uuidV4)
+];
+
 export const likeCommentValidationRules = [
     accessTokenIsValid,
     param('commentId').trim().matches(config.regex.uuidV4)
@@ -114,6 +122,8 @@ export const createCommentValidationRules = [
 
 export const getMessagesValidationRules = [
     param('otherUserId').trim().matches(config.regex.uuidV4),
+    // query('offset').exists(), TODO usae a custom date validator
+    query('limit').isDecimal().withMessage('limit must be a number')
 ]
 
 export const deleteMessageValidationRules = [

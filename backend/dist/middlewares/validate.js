@@ -71,6 +71,12 @@ exports.likePostValidationRules = [
     accessTokenIsValid,
     express_validator_1.param('postId').trim().matches(config_1.default.regex.uuidV4)
 ];
+exports.getPostValidationRules = [
+    express_validator_1.param('postId').trim().matches(config_1.default.regex.uuidV4)
+];
+exports.getPhotoValidationRules = [
+    express_validator_1.param('photoId').trim().matches(config_1.default.regex.uuidV4)
+];
 exports.likeCommentValidationRules = [
     accessTokenIsValid,
     express_validator_1.param('commentId').trim().matches(config_1.default.regex.uuidV4)
@@ -98,6 +104,8 @@ exports.createCommentValidationRules = [
 ];
 exports.getMessagesValidationRules = [
     express_validator_1.param('otherUserId').trim().matches(config_1.default.regex.uuidV4),
+    // query('offset').exists(), TODO usae a custom date validator
+    express_validator_1.query('limit').isDecimal().withMessage('limit must be a number')
 ];
 exports.deleteMessageValidationRules = [
     express_validator_1.param('messageId').trim().matches(config_1.default.regex.uuidV4),

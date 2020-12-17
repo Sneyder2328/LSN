@@ -5,6 +5,7 @@ import error from "../../utils/constants/errors";
 import httpCodes from "../../utils/constants/httpResponseCodes";
 import {genUUID, verifyPassword} from "../../utils/utils";
 import {models} from "../../database/database";
+import {GENERATE_USERS_SUGGESTIONS, userSuggestionsEmitter} from "../user/userSuggestionsEmitter";
 const {Profile,Token,User} = models;
 
 export async function signUpUser({username, fullname, password, typeLogin, email, description, coverPhotoUrl, profilePhotoUrl}) {
@@ -35,6 +36,7 @@ export async function signUpUser({username, fullname, password, typeLogin, email
     const accessToken = await signJWT(user.id);
     const refreshToken = genUUID()
     await Token.create({userId, token: refreshToken});
+    userSuggestionsEmitter.emit(GENERATE_USERS_SUGGESTIONS, userId)
     return {accessToken, refreshToken, profile: newUserProfile};
 }
 

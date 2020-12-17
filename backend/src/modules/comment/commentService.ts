@@ -1,15 +1,21 @@
-import {models} from "../../database/database";
+import {models, sequelize} from "../../database/database";
 
 const {Comment, CommentLike, Profile} = models;
 import {CommentNotCreatedError} from "../../utils/errors/CommentNotCreatedError";
 import {compareByDateDesc} from "../../utils/utils";
 import {LikesInfo} from "../../utils/types";
+import {AppError} from "../../utils/errors/AppError";
+import responseCodes from "../../utils/constants/httpResponseCodes";
+import {ActivityType, generateNotification} from "../notification/notificationService";
+import {getPostAuthorId} from "../post/postService";
 
 export async function createComment(userId, postId, {id, type, text, img}) {
     const comment = await Comment.create({id, userId, postId, type, text, img});
     if (!comment) throw new CommentNotCreatedError();
     const response = comment.toJSON();
     response.authorProfile = (await Profile.findByPk(userId)).toJSON();
+    const postAuthorId = await getPostAuthorId(postId)
+    generateNotification(id, postAuthorId, userId, ActivityType.POST_COMMENTED, postId);
     return response;
 }
 
@@ -22,6 +28,9 @@ export async function dislikeComment(userId, commentId): Promise<LikesInfo | fal
 }
 
 async function interactWithComment(userId, commentId, isLike: boolean): Promise<LikesInfo | false> {
+    // generateNotification(commentId, id of comment author, userId, 'comment_liked'); TODO
+    const {postId, postAuthorId} = await getPostAuthorIdFromComment(commentId)
+    generateNotification(commentId, postAuthorId, userId, ActivityType.COMMENT_LIKED, postId);
     // @ts-ignore
     const currentCommentLike = await CommentLike.findOne({where: {userId, commentId}});
     if (currentCommentLike) {
@@ -33,6 +42,21 @@ async function interactWithComment(userId, commentId, isLike: boolean): Promise<
     else if (await CommentLike.create({userId, commentId, isLike}) != null)
         return findCommentLikesInfoByPk(commentId);
     return false;
+}
+
+export async function getPostAuthorIdFromComment(commentId: string) {
+    const result = await sequelize.query(`
+SELECT U.userId as userId, P.id as postId
+FROM Comment C
+         JOIN Post P ON C.postId = P.id
+         JOIN Profile U ON U.userId = P.userId
+WHERE C.id = '${commentId}'
+`, {
+        // @ts-ignore
+        type: sequelize.QueryTypes.SELECT
+    })
+    // @ts-ignore
+    return {postAuthorId: result[0]?.userId, postId: result[0]?.postId}
 }
 
 export async function removeLikeOrDislikeComment(userId, commentId): Promise<LikesInfo | false> {
@@ -73,6 +97,12 @@ export async function getComments(userId, postId, offset, limit) {
         return comment;
     }).sort(compareByDateDesc);
     return comments;
+}
+
+export async function getCommentPreview(commentId: string) {
+    const comment = await Comment.findByPk(commentId);
+    if (!comment) throw new AppError(responseCodes.NOT_FOUND, 'Not found', 'Comment not found')
+    return comment;
 }
 
 // @ts-ignore

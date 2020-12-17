@@ -15,9 +15,9 @@ const socket_io_1 = __importDefault(require("socket.io"));
 const socketsHandler_1 = require("./modules/websockets/socketsHandler");
 exports.app = express_1.default();
 exports.server = http_1.default.createServer(exports.app);
-const io = socket_io_1.default(exports.server);
+exports.io = socket_io_1.default(exports.server);
 const port = process.env.PORT || 3030;
-socketsHandler_1.handleSocket(io);
+socketsHandler_1.handleSocket(exports.io);
 exports.app.use(compression_1.default()); // compress all responses
 exports.app.use(cors_1.default(cors_2.corsOptions));
 exports.app.use(body_parser_1.default.json());

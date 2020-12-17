@@ -20,11 +20,11 @@ const handleErrorAsync_1 = require("../../middlewares/handleErrorAsync");
 const messagesService_1 = require("./messagesService");
 const router = express_1.Router();
 exports.messagesRouter = router;
-/** ?offsetCreatedAt='date'&limit='number'
+/** ?offset='date'&limit='number'
  * Get messages in conversation with other user
  */
 router.get('/conversations/:otherUserId/messages', authenticate_1.default, validate_1.getMessagesValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const messages = yield messagesService_1.getMessages(req.userId, req.params.otherUserId);
+    const messages = yield messagesService_1.getMessages(req.userId, req.params.otherUserId, req.query.offset, req.query.limit);
     res.status(httpResponseCodes_1.default.OK).send(messages);
 })));
 /**

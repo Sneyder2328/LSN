@@ -24,7 +24,7 @@ const includePostsSorted = [
             {
                 model: PostImage,
                 as: 'images',
-                attributes: ['url']
+                attributes: ['url', 'id']
             },
             {
                 model: Comment,
@@ -58,7 +58,7 @@ function getProfileByUsername(username, includePosts, currentUserId) {
     });
 }
 exports.getProfileByUsername = getProfileByUsername;
-function getProfileByUserId(userId, includePosts, currentUserId) {
+function getProfileByUserId(userId, includePosts, currentUserId, includeRelationship = true) {
     return __awaiter(this, void 0, void 0, function* () {
         let user;
         if (includePosts) {
@@ -68,11 +68,13 @@ function getProfileByUserId(userId, includePosts, currentUserId) {
             if (user.posts && user.posts.length !== 0) {
                 user.posts = yield postService_1.processPosts(user.posts, currentUserId);
             }
-            user.relationship = yield relationshipService_1.getRelationshipType(currentUserId, userId);
+            if (includeRelationship)
+                user.relationship = yield relationshipService_1.getRelationshipType(currentUserId, userId);
         }
         else {
             user = yield Profile.findByPk(userId);
-            user.setDataValue('relationship', yield relationshipService_1.getRelationshipType(currentUserId, userId));
+            if (includeRelationship)
+                user.setDataValue('relationship', yield relationshipService_1.getRelationshipType(currentUserId, userId));
         }
         if (!user)
             throw new UserNotFoundError_1.UserNotFoundError();
@@ -119,3 +121,20 @@ function searchUser(query) {
     });
 }
 exports.searchUser = searchUser;
+/**
+ * Get photos by a userId given its posts images
+ * @param userId
+ */
+function getPhotos(userId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return database_1.sequelize.query(`
+SELECT post_image.id, url
+FROM post_image
+         JOIN post p on post_image.postId = p.id
+WHERE p.userId = '${userId}'`, {
+            // @ts-ignore
+            type: database_1.sequelize.QueryTypes.SELECT
+        });
+    });
+}
+exports.getPhotos = getPhotos;

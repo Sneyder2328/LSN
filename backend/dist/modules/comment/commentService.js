@@ -8,11 +8,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = require("../../database/database");
 const { Comment, CommentLike, Profile } = database_1.models;
 const CommentNotCreatedError_1 = require("../../utils/errors/CommentNotCreatedError");
 const utils_1 = require("../../utils/utils");
+const AppError_1 = require("../../utils/errors/AppError");
+const httpResponseCodes_1 = __importDefault(require("../../utils/constants/httpResponseCodes"));
+const notificationService_1 = require("../notification/notificationService");
+const postService_1 = require("../post/postService");
 function createComment(userId, postId, { id, type, text, img }) {
     return __awaiter(this, void 0, void 0, function* () {
         const comment = yield Comment.create({ id, userId, postId, type, text, img });
@@ -20,6 +27,8 @@ function createComment(userId, postId, { id, type, text, img }) {
             throw new CommentNotCreatedError_1.CommentNotCreatedError();
         const response = comment.toJSON();
         response.authorProfile = (yield Profile.findByPk(userId)).toJSON();
+        const postAuthorId = yield postService_1.getPostAuthorId(postId);
+        notificationService_1.generateNotification(id, postAuthorId, userId, notificationService_1.ActivityType.POST_COMMENTED, postId);
         return response;
     });
 }
@@ -38,6 +47,9 @@ function dislikeComment(userId, commentId) {
 exports.dislikeComment = dislikeComment;
 function interactWithComment(userId, commentId, isLike) {
     return __awaiter(this, void 0, void 0, function* () {
+        // generateNotification(commentId, id of comment author, userId, 'comment_liked'); TODO
+        const { postId, postAuthorId } = yield getPostAuthorIdFromComment(commentId);
+        notificationService_1.generateNotification(commentId, postAuthorId, userId, notificationService_1.ActivityType.COMMENT_LIKED, postId);
         // @ts-ignore
         const currentCommentLike = yield CommentLike.findOne({ where: { userId, commentId } });
         if (currentCommentLike) {
@@ -51,6 +63,24 @@ function interactWithComment(userId, commentId, isLike) {
         return false;
     });
 }
+function getPostAuthorIdFromComment(commentId) {
+    var _a, _b;
+    return __awaiter(this, void 0, void 0, function* () {
+        const result = yield database_1.sequelize.query(`
+SELECT U.userId as userId, P.id as postId
+FROM Comment C
+         JOIN Post P ON C.postId = P.id
+         JOIN Profile U ON U.userId = P.userId
+WHERE C.id = '${commentId}'
+`, {
+            // @ts-ignore
+            type: database_1.sequelize.QueryTypes.SELECT
+        });
+        // @ts-ignore
+        return { postAuthorId: (_a = result[0]) === null || _a === void 0 ? void 0 : _a.userId, postId: (_b = result[0]) === null || _b === void 0 ? void 0 : _b.postId };
+    });
+}
+exports.getPostAuthorIdFromComment = getPostAuthorIdFromComment;
 function removeLikeOrDislikeComment(userId, commentId) {
     return __awaiter(this, void 0, void 0, function* () {
         // @ts-ignore
@@ -92,6 +122,15 @@ function getComments(userId, postId, offset, limit) {
     });
 }
 exports.getComments = getComments;
+function getCommentPreview(commentId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const comment = yield Comment.findByPk(commentId);
+        if (!comment)
+            throw new AppError_1.AppError(httpResponseCodes_1.default.NOT_FOUND, 'Not found', 'Comment not found');
+        return comment;
+    });
+}
+exports.getCommentPreview = getCommentPreview;
 // @ts-ignore
 exports.fetchCommentLikeStatus = (commentId, userId) => __awaiter(void 0, void 0, void 0, function* () {
     return (yield CommentLike.findOne({

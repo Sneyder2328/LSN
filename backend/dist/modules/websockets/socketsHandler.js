@@ -20,11 +20,11 @@ exports.handleSocket = (io) => {
         console.log('new user connected');
         socket.on('join', (params, callback) => __awaiter(void 0, void 0, void 0, function* () {
             if (!utils_1.isRealString(params.refreshToken))
-                return callback("Invalid token");
+                return callback("Invalid token"); // TODO use a better validation
             const token = yield Token.findByPk(params.refreshToken);
             if (!token)
                 return callback("Token passed is not existent");
-            socket.join(token.userId);
+            socket.join(token.userId); // join a room using its id
             callback();
         }));
         socket.on(CREATE_MESSAGE_EVENT, (message, callback) => __awaiter(void 0, void 0, void 0, function* () {
@@ -34,6 +34,7 @@ exports.handleSocket = (io) => {
                 return callback("Token passed is not existent");
             const { conversationId } = yield messagesService_1.getConversationId(token.userId, message.recipientId);
             yield messagesService_1.sendMessage({ id: message.id, conversationId, userId: token.userId, content: message.content });
+            // send new message event to the rooms of the recipient and the sender
             io.to(message.recipientId).to(token.userId).emit(NEW_MESSAGE_EVENT, {
                 id: message.id,
                 senderId: token.userId,

@@ -1,5 +1,5 @@
-import {sequelize} from "../../database/database";
-import {genUUID} from "../../utils/utils";
+import { sequelize } from "../../database/database";
+import { genUUID } from "../../utils/utils";
 
 
 export const getConversationId = async (userId: string, otherUserId: string) => {
@@ -15,13 +15,13 @@ LIMIT 1`, {
         conversationId = genUUID()
         const resultInsert = await sequelize.query(`INSERT INTO Conversation(id, userOneId, userTwoId) VALUES('${conversationId}', '${userId}', '${otherUserId}')`)
         console.log('resultInsert=', resultInsert);
-        return {conversationId, created: true}
+        return { conversationId, created: true }
     }
-    return {conversationId, created: false}
+    return { conversationId, created: false }
 }
 
 export const getMessagesPaged = async (userId: string, otherUserId: string, offsetCreatedAt: any, limit: number) => {
-    const {conversationId, created} = await getConversationId(userId, otherUserId)
+    const { conversationId, created } = await getConversationId(userId, otherUserId)
     console.log('getConversationId', conversationId, created)
     if (created) return []
     const sql = offsetCreatedAt ? `SELECT id, userId as senderId, replyTo, content, typeContent, status, createdAt FROM Message 
@@ -32,7 +32,7 @@ WHERE conversationId = '${conversationId}' ORDER BY createdAt DESC LIMIT ${limit
         // @ts-ignore
         type: sequelize.QueryTypes.SELECT
     })
-    return messages.map(({id, senderId, replyTo, content, typeContent, status, createdAt}) => {
+    return messages.map(({ id, senderId, replyTo, content, typeContent, status, createdAt }) => {
         return {
             id, senderId, replyTo, content, typeContent, status, createdAt,
             recipientId: senderId === userId ? otherUserId : userId
@@ -41,19 +41,24 @@ WHERE conversationId = '${conversationId}' ORDER BY createdAt DESC LIMIT ${limit
 }
 
 //AND deletedFor != '${userId}'
-// TODO (find a way to check for deletedFor attr, actually like it is above it is not working as it's returning empty([]))
-export const getMessages = async (userId: string, otherUserId: string) => {
-    const {conversationId, created} = await getConversationId(userId, otherUserId)
-    console.log('getConversationId', conversationId, created)
-    if (created) return []
-    const messages: any = await sequelize.query(`
+async function getMessagesByConversation(conversationId, userId: string, otherUserId: string, offset: any, limit: number) {
+    const queryWithOffset = `
 SELECT id, userId as senderId, replyTo, content, typeContent, status, createdAt FROM Message 
-WHERE conversationId = '${conversationId}' ORDER BY createdAt DESC
-`, {
+WHERE conversationId = '${conversationId}' AND createdAt < '${offset}'
+ORDER BY createdAt DESC 
+LIMIT ${limit}
+`;
+    const queryWithoutOffset = `
+SELECT id, userId as senderId, replyTo, content, typeContent, status, createdAt FROM Message 
+WHERE conversationId = '${conversationId}'
+ORDER BY createdAt DESC 
+LIMIT ${limit}
+`;
+    const messages: any = await sequelize.query(offset ? queryWithOffset : queryWithoutOffset, {
         // @ts-ignore
         type: sequelize.QueryTypes.SELECT
     })
-    return messages.map(({id, senderId, replyTo, content, typeContent, status, createdAt}) => {
+    return messages.map(({ id, senderId, replyTo, content, typeContent, status, createdAt }) => {
         return {
             id, senderId, replyTo, content, typeContent, status, createdAt,
             recipientId: senderId === userId ? otherUserId : userId
@@ -61,7 +66,15 @@ WHERE conversationId = '${conversationId}' ORDER BY createdAt DESC
     })
 }
 
-export const sendMessage = async ({id, conversationId, userId, content}) => {
+// TODO (find a way to check for deletedFor attr, actually like it is above it is not working as it's returning empty([]))
+export const getMessages = async (userId: string, otherUserId: string, offset: any, limit: number) => {
+    const { conversationId, created } = await getConversationId(userId, otherUserId)
+    console.log('getConversationId', conversationId, created)
+    if (created) return []
+    return await getMessagesByConversation(conversationId, userId, otherUserId, offset, limit);
+}
+
+export const sendMessage = async ({ id, conversationId, userId, content }) => {
     const resultInsert = await sequelize.query(`INSERT INTO Message(id, conversationId, userId, content) 
 VALUES('${id}', '${conversationId}', '${userId}', '${content}')`)
     console.log('resultInsert message=', resultInsert);
@@ -86,66 +99,53 @@ WHERE id='${messageId}'`)
  * @param userId
  */
 export const getConversations = async (userId: string) => {
-    const outgoingConversations: any = await sequelize.query(`SELECT M.id as messageId, M.userId as senderId, M.replyTo as replyTo, M.content as content, 
-M.typeContent as typeContent, M.createdAt as createdAt, M.status as 'status',
-C.userTwoId as interlocutorId, C.id as conversationId, 
-P.username as username, P.fullname as fullname, P.description as description,
-P.coverPhotoUrl as coverPhotoUrl, P.profilePhotoUrl as profilePhotoUrl, P.userId as userId
-FROM Conversation C JOIN Profile P ON P.userId=C.userTwoId JOIN Message M ON M.conversationId=C.id
+    const outgoingConversations: any = await sequelize.query(`
+SELECT C.userTwoId as interlocutorId, 
+C.id as conversationId, 
+P.username as username, 
+P.fullname as fullname, 
+P.description as description,
+P.coverPhotoUrl as coverPhotoUrl, 
+P.profilePhotoUrl as profilePhotoUrl, 
+P.userId as userId
+FROM Conversation C 
+JOIN Profile P ON P.userId=C.userTwoId 
 WHERE userOneId='${userId}'
-ORDER BY createdAt DESC LIMIT 1`, {
+`, {
         // @ts-ignore
         type: sequelize.QueryTypes.SELECT
     })
-    const incomingConversations: any = await sequelize.query(`SELECT M.id as messageId, M.userId as senderId, M.replyTo as replyTo, M.content as content, 
-M.typeContent as typeContent, M.createdAt as createdAt, M.status as 'status',
-C.userOneId as interlocutorId, C.id as conversationId, 
-P.username as username, P.fullname as fullname, P.description as description,
-P.coverPhotoUrl as coverPhotoUrl, P.profilePhotoUrl as profilePhotoUrl, P.userId as userId
-FROM Conversation C JOIN Profile P ON P.userId=C.userOneId JOIN Message M ON M.conversationId=C.id
+
+    const incomingConversations: any = await sequelize.query(`
+SELECT C.userOneId as interlocutorId, 
+C.id as conversationId, 
+P.username as username, 
+P.fullname as fullname, 
+P.description as description,
+P.coverPhotoUrl as coverPhotoUrl, 
+P.profilePhotoUrl as profilePhotoUrl, 
+P.userId as userId
+FROM Conversation C 
+JOIN Profile P ON P.userId=C.userOneId 
 WHERE userTwoId='${userId}'
-ORDER BY createdAt DESC LIMIT 1`, {
+`, {
         // @ts-ignore
         type: sequelize.QueryTypes.SELECT
     })
-//     const conversations: any = await sequelize.query(`
-// SELECT M.id as messageId, M.userId as senderId, M.replyTo as replyTo, M.content as content,
-// M.typeContent as typeContent, M.createdAt as createdAt, M.status as 'status',
-// C.userTwoId as interlocutorId, C.id as conversationId,
-// P.username as username, P.fullname as fullname, P.description as description,
-// P.coverPhotoUrl as coverPhotoUrl, P.profilePhotoUrl as profilePhotoUrl, P.userId as userId
-// FROM Conversation C JOIN Profile P ON P.userId=C.userTwoId JOIN Message M ON M.conversationId=C.id
-// WHERE userOneId='${userId}' ORDER BY M.createdAt DESC LIMIT 1
-// UNION
-// SELECT M.id as messageId, M.userId as senderId, M.replyTo as replyTo, M.content as content,
-// M.typeContent as typeContent, M.createdAt as createdAt, M.status as 'status',
-// C.userOneId as interlocutorId, C.id as conversationId,
-// P.username as username, P.fullname as fullname, P.description as description,
-// P.coverPhotoUrl as coverPhotoUrl, P.profilePhotoUrl as profilePhotoUrl, P.userId as userId
-// FROM Conversation C JOIN Profile P ON P.userId=C.userOneId JOIN Message M ON M.conversationId=C.id
-// WHERE userTwoId='${userId}' ORDER BY M.createdAt DESC LIMIT 1
-// `, {
-//         // @ts-ignore
-//         type: sequelize.QueryTypes.SELECT
-//     })
-    return [...outgoingConversations, ...incomingConversations].map((
+    return (await Promise.all([...outgoingConversations, ...incomingConversations].map(async (
         {
             interlocutorId, conversationId,
             username, fullname, description, coverPhotoUrl, profilePhotoUrl, userId,
-            messageId, senderId, content, typeContent, status, createdAt, replyTo
         }) => {
+        const messages = await getMessagesByConversation(conversationId, userId, interlocutorId, undefined, 1)
+
         return {
             conversationId,
             interlocutorId,
             authorProfile: {
                 userId, username, fullname, description, coverPhotoUrl, profilePhotoUrl
             },
-            message: {
-                id: messageId,
-                senderId,
-                content, typeContent, status, createdAt, replyTo,
-                recipientId: userId === senderId ? interlocutorId : senderId
-            }
+            message: messages?.[0]
         }
-    }) || []
+    }))).filter(({ message }) => message).sort((conv1, conv2) => conv2.message.createdAt - conv1.message.createdAt) || []
 }

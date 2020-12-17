@@ -1,5 +1,6 @@
 import {Router} from "express";
 import {
+    getPhotos,
     getProfileByUserId,
     getProfileByUsername,
     searchUser,
@@ -149,6 +150,14 @@ router.delete('/suggestions/:suggestedUserId', authenticate, removeUserSuggestio
     handleErrorAsync(async (req, res) => {
         const updated = await removeUserSuggestion(req.userId, req.params.suggestedUserId)
         res.status(httpCodes.OK).send(updated)
+    }))
+
+/**
+ * Get photos from an user given his posts
+ */
+router.get('/users/:userId/photos', authenticate, paramUserIdValidationRules, validate, handleErrorAsync(async (req, res) => {
+        const photos = await getPhotos(req.params.userId)
+        res.json(photos)
     }))
 
 export default router;

@@ -1,4 +1,4 @@
-import {models} from "../../database/database";
+import {models, sequelize} from "../../database/database";
 import {UserNotFoundError} from "../../utils/errors/UserNotFoundError";
 import {Op} from "sequelize";
 import {LIMIT_COMMENTS_PER_POST} from "../../utils/constants";
@@ -15,7 +15,7 @@ const includePostsSorted = [
             {
                 model: PostImage,
                 as: 'images',
-                attributes: ['url']
+                attributes: ['url', 'id']
             },
             {
                 model: Comment,
@@ -47,7 +47,7 @@ export async function getProfileByUsername(username: string, includePosts: boole
     return user;
 }
 
-export async function getProfileByUserId(userId, includePosts: boolean, currentUserId: string) {
+export async function getProfileByUserId(userId, includePosts: boolean, currentUserId: string, includeRelationship = true) {
     let user;
     if (includePosts) {
         user = await Profile.findByPk(userId, {include: includePostsSorted});
@@ -56,10 +56,12 @@ export async function getProfileByUserId(userId, includePosts: boolean, currentU
         if (user.posts && user.posts.length !== 0) {
             user.posts = await processPosts(user.posts, currentUserId)
         }
-        user.relationship = await getRelationshipType(currentUserId, userId)
+        if (includeRelationship)
+            user.relationship = await getRelationshipType(currentUserId, userId)
     } else {
         user = await Profile.findByPk(userId);
-        user.setDataValue('relationship', await getRelationshipType(currentUserId, userId))
+        if (includeRelationship)
+            user.setDataValue('relationship', await getRelationshipType(currentUserId, userId))
     }
     if (!user) throw new UserNotFoundError();
     return user;
@@ -99,3 +101,19 @@ export async function searchUser(query: string) {
         }
     });
 }
+
+/**
+ * Get photos by a userId given its posts images
+ * @param userId
+ */
+export async function getPhotos(userId: string) {
+    return sequelize.query(`
+SELECT post_image.id, url
+FROM post_image
+         JOIN post p on post_image.postId = p.id
+WHERE p.userId = '${userId}'`, {
+        // @ts-ignore
+        type: sequelize.QueryTypes.SELECT
+    })
+}
+

@@ -120,4 +120,11 @@ router.delete('/suggestions/:suggestedUserId', authenticate_1.default, validate_
     const updated = yield relationshipService_1.removeUserSuggestion(req.userId, req.params.suggestedUserId);
     res.status(httpResponseCodes_1.default.OK).send(updated);
 })));
+/**
+ * Get photos from an user given his posts
+ */
+router.get('/users/:userId/photos', authenticate_1.default, validate_1.paramUserIdValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const photos = yield userService_1.getPhotos(req.params.userId);
+    res.json(photos);
+})));
 exports.default = router;

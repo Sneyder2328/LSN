@@ -19,6 +19,7 @@ const errors_1 = __importDefault(require("../../utils/constants/errors"));
 const httpResponseCodes_1 = __importDefault(require("../../utils/constants/httpResponseCodes"));
 const utils_1 = require("../../utils/utils");
 const database_1 = require("../../database/database");
+const userSuggestionsEmitter_1 = require("../user/userSuggestionsEmitter");
 const { Profile, Token, User } = database_1.models;
 function signUpUser({ username, fullname, password, typeLogin, email, description, coverPhotoUrl, profilePhotoUrl }) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -50,6 +51,7 @@ function signUpUser({ username, fullname, password, typeLogin, email, descriptio
         const accessToken = yield JWTHelper_1.signJWT(user.id);
         const refreshToken = utils_1.genUUID();
         yield Token.create({ userId, token: refreshToken });
+        userSuggestionsEmitter_1.userSuggestionsEmitter.emit(userSuggestionsEmitter_1.GENERATE_USERS_SUGGESTIONS, userId);
         return { accessToken, refreshToken, profile: newUserProfile };
     });
 }

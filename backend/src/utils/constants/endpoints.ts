@@ -16,7 +16,7 @@ export default {
     },
     post: {
         CREATE_POST: '/posts',
-        GET_POSTS: '/posts',
+        GET_POSTS: '/posts/',
         LIKE_POST: (postId) => `/posts/${postId}/likes`,
         DISLIKE_POST: (postId) => `/posts/${postId}/dislikes`
     },

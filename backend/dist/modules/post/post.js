@@ -53,9 +53,20 @@ router.post('/imageposts', authenticate_1.default, multerUploads, validate_1.cre
     const post = yield postService_1.createPost(content.id, req.userId, content.type, content.text, imageUrls);
     res.status(httpResponseCodes_1.default.CREATED).send(post);
 })));
+/**
+ * Get posts by section('top'|'latest') or by hashtag(#{SomeWord})
+ */
 router.get(endpoints_1.default.post.GET_POSTS, authenticate_1.default, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const posts = yield postService_1.getPosts(req.userId);
+    const posts = req.query.section ? yield postService_1.getPostsBySection(req.userId, req.query.section, req.query.offset, req.query.limit) : yield postService_1.getPostsByHashtag(req.userId, req.query.hashtag, req.query.offset, req.query.limit);
     res.status(httpResponseCodes_1.default.OK).send(posts);
+})));
+router.get('/posts/:postId', authenticate_1.default, validate_1.getPostValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const post = yield postService_1.getPost(req.userId, req.params.postId);
+    res.status(httpResponseCodes_1.default.OK).send(post);
+})));
+router.get('/photos/:photoId', authenticate_1.default, validate_1.getPhotoValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const post = yield postService_1.getPostFromPhoto(req.userId, req.params.photoId);
+    res.status(httpResponseCodes_1.default.OK).send(post);
 })));
 router.post(endpoints_1.default.post.LIKE_POST(':postId'), authenticate_1.default, validate_1.likePostValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const response = yield postService_1.likePost(req.userId, req.params.postId);
@@ -72,5 +83,10 @@ router.post(endpoints_1.default.post.DISLIKE_POST(':postId'), authenticate_1.def
 router.delete(endpoints_1.default.post.DISLIKE_POST(':postId'), authenticate_1.default, validate_1.likePostValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const response = yield postService_1.removeLikeOrDislikeFromPost(req.userId, req.params.postId);
     res.status(httpResponseCodes_1.default.OK).send(response);
+})));
+// TODO need to validate hashtag
+router.get(`/trending/`, authenticate_1.default, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const hashtags = yield postService_1.getTrendingHashtags();
+    res.json(hashtags);
 })));
 exports.default = router;

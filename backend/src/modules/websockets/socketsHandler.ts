@@ -13,10 +13,10 @@ export const handleSocket = (io: socketIO.Server) => {
         console.log('new user connected');
 
         socket.on('join', async (params: { refreshToken: string }, callback) => {
-            if (!isRealString(params.refreshToken)) return callback("Invalid token");
+            if (!isRealString(params.refreshToken)) return callback("Invalid token"); // TODO use a better validation
             const token = await Token.findByPk(params.refreshToken);
             if (!token) return callback("Token passed is not existent");
-            socket.join(token.userId);
+            socket.join(token.userId); // join a room using its id
             callback();
         });
 
@@ -36,6 +36,7 @@ export const handleSocket = (io: socketIO.Server) => {
                 {id: message.id, conversationId, userId: token.userId, content: message.content}
             )
 
+            // send new message event to the rooms of the recipient and the sender
             io.to(message.recipientId).to(token.userId).emit(NEW_MESSAGE_EVENT, {
                 id: message.id,
                 senderId: token.userId,

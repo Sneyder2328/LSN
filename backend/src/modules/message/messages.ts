@@ -8,12 +8,12 @@ import {deleteMessage, getConversations, getMessages} from "./messagesService";
 
 const router = Router()
 
-/** ?offsetCreatedAt='date'&limit='number'
+/** ?offset='date'&limit='number'
  * Get messages in conversation with other user
  */
 router.get('/conversations/:otherUserId/messages', authenticate,
     getMessagesValidationRules, validate, handleErrorAsync(async (req, res) => {
-        const messages = await getMessages(req.userId, req.params.otherUserId)
+        const messages = await getMessages(req.userId, req.params.otherUserId, req.query.offset, req.query.limit)
         res.status(httpCodes.OK).send(messages)
     }))
 
