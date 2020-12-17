@@ -2,6 +2,7 @@ import {SocketClient} from "./SocketClient";
 import {Middleware} from "redux";
 import {AppState} from "../rootReducer";
 import {messagesActions} from "../Messages/messagesReducer";
+import {notificationsActions} from "../Notifications/notificationsReducer";
 
 export const socketMiddleware = (socket: SocketClient): Middleware<undefined, AppState> => ({dispatch, getState}) => {
     return (next) => (action) => {
@@ -30,8 +31,15 @@ export const socketMiddleware = (socket: SocketClient): Middleware<undefined, Ap
                         message,
                         interlocutorId: message.senderId === getState().auth.userId ? message.recipientId : message.senderId
                     }))
-                }).then(r => console.log('listening to messages'))
-            }).catch((err) => console.log('error connecting', err))
+                }).then()
+                socket.on('newNotification', (notification: any) => {
+                    console.log('newNotification received=', notification);
+                    dispatch(notificationsActions.showNotification(notification))
+                    setTimeout(() => {
+                        dispatch(notificationsActions.hideNotification(notification.id))
+                    }, 10_000);
+                }).then()
+            })
             return next(action);
         }
 

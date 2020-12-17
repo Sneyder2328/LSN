@@ -7,6 +7,7 @@ import {commentsReducer, CommentsState} from "./Comment/commentReducer";
 import {usersReducer, UsersState} from "./User/userReducer";
 import {postsReducer, PostState} from "./Posts/postReducer";
 import {messagesReducer, MessagesState} from "./Messages/messagesReducer";
+import {notificationsReducer, NotificationsState} from "./Notifications/notificationsReducer";
 
 type EntitiesState = {
     posts: PostState;
@@ -21,6 +22,7 @@ export interface AppState {
     search: SearchState;
     messages: MessagesState;
     modal: ModalState;
+    notification: NotificationsState;
 }
 
 export const rootReducer = combineReducers({
@@ -29,6 +31,7 @@ export const rootReducer = combineReducers({
     search: searchReducer,
     modal: modalReducer,
     messages: messagesReducer,
+    notification: notificationsReducer,
     entities: combineReducers({
         posts: postsReducer,
         comments: commentsReducer,

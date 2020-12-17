@@ -12,7 +12,6 @@ export const Contact: React.FC<{ userId: string }> = ({userId}) => {
     const user = users[userId]
     if (!user) return null
     return (<div className={styles.contact} onClick={()=>{
-        console.log('clickedddd');
         dispatch(openBubbleChat({userId}))
     }}>
         <ProfilePhoto size={'small2'} url={user.profilePhotoUrl}/>

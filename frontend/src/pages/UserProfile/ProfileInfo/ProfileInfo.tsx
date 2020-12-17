@@ -47,7 +47,7 @@ export const ProfileInfo: React.FC<ProfileInfoProps> = ({userProfile}) => {
 
     let actionButton = null
     if (actionName) {
-        actionButton = actionName === 'Respond' ? <Dropdown trigger={<Button
+        actionButton = actionName === 'Respond' ? <Dropdown className={styles.dropDown} trigger={<Button
             className={styles.actionBtn}
             onClick={handleUserAction}
             label={actionName}/>}>

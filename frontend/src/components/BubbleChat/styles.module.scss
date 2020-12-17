@@ -5,7 +5,6 @@ $height-chat: 44px;
 .bubbleChat {
   margin-right: 16px;
   width: 310px;
-  //transition: width 250ms ease-in-out;
   transition: width 250ms ease-in-out, transform 300ms ease;
   min-height: $height-chat;
   box-shadow: 0 2px 4px rgba(100, 100, 100, 0.5);
@@ -64,30 +63,25 @@ $height-chat: 44px;
       i {
         color: #fff;
         font-size: 1rem;
-        //width: 30px;
-        //height: 30px;
-        //display: flex;
-        //align-items: center;
-        //justify-content: center;
-        //
-        //&:hover {
-        //  background-color: rgba(255, 255, 255, 0.14);
-        //}
       }
     }
   }
 
   .content {
     background-color: #fff;
-    padding: 8px 8px 0;
     display: flex;
     flex-wrap: wrap;
-    max-height: 350px;
+    height: 350px !important;
     overflow-y: auto;
-    transition: max-height 250ms ease-in-out, transform 300ms ease;
+    transition: height,max-height 500ms ease-in-out, transform 600ms ease;
+
+    @media (max-height: 700px) {
+      height: 55vh !important;
+    }
 
     &.hide {
       max-height: 0;
+      height: 0;
       padding: 0;
     }
 
@@ -96,6 +90,12 @@ $height-chat: 44px;
       display: block;
       width: 100%;
       height: 8px;
+    }
+
+    .loading {
+      margin: 0 auto;
+      width: fit-content;
+      padding: 44px 0;
     }
   }
 

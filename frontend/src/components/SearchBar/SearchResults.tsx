@@ -1,16 +1,18 @@
 import React from "react";
-import {connect} from "react-redux";
-import {Link} from "react-router-dom";
+import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 import styles from './styles.module.scss'
-import {UserSearch} from "../../modules/Search/searchReducer";
-import {AppState} from "../../modules/rootReducer";
+import { UserSearch } from "../../modules/Search/searchReducer";
+import { AppState } from "../../modules/rootReducer";
+import { ProfilePhoto } from "../ProfilePhoto/ProfilePhoto";
+import { userLink } from "../../api";
 
-const Profile: React.FC<{ profile: UserSearch }> = ({profile}) => {
+const Profile: React.FC<{ profile: UserSearch }> = ({ profile }) => {
     return (
-        <Link className={styles.person} to={"/"+profile.username}>
-            <img className='avatar' src='https://miro.medium.com/max/280/1*MccriYX-ciBniUzRKAUsAw.png'/>
-            <div>
-                <p className='fullname'><strong>{profile.fullname}</strong></p>
+        <Link className={styles.person} to={userLink(profile.username)}>
+            <ProfilePhoto size={'small1'} url={profile.profilePhotoUrl} />
+            <div className={styles.details}>
+                <p className={styles.fullname}><strong>{profile.fullname}</strong></p>
                 <p className={styles.username}>@{profile.username}</p>
             </div>
         </Link>
@@ -22,11 +24,11 @@ type Props = {
     people: Array<UserSearch>
 };
 
-const SearchResults: React.FC<Props> = ({people}) => {
+const SearchResults: React.FC<Props> = ({ people }) => {
     return (
         <div className={styles.searchResults}>
             {
-                people.map((profile) => <Profile key={profile.userId} profile={profile}/>)
+                people.map((profile) => <Profile key={profile.userId} profile={profile} />)
             }
         </div>
     );

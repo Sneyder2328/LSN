@@ -3,6 +3,7 @@
 html, body {
   padding: 0;
   margin: 0;
+  height: 100%;
   font-family: 'Roboto', Arial, sans-serif;
   background-color: #e9ebee;
 }
@@ -13,6 +14,14 @@ html, body {
 
 a {
   text-decoration: none;
+}
+
+#root {
+  height: 100%;
+}
+
+strong {
+  font-weight: 600;
 }
 
 .selectableBackground {
@@ -51,18 +60,24 @@ button {
   display: none !important;
 }
 
-.leftSection {
-  width: $secondary-section_width;
-  margin: 12px 0;
-}
-
-.mainSection {
-  width: $main-width-page;
-  margin: 12px;
-  background-color: transparent;
-}
-
-.rightSection {
-  width: $secondary-section_width;
-  margin: 12px 0;
-}
+//.leftSection {
+//  width: $secondary-section_width;
+//  margin: 12px 0;
+//  position: sticky;
+//  top: $navbarHeight+2px;
+//  height: 92vh;
+//}
+//
+//.mainSection {
+//  width: $main-width-page;
+//  margin: 12px;
+//  background-color: transparent;
+//}
+//
+//.rightSection {
+//  width: $secondary-section_width;
+//  margin: 12px 0;
+//  position: sticky;
+//  top: $navbarHeight+2px;
+//  height: 92vh;
+//}

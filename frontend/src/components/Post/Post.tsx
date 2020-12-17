@@ -13,6 +13,8 @@ import {dislikePost, likePost} from "../../modules/Posts/postActions";
 import {ProfilePhoto} from "../ProfilePhoto/ProfilePhoto";
 import {AddNewComment} from "./AddNewComment/AddNewComment";
 import {Link} from "react-router-dom";
+import {photoLink, postLink, userLink} from "../../api";
+import {transformUrlForPostImage} from "../../modules/Posts/postApi";
 
 export interface Profile {
     userId: string;
@@ -57,11 +59,13 @@ type Props = {
     loadPreviousComments: (postId: string, offset: number, limit: number) => any;
     likePost: (postId: string, undo: boolean) => any;
     dislikePost: (postId: string, undo: boolean) => any;
+    className?: string;
+    displayImages?: boolean;
 };
 
 
-const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComments, likePost, dislikePost}) => {
-    const timeSincePublished = useTimeSincePublished(postResponse.createdAt);
+const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComments, likePost, dislikePost, displayImages, className}) => {
+    const timeSincePublished = useTimeSincePublished(postResponse?.createdAt);
     const [commentText, setCommentText] = useState<string>('');
     const [focusInput, setFocusInput] = useState<boolean>(false);
     const [previewImageResults, setPreviewImageResults] = useState<Array<string>>();
@@ -106,35 +110,42 @@ const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComment
         return false;
     };
 
-    const transformUrl = (url: string): string => {
-        return url.replace("/image/upload/", "/image/upload/a_0/");
-    };
-
     return (
-        <div className={styles.post}>
+        <div className={classNames(styles.post, className)}>
             <div className={styles.userProfile}>
                 <ProfilePhoto
                     className={styles.avatar} size={"small1"}
                     url={postResponse?.authorProfile?.profilePhotoUrl}/>
                 <div>
-                    <Link to={`/${postResponse?.authorProfile?.username}`} className={styles.fullname}>
+                    <Link to={userLink(postResponse?.authorProfile?.username)} className={styles.fullname}>
                         <p>{postResponse?.authorProfile?.fullname}</p>
                     </Link>
                     <p className={styles.username}>@{postResponse?.authorProfile?.username}</p>
-                    <p className={styles.timePublished}>{timeSincePublished}</p>
+                    <Link to={postLink(postResponse.id)} className={styles.linkPost}>
+                        <p className={styles.timePublished}>{timeSincePublished}</p>
+                    </Link>
                 </div>
             </div>
             <div className={classNames(styles.content, {[styles.uploading]: postResponse.isUploading})}>
                 <p className={styles.text}>{postResponse.text}</p>
-                <div className='images'>
-                    {postResponse.images.map(image => (<img key={image.url} src={transformUrl(image.url)}/>))}
+                {displayImages !== false && <div className='images'>
+                    {postResponse?.images?.map(image => {
+                        return (
+                            <Link to={photoLink(image.id)} key={image.url}>
+                                <img src={transformUrlForPostImage(image.url)}/>
+                            </Link>)
+                    })}
                 </div>
-                <div className='preview-images'>
+                }
+
+                {displayImages !== false && <div className='preview-images'>
                     {
-                        postResponse.images.length === 0 && previewImageResults && previewImageResults.map((imgFile, index) => (
+                        postResponse?.images?.length === 0 && previewImageResults && previewImageResults.map((imgFile, index) => (
                             <img key={index} src={imgFile}/>))
                     }
                 </div>
+                }
+
             </div>
             <div className={styles.interact}>
                 <span onClick={() => likePost(postResponse.id, postResponse.likeStatus === 'like')}
@@ -153,7 +164,7 @@ const Post: React.FC<Props> = ({postResponse, createComment, loadPreviousComment
                 </span>
             </div>
             <div
-                className={classNames(styles.loadPreviousComments, {'hide': postResponse?.commentsCount === postResponse.comments.length})}>
+                className={classNames(styles.loadPreviousComments, {'hide': postResponse?.commentsCount === postResponse?.comments?.length})}>
                 <span onClick={loadMoreComments}>
                     <i className={styles.showMoreComments + ' fas fa-angle-up'}/>
                     Load more comments

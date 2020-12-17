@@ -42,7 +42,7 @@ export const readImgFileContent = (imgFile: ImageFile): Promise<ImageFile> => (n
 
 
 const getWindowDimensions = () => {
-    const { innerWidth: width, innerHeight: height } = window;
+    const {innerWidth: width, innerHeight: height} = window;
     return {
         width,
         height
@@ -50,7 +50,7 @@ const getWindowDimensions = () => {
 };
 
 
-export const useWindowDimensions = () =>{
+export const useWindowDimensions = () => {
     const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
 
     useEffect(() => {
@@ -66,9 +66,12 @@ export const useWindowDimensions = () =>{
 }
 
 export const convertToHashTable = <T>(array: Array<T>, idKey: string = 'id'): HashTable<T> => {
+    if (array.length === 0) return {}
     return array.map((biz: any) => {
         return {[biz[idKey]]: biz}
     }).reduce((pv: HashTable<T>, nv: HashTable<T>) => {
         return {...pv, ...nv}
     });
 };
+
+export const uuidv4Regex = /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;

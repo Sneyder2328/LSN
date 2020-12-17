@@ -16,12 +16,10 @@ export const ConversationsList = () => {
         dispatch(fetchConversations())
     }, [dispatch])
 
-    return (<Dropdown title={'Conversations'} className={styles.list}
+    return (<Dropdown className={styles.list} title={'Conversations'}
                       trigger={<i className={classNames(stylesNav.icon, "fas fa-inbox")}/>}>
-        {
-            Object.values(conversations).map((conversation) => {
-                return <Conversation key={conversation.conversationId} conversationId={conversation.conversationId}/>
-            })
-        }
+        {Object.values(conversations).map((conversation) => {
+            return <Conversation key={conversation.conversationId} conversationId={conversation.conversationId}/>
+        })}
     </Dropdown>)
 }

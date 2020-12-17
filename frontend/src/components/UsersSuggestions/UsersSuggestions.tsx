@@ -10,14 +10,15 @@ export const UsersSuggestions = () => {
     const {suggestions} = useSelector((state: AppState) => state.entities.users)
     useEffect(() => {
         dispatch(fetchUsersSuggestions())
-    }, [fetchUsersSuggestions, dispatch])
+    }, [dispatch])
 
     if (suggestions.length === 0) return null
 
     return (<div className={styles.suggestions}>
         <h3 className={styles.title}>People you may know</h3>
         <div className={styles.list}>
-            {suggestions.map((suggestion) => (<UserSuggested key={suggestion.userId} suggestion={suggestion}/>))}
+            {suggestions.slice(0, 5).map((suggestion) => (
+                <UserSuggested key={suggestion.userId} suggestion={suggestion}/>))}
         </div>
     </div>)
 }

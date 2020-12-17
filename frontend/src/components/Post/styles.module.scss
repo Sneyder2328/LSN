@@ -40,6 +40,12 @@
       display: inline;
     }
 
+    .linkPost {
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
     .timePublished {
       font-size: 0.75rem;
       color: #9992a0;

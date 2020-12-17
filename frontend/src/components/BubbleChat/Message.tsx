@@ -1,9 +1,6 @@
 import React from 'react';
 import {useSelector} from "react-redux";
 import {AppState} from "../../modules/rootReducer";
-import {ProfilePhoto} from "../ProfilePhoto/ProfilePhoto";
-import styles from './styles.module.scss'
-import classNames from "classnames";
 import {MessageReceived} from "./MessageReceived";
 import {MessageSent} from "./MessageSent";
 
@@ -19,6 +16,4 @@ export const Message: React.FC<{ messageId: string }> = ({messageId}) => {
 
     if (isReceived) return <MessageReceived message={message} interlocutor={interlocutor}/>
     return <MessageSent message={message} interlocutor={interlocutor}/>
-    // return (<div className={classNames(styles.message, {[styles.received]: isReceived})}>
-    // </div>)
 }

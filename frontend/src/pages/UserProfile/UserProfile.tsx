@@ -12,6 +12,13 @@ import {LegalInfo} from "../../components/Legalnfo/LegalInfo";
 import {UsersSuggestions} from "../../components/UsersSuggestions/UsersSuggestions";
 import {Trends} from "../../components/Trends/Trends";
 import {Friends} from "./Friends/Friends";
+import {uuidv4Regex} from "../../utils/utils";
+import {Photos} from "./Photos/Photos";
+import {NotificationSystem} from "../../components/NotificationSystem/NotificationSystem";
+import {ThreeSectionsPage} from "../layouts/3Sections/3SectionsPage";
+import {DashBoardProfile} from "../../components/DashBoardProfile/DashBoardProfile";
+import {CreatePost} from "../../components/CreatePost/CreatePost";
+import {NewsFeed} from "../../components/NewsFeed/NewsFeed";
 
 // const aspectRatio = 2.7;
 
@@ -19,46 +26,69 @@ type Props = {
     match: any;
 };
 
-
 export const UserProfilePage: React.FC<Props> = ({match}) => {
     const {params} = match;
-    const {username} = params;
+    const {userIdentifier} = params;
     const dispatch = useDispatch()
 
     const users = useSelector((state: AppState) => state.entities.users.entities)
     const usersMetadata = useSelector((state: AppState) => state.entities.users.metas)
 
     useEffect(() => {
-        dispatch(fetchProfile(username, true))
-    }, [dispatch, username]);
+        dispatch(fetchProfile(userIdentifier, true))
+    }, [dispatch, userIdentifier]);
 
-    const userId = Object.keys(users).find((userId) => users[userId].username === username)
+    const isId = uuidv4Regex.test(userIdentifier)
+
+    const userId = isId ? userIdentifier : Object.keys(users).find((userId) => users[userId].username === userIdentifier)
     const userProfile: UserObject | undefined = users?.[userId || '']
     const userMetadata: UserMetadata | undefined = usersMetadata?.[userId || '']
     const userPosts: string[] | undefined = userMetadata?.postsIds || []
 
-    return (
-        <div>
-            <NavBar/>
-            <main className='page-outer'>
-                <div className={styles.pageContainer + ' pageContainer'}>
-                    <div className={styles.leftSection + ' leftSection'}>
-                        <Friends userId={userId}/>
-                    </div>
-                    <div className={styles.mainSection + ' mainSection'}>
-                        <ProfileInfo userProfile={userProfile}/>
-                        <div>
-                            {userPosts?.map((postId: string) => <Post postId={postId} key={postId}/>)}
-                        </div>
-                    </div>
-                    <div className={styles.rightSection + ' rightSection'}>
-                        <UsersSuggestions/>
-                        <Trends/>
-                        <LegalInfo/>
-                    </div>
-                </div>
-            </main>
-            <BottomMsgsBar/>
-        </div>
-    );
+    return (<ThreeSectionsPage LeftComponents={
+        <>
+            <Photos userId={userId}/>
+            <Friends userId={userId}/>
+        </>
+    } MainComponents={
+        <>
+            <ProfileInfo userProfile={userProfile}/>
+            <div>
+                {userPosts?.map((postId: string) => <Post postId={postId} key={postId}/>)}
+            </div>
+        </>
+    } RightComponents={
+        <>
+            <UsersSuggestions/>
+            <Trends/>
+            <LegalInfo/>
+        </>
+    }/>)
+
+    // return (
+    //     <div>
+    //         <NavBar/>
+    //         <main className='page-outer'>
+    //             <div className={styles.pageContainer + ' pageContainer'}>
+    //                 <div className={styles.leftSection + ' leftSection'}>
+    //                    <Photos userId={userId}/>
+    //                         <Friends userId={userId}/>
+    //                 </div>
+    //                 <div className={styles.mainSection + ' mainSection'}>
+    //                     <ProfileInfo userProfile={userProfile}/>
+    //                     <div>
+    //                         {userPosts?.map((postId: string) => <Post postId={postId} key={postId}/>)}
+    //                     </div>
+    //                 </div>
+    //                 <div className={styles.rightSection + ' rightSection'}>
+    //                     <UsersSuggestions/>
+    //                     <Trends/>
+    //                     <LegalInfo/>
+    //                 </div>
+    //             </div>
+    //         </main>
+    //         <BottomMsgsBar/>
+    //         <NotificationSystem/>
+    //     </div>
+    // );
 };

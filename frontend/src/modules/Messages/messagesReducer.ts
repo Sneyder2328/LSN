@@ -1,8 +1,9 @@
-import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {HashTable} from "../../utils/utils";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { HashTable } from "../../utils/utils";
 import storage from "redux-persist/lib/storage";
-import {persistReducer} from "redux-persist";
-import {authActions} from "../Auth/authReducer";
+import { persistReducer } from "redux-persist";
+import { authActions } from "../Auth/authReducer";
+import { message } from "../../api/schema";
 
 export interface MessageObject {
     id: string;
@@ -25,7 +26,12 @@ export type ConversationObject = {
 
 export interface MessagesState {
     entities: HashTable<MessageObject>; // messages
-    users: HashTable<Array<{ messageId: string, createdAt: any }>>; // hashtable with a list of messages ids for each user
+    users: HashTable<{
+        messagesList: Array<{ messageId: string, createdAt: any }>;
+        offset?: string;
+        isLoading: boolean;
+        allMessagesLoaded: boolean;
+    }>;// hashtable with a list of messages ids for each user
     conversations: {
         isLoading: boolean;
         entities: HashTable<ConversationObject>;
@@ -56,7 +62,7 @@ export const messagesSlice = createSlice({
                 } : it)
                 console.log('openBubbleChat updates=', state.activeChats);
             } else {
-                state.activeChats = [{userId: action.payload.userId, isOpen: true}, ...state.activeChats]
+                state.activeChats = [{ userId: action.payload.userId, isOpen: true }, ...state.activeChats]
             }
         },
         hideBubbleChat: (state, action: PayloadAction<{ userId: string }>) => {
@@ -72,17 +78,19 @@ export const messagesSlice = createSlice({
             console.log('sendMessage action=', action);
         },
         newMessageSuccess: (state, action: PayloadAction<{ message: MessageObject; interlocutorId: string }>) => {
+            const newMsgCreated = {
+                messageId: action.payload.message.id,
+                createdAt: action.payload.message.createdAt
+            };
             state.entities[action.payload.message.id] = action.payload.message
             if (state.users[action.payload.interlocutorId]) {
-                state.users[action.payload.interlocutorId] = [
-                    ...state.users[action.payload.interlocutorId],
-                    {messageId: action.payload.message.id, createdAt: action.payload.message.createdAt}
-                ]
+                state.users[action.payload.interlocutorId].messagesList.push(newMsgCreated)
             } else {
-                state.users[action.payload.interlocutorId] = [{
-                    messageId: action.payload.message.id,
-                    createdAt: action.payload.message.createdAt
-                }]
+                state.users[action.payload.interlocutorId] = {
+                    messagesList: [newMsgCreated],
+                    allMessagesLoaded: false,
+                    isLoading: false
+                }
             }
         },
         fetchConversationsRequest: (state) => {
@@ -99,15 +107,38 @@ export const messagesSlice = createSlice({
         fetchConversationsError: (state) => {
             state.conversations.isLoading = false
         },
-        fetchMessagesSuccess: (state, action: PayloadAction<{ messages: HashTable<MessageObject>; otherUserId: string }>) => {
+        fetchMessagesRequest: (state, action: PayloadAction<{ otherUserId: string }>) => {
+            if (state.users[action.payload.otherUserId]) {
+                state.users[action.payload.otherUserId].isLoading = true
+            } else {
+                state.users[action.payload.otherUserId] = {
+                    isLoading: true,
+                    allMessagesLoaded: false,
+                    messagesList: []
+                }
+            }
+        },
+        fetchMessagesSuccess: (state, action: PayloadAction<{ messages?: HashTable<MessageObject>; otherUserId: string }>) => {
+            if (!action.payload.messages) {
+                state.users[action.payload.otherUserId].allMessagesLoaded = true
+                return
+            }
             state.entities = {
                 ...state.entities,
                 ...action.payload.messages
             }
-            state.users[action.payload.otherUserId] = Object.values(action.payload.messages).map(({id, createdAt}) => ({
+            const listMessages = Object.values(action.payload.messages).map(({ id, createdAt }) => ({
                 messageId: id,
                 createdAt
-            }))
+            }));
+            state.users[action.payload.otherUserId].isLoading = false
+            const msgs = [...state.users[action.payload.otherUserId].messagesList]
+            listMessages.forEach(({ messageId, createdAt }) => {
+                if (!msgs.find((msg) => msg.messageId === messageId)) msgs.push({ messageId, createdAt })
+            })
+            console.log('listMEssages=', listMessages);
+            state.users[action.payload.otherUserId].messagesList = msgs
+            state.users[action.payload.otherUserId].offset = msgs[msgs.length - 1].createdAt
         }
     },
     extraReducers: {

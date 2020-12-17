@@ -7,6 +7,10 @@ import {AuthApi} from "../modules/Auth/authApi";
 import {AppState} from "../modules/rootReducer";
 const {logOutSuccess, refreshAccessTokenSuccess} = authActions
 
+export const userLink = (userId: string) => `/users/${userId}`;
+export const postLink = (postId: string) => `/posts/${postId}`;
+export const photoLink = (photoId: string) => `/photos/${photoId}`;
+
 export const transport = axios.create({
     baseURL: process.env.REACT_APP_BASE_URL,
     withCredentials: true

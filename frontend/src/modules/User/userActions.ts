@@ -20,7 +20,8 @@ const {
     respondToFriendRequestRequest,
     respondToFriendRequestSuccess,
     removeFriendshipSuccess,
-    fetchFriendsSuccess
+    fetchFriendsSuccess,
+    fetchPhotosSuccess
 } = usersActions
 const {setComments} = commentsActions
 const {setPosts} = postActions
@@ -113,6 +114,17 @@ export const fetchFriends = (userId: string): AppThunk => async (dispatch) => {
 
     } catch (err) {
         console.log('fetchFriends err', err);
+    }
+}
+
+export const fetchPhotos = (userId: string): AppThunk => async (dispatch) => {
+    try {
+        const response = await UserApi.fetchPhotos(userId)
+        if (response.data) {
+            dispatch(fetchPhotosSuccess({userId, photos: response.data}))
+        }
+    } catch (err) {
+        console.log('fetchPhotos err', err);
     }
 }
 

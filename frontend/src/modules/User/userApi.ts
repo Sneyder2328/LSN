@@ -1,6 +1,6 @@
 import {transport} from "../../api";
 import {AxiosResponse} from "axios";
-import {UserObject, UserSuggestion} from "./userReducer";
+import {PhotoObject, UserObject, UserSuggestion} from "./userReducer";
 import {PostObject} from "../Posts/postReducer";
 
 export interface ProfileResponse extends UserObject {
@@ -39,6 +39,10 @@ export const UserApi = {
 
     async fetchFriends(userId: string): Promise<AxiosResponse<Array<UserObject>>> {
         return transport.get(`/users/${userId}/friends`)
+    },
+
+    async fetchPhotos(userId: string): Promise<AxiosResponse<Array<PhotoObject>>> {
+        return transport.get(`/users/${userId}/photos`)
     },
 
     async fetchUsersSuggestions(userId: string): Promise<AxiosResponse<Array<SuggestionsResponse>>> {

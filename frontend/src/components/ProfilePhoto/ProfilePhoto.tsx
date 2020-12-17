@@ -24,6 +24,6 @@ export const ProfilePhoto: React.FC<ProfilePhotoProps> = (
 ) => {
     return (<img
         className={classNames(styles.imageProfile, styles[size], className, {[styles.border]: border})}
-        src={preview?.result || centerCrop(url) || 'ic_person.png'}
+        src={preview?.result || centerCrop(url) || '../ic_person.png'}
         alt={'profile photo'}/>)
 }

@@ -10,6 +10,8 @@ import {ModalContainer} from "../components/Modals/ModalContainer";
 import {AuthForm} from "./Auth";
 import {NewsFeedPage} from "./NewsFeed/NewsFeed";
 import {UserProfilePage} from "./UserProfile/UserProfile";
+import {PostPage} from "./PostPage/PostPage";
+import {PhotoDetailPage} from "./PhotoDetailPage/PhotoDetailPage";
 
 export const App = () => {
     return (
@@ -19,7 +21,9 @@ export const App = () => {
                     <Switch>
                         <Route exact path='/login' component={AuthForm}/>
                         <AuthRoute exact path='/' component={NewsFeedPage}/>
-                        <AuthRoute path='/:username' component={UserProfilePage}/>
+                        <AuthRoute path='/posts/:postId' component={PostPage}/>
+                        <AuthRoute path='/photos/:photoId' component={PhotoDetailPage}/>
+                        <AuthRoute path='/users/:userIdentifier' component={UserProfilePage}/>
                         <Route path='*' component={PageNotFound}/>
                     </Switch>
                 </BrowserRouter>

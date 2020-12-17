@@ -1,0 +1,72 @@
+@import "src/utils/variables";
+
+main {
+  padding-top: $navbarHeight;
+  margin: 0;
+
+  .pageContainer {
+    width: 90%;
+    max-width: $max-width-container;
+    margin: 0 auto;
+    display: flex;
+
+    .leftSection {
+      width: $secondary-section_width;
+      margin: 12px 0;
+      position: sticky;
+      top: $navbarHeight+2px;
+      height: 92vh;
+    }
+
+    .mainSection {
+      width: $main-width-page;
+      margin: 12px;
+      background-color: transparent;
+    }
+
+    .rightSection {
+      width: $secondary-section_width;
+      margin: 12px 0;
+      position: sticky;
+      top: $navbarHeight+2px;
+      height: 92vh;
+    }
+
+    .thumbY {
+      width: 8px !important;
+      background-color: #aaa9a9 !important;
+      margin: 0 auto;
+
+      &:hover {
+        background-color: #8e8e8e !important;
+      }
+    }
+
+    .trackY {
+      background: none !important;
+    }
+
+  }
+
+}
+
+//<!-- The core Firebase JS SDK is always required and must be listed first -->
+//<script src="https://www.gstatic.com/firebasejs/8.1.2/firebase-app.js"></script>
+//
+//<!-- TODO: Add SDKs for Firebase products that you want to use
+//     https://firebase.google.com/docs/web/setup#available-libraries -->
+//
+//<script>
+//   // Your web app's Firebase configuration
+// var firebaseConfig = {
+//  apiKey: "AIzaSyBtY5W93UryYsbjBt3pPniE9C-JtYLUaWs",
+//  authDomain: "rememberconcepts-e0656.firebaseapp.com",
+//  databaseURL: "https://rememberconcepts-e0656.firebaseio.com",
+//  projectId: "rememberconcepts-e0656",
+//  storageBucket: "rememberconcepts-e0656.appspot.com",
+//  messagingSenderId: "434477538698",
+//  appId: "1:434477538698:web:7772a9a91adbdee5be7c73"
+//};
+//// Initialize Firebase
+//firebase.initializeApp(firebaseConfig);
+//</script>

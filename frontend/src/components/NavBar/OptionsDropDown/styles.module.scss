@@ -1,0 +1,12 @@
+@import "src/utils/variables";
+
+.option {
+  width: 100%;
+}
+
+.list {
+  width: 250px;
+  height: 100px;
+  overflow-y: auto;
+  margin-top: 4px;
+}

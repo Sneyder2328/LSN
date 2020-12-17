@@ -56,13 +56,17 @@
       text-decoration: none;
       color: #000;
 
+      &:hover {
+        background-color: rgba(0, 0, 120, 0.065);
+      }
+
       img {
         width: $thumbnailImgDimen+-8px;
         height: $thumbnailImgDimen+-8px;
       }
 
-      div {
-        margin-left: 4px;
+      .details {
+        margin-left: 8px;
         display: flex;
         height: auto;
         flex-wrap: wrap;
@@ -72,6 +76,10 @@
           margin: 1.2px 0;
           width: 100%;
           font-size: 0.85rem;
+        }
+
+        .fullname {
+
         }
 
         .username {

@@ -2,6 +2,8 @@
   <dictionary name="sneyd">
     <words>
       <w>fullname</w>
+      <w>notf</w>
+      <w>notifs</w>
       <w>persistor</w>
     </words>
   </dictionary>

@@ -5,6 +5,7 @@ import {ProfilePhoto} from "../ProfilePhoto/ProfilePhoto";
 import styles from './styles.module.scss'
 import React from "react";
 import classNames from "classnames";
+import {userLink} from "../../api";
 
 type Props = {
     className?: string;
@@ -17,7 +18,7 @@ export const CurrentProfileLink: React.FC<Props> = ({className}) => {
     if (!currentUser) return null
 
     return (
-        <Link to={`/${currentUser.username}`} className={classNames(className, styles.currentProfileLink)}>
+        <Link to={userLink(currentUser.username)} className={classNames(className, styles.currentProfileLink)}>
             <ProfilePhoto url={currentUser.profilePhotoUrl} className={styles.profilePhoto} size={'small3'}
                           border={false}/>
             <span style={{

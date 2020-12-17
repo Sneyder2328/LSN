@@ -87,20 +87,19 @@
       }
 
       .icon {
-        margin: 0 12px;
+        margin: 0 10px;
         color: #fff;
-        font-size: 1.2rem;
-        background-color: rgba(96, 174, 252, 0.58);
+        font-size: 1.24rem;
         border-radius: 100%;
-        width: 34px;
-        height: 34px;
+        width: 36px;
+        height: 36px;
         display: flex;
         justify-content: center;
         align-items: center;
 
         &:hover {
-          cursor: pointer;;
-          background-color: #58adff;
+          cursor: pointer;
+          background-color: rgba(238, 250, 255, 0.27);
         }
       }
     }

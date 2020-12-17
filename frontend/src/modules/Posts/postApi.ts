@@ -1,7 +1,9 @@
-import {transport} from "../../api";
+import { transport } from "../../api";
 // @ts-ignore
 import imageCompression from 'browser-image-compression';
-import {PostRequest} from "../../components/Post/Post";
+import { PostRequest } from "../../components/Post/Post";
+import { AxiosResponse } from "axios";
+import { PostObject } from "./postReducer";
 
 const options = {
     maxSizeMB: 2,
@@ -9,6 +11,7 @@ const options = {
     useWebWorker: true
 };
 
+export const LIMIT_POSTS_IN_NEWSFEED = 10;
 export const PostApi = {
     async createPost(content: PostRequest) {
         return await transport.post('/posts/', content);
@@ -29,8 +32,14 @@ export const PostApi = {
             }
         });
     },
-    async getPosts() {
-        return await transport.get('/posts/');
+    async getPosts(section: string, offset: number) {
+        return await transport.get('/posts/', {params: {section, offset, limit: LIMIT_POSTS_IN_NEWSFEED}});
+    },
+    async getPost(postId: string): Promise<AxiosResponse> {
+        return await transport.get(`/posts/${postId}`);
+    },
+    async getPostByPhotoId(photoId: string): Promise<AxiosResponse> {
+        return await transport.get(`/photos/${photoId}`);
     },
     async likePost(postId: string) {
         return await transport.post(`/posts/${postId}/likes`)
@@ -44,4 +53,8 @@ export const PostApi = {
     async undislikePost(postId: string) {
         return await transport.delete(`/posts/${postId}/dislikes`)
     }
+};
+
+export const transformUrlForPostImage = (url: string): string => {
+    return url.replace("/image/upload/", "/image/upload/a_0/");
 };

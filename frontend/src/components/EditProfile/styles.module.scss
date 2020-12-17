@@ -1,6 +1,6 @@
 @import "src/utils/variables";
 
-.cameraIc {
+.cameraInput {
   width: 0.1px;
   height: 0.1px;
   opacity: 0;
@@ -9,22 +9,27 @@
   z-index: -1;
 }
 
-.cameraIc + label {
-  color: #fff;
+.coverInput + label {
+  color: rgb(211, 210, 210);
   font-size: 1.5rem;
   cursor: pointer;
   margin: auto auto auto -52%;
+
+  &:hover{
+    color: #00b5ff;
+  }
 }
 
-//#profileFile + label {
-//  color: #fff;
-//  font-size: 1.5rem;
-//  cursor: pointer;
-//  margin: auto auto auto -50%;
-//}
 
-.cameraIc + label:hover {
-  color: #00b5ff;
+.profileInput + label {
+  color: rgb(211, 210, 210);
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin: auto auto auto -87px;
+
+  &:hover{
+    color: #00b5ff;
+  }
 }
 
 .coverPhotoContainer {

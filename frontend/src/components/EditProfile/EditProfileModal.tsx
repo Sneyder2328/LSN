@@ -13,6 +13,7 @@ import {updateProfile} from "../../modules/Auth/authActions";
 import {hideModal} from "../../modules/Modal/modalsReducer";
 import {CoverPhoto} from "../CoverPhoto/CoverPhoto";
 import {ProfilePhoto} from "../ProfilePhoto/ProfilePhoto";
+import classNames from "classnames";
 
 type EditProfileParams = {
     username: string;
@@ -84,7 +85,7 @@ export const EditProfileModal = () => {
                         preview={coverPhotoFile}
                         url={userProfile.coverPhotoUrl}/>
                     <input id='coverFile'
-                           className={styles.cameraIc}
+                           className={classNames(styles.cameraInput, styles.coverInput)}
                            type='file'
                            onChange={onHandleCoverImg}
                            accept=".png, .jpg, .jpeg"/>
@@ -98,7 +99,7 @@ export const EditProfileModal = () => {
                             preview={profilePhotoFile}
                             url={userProfile.profilePhotoUrl}/>
                         <input id='profileFile'
-                               className={styles.cameraIc}
+                               className={classNames(styles.cameraInput, styles.profileInput)}
                                type='file'
                                onChange={onHandleProfileImg}
                                accept=".png, .jpg, .jpeg"/>

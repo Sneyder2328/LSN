@@ -1,32 +1,37 @@
-import {createSlice} from "@reduxjs/toolkit";
-import {authActions} from "../Auth/authReducer";
-import {postActions} from "../Posts/postReducer";
+import { createSlice } from "@reduxjs/toolkit";
+import { authActions } from "../Auth/authReducer";
+import { postActions } from "../Posts/postReducer";
 
 const {
     loadPostsRequest, loadPostsSuccess, loadPostsError,
     createPostRequest, createPostSuccess, createPostError
 } = postActions
-const {logOutSuccess} = authActions
+const { logOutSuccess } = authActions
 
 type NewsFeedList = {
-    postIds: Array<string>
-    isLoadingPosts: boolean
+    postIds: Array<string>;
+    isLoadingPosts: boolean;
+    offset: number;
 };
 
 export interface NewsFeedState {
     isCreatingPost: boolean;
-    top: NewsFeedList,
-    latest: NewsFeedList
+    currentSection: 'top' | 'latest';
+    top: NewsFeedList;
+    latest: NewsFeedList;
 }
 
 const initialStateNewsFeed: NewsFeedState = {
     isCreatingPost: false,
+    currentSection: 'top',
     latest: {
         isLoadingPosts: false,
+        offset: 0,
         postIds: []
     },
     top: {
         isLoadingPosts: false,
+        offset: 0,
         postIds: []
     }
 };
@@ -37,9 +42,14 @@ const newsFeedSlice = createSlice({
     reducers: {},
     extraReducers: builder => {
         builder.addCase(loadPostsSuccess, (state, action) => {
+            const postIds = [...state[action.payload.section].postIds]
+            action.payload.allIds.forEach((postId) => {
+                if (!postIds.includes(postId)) postIds.push(postId)
+            })
             state[action.payload.section] = {
-                postIds: action.payload.allIds,
-                isLoadingPosts: false
+                postIds,
+                isLoadingPosts: false,
+                offset: action.payload.offset
             }
         }).addCase(loadPostsRequest, (state, action) => {
             state[action.payload.section] = {

@@ -3,7 +3,7 @@
 .friends {
   background-color: #fff;
   border-radius: $radius;
-  padding: 10px 12px;
+  padding: 12px;
 
   .title {
     font-weight: 600;
@@ -25,8 +25,9 @@
       }
 
       .fullname {
-        font-size: 0.8rem;
-        font-weight: 500;
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: #2b2b2b;
       }
     }
   }

@@ -1,4 +1,4 @@
-import {HashTable} from "../../utils/utils";
+import {convertToHashTable, HashTable} from "../../utils/utils";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {AppState} from "../rootReducer";
 import {createSelector} from "reselect/src";
@@ -12,6 +12,7 @@ const {logOutSuccess} = authActions
 
 export type PostImage = {
     url: string;
+    id: string;
 };
 
 export interface PostObject extends Post {
@@ -37,11 +38,15 @@ export interface PostMetadata {
 export type PostState = {
     entities: HashTable<PostObject>;
     metas: HashTable<PostMetadata>;
+    postsIdsByPhotoId: HashTable<{
+        postId: string;
+    }>;
 };
 
 const initialState: PostState = {
     entities: {},
-    metas: {}
+    metas: {},
+    postsIdsByPhotoId: {}
 };
 
 export const postsSlice = createSlice({
@@ -54,12 +59,27 @@ export const postsSlice = createSlice({
                 ...action.payload
             }
         },
+        loadPostRequest: (state) => {
+
+        },
+        loadPostSuccess: (state, action: PayloadAction<{ post: HashTable<PostObject> }>) => {
+            const postObject = Object.values(action.payload.post)[0];
+            state.postsIdsByPhotoId = convertToHashTable(postObject.images.map(({id}) => ({postId: postObject.id, id})))
+            state.entities = {
+                ...state.entities,
+                ...action.payload.post
+            }
+        },
+        loadPostError: (state) => {
+
+        },
         loadPostsRequest: (state, action: PayloadAction<{ section: 'top' | 'latest'; }>) => {
 
         },
         loadPostsSuccess: (state, action: PayloadAction<{
             posts: HashTable<PostObject>;
             section: 'top' | 'latest';
+            offset: number;
             allIds: Array<string>;
         }>) => {
             state.entities = {
@@ -123,7 +143,7 @@ export const postsSlice = createSlice({
                 userId: action.payload.userId
             }
         },
-        createPostSuccess: (state, action: PayloadAction<{ postCreated: PostObject }>) => {
+        createPostSuccess: (state, action: PayloadAction<{ postCreated: PostObject; }>) => {
             state.entities[action.payload.postCreated.id] = action.payload.postCreated
             state.metas[action.payload.postCreated.id] = {
                 ...state.metas[action.payload.postCreated.id],
@@ -183,15 +203,15 @@ export const postsReducer = postsSlice.reducer
 export const postActions = postsSlice.actions
 
 const selectPostObject = (state: AppState, postId: string) => {
-    return state.entities.posts.entities[postId];
+    return state.entities.posts?.entities?.[postId]
 };
 
 const selectCommentAuthorObject = (state: AppState, postId: string) => {
-    return state.entities.users.entities[selectPostObject(state, postId).userId]
+    return state.entities.users?.entities?.[selectPostObject(state, postId)?.userId]
 };
 
 const selectPostMetadata = (state: AppState, postId: string) => {
-    return state.entities.posts.metas[postId];
+    return state.entities.posts?.metas?.[postId];
 };
 
 export const selectPost = () => createSelector([selectPostObject, selectCommentAuthorObject, selectPostMetadata],

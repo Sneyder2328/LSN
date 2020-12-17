@@ -3,6 +3,20 @@
 .dropdown {
   position: relative;
 
+  .thumbY {
+    width: 8px !important;
+    background-color: #aaa9a9 !important;
+    margin: 0 auto;
+
+    &:hover {
+      background-color: #8e8e8e !important;
+    }
+  }
+
+  .trackY {
+    background: none !important;
+  }
+
   .dropdownMenu {
     background-color: #fff;
     position: absolute;
@@ -13,20 +27,20 @@
     box-shadow: 0 50px 100px rgba(50, 50, 93, .1), 0 15px 35px rgba(50, 50, 93, .15), 0 5px 15px rgba(0, 0, 0, .1);
     border-radius: $radius;
     display: none;
-    padding: 8px;
+    //padding: 8px;
 
     &.show {
       display: grid;
     }
 
     .title {
-      font-size: 1.35rem;
+      font-size: 1.2rem;
       color: #000;
       font-weight: 600;
-      padding: 8px;
+      padding: 0 8px 6px 8px;
     }
 
-    a {
+    .icon {
       font-size: 1rem;
       display: flex;
       align-items: center;

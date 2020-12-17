@@ -5,6 +5,12 @@
   align-items: center;
   text-decoration: none;
   padding: 4px;
+  letter-spacing: 0.4px;
+
+  .profilePhoto{
+    width: 36px;
+    height: 36px;
+  }
 
   &:hover {
     background-color: rgba(238, 250, 255, 0.27);

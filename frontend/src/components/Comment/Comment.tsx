@@ -9,6 +9,7 @@ import {selectComment} from "../../modules/Comment/commentReducer";
 import {AppState} from "../../modules/rootReducer";
 import {dislikeComment, likeComment} from "../../modules/Comment/commentActions";
 import {Link} from "react-router-dom";
+import {userLink} from "../../api";
 
 export interface CommentResponse {
     id: string;
@@ -38,7 +39,7 @@ const Comment: React.FC<Props> = ({comment, likeComment, dislikeComment}) => {
             <ProfilePhoto url={comment.authorProfile.profilePhotoUrl} className='avatar' size={'small2'}/>
             <div className='comment-box'>
                 <div>
-                    <Link to={`/${comment.authorProfile.username}`} className={'fullname'}>
+                    <Link to={userLink(comment.authorProfile.username)} className={'fullname'}>
                         <p>{comment.authorProfile.fullname}</p>
                     </Link>
                     <p className='username'>@{comment.authorProfile.username}</p>

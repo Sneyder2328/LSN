@@ -1,16 +1,11 @@
-import React, {useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {AppState} from "../../modules/rootReducer";
-import {getUserBasicInfo} from "../../modules/User/userActions";
-import {NavBar} from "../../components/NavBar/NavBar";
+import React from "react";
 import {DashBoardProfile} from "../../components/DashBoardProfile/DashBoardProfile";
 import {CreatePost} from "../../components/CreatePost/CreatePost";
 import {NewsFeed} from "../../components/NewsFeed/NewsFeed";
-import styles from "./styles.module.scss"
-import {BottomMsgsBar} from "../../components/BottomMessagingBar/BottomMsgsBar";
 import {LegalInfo} from "../../components/Legalnfo/LegalInfo";
 import {UsersSuggestions} from "../../components/UsersSuggestions/UsersSuggestions";
 import {Trends} from "../../components/Trends/Trends";
+import {ThreeSectionsPage} from "../layouts/3Sections/3SectionsPage";
 
 // import io from "socket.io-client";
 //
@@ -71,26 +66,20 @@ import {Trends} from "../../components/Trends/Trends";
 // }
 
 export const NewsFeedPage = () => {
-    return (
-        <div>
-            <NavBar/>
-            <main>
-                <div className={styles.pageContainer + ' pageContainer'}>
-                    <div className={styles.leftSection + ' leftSection'}>
-                        <DashBoardProfile/>
-                        <Trends/>
-                    </div>
-                    <div className={styles.mainSection + ' mainSection'}>
-                        <CreatePost/>
-                        <NewsFeed/>
-                    </div>
-                    <div className={styles.rightSection + ' rightSection'}>
-                        <UsersSuggestions/>
-                        <LegalInfo/>
-                    </div>
-                </div>
-            </main>
-            <BottomMsgsBar/>
-        </div>
-    );
-};
+    return (<ThreeSectionsPage LeftComponents={
+        <>
+            <DashBoardProfile/>
+            <Trends/>
+        </>
+    } MainComponents={
+        <>
+            <CreatePost/>
+            <NewsFeed/>
+        </>
+    } RightComponents={
+        <>
+            <UsersSuggestions/>
+            <LegalInfo/>
+        </>
+    }/>)
+}

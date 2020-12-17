@@ -1,0 +1,77 @@
+@import "src/utils/variables";
+
+main {
+  padding-top: $navbarHeight;
+  margin: 0;
+
+  .pageContainer {
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+    display: flex;
+
+    .leftSection {
+      width: 70%;
+      background-color: #000000;
+      height: 92vh;
+      // height: 80vh;
+      top: $navbarHeight+2px;
+      position: sticky;
+      
+
+      .image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      .arrowWrapper {
+        height: 100%;
+        background-color: rgba(43, 43, 43, 0.23);
+        position: absolute;
+        top: 0;
+        display: flex;
+        align-items: center;
+
+        &:hover {
+          cursor: pointer;
+          background-color: rgba(43, 43, 43, 0.27);
+          transition: background-color 250ms ease-in-out;
+
+          .arrow {
+            color: #000;
+            background-color: #d0cfcf;
+            transition: background-color 250ms ease-in-out;
+          }
+        }
+      }
+
+      .wrapperRight {
+        right: 0;
+      }
+
+      .arrow {
+        color: #343434;
+        background-color: #adadad;
+        width: 50px;
+        height: 50px;
+        border-radius: 25px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 12px;
+      }
+    }
+
+    .rightSection {
+      width: 30%;
+      background-color: #fff;
+
+      .post {
+        margin: 0 0 50px 0;
+        border-radius: 0;
+      }
+    }
+  }
+
+}
