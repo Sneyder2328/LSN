@@ -97,7 +97,7 @@ export const likeCommentValidationRules = [
 
 export const getCommentsValidationRules = [
     param('postId').trim().matches(config.regex.uuidV4),
-    query('offset').isDecimal().withMessage('offset must be a number'),
+    // query('offset')
     query('limit').isDecimal().withMessage('limit must be a number')
 ];
 

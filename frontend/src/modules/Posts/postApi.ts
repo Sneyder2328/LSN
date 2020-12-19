@@ -12,6 +12,8 @@ const options = {
 };
 
 export const LIMIT_POSTS_IN_NEWSFEED = 10;
+export const LIMIT_POSTS_BY_HASHTAG = 10;
+
 export const PostApi = {
     async createPost(content: PostRequest) {
         return await transport.post('/posts/', content);
@@ -32,8 +34,11 @@ export const PostApi = {
             }
         });
     },
-    async getPosts(section: string, offset: number) {
+    async getPosts(section: string, offset?: string) {
         return await transport.get('/posts/', {params: {section, offset, limit: LIMIT_POSTS_IN_NEWSFEED}});
+    },
+    async getPostsByHashtag(hashtag: string, offset?: string) {
+        return await transport.get('/posts/', {params: {hashtag, offset, limit: LIMIT_POSTS_BY_HASHTAG}});
     },
     async getPost(postId: string): Promise<AxiosResponse> {
         return await transport.get(`/posts/${postId}`);

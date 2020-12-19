@@ -8,6 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -122,6 +133,62 @@ function getComments(userId, postId, offset, limit) {
     });
 }
 exports.getComments = getComments;
+function getComments2(currentUserId, postId, limit, offset) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let comments = yield database_1.sequelize.query(`
+    SELECT C.id,
+    C.userId,
+    C.postId,
+    C.type,
+    C.text,
+    C.img,
+    C.createdAt,
+    C.likesCount,
+    C.dislikesCount,
+    Pr.userId          as 'author.userId',
+    Pr.username        as 'author.username',
+    Pr.fullname        as 'author.fullname',
+    Pr.coverPhotoUrl   as 'author.coverPhotoUrl',
+    Pr.profilePhotoUrl as 'author.profilePhotoUrl',
+    Pr.description     as 'author.description'
+FROM Comment C
+      JOIN Post P ON P.id = C.postId
+      JOIN Profile Pr ON Pr.userId = C.userId
+WHERE P.id = '${postId}'` + (offset ? ` AND C.createdAt <= '${offset}'` : ``)
+            + `ORDER BY C.createdAt DESC LIMIT ${limit};
+    `, {
+            // @ts-ignore
+            type: database_1.sequelize.QueryTypes.SELECT
+        });
+        // @ts-ignore
+        comments = yield Promise.all(comments.map(
+        // @ts-ignore
+        (_a) => __awaiter(this, void 0, void 0, function* () {
+            var { id, userId, postId, likesCount, commentsCount, createdAt, type, text, dislikesCount } = _a, author = __rest(_a, ["id", "userId", "postId", "likesCount", "commentsCount", "createdAt", "type", "text", "dislikesCount"]);
+            return {
+                id, userId, likesCount, commentsCount, createdAt, text, dislikesCount,
+                authorProfile: {
+                    userId: author['author.userId'],
+                    username: author['author.username'],
+                    fullname: author['author.fullname'],
+                    coverPhotoUrl: author['author.coverPhotoUrl'],
+                    profilePhotoUrl: author['author.profilePhotoUrl'],
+                    description: author['author.description'],
+                },
+                likeStatus: yield getLikeStatusForComment(id, currentUserId)
+            };
+        })));
+        // @ts-ignore
+        return comments.sort(utils_1.compareByDateDesc);
+    });
+}
+exports.getComments2 = getComments2;
+function getLikeStatusForComment(commentId, userId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const commentLikeStatus = yield exports.fetchCommentLikeStatus(commentId, userId);
+        return commentLikeStatus != null ? (commentLikeStatus.isLike === true ? 'like' : 'dislike') : undefined;
+    });
+}
 function getCommentPreview(commentId) {
     return __awaiter(this, void 0, void 0, function* () {
         const comment = yield Comment.findByPk(commentId);

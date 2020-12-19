@@ -8,12 +8,13 @@ export type CommentRequest = {
     img?: string;
 };
 
+const LIMIT_COMMENTS_PER_POST = 10
 export const CommentApi = {
     async createComment(comment: CommentRequest) {
         return await transport.post(`/posts/${comment.postId}/comments`, comment);
     },
-    async getComments(postId: string, offset: number, limit: number) {
-        return await transport.get(`/posts/${postId}/comments`, {params: {offset, limit}});
+    async getComments(postId: string, offset?: string) {
+        return await transport.get(`/posts/${postId}/comments`, {params: {limit: LIMIT_COMMENTS_PER_POST, offset}});
     },
     async likeComment(commentId: string) {
         return await transport.post(`/comments/${commentId}/likes`)

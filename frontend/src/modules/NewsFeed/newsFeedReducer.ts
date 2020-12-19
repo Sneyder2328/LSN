@@ -11,7 +11,6 @@ const { logOutSuccess } = authActions
 type NewsFeedList = {
     postIds: Array<string>;
     isLoadingPosts: boolean;
-    offset: number;
 };
 
 export interface NewsFeedState {
@@ -26,12 +25,10 @@ const initialStateNewsFeed: NewsFeedState = {
     currentSection: 'top',
     latest: {
         isLoadingPosts: false,
-        offset: 0,
         postIds: []
     },
     top: {
         isLoadingPosts: false,
-        offset: 0,
         postIds: []
     }
 };
@@ -48,8 +45,7 @@ const newsFeedSlice = createSlice({
             })
             state[action.payload.section] = {
                 postIds,
-                isLoadingPosts: false,
-                offset: action.payload.offset
+                isLoadingPosts: false
             }
         }).addCase(loadPostsRequest, (state, action) => {
             state[action.payload.section] = {

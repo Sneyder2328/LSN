@@ -23,10 +23,11 @@ export const createComment = (commentData: CommentRequest): AppThunk => async (d
     }
 };
 
-export const loadPreviousComments = (postId: string, offset: number, limit: number = 10): AppThunk => async (dispatch) => {
+export const loadPreviousComments = (postId: string, lastCommentId: string): AppThunk => async (dispatch, getStore) => {
     try {
+        const lastCommentCreatedAt = getStore().entities.comments.entities[lastCommentId].createdAt
         dispatch(loadCommentsRequest({postId}))
-        const response = await CommentApi.getComments(postId, offset, limit);
+        const response = await CommentApi.getComments(postId, lastCommentCreatedAt);
         const normalizedData = normalize(response.data, [comment]);
         console.log('loadPreviousComments normalizedData=', normalizedData);
         // @ts-ignore

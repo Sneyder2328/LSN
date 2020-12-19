@@ -44,7 +44,7 @@ function getProfileByUsername(username, includePosts, currentUserId) {
             user = user.toJSON();
             // console.log('getProfileByUsername posts are', user.posts, user.posts.length);
             if (user.posts && user.posts.length !== 0) {
-                user.posts = yield postService_1.processPosts(user.posts, currentUserId);
+                user.posts = yield postService_1.addLikeStatusToPosts(user.posts, currentUserId);
             }
             user.relationship = yield relationshipService_1.getRelationshipType(currentUserId, user.userId);
         }
@@ -66,7 +66,7 @@ function getProfileByUserId(userId, includePosts, currentUserId, includeRelation
             // console.log('getProfileByUserId posts are', user.posts);
             user = user.toJSON();
             if (user.posts && user.posts.length !== 0) {
-                user.posts = yield postService_1.processPosts(user.posts, currentUserId);
+                user.posts = yield postService_1.addLikeStatusToPosts(user.posts, currentUserId);
             }
             if (includeRelationship)
                 user.relationship = yield relationshipService_1.getRelationshipType(currentUserId, userId);

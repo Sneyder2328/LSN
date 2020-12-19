@@ -7,7 +7,7 @@ import {
     likeCommentValidationRules, validate
 } from "../../middlewares/validate";
 import authenticate from "../../middlewares/authenticate";
-import {createComment, dislikeComment, getComments, likeComment, removeLikeOrDislikeComment} from "./commentService";
+import {createComment, dislikeComment, getComments2, likeComment, removeLikeOrDislikeComment} from "./commentService";
 import {Router} from "express";
 
 const router = Router();
@@ -57,7 +57,7 @@ router.delete(endpoints.comment.DISLIKE_COMMENT(':commentId'), authenticate, lik
  * Get all comments by a given post
  */
 router.get(endpoints.comment.GET_COMMENTS(':postId'), authenticate, getCommentsValidationRules, validate, handleErrorAsync(async (req, res) => {
-    const response = await getComments(req.userId, req.params.postId, req.query.offset, req.query.limit);
+    const response = await getComments2(req.userId, req.params.postId, req.query.limit, req.query.offset);
     res.status(httpCodes.OK).send(response);
 }));
 

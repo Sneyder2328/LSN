@@ -1,5 +1,13 @@
 import uuid from "uuid";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
+
+export const uniqueValuesArray = (arr1: Array<string>, arr2: Array<string>): Array<string> => {
+    const initialArray = [...arr1];
+    arr2.forEach((item) => {
+        if (!initialArray.includes(item)) initialArray.push(item)
+    })
+    return initialArray
+}
 
 type HasDate = {
     createdAt: string;
@@ -42,7 +50,7 @@ export const readImgFileContent = (imgFile: ImageFile): Promise<ImageFile> => (n
 
 
 const getWindowDimensions = () => {
-    const {innerWidth: width, innerHeight: height} = window;
+    const { innerWidth: width, innerHeight: height } = window;
     return {
         width,
         height
@@ -68,9 +76,9 @@ export const useWindowDimensions = () => {
 export const convertToHashTable = <T>(array: Array<T>, idKey: string = 'id'): HashTable<T> => {
     if (array.length === 0) return {}
     return array.map((biz: any) => {
-        return {[biz[idKey]]: biz}
+        return { [biz[idKey]]: biz }
     }).reduce((pv: HashTable<T>, nv: HashTable<T>) => {
-        return {...pv, ...nv}
+        return { ...pv, ...nv }
     });
 };
 

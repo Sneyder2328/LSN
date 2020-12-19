@@ -2,7 +2,7 @@ import {models, sequelize} from "../../database/database";
 import {UserNotFoundError} from "../../utils/errors/UserNotFoundError";
 import {Op} from "sequelize";
 import {LIMIT_COMMENTS_PER_POST} from "../../utils/constants";
-import {processPosts} from "../post/postService";
+import {addLikeStatusToPosts} from "../post/postService";
 import {getRelationshipType} from "./relationshipService";
 
 const {Post, Profile, PostImage, Comment} = models;
@@ -36,7 +36,7 @@ export async function getProfileByUsername(username: string, includePosts: boole
         user = user.toJSON()
         // console.log('getProfileByUsername posts are', user.posts, user.posts.length);
         if (user.posts && user.posts.length !== 0) {
-            user.posts = await processPosts(user.posts, currentUserId)
+            user.posts = await addLikeStatusToPosts(user.posts, currentUserId)
         }
         user.relationship = await getRelationshipType(currentUserId, user.userId)
     } else {
@@ -54,7 +54,7 @@ export async function getProfileByUserId(userId, includePosts: boolean, currentU
         // console.log('getProfileByUserId posts are', user.posts);
         user = user.toJSON();
         if (user.posts && user.posts.length !== 0) {
-            user.posts = await processPosts(user.posts, currentUserId)
+            user.posts = await addLikeStatusToPosts(user.posts, currentUserId)
         }
         if (includeRelationship)
             user.relationship = await getRelationshipType(currentUserId, userId)

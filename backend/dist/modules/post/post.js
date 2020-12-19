@@ -57,7 +57,7 @@ router.post('/imageposts', authenticate_1.default, multerUploads, validate_1.cre
  * Get posts by section('top'|'latest') or by hashtag(#{SomeWord})
  */
 router.get(endpoints_1.default.post.GET_POSTS, authenticate_1.default, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const posts = req.query.section ? yield postService_1.getPostsBySection(req.userId, req.query.section, req.query.offset, req.query.limit) : yield postService_1.getPostsByHashtag(req.userId, req.query.hashtag, req.query.offset, req.query.limit);
+    const posts = req.query.section ? yield postService_1.getPostsBySection(req.userId, req.query.section, req.query.limit, req.query.offset) : yield postService_1.getPostsByHashtag(req.userId, req.query.hashtag, req.query.limit, req.query.offset);
     res.status(httpResponseCodes_1.default.OK).send(posts);
 })));
 router.get('/posts/:postId', authenticate_1.default, validate_1.getPostValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {

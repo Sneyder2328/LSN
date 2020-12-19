@@ -1,4 +1,4 @@
-import {convertToHashTable, HashTable} from "../../utils/utils";
+import {convertToHashTable, HashTable, uniqueValuesArray} from "../../utils/utils";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {AppState} from "../rootReducer";
 import {createSelector} from "reselect/src";
@@ -79,7 +79,6 @@ export const postsSlice = createSlice({
         loadPostsSuccess: (state, action: PayloadAction<{
             posts: HashTable<PostObject>;
             section: 'top' | 'latest';
-            offset: number;
             allIds: Array<string>;
         }>) => {
             state.entities = {
@@ -158,7 +157,7 @@ export const postsSlice = createSlice({
         builder.addCase(loadCommentsSuccess, (state, action) => {
             state.entities[action.payload.postId] = {
                 ...state.entities[action.payload.postId],
-                comments: [...action.payload.newCommentsIds, ...state.entities[action.payload.postId].comments]
+                comments: uniqueValuesArray(action.payload.newCommentsIds, state.entities[action.payload.postId].comments)
             }
             state.metas[action.payload.postId] = {
                 ...state.metas[action.payload.postId],

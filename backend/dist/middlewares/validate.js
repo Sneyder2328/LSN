@@ -83,7 +83,7 @@ exports.likeCommentValidationRules = [
 ];
 exports.getCommentsValidationRules = [
     express_validator_1.param('postId').trim().matches(config_1.default.regex.uuidV4),
-    express_validator_1.query('offset').isDecimal().withMessage('offset must be a number'),
+    // query('offset')
     express_validator_1.query('limit').isDecimal().withMessage('limit must be a number')
 ];
 exports.createPostValidationRules = [

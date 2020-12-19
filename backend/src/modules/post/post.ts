@@ -66,7 +66,7 @@ router.post('/imageposts', authenticate, multerUploads, createPostValidationRule
  */
 router.get(endpoints.post.GET_POSTS, authenticate,
     handleErrorAsync(async (req, res) => {
-        const posts = req.query.section ? await getPostsBySection(req.userId, req.query.section, req.query.offset, req.query.limit) : await getPostsByHashtag(req.userId, req.query.hashtag, req.query.offset, req.query.limit);
+        const posts = req.query.section ? await getPostsBySection(req.userId, req.query.section, req.query.limit, req.query.offset) : await getPostsByHashtag(req.userId, req.query.hashtag, req.query.limit, req.query.offset);
         res.status(httpCodes.OK).send(posts);
     }));
 

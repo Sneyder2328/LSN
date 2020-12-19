@@ -42,19 +42,12 @@ WHERE conversationId = '${conversationId}' ORDER BY createdAt DESC LIMIT ${limit
 
 //AND deletedFor != '${userId}'
 async function getMessagesByConversation(conversationId, userId: string, otherUserId: string, offset: any, limit: number) {
-    const queryWithOffset = `
-SELECT id, userId as senderId, replyTo, content, typeContent, status, createdAt FROM Message 
-WHERE conversationId = '${conversationId}' AND createdAt < '${offset}'
-ORDER BY createdAt DESC 
-LIMIT ${limit}
-`;
-    const queryWithoutOffset = `
-SELECT id, userId as senderId, replyTo, content, typeContent, status, createdAt FROM Message 
-WHERE conversationId = '${conversationId}'
-ORDER BY createdAt DESC 
-LIMIT ${limit}
-`;
-    const messages: any = await sequelize.query(offset ? queryWithOffset : queryWithoutOffset, {
+    const messages: any = await sequelize.query(`
+    SELECT id, userId as senderId, replyTo, content, typeContent, status, createdAt FROM Message 
+    WHERE conversationId = '${conversationId}'` + (offset ? ` AND createdAt < '${offset}'` : ``) + `
+    ORDER BY createdAt DESC 
+    LIMIT ${limit}
+    `, {
         // @ts-ignore
         type: sequelize.QueryTypes.SELECT
     })

@@ -8,6 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -41,7 +52,7 @@ function createPost(postId, userId, type, text, images) {
     });
 }
 exports.createPost = createPost;
-exports.processPosts = (posts, userId) => __awaiter(void 0, void 0, void 0, function* () {
+exports.addLikeStatusToPosts = (posts, userId) => __awaiter(void 0, void 0, void 0, function* () {
     const postLikeStatusList = (yield Promise.all(posts.map(post => fetchPostLikeStatus(post.id, userId)))).filter(it => it != null);
     // console.log('postLikeStatusList', postLikeStatusList);
     const commentLikeStatusList = (yield Promise.all(posts.map(post => post.comments.map(comment => comment.id))
@@ -61,74 +72,106 @@ exports.processPosts = (posts, userId) => __awaiter(void 0, void 0, void 0, func
     }).sort(utils_1.compareByDateAsc);
     return posts;
 });
-function getPostsBySection(userId, section, offset, limit) {
+const LIMIT_INITIAL_COMMENTS_PER_POST = 3;
+function getPostsBySection(currentUserId, section, limit, offset) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log('offset', offset, 'limit', limit);
-        let posts = yield Post.findAll({
-            include: [
-                {
-                    model: Profile,
-                    as: 'authorProfile'
-                },
-                {
-                    model: PostImage,
-                    as: 'images',
-                    attributes: ['url', 'id']
-                },
-                {
-                    model: Comment,
-                    as: 'comments',
-                    limit: constants_1.LIMIT_COMMENTS_PER_POST,
-                    order: [['createdAt', 'DESC']],
-                    include: [Profile]
-                }
-            ],
-            order: [['createdAt', 'DESC']],
-            // offset,
-            limit: [parseInt(offset), parseInt(limit)]
+        console.log('getPostsBySection', currentUserId, section, limit, offset);
+        let posts = yield database_1.sequelize.query(`
+    SELECT P.id,
+       P.userId,
+       likesCount,
+       commentsCount,
+       P.createdAt,
+       text,
+       dislikesCount,
+       Pr.userId          as 'author.userId',
+       Pr.username        as 'author.username',
+       Pr.fullname        as 'author.fullname',
+       Pr.coverPhotoUrl   as 'author.coverPhotoUrl',
+       Pr.profilePhotoUrl as 'author.profilePhotoUrl',
+       Pr.description     as 'author.description'
+FROM Post P
+         JOIN Profile Pr ON P.userId = Pr.userId
+` + (offset ? ` WHERE P.createdAt < ${offset} ` : ``) +
+            `ORDER BY P.createdAt DESC LIMIT ${limit}`, {
+            // @ts-ignore
+            type: database_1.sequelize.QueryTypes.SELECT
         });
-        posts = posts.map(post => post.toJSON());
-        posts = yield exports.processPosts(posts, userId);
-        if (!posts)
-            return [];
+        // @ts-ignore
+        posts = yield processPosts(posts, currentUserId);
         return posts;
     });
 }
 exports.getPostsBySection = getPostsBySection;
-function getPostsByHashtag(userId, hashtag, offset, limit) {
+function getPostsByHashtag(currentUserId, hashtag, limit, offset) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log('offset', offset, 'limit', limit);
-        let posts = yield Post.findAll({
-            include: [
-                {
-                    model: Profile,
-                    as: 'authorProfile'
-                },
-                {
-                    model: PostImage,
-                    as: 'images',
-                    attributes: ['url', 'id']
-                },
-                {
-                    model: Comment,
-                    as: 'comments',
-                    limit: constants_1.LIMIT_COMMENTS_PER_POST,
-                    order: [['createdAt', 'DESC']],
-                    include: [Profile]
-                }
-            ],
-            order: [['createdAt', 'DESC']],
-            // offset,
-            limit: [parseInt(offset), limit]
+        console.log('getPostsByHashtag', hashtag, limit, offset);
+        let posts = yield database_1.sequelize.query(`
+    SELECT P.id,
+       P.userId,
+       likesCount,
+       commentsCount,
+       P.createdAt,
+       text,
+       dislikesCount,
+       Pr.userId   as 'author.userId',
+       Pr.username as 'author.username',
+       Pr.fullname as 'author.fullname',
+       Pr.username as 'author.coverPhotoUrl',
+       Pr.profilePhotoUrl as 'author.profilePhotoUrl',
+       Pr.description as 'author.description'
+FROM Post P
+         JOIN Profile Pr ON P.userId = Pr.userId
+         JOIN Hashtag_Post HP on P.id = HP.postId
+         JOIN Hashtag H on HP.hashtagId = H.id
+WHERE H.name = '${hashtag}'` + (offset ? ` AND P.createdAt < ${offset}` : ``) + ` LIMIT ${limit}`, {
+            // @ts-ignore
+            type: database_1.sequelize.QueryTypes.SELECT
         });
-        posts = posts.map(post => post.toJSON());
-        posts = yield exports.processPosts(posts, userId);
-        if (!posts)
-            return [];
+        // @ts-ignore
+        posts = yield processPosts(posts, currentUserId);
         return posts;
     });
 }
 exports.getPostsByHashtag = getPostsByHashtag;
+function processPosts(posts, currentUserId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield Promise.all(posts.map((_a) => __awaiter(this, void 0, void 0, function* () {
+            var { id, userId, likesCount, commentsCount, createdAt, text, dislikesCount } = _a, author = __rest(_a, ["id", "userId", "likesCount", "commentsCount", "createdAt", "text", "dislikesCount"]);
+            return {
+                id, userId, likesCount, commentsCount, createdAt, text, dislikesCount,
+                authorProfile: {
+                    userId: author['author.userId'],
+                    username: author['author.username'],
+                    fullname: author['author.fullname'],
+                    coverPhotoUrl: author['author.coverPhotoUrl'],
+                    profilePhotoUrl: author['author.profilePhotoUrl'],
+                    description: author['author.description'],
+                },
+                images: yield getImagesByPost(id),
+                comments: yield commentService_1.getComments2(currentUserId, id, LIMIT_INITIAL_COMMENTS_PER_POST),
+                likeStatus: yield getLikeStatusForPost(id, currentUserId)
+            };
+        })));
+    });
+}
+function getImagesByPost(postId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const images = yield database_1.sequelize.query(`SELECT id, url
+    FROM post_image
+    WHERE postId = '${postId}'`, {
+            // @ts-ignore
+            type: database_1.sequelize.QueryTypes.SELECT
+        });
+        return images;
+    });
+}
+function getLikeStatusForPost(postId, userId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const postLikeStatus = yield fetchPostLikeStatus(postId, userId);
+        return postLikeStatus != null ? (postLikeStatus.isLike === true ? 'like' : 'dislike') : undefined;
+    });
+}
 function getPost(userId, postId) {
     return __awaiter(this, void 0, void 0, function* () {
         let post = yield Post.findByPk(postId, {
@@ -154,7 +197,7 @@ function getPost(userId, postId) {
         if (!post)
             throw new AppError_1.AppError(httpResponseCodes_1.default.NOT_FOUND, 'Not found', 'Post not found');
         post = post.toJSON();
-        post = yield exports.processPosts([post], userId);
+        post = yield exports.addLikeStatusToPosts([post], userId);
         if (!post[0])
             return {};
         return post[0];
