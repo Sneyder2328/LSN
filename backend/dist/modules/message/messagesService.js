@@ -85,13 +85,13 @@ VALUES('${id}', '${conversationId}', '${userId}', '${content}')`);
 exports.deleteMessage = (userId, messageId, deleteFor) => __awaiter(void 0, void 0, void 0, function* () {
     if (deleteFor === 'both') {
         // TODO verify msg was sent by me, if not throw error
-        return database_1.sequelize.query(`DELETE FROM message WHERE id='${messageId}'`);
+        return database_1.sequelize.query(`DELETE FROM Message WHERE id='${messageId}'`);
     }
     if (deleteFor !== userId) {
         throw new Error('You cannot delete a message from someone else\'s record');
     }
     return database_1.sequelize.query(`
-UPDATE message SET deletedFor='${userId}}' 
+UPDATE Message SET deletedFor='${userId}}' 
 WHERE id='${messageId}'`);
 });
 /**

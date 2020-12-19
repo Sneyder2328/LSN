@@ -76,14 +76,14 @@ VALUES('${id}', '${conversationId}', '${userId}', '${content}')`)
 export const deleteMessage = async (userId: string, messageId: string, deleteFor: string) => {
     if (deleteFor === 'both') {
         // TODO verify msg was sent by me, if not throw error
-        return sequelize.query(`DELETE FROM message WHERE id='${messageId}'`)
+        return sequelize.query(`DELETE FROM Message WHERE id='${messageId}'`)
     }
     if (deleteFor !== userId) {
         throw new Error('You cannot delete a message from someone else\'s record')
     }
 
     return sequelize.query(`
-UPDATE message SET deletedFor='${userId}}' 
+UPDATE Message SET deletedFor='${userId}}' 
 WHERE id='${messageId}'`)
 }
 

@@ -158,7 +158,7 @@ function processPosts(posts, currentUserId) {
 function getImagesByPost(postId) {
     return __awaiter(this, void 0, void 0, function* () {
         const images = yield database_1.sequelize.query(`SELECT id, url
-    FROM post_image
+    FROM Post_Image
     WHERE postId = '${postId}'`, {
             // @ts-ignore
             type: database_1.sequelize.QueryTypes.SELECT

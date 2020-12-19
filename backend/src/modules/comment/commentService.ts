@@ -8,7 +8,6 @@ import { AppError } from "../../utils/errors/AppError";
 import responseCodes from "../../utils/constants/httpResponseCodes";
 import { ActivityType, generateNotification } from "../notification/notificationService";
 import { getPostAuthorId } from "../post/postService";
-import { off } from "process";
 
 export async function createComment(userId, postId, { id, type, text, img }) {
     const comment = await Comment.create({ id, userId, postId, type, text, img });

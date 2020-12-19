@@ -141,7 +141,7 @@ async function processPosts(posts, currentUserId: string) {
 async function getImagesByPost(postId: string) {
     const images = await sequelize.query(
         `SELECT id, url
-    FROM post_image
+    FROM Post_Image
     WHERE postId = '${postId}'`, {
         // @ts-ignore
         type: sequelize.QueryTypes.SELECT
