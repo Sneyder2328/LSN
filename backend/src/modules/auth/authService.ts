@@ -1,19 +1,19 @@
-import {signJWT} from "../../helpers/JWTHelper";
-import {AppError} from "../../utils/errors/AppError";
-import {AuthError} from "../../utils/errors/AuthError";
+import { signJWT } from "../../helpers/JWTHelper";
+import { AppError } from "../../utils/errors/AppError";
+import { AuthError } from "../../utils/errors/AuthError";
 import error from "../../utils/constants/errors";
 import httpCodes from "../../utils/constants/httpResponseCodes";
-import {genUUID, verifyPassword} from "../../utils/utils";
-import {models} from "../../database/database";
-import {GENERATE_USERS_SUGGESTIONS, userSuggestionsEmitter} from "../user/userSuggestionsEmitter";
-const {Profile,Token,User} = models;
+import { genUUID, verifyPassword } from "../../utils/utils";
+import { models } from "../../database/database";
+import { GENERATE_USERS_SUGGESTIONS, userSuggestionsEmitter } from "../user/userSuggestionsEmitter";
+const { Profile, Token, User } = models;
 
-export async function signUpUser({username, fullname, password, typeLogin, email, description, coverPhotoUrl, profilePhotoUrl}) {
+export async function signUpUser({ username, fullname, password, typeLogin, email, description, coverPhotoUrl, profilePhotoUrl }) {
     // @ts-ignore
-    const currentUserWithUsername = await User.findOne({where: {username}});
+    const currentUserWithUsername = await User.findOne({ where: { username } });
     if (currentUserWithUsername) throw new AppError(httpCodes.CONFLICT, error.USERNAME, error.message.USERNAME_TAKEN);
     // @ts-ignore
-    const currentUserWithEmail = await User.findOne({where: {email}});
+    const currentUserWithEmail = await User.findOne({ where: { email } });
     if (currentUserWithEmail) throw new AppError(httpCodes.CONFLICT, error.EMAIL, error.message.EMAIL_TAKEN);
 
     let userId = genUUID();
@@ -35,14 +35,14 @@ export async function signUpUser({username, fullname, password, typeLogin, email
     });
     const accessToken = await signJWT(user.id);
     const refreshToken = genUUID()
-    await Token.create({userId, token: refreshToken});
+    await Token.create({ userId, token: refreshToken });
     userSuggestionsEmitter.emit(GENERATE_USERS_SUGGESTIONS, userId)
-    return {accessToken, refreshToken, profile: newUserProfile};
+    return { accessToken, refreshToken, profile: newUserProfile };
 }
 
-export async function logInUser({username, password}) {
+export async function logInUser({ username, password }) {
     // @ts-ignore
-    const user = await User.findOne({where: {username}});
+    const user = await User.findOne({ where: { username } });
     if (!user) throw new AuthError(error.USERNAME, error.message.INCORRECT_USERNAME);
 
     const loggedIn = await verifyPassword(password, user.password);
@@ -50,14 +50,14 @@ export async function logInUser({username, password}) {
 
     const accessToken = await signJWT(user.id);
     const refreshToken = genUUID()
-    await Token.create({userId: user.id, token: refreshToken});
+    await Token.create({ userId: user.id, token: refreshToken });
 
     const userProfile = await Profile.findByPk(user.id)
-    return {accessToken, refreshToken, profile: userProfile};
+    return { accessToken, refreshToken, profile: userProfile };
 }
 
 export async function logOutUser(refreshToken) {
-    const rowsDeleted = await Token.destroy({where: {token: refreshToken}});
+    const rowsDeleted = await Token.destroy({ where: { token: refreshToken } });
     if (rowsDeleted === 0) throw new AppError(httpCodes.BAD_REQUEST, 'Log out error', 'Log out error');
     return true;
 }

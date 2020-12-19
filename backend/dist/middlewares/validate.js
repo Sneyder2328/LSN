@@ -99,7 +99,7 @@ exports.createCommentValidationRules = [
     express_validator_1.body('type').custom(val => val === 'text' || val === 'img'),
     express_validator_1.param('postId').exists().escape(),
     express_validator_1.body('id').exists().escape(),
-    express_validator_1.body('text').not().isEmpty().trim().escape(),
+    express_validator_1.body('text').not().isEmpty(),
     express_validator_1.body('img').escape()
 ];
 exports.getMessagesValidationRules = [

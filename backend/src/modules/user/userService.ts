@@ -5,7 +5,7 @@ import {LIMIT_COMMENTS_PER_POST} from "../../utils/constants";
 import {addLikeStatusToPosts} from "../post/postService";
 import {getRelationshipType} from "./relationshipService";
 
-const {Post, Profile, PostImage, Comment} = models;
+const {User, Post, Profile, PostImage, Comment} = models;
 
 const includePostsSorted = [
     {
@@ -84,6 +84,8 @@ export async function updateProfile(userId: string,
         // console.log('updating only', username, fullname, description);
         await Profile.update({username, fullname, description}, {where: {userId}});
     }
+    // @ts-ignore
+    await User.update({username}, {where: {id: userId}})
     return await Profile.findByPk(userId)
 }
 

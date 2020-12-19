@@ -116,7 +116,7 @@ export const createCommentValidationRules = [
     body('type').custom(val => val === 'text' || val === 'img'),
     param('postId').exists().escape(),
     body('id').exists().escape(),
-    body('text').not().isEmpty().trim().escape(),
+    body('text').not().isEmpty(),
     body('img').escape()
 ];
 

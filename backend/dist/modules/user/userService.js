@@ -15,7 +15,7 @@ const sequelize_1 = require("sequelize");
 const constants_1 = require("../../utils/constants");
 const postService_1 = require("../post/postService");
 const relationshipService_1 = require("./relationshipService");
-const { Post, Profile, PostImage, Comment } = database_1.models;
+const { User, Post, Profile, PostImage, Comment } = database_1.models;
 const includePostsSorted = [
     {
         model: Post,
@@ -100,6 +100,8 @@ function updateProfile(userId, { username, fullname, description }, imageFiles) 
             // console.log('updating only', username, fullname, description);
             yield Profile.update({ username, fullname, description }, { where: { userId } });
         }
+        // @ts-ignore
+        yield User.update({ username }, { where: { id: userId } });
         return yield Profile.findByPk(userId);
     });
 }
