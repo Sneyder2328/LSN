@@ -175,7 +175,6 @@ const Post: React.FC<Props> = ({ postResponse, createComment, loadPreviousCommen
             </div>
             <CommentsWrapper comments={postResponse?.comments} />
             <AddNewComment
-                profilePhotoUrl={postResponse?.authorProfile?.profilePhotoUrl}
                 shouldFocusTextEditor={shouldFocusTextEditor}
                 onCommentContentChanged={setCommentText}
                 onSubmitComment={submitComment} />
