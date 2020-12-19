@@ -115,9 +115,11 @@ const Post: React.FC<Props> = ({ postResponse, createComment, loadPreviousCommen
     return (
         <div className={classNames(styles.post, className)}>
             <div className={styles.userProfile}>
-                <ProfilePhoto
-                    className={styles.avatar} size={"small1"}
-                    url={postResponse?.authorProfile?.profilePhotoUrl} />
+                <Link to={userLink(postResponse?.authorProfile?.username)}>
+                    <ProfilePhoto
+                        className={styles.avatar} size={"small1"}
+                        url={postResponse?.authorProfile?.profilePhotoUrl} />
+                </Link>
                 <div>
                     <Link to={userLink(postResponse?.authorProfile?.username)} className={styles.fullname}>
                         <p>{postResponse?.authorProfile?.fullname}</p>

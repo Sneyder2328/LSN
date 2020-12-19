@@ -14,11 +14,7 @@ import {Trends} from "../../components/Trends/Trends";
 import {Friends} from "./Friends/Friends";
 import {uuidv4Regex} from "../../utils/utils";
 import {Photos} from "./Photos/Photos";
-import {NotificationSystem} from "../../components/NotificationSystem/NotificationSystem";
 import {ThreeSectionsPage} from "../layouts/3Sections/3SectionsPage";
-import {DashBoardProfile} from "../../components/DashBoardProfile/DashBoardProfile";
-import {CreatePost} from "../../components/CreatePost/CreatePost";
-import {NewsFeed} from "../../components/NewsFeed/NewsFeed";
 
 // const aspectRatio = 2.7;
 

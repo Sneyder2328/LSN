@@ -26,8 +26,8 @@ export const App = () => {
                         <AuthRoute path='/users/:userIdentifier' component={UserProfilePage}/>
                         <Route path='*' component={PageNotFound}/>
                     </Switch>
+                    <ModalContainer/>
                 </BrowserRouter>
-                <ModalContainer/>
             </PersistGate>
         </Provider>
     );

@@ -14,6 +14,7 @@ import {hideModal} from "../../modules/Modal/modalsReducer";
 import {CoverPhoto} from "../CoverPhoto/CoverPhoto";
 import {ProfilePhoto} from "../ProfilePhoto/ProfilePhoto";
 import classNames from "classnames";
+import { useHistory } from "react-router";
 
 type EditProfileParams = {
     username: string;
@@ -30,6 +31,7 @@ export const EditProfileModal = () => {
     const isUpdatingProfile: boolean = useSelector((state: AppState) => state.auth.isUpdatingProfile) || false
     const users = useSelector((state: AppState) => state.entities.users.entities)
     const userProfile = users[userId]!!
+    const history = useHistory()
 
     const onValidData = async (data: EditProfileParams) => {
         console.log('onValidData', data);
@@ -37,6 +39,7 @@ export const EditProfileModal = () => {
         const updated: boolean = await dispatch(
             updateProfile({userId, ...data, profilePhoto: profilePhotoFile, coverPhoto: coverPhotoFile})
         )
+        history.push(data.username)
         if (updated) handleClose()
     }
 
