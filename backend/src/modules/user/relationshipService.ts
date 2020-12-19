@@ -132,22 +132,22 @@ WHERE status='active' AND US.userId='${userId}'`, {
  */
 export async function generateUserSuggestions(userId: string) {
     return sequelize.query(`
-REPLACE INTO user_suggestion(userId, userSuggestedId, relatedness)
+REPLACE INTO User_Suggestion(userId, userSuggestedId, relatedness)
 SELECT '${userId}',
        userId,
        1
 FROM Profile
 WHERE userId != '${userId}'
   AND userId NOT IN (SELECT senderId
-                     FROM user_relationship
+                     FROM User_Relationship
                      WHERE receiverId = '${userId}'
                        AND (type = 'friend' OR type = 'pending' OR type = 'block'))
   AND userId NOT IN (SELECT receiverId
-                     FROM user_relationship
+                     FROM User_Relationship
                      WHERE senderId = '${userId}'
                        AND (type = 'friend' OR type = 'pending' OR type = 'block'))
   AND userId NOT IN (SELECT userSuggestedId
-                     FROM user_suggestion
+                     FROM User_Suggestion
                      WHERE userId = '${userId}'
                        AND status = 'removed')`)
 }

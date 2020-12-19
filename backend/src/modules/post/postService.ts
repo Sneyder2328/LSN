@@ -79,7 +79,7 @@ export async function getPostsBySection(currentUserId: string, section: string, 
        Pr.description     as 'author.description'
 FROM Post P
          JOIN Profile Pr ON P.userId = Pr.userId
-` + (offset ? ` WHERE P.createdAt < ${offset} ` : ``) +
+` + (offset ? ` WHERE P.createdAt < '${offset}' ` : ``) +
         `ORDER BY P.createdAt DESC LIMIT ${limit}`, {
         // @ts-ignore
         type: sequelize.QueryTypes.SELECT
@@ -110,7 +110,7 @@ FROM Post P
          JOIN Profile Pr ON P.userId = Pr.userId
          JOIN Hashtag_Post HP on P.id = HP.postId
          JOIN Hashtag H on HP.hashtagId = H.id
-WHERE H.name = '${hashtag}'` + (offset ? ` AND P.createdAt < ${offset}` : ``) + ` LIMIT ${limit}`, {
+WHERE H.name = '${hashtag}'` + (offset ? ` AND P.createdAt < '${offset}'` : ``) + ` LIMIT ${limit}`, {
         // @ts-ignore
         type: sequelize.QueryTypes.SELECT
     })
