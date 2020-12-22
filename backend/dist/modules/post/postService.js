@@ -24,7 +24,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = require("../../database/database");
-const constants_1 = require("../../utils/constants");
 const utils_1 = require("../../utils/utils");
 const PostNotCreatedError_1 = require("../../utils/errors/PostNotCreatedError");
 const commentService_1 = require("../comment/commentService");
@@ -32,7 +31,7 @@ const AppError_1 = require("../../utils/errors/AppError");
 const httpResponseCodes_1 = __importDefault(require("../../utils/constants/httpResponseCodes"));
 const notificationService_1 = require("../notification/notificationService");
 const postEmitter_1 = require("./postEmitter");
-const { Comment, Post, PostLike, Profile, PostImage } = database_1.models;
+const { Post, PostLike, Profile, PostImage } = database_1.models;
 function createPost(postId, userId, type, text, images) {
     return __awaiter(this, void 0, void 0, function* () {
         const post = yield Post.create({ id: postId, userId, type, text });
@@ -52,26 +51,34 @@ function createPost(postId, userId, type, text, images) {
     });
 }
 exports.createPost = createPost;
-exports.addLikeStatusToPosts = (posts, userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const postLikeStatusList = (yield Promise.all(posts.map(post => fetchPostLikeStatus(post.id, userId)))).filter(it => it != null);
-    // console.log('postLikeStatusList', postLikeStatusList);
-    const commentLikeStatusList = (yield Promise.all(posts.map(post => post.comments.map(comment => comment.id))
-        .filter(it => it.lenght !== 0)
-        .flat()
-        .map(commentId => commentService_1.fetchCommentLikeStatus(commentId, userId)))).filter(it => it != null);
-    // console.log('commentLikeStatusList', commentLikeStatusList);
-    posts = posts.map(post => {
-        const postLikeStatus = postLikeStatusList.find((postLike) => postLike.postId === post.id);
-        return Object.assign(Object.assign({}, post), { likeStatus: postLikeStatus != null ? (postLikeStatus.isLike === true ? 'like' : 'dislike') : undefined, comments: post.comments.map(comment => {
-                const commentLikeStatus = commentLikeStatusList.find((commentLike) => commentLike.commentId === comment.id);
-                comment.likeStatus = commentLikeStatus != null ? (commentLikeStatus.isLike === true ? 'like' : 'dislike') : undefined;
-                comment.authorProfile = comment.Profile;
-                delete comment.Profile;
-                return comment;
-            }).sort(utils_1.compareByDateDesc) });
-    }).sort(utils_1.compareByDateAsc);
-    return posts;
-});
+// export const addLikeStatusToPosts = async (posts, userId: string) => {
+//     const postLikeStatusList = (await Promise.all(
+//         posts.map(post => fetchPostLikeStatus(post.id, userId)))
+//     ).filter(it => it != null);
+//     // console.log('postLikeStatusList', postLikeStatusList);
+//     const commentLikeStatusList = (await Promise.all(
+//         posts.map(post => post.comments.map(comment => comment.id))
+//             .filter(it => it.lenght !== 0)
+//             .flat()
+//             .map(commentId => fetchCommentLikeStatus(commentId, userId)))
+//     ).filter(it => it != null);
+//     // console.log('commentLikeStatusList', commentLikeStatusList);
+//     posts = posts.map(post => {
+//         const postLikeStatus: any = postLikeStatusList.find((postLike: any) => postLike.postId === post.id);
+//         return {
+//             ...post,
+//             likeStatus: postLikeStatus != null ? (postLikeStatus.isLike === true ? 'like' : 'dislike') : undefined,
+//             comments: post.comments.map(comment => {
+//                 const commentLikeStatus: any = commentLikeStatusList.find((commentLike: any) => commentLike.commentId === comment.id);
+//                 comment.likeStatus = commentLikeStatus != null ? (commentLikeStatus.isLike === true ? 'like' : 'dislike') : undefined;
+//                 comment.authorProfile = comment.Profile;
+//                 delete comment.Profile;
+//                 return comment;
+//             }).sort(compareByDateDesc)
+//         }
+//     }).sort(compareByDateAsc);
+//     return posts;
+// };
 const LIMIT_INITIAL_COMMENTS_PER_POST = 3;
 function getPostsBySection(currentUserId, section, limit, offset) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -134,6 +141,35 @@ WHERE H.name = '${hashtag}'` + (offset ? ` AND P.createdAt < '${offset}'` : ``) 
     });
 }
 exports.getPostsByHashtag = getPostsByHashtag;
+function getPostsByUser(userId, currentUserId, limit, offset) {
+    return __awaiter(this, void 0, void 0, function* () {
+        console.log('getPostsByUser', userId, currentUserId, limit, offset);
+        let posts = yield database_1.sequelize.query(`
+    SELECT P.id,
+       P.userId,
+       likesCount,
+       commentsCount,
+       P.createdAt,
+       text,
+       dislikesCount,
+       Pr.userId          as 'author.userId',
+       Pr.username        as 'author.username',
+       Pr.fullname        as 'author.fullname',
+       Pr.coverPhotoUrl   as 'author.coverPhotoUrl',
+       Pr.profilePhotoUrl as 'author.profilePhotoUrl',
+       Pr.description     as 'author.description'
+FROM Post P
+         JOIN Profile Pr ON P.userId = Pr.userId
+WHERE P.userId = '${userId}'
+` + (offset ? ` AND P.createdAt < '${offset}' ` : ``) +
+            `ORDER BY P.createdAt DESC LIMIT ${limit}`, {
+            // @ts-ignore
+            type: database_1.sequelize.QueryTypes.SELECT
+        });
+        return yield processPosts(posts, currentUserId);
+    });
+}
+exports.getPostsByUser = getPostsByUser;
 function processPosts(posts, currentUserId) {
     return __awaiter(this, void 0, void 0, function* () {
         return yield Promise.all(posts.map((_a) => __awaiter(this, void 0, void 0, function* () {
@@ -149,7 +185,7 @@ function processPosts(posts, currentUserId) {
                     description: author['author.description'],
                 },
                 images: yield getImagesByPost(id),
-                comments: yield commentService_1.getComments2(currentUserId, id, LIMIT_INITIAL_COMMENTS_PER_POST),
+                comments: yield commentService_1.getComments(currentUserId, id, LIMIT_INITIAL_COMMENTS_PER_POST),
                 likeStatus: yield getLikeStatusForPost(id, currentUserId)
             };
         })));
@@ -174,33 +210,29 @@ function getLikeStatusForPost(postId, userId) {
 }
 function getPost(userId, postId) {
     return __awaiter(this, void 0, void 0, function* () {
-        let post = yield Post.findByPk(postId, {
-            include: [
-                {
-                    model: Profile,
-                    as: 'authorProfile'
-                },
-                {
-                    model: PostImage,
-                    as: 'images',
-                    attributes: ['url', 'id']
-                },
-                {
-                    model: Comment,
-                    as: 'comments',
-                    limit: constants_1.LIMIT_COMMENTS_PER_POST,
-                    order: [['createdAt', 'DESC']],
-                    include: [Profile]
-                }
-            ]
+        let posts = yield database_1.sequelize.query(`
+    SELECT P.id,
+       P.userId,
+       likesCount,
+       commentsCount,
+       P.createdAt,
+       text,
+       dislikesCount,
+       Pr.userId          as 'author.userId',
+       Pr.username        as 'author.username',
+       Pr.fullname        as 'author.fullname',
+       Pr.coverPhotoUrl   as 'author.coverPhotoUrl',
+       Pr.profilePhotoUrl as 'author.profilePhotoUrl',
+       Pr.description     as 'author.description'
+FROM Post P
+         JOIN Profile Pr ON P.userId = Pr.userId
+WHERE P.id = '${postId}' LIMIT 1`, {
+            // @ts-ignore
+            type: database_1.sequelize.QueryTypes.SELECT
         });
-        if (!post)
+        if (posts.length === 0)
             throw new AppError_1.AppError(httpResponseCodes_1.default.NOT_FOUND, 'Not found', 'Post not found');
-        post = post.toJSON();
-        post = yield exports.addLikeStatusToPosts([post], userId);
-        if (!post[0])
-            return {};
-        return post[0];
+        return (yield processPosts(posts, userId))[0];
     });
 }
 exports.getPost = getPost;

@@ -1,17 +1,14 @@
 import { models, sequelize } from "../../database/database";
-import { LIMIT_COMMENTS_PER_POST } from "../../utils/constants";
-import { compareByDateAsc, compareByDateDesc, genUUID } from "../../utils/utils";
+import { genUUID } from "../../utils/utils";
 import { PostNotCreatedError } from "../../utils/errors/PostNotCreatedError";
 import { LikesInfo } from "../../utils/types";
-import { fetchCommentLikeStatus, getComments2 } from "../comment/commentService";
+import { getComments } from "../comment/commentService";
 import { AppError } from "../../utils/errors/AppError";
 import responseCodes from "../../utils/constants/httpResponseCodes";
 import { ActivityType, generateNotification } from "../notification/notificationService";
 import { POST_CREATED, postEmitter } from "./postEmitter";
-import { hash } from "bcryptjs";
-import { off } from "process";
 
-const { Comment, Post, PostLike, Profile, PostImage } = models;
+const { Post, PostLike, Profile, PostImage } = models;
 
 export async function createPost(postId: string, userId: string, type: string, text: string, images?: Array<string>) {
     const post = await Post.create({ id: postId, userId, type, text });
@@ -28,36 +25,36 @@ export async function createPost(postId: string, userId: string, type: string, t
     return response;
 }
 
-export const addLikeStatusToPosts = async (posts, userId: string) => {
-    const postLikeStatusList = (await Promise.all(
-        posts.map(post => fetchPostLikeStatus(post.id, userId)))
-    ).filter(it => it != null);
-    // console.log('postLikeStatusList', postLikeStatusList);
+// export const addLikeStatusToPosts = async (posts, userId: string) => {
+//     const postLikeStatusList = (await Promise.all(
+//         posts.map(post => fetchPostLikeStatus(post.id, userId)))
+//     ).filter(it => it != null);
+//     // console.log('postLikeStatusList', postLikeStatusList);
 
-    const commentLikeStatusList = (await Promise.all(
-        posts.map(post => post.comments.map(comment => comment.id))
-            .filter(it => it.lenght !== 0)
-            .flat()
-            .map(commentId => fetchCommentLikeStatus(commentId, userId)))
-    ).filter(it => it != null);
-    // console.log('commentLikeStatusList', commentLikeStatusList);
+//     const commentLikeStatusList = (await Promise.all(
+//         posts.map(post => post.comments.map(comment => comment.id))
+//             .filter(it => it.lenght !== 0)
+//             .flat()
+//             .map(commentId => fetchCommentLikeStatus(commentId, userId)))
+//     ).filter(it => it != null);
+//     // console.log('commentLikeStatusList', commentLikeStatusList);
 
-    posts = posts.map(post => {
-        const postLikeStatus: any = postLikeStatusList.find((postLike: any) => postLike.postId === post.id);
-        return {
-            ...post,
-            likeStatus: postLikeStatus != null ? (postLikeStatus.isLike === true ? 'like' : 'dislike') : undefined,
-            comments: post.comments.map(comment => {
-                const commentLikeStatus: any = commentLikeStatusList.find((commentLike: any) => commentLike.commentId === comment.id);
-                comment.likeStatus = commentLikeStatus != null ? (commentLikeStatus.isLike === true ? 'like' : 'dislike') : undefined;
-                comment.authorProfile = comment.Profile;
-                delete comment.Profile;
-                return comment;
-            }).sort(compareByDateDesc)
-        }
-    }).sort(compareByDateAsc);
-    return posts;
-};
+//     posts = posts.map(post => {
+//         const postLikeStatus: any = postLikeStatusList.find((postLike: any) => postLike.postId === post.id);
+//         return {
+//             ...post,
+//             likeStatus: postLikeStatus != null ? (postLikeStatus.isLike === true ? 'like' : 'dislike') : undefined,
+//             comments: post.comments.map(comment => {
+//                 const commentLikeStatus: any = commentLikeStatusList.find((commentLike: any) => commentLike.commentId === comment.id);
+//                 comment.likeStatus = commentLikeStatus != null ? (commentLikeStatus.isLike === true ? 'like' : 'dislike') : undefined;
+//                 comment.authorProfile = comment.Profile;
+//                 delete comment.Profile;
+//                 return comment;
+//             }).sort(compareByDateDesc)
+//         }
+//     }).sort(compareByDateAsc);
+//     return posts;
+// };
 
 const LIMIT_INITIAL_COMMENTS_PER_POST = 3;
 export async function getPostsBySection(currentUserId: string, section: string, limit: number, offset?: string) {
@@ -119,6 +116,33 @@ WHERE H.name = '${hashtag}'` + (offset ? ` AND P.createdAt < '${offset}'` : ``) 
     return posts;
 }
 
+export async function getPostsByUser(userId: string, currentUserId: string, limit: number, offset?: string) {
+    console.log('getPostsByUser', userId, currentUserId, limit, offset);
+    let posts = await sequelize.query(`
+    SELECT P.id,
+       P.userId,
+       likesCount,
+       commentsCount,
+       P.createdAt,
+       text,
+       dislikesCount,
+       Pr.userId          as 'author.userId',
+       Pr.username        as 'author.username',
+       Pr.fullname        as 'author.fullname',
+       Pr.coverPhotoUrl   as 'author.coverPhotoUrl',
+       Pr.profilePhotoUrl as 'author.profilePhotoUrl',
+       Pr.description     as 'author.description'
+FROM Post P
+         JOIN Profile Pr ON P.userId = Pr.userId
+WHERE P.userId = '${userId}'
+` + (offset ? ` AND P.createdAt < '${offset}' ` : ``) +
+        `ORDER BY P.createdAt DESC LIMIT ${limit}`, {
+        // @ts-ignore
+        type: sequelize.QueryTypes.SELECT
+    })
+    return await processPosts(posts, currentUserId)
+}
+
 async function processPosts(posts, currentUserId: string) {
     return await Promise.all(posts.map(async ({ id, userId, likesCount, commentsCount, createdAt, text, dislikesCount, ...author }) => {
         return {
@@ -132,7 +156,7 @@ async function processPosts(posts, currentUserId: string) {
                 description: author['author.description'],
             },
             images: await getImagesByPost(id),
-            comments: await getComments2(currentUserId, id, LIMIT_INITIAL_COMMENTS_PER_POST),
+            comments: await getComments(currentUserId, id, LIMIT_INITIAL_COMMENTS_PER_POST),
             likeStatus: await getLikeStatusForPost(id, currentUserId)
         };
     }));
@@ -155,32 +179,29 @@ async function getLikeStatusForPost(postId: string, userId: string) {
 }
 
 export async function getPost(userId: string, postId: string) {
-    let post = await Post.findByPk(postId, {
-        include: [
-            {
-                model: Profile,
-                as: 'authorProfile'
-            },
-            {
-                model: PostImage,
-                as: 'images',
-                attributes: ['url', 'id']
-            },
-            {
-                model: Comment,
-                as: 'comments',
-                limit: LIMIT_COMMENTS_PER_POST,
-                order: [['createdAt', 'DESC']],
-                include: [Profile]
-            }
-        ]
-    });
-    if (!post) throw new AppError(responseCodes.NOT_FOUND, 'Not found', 'Post not found')
-    post = post.toJSON()
-    post = await addLikeStatusToPosts([post], userId);
+    let posts: Array<any> = await sequelize.query(`
+    SELECT P.id,
+       P.userId,
+       likesCount,
+       commentsCount,
+       P.createdAt,
+       text,
+       dislikesCount,
+       Pr.userId          as 'author.userId',
+       Pr.username        as 'author.username',
+       Pr.fullname        as 'author.fullname',
+       Pr.coverPhotoUrl   as 'author.coverPhotoUrl',
+       Pr.profilePhotoUrl as 'author.profilePhotoUrl',
+       Pr.description     as 'author.description'
+FROM Post P
+         JOIN Profile Pr ON P.userId = Pr.userId
+WHERE P.id = '${postId}' LIMIT 1`, {
+        // @ts-ignore
+        type: sequelize.QueryTypes.SELECT
+    })
+    if (posts.length === 0) throw new AppError(responseCodes.NOT_FOUND, 'Not found', 'Post not found')
 
-    if (!post[0]) return {};
-    return post[0];
+    return (await processPosts(posts, userId))[0]
 }
 
 export async function getPostPreview(postId: string) {

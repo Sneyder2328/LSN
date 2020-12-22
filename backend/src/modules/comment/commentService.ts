@@ -73,33 +73,7 @@ async function findCommentLikesInfoByPk(commentId): Promise<LikesInfo> {
     })).dataValues;
 }
 
-
-export async function getComments(userId, postId, offset, limit) {
-    let comments = await Comment.findAll({
-        where: { postId },
-        order: [['createdAt', 'DESC']],
-        offset: parseInt(offset),
-        limit: parseInt(limit),
-        include: [{ model: Profile }]
-    });
-    if (!comments) return [];
-
-    const commentLikeStatusList = (await Promise.all(
-        comments.map(comment => fetchCommentLikeStatus(comment.id, userId)))
-    ).filter(it => it != null);
-    console.log('commentLikeStatusList', commentLikeStatusList);
-
-    comments = comments.map(it => it.toJSON()).map(comment => {
-        const commentLikeStatus: any = commentLikeStatusList.find((commentLike: any) => commentLike.commentId === comment.id);
-        comment.likeStatus = commentLikeStatus != null ? (commentLikeStatus.isLike === true ? 'like' : 'dislike') : undefined;
-        comment.authorProfile = comment.Profile;
-        delete comment.Profile;
-        return comment;
-    }).sort(compareByDateDesc);
-    return comments;
-}
-
-export async function getComments2(currentUserId: string, postId: string, limit: number, offset?: string) {
+export async function getComments(currentUserId: string, postId: string, limit: number, offset?: string) {
     let comments = await sequelize.query(`
     SELECT C.id,
     C.userId,

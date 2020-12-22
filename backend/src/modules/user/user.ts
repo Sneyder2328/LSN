@@ -1,8 +1,9 @@
-import {Router} from "express";
+import { Router } from "express";
 import {
     getPhotos,
     getProfileByUserId,
     getProfileByUsername,
+    getUserIdFromUsername,
     searchUser,
     updateProfile
 } from "./userService";
@@ -11,6 +12,7 @@ import {
     deleteFriendshipValidationRules,
     getFriendRequestValidationRules,
     getFriendsByUserValidationRules,
+    getIdFromUserValidationRules,
     getProfileValidationRules,
     paramUserIdValidationRules,
     removeUserSuggestionValidationRules,
@@ -19,14 +21,13 @@ import {
     updateProfileValidationRules,
     validate
 } from "../../middlewares/validate";
-import {handleErrorAsync} from "../../middlewares/handleErrorAsync";
+import { handleErrorAsync } from "../../middlewares/handleErrorAsync";
 import authenticate from "../../middlewares/authenticate";
 import endpoints from "../../utils/constants/endpoints";
 import httpCodes from "../../utils/constants/httpResponseCodes";
-import config from "../../config/config";
 import multer from "multer";
-import {MAX_IMG_FILE_SIZE} from "../../utils/constants";
-import {cloudinary} from "../../config/cloudinaryConfig";
+import { MAX_IMG_FILE_SIZE } from "../../utils/constants";
+import { cloudinary } from "../../config/cloudinaryConfig";
 import cloudinaryStorage from "multer-storage-cloudinary";
 import {
     deleteFriendship,
@@ -35,7 +36,8 @@ import {
     handleFriendRequest, removeUserSuggestion,
     sendFriendRequest
 } from "./relationshipService";
-import {verifyParamIdMatchesLoggedUser} from "../../middlewares/verifyParamId";
+import { verifyParamIdMatchesLoggedUser } from "../../middlewares/verifyParamId";
+import { isUUIDV4 } from "../../utils/utils";
 
 const storage = cloudinaryStorage({
     cloudinary,
@@ -45,15 +47,15 @@ const storage = cloudinaryStorage({
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
         cb(null, file.fieldname + '-' + uniqueSuffix)
     },
-    transformation: [{width: 960, height: 960, crop: 'limit'}]
+    transformation: [{ width: 960, height: 960, crop: 'limit' }]
 });
 const parser = multer({
     storage,
-    limits: {fileSize: MAX_IMG_FILE_SIZE}
+    limits: { fileSize: MAX_IMG_FILE_SIZE }
 });
 const imageUpload = parser.fields([
-    {name: 'imageProfile', maxCount: 1},
-    {name: 'imageCover', maxCount: 1}
+    { name: 'imageProfile', maxCount: 1 },
+    { name: 'imageCover', maxCount: 1 }
 ]);
 
 const router = Router();
@@ -64,9 +66,18 @@ const router = Router();
 router.get(endpoints.user.USERS(':userIdentifier'), authenticate, getProfileValidationRules,
     validate, handleErrorAsync(async (req, res) => {
         const userIdentifier: string = req.params.userIdentifier;
-        const includePosts = req.query.includePosts == "true";
-        const user = userIdentifier.match(config.regex.uuidV4) ? await getProfileByUserId(userIdentifier, includePosts, req.userId) : await getProfileByUsername(userIdentifier, includePosts, req.userId);
+        const user = isUUIDV4(userIdentifier) ? await getProfileByUserId(userIdentifier, req.userId) : await getProfileByUsername(userIdentifier, req.userId);
         res.json(user);
+    }));
+
+/**
+ * Get userId given an username
+ */
+router.get(`/users/:username/id`, authenticate, getIdFromUserValidationRules,
+    validate, handleErrorAsync(async (req, res) => {
+        const username: string = req.params.username;
+        const userId = await getUserIdFromUsername(username)
+        res.json({ userId });
     }));
 
 
@@ -129,7 +140,7 @@ router.get(endpoints.user.GET_FRIEND_REQUESTS, authenticate, getFriendRequestVal
  * Get all current friends of a given user
  */
 router.get(endpoints.USERS_USER_ID_FRIENDS(':userId'), authenticate, getFriendsByUserValidationRules, validate,
-     handleErrorAsync(async (req, res) => {
+    handleErrorAsync(async (req, res) => {
         const friends = await getCurrentFriends(req.params.userId);
         res.json(friends);
     }))
@@ -156,8 +167,8 @@ router.delete('/suggestions/:suggestedUserId', authenticate, removeUserSuggestio
  * Get photos from an user given his posts
  */
 router.get('/users/:userId/photos', authenticate, paramUserIdValidationRules, validate, handleErrorAsync(async (req, res) => {
-        const photos = await getPhotos(req.params.userId)
-        res.json(photos)
-    }))
+    const photos = await getPhotos(req.params.userId)
+    res.json(photos)
+}))
 
 export default router;

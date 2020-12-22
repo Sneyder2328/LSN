@@ -19,13 +19,13 @@ const handleErrorAsync_1 = require("../../middlewares/handleErrorAsync");
 const authenticate_1 = __importDefault(require("../../middlewares/authenticate"));
 const endpoints_1 = __importDefault(require("../../utils/constants/endpoints"));
 const httpResponseCodes_1 = __importDefault(require("../../utils/constants/httpResponseCodes"));
-const config_1 = __importDefault(require("../../config/config"));
 const multer_1 = __importDefault(require("multer"));
 const constants_1 = require("../../utils/constants");
 const cloudinaryConfig_1 = require("../../config/cloudinaryConfig");
 const multer_storage_cloudinary_1 = __importDefault(require("multer-storage-cloudinary"));
 const relationshipService_1 = require("./relationshipService");
 const verifyParamId_1 = require("../../middlewares/verifyParamId");
+const utils_1 = require("../../utils/utils");
 const storage = multer_storage_cloudinary_1.default({
     cloudinary: cloudinaryConfig_1.cloudinary,
     folder: 'usersImages',
@@ -50,9 +50,16 @@ const router = express_1.Router();
  */
 router.get(endpoints_1.default.user.USERS(':userIdentifier'), authenticate_1.default, validate_1.getProfileValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userIdentifier = req.params.userIdentifier;
-    const includePosts = req.query.includePosts == "true";
-    const user = userIdentifier.match(config_1.default.regex.uuidV4) ? yield userService_1.getProfileByUserId(userIdentifier, includePosts, req.userId) : yield userService_1.getProfileByUsername(userIdentifier, includePosts, req.userId);
+    const user = utils_1.isUUIDV4(userIdentifier) ? yield userService_1.getProfileByUserId(userIdentifier, req.userId) : yield userService_1.getProfileByUsername(userIdentifier, req.userId);
     res.json(user);
+})));
+/**
+ * Get userId given an username
+ */
+router.get(`/users/:username/id`, authenticate_1.default, validate_1.getIdFromUserValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const username = req.params.username;
+    const userId = yield userService_1.getUserIdFromUsername(username);
+    res.json({ userId });
 })));
 /**
  * Update current logged in user's profile basic data

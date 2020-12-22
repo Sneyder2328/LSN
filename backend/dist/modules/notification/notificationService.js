@@ -50,7 +50,7 @@ ORDER BY createdAt DESC
         type: database_1.sequelize.QueryTypes.SELECT
     });
     return Promise.all(notifications.map(({ id, senderId, activityType, activityId, objectId, status, createdAt }) => __awaiter(void 0, void 0, void 0, function* () {
-        const senderProfile = yield userService_1.getProfileByUserId(senderId, false, userId, false);
+        const senderProfile = yield userService_1.getProfileByUserId(senderId, userId, false);
         const avatarUrl = senderProfile.profilePhotoUrl;
         const title = yield exports.generateTitleForNotif(activityType, senderProfile.fullname, objectId);
         return {

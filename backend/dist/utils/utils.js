@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const uuid_1 = require("uuid");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const config_1 = __importDefault(require("../config/config"));
 /**
  * gen hex(uuid) for user,post,comment,etc
  */
@@ -40,4 +41,7 @@ exports.compareByDateDesc = (one, two) => new Date(one.createdAt).getTime() - ne
 exports.compareByDateAsc = (one, two) => new Date(two.createdAt).getTime() - new Date(one.createdAt).getTime();
 exports.isRealString = (str) => {
     return typeof str === 'string' && str.trim().length > 0;
+};
+exports.isUUIDV4 = (userIdentifier) => {
+    return userIdentifier.match(config_1.default.regex.uuidV4);
 };

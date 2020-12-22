@@ -1,5 +1,5 @@
 import config from "../config/config";
-import {body, header, param, query, validationResult} from "express-validator";
+import { body, header, param, query, validationResult } from "express-validator";
 import httpCodes from "../utils/constants/httpResponseCodes";
 
 const trimInside = () => str => str.replace(/\s\s/g, ' ');
@@ -15,10 +15,10 @@ export const paramUserIdValidationRules = [
 export const signUpValidationRules = [
     body('username').trim().escape()
         .isAlphanumeric().withMessage('Username can only contain alphanumeric characters(A-Z, 0-9)')
-        .isLength({min: 5}).withMessage('Username must be at least 5 characters long'),
+        .isLength({ min: 5 }).withMessage('Username must be at least 5 characters long'),
     body('fullname').customSanitizer(trimInside()).escape().isString()
-        .isLength({min: 5}).withMessage('Full name must be at least 5 characters long'),
-    body('password').escape().isLength({min: 8}).withMessage('Password must be at least 8 characters long'),
+        .isLength({ min: 5 }).withMessage('Full name must be at least 5 characters long'),
+    body('password').escape().isLength({ min: 8 }).withMessage('Password must be at least 8 characters long'),
     body('typeLogin').trim()
         .custom(val => val === 'email' || val === 'facebook' || val === 'google').withMessage('You must provide a valid type of login(email,facebook,google)'),
     body('email').isEmail().normalizeEmail().withMessage('You must enter a valid email address'),
@@ -42,14 +42,19 @@ export const getProfileValidationRules = [
     }).withMessage("userIdentifier provided is not alphanumeric nor uuidV4")
 ];
 
+export const getIdFromUserValidationRules = [
+    param('username').trim().escape().custom((value: string) => value.match("^[a-zA-Z0-9]+$"))
+        .withMessage("username provided is not alphanumeric")
+]
+
 export const updateProfileValidationRules = [
     param('userId').trim().escape().custom((value: string) => value.match(config.regex.uuidV4))
         .withMessage("userId provided is not uuidV4"),
     body('username').trim().escape()
         .isAlphanumeric().withMessage('Username can only contain alphanumeric characters(A-Z, 0-9)')
-        .isLength({min: 5}).withMessage('Username must be at least 5 characters long'),
+        .isLength({ min: 5 }).withMessage('Username must be at least 5 characters long'),
     body('fullname').customSanitizer(trimInside()).escape().isString()
-        .isLength({min: 5}).withMessage('Full name must be at least 5 characters long'),
+        .isLength({ min: 5 }).withMessage('Full name must be at least 5 characters long'),
     body('description').trim().isString().escape(),
     body('coverPhotoUrl').trim().isString().escape(),
     body('profilePhotoUrl').trim().isString().escape()
@@ -135,7 +140,7 @@ export function validate(req, res, next) {
     if (errors.isEmpty()) return next();
     const extractedErrors = [];
     // @ts-ignore
-    errors.array().map(err => extractedErrors.push({[err.param]: err.msg}));
+    errors.array().map(err => extractedErrors.push({ [err.param]: err.msg }));
     return res.status(httpCodes.UNPROCESSABLE_ENTITY).json({
         errors: extractedErrors,
     })

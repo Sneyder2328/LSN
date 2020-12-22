@@ -59,7 +59,7 @@ router.delete(endpoints_1.default.comment.DISLIKE_COMMENT(':commentId'), authent
  * Get all comments by a given post
  */
 router.get(endpoints_1.default.comment.GET_COMMENTS(':postId'), authenticate_1.default, validate_1.getCommentsValidationRules, validate_1.validate, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const response = yield commentService_1.getComments2(req.userId, req.params.postId, req.query.limit, req.query.offset);
+    const response = yield commentService_1.getComments(req.userId, req.params.postId, req.query.limit, req.query.offset);
     res.status(httpResponseCodes_1.default.OK).send(response);
 })));
 exports.default = router;

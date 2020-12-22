@@ -26,7 +26,7 @@ notificationsEmitter.on(CREATE_NOTIFICATION,
         setImmediate(async () => {
             console.log('CREATE_NOTIFICATION', senderId, recipientId, objectId, activityType);
             await saveNotification({objectId, activityType, activityId, senderId, recipientId, id})
-            const senderProfile = await getProfileByUserId(senderId, false, recipientId, false)
+            const senderProfile = await getProfileByUserId(senderId, recipientId, false)
             const avatarUrl = senderProfile.profilePhotoUrl
             const title = await generateTitleForNotif(activityType, senderProfile.fullname, objectId)
             io.to(recipientId).emit(NEW_NOTIFICATION, {

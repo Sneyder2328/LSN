@@ -38,7 +38,7 @@ ORDER BY createdAt DESC
         type: sequelize.QueryTypes.SELECT
     })
     return Promise.all(notifications.map(async ({id, senderId, activityType, activityId, objectId, status, createdAt}) => {
-        const senderProfile = await getProfileByUserId(senderId, false, userId, false)
+        const senderProfile = await getProfileByUserId(senderId, userId, false)
         const avatarUrl = senderProfile.profilePhotoUrl
         const title = await generateTitleForNotif(activityType, senderProfile.fullname, objectId)
         return {

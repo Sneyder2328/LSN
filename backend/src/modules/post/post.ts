@@ -4,7 +4,7 @@ import {
     dislikePost,
     getPost,
     getPostFromPhoto,
-    getPostsByHashtag, getPostsBySection, getTrendingHashtags,
+    getPostsByHashtag, getPostsBySection, getPostsByUser, getTrendingHashtags,
     likePost,
     removeLikeOrDislikeFromPost
 } from "./postService";
@@ -23,6 +23,8 @@ import { cloudinary } from "../../config/cloudinaryConfig";
 import cloudinaryStorage from "multer-storage-cloudinary";
 import { AppError } from "../../utils/errors/AppError";
 import { MAX_IMG_FILE_SIZE, MAX_IMGS_PER_UPLOAD } from "../../utils/constants";
+import { getUserIdFromUsername } from "../user/userService";
+import { isUUIDV4 } from "../../utils/utils";
 
 
 const storage = cloudinaryStorage({
@@ -63,11 +65,24 @@ router.post('/imageposts', authenticate, multerUploads, createPostValidationRule
 
 /**
  * Get posts by section('top'|'latest') or by hashtag(#{SomeWord})
+ * TODO validate inpus here!
  */
 router.get(endpoints.post.GET_POSTS, authenticate,
     handleErrorAsync(async (req, res) => {
         const posts = req.query.section ? await getPostsBySection(req.userId, req.query.section, req.query.limit, req.query.offset) : await getPostsByHashtag(req.userId, req.query.hashtag, req.query.limit, req.query.offset);
         res.status(httpCodes.OK).send(posts);
+    }));
+
+/**
+* Get posts by user(id or username)
+* TODO validate inpus here!
+*/
+router.get('/users/:userIdentifier/posts/', authenticate,
+    handleErrorAsync(async (req, res) => {
+        const userIdentifier: string = req.params.userIdentifier;
+        const userId = isUUIDV4(userIdentifier) ? userIdentifier : await getUserIdFromUsername(userIdentifier)
+        const posts = await getPostsByUser(userId, req.userId, req.query.limit, req.query.offset)
+        res.status(httpCodes.OK).send({userId, posts});
     }));
 
 router.get('/posts/:postId', authenticate, getPostValidationRules, validate,

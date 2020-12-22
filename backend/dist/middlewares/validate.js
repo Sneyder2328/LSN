@@ -39,6 +39,10 @@ exports.getProfileValidationRules = [
         return value.match(config_1.default.regex.uuidV4) || value.match("^[a-zA-Z0-9]+$");
     }).withMessage("userIdentifier provided is not alphanumeric nor uuidV4")
 ];
+exports.getIdFromUserValidationRules = [
+    express_validator_1.param('username').trim().escape().custom((value) => value.match("^[a-zA-Z0-9]+$"))
+        .withMessage("username provided is not alphanumeric")
+];
 exports.updateProfileValidationRules = [
     express_validator_1.param('userId').trim().escape().custom((value) => value.match(config_1.default.regex.uuidV4))
         .withMessage("userId provided is not uuidV4"),

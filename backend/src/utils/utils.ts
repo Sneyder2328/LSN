@@ -1,5 +1,6 @@
-import {v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import bcrypt from "bcryptjs";
+import config from '../config/config';
 
 /**
  * gen hex(uuid) for user,post,comment,etc
@@ -34,3 +35,7 @@ export const compareByDateAsc = (one: HasDate, two: HasDate): number => new Date
 export const isRealString = (str) => {
     return typeof str === 'string' && str.trim().length > 0;
 };
+
+export const isUUIDV4 = (userIdentifier: string) => {
+    return userIdentifier.match(config.regex.uuidV4);
+}

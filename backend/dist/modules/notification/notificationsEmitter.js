@@ -25,7 +25,7 @@ exports.notificationsEmitter.on(exports.CREATE_NOTIFICATION, ({ activityType, ac
     setImmediate(() => __awaiter(void 0, void 0, void 0, function* () {
         console.log('CREATE_NOTIFICATION', senderId, recipientId, objectId, activityType);
         yield notificationService_1.saveNotification({ objectId, activityType, activityId, senderId, recipientId, id });
-        const senderProfile = yield userService_1.getProfileByUserId(senderId, false, recipientId, false);
+        const senderProfile = yield userService_1.getProfileByUserId(senderId, recipientId, false);
         const avatarUrl = senderProfile.profilePhotoUrl;
         const title = yield notificationService_1.generateTitleForNotif(activityType, senderProfile.fullname, objectId);
         index_1.io.to(recipientId).emit(exports.NEW_NOTIFICATION, {

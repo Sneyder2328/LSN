@@ -12,76 +12,38 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = require("../../database/database");
 const UserNotFoundError_1 = require("../../utils/errors/UserNotFoundError");
 const sequelize_1 = require("sequelize");
-const constants_1 = require("../../utils/constants");
-const postService_1 = require("../post/postService");
 const relationshipService_1 = require("./relationshipService");
-const { User, Post, Profile, PostImage, Comment } = database_1.models;
-const includePostsSorted = [
-    {
-        model: Post,
-        as: 'posts',
-        include: [
-            {
-                model: PostImage,
-                as: 'images',
-                attributes: ['url', 'id']
-            },
-            {
-                model: Comment,
-                as: 'comments',
-                limit: constants_1.LIMIT_COMMENTS_PER_POST,
-                order: [['createdAt', 'DESC']],
-                include: [Profile]
-            }
-        ]
-    }
-];
-function getProfileByUsername(username, includePosts, currentUserId) {
+const { User, Profile } = database_1.models;
+function getProfileByUsername(username, currentUserId) {
     return __awaiter(this, void 0, void 0, function* () {
-        let user;
-        if (includePosts) {
-            user = yield Profile.findOne({ where: { username }, include: includePostsSorted });
-            user = user.toJSON();
-            // console.log('getProfileByUsername posts are', user.posts, user.posts.length);
-            if (user.posts && user.posts.length !== 0) {
-                user.posts = yield postService_1.addLikeStatusToPosts(user.posts, currentUserId);
-            }
-            user.relationship = yield relationshipService_1.getRelationshipType(currentUserId, user.userId);
-        }
-        else {
-            user = yield Profile.findOne({ where: { username } });
-            user.setDataValue('relationship', yield relationshipService_1.getRelationshipType(currentUserId, user.userId));
-        }
+        const user = yield Profile.findOne({ where: { username } });
+        user.setDataValue('relationship', yield relationshipService_1.getRelationshipType(currentUserId, user.userId));
         if (!user)
             throw new UserNotFoundError_1.UserNotFoundError();
         return user;
     });
 }
 exports.getProfileByUsername = getProfileByUsername;
-function getProfileByUserId(userId, includePosts, currentUserId, includeRelationship = true) {
+function getProfileByUserId(userId, currentUserId, includeRelationship = true) {
     return __awaiter(this, void 0, void 0, function* () {
-        let user;
-        if (includePosts) {
-            user = yield Profile.findByPk(userId, { include: includePostsSorted });
-            // console.log('getProfileByUserId posts are', user.posts);
-            user = user.toJSON();
-            if (user.posts && user.posts.length !== 0) {
-                user.posts = yield postService_1.addLikeStatusToPosts(user.posts, currentUserId);
-            }
-            if (includeRelationship)
-                user.relationship = yield relationshipService_1.getRelationshipType(currentUserId, userId);
-        }
-        else {
-            user = yield Profile.findByPk(userId);
-            if (includeRelationship)
-                user.setDataValue('relationship', yield relationshipService_1.getRelationshipType(currentUserId, userId));
-        }
+        const user = yield Profile.findByPk(userId);
+        if (includeRelationship)
+            user.setDataValue('relationship', yield relationshipService_1.getRelationshipType(currentUserId, userId));
         if (!user)
             throw new UserNotFoundError_1.UserNotFoundError();
         return user;
     });
 }
 exports.getProfileByUserId = getProfileByUserId;
+function getUserIdFromUsername(username) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const user = yield Profile.findOne({ where: { username } });
+        if (!user)
+            throw new UserNotFoundError_1.UserNotFoundError();
+        return user.userId;
+    });
+}
+exports.getUserIdFromUsername = getUserIdFromUsername;
 function updateProfile(userId, { username, fullname, description }, imageFiles) {
     var _a, _b, _c, _d, _e, _f;
     return __awaiter(this, void 0, void 0, function* () {

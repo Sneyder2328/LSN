@@ -109,31 +109,7 @@ function findCommentLikesInfoByPk(commentId) {
         })).dataValues;
     });
 }
-function getComments(userId, postId, offset, limit) {
-    return __awaiter(this, void 0, void 0, function* () {
-        let comments = yield Comment.findAll({
-            where: { postId },
-            order: [['createdAt', 'DESC']],
-            offset: parseInt(offset),
-            limit: parseInt(limit),
-            include: [{ model: Profile }]
-        });
-        if (!comments)
-            return [];
-        const commentLikeStatusList = (yield Promise.all(comments.map(comment => exports.fetchCommentLikeStatus(comment.id, userId)))).filter(it => it != null);
-        console.log('commentLikeStatusList', commentLikeStatusList);
-        comments = comments.map(it => it.toJSON()).map(comment => {
-            const commentLikeStatus = commentLikeStatusList.find((commentLike) => commentLike.commentId === comment.id);
-            comment.likeStatus = commentLikeStatus != null ? (commentLikeStatus.isLike === true ? 'like' : 'dislike') : undefined;
-            comment.authorProfile = comment.Profile;
-            delete comment.Profile;
-            return comment;
-        }).sort(utils_1.compareByDateDesc);
-        return comments;
-    });
-}
-exports.getComments = getComments;
-function getComments2(currentUserId, postId, limit, offset) {
+function getComments(currentUserId, postId, limit, offset) {
     return __awaiter(this, void 0, void 0, function* () {
         let comments = yield database_1.sequelize.query(`
     SELECT C.id,
@@ -182,7 +158,7 @@ WHERE P.id = '${postId}'` + (offset ? ` AND C.createdAt <= '${offset}'` : ``)
         return comments.sort(utils_1.compareByDateDesc);
     });
 }
-exports.getComments2 = getComments2;
+exports.getComments = getComments;
 function getLikeStatusForComment(commentId, userId) {
     return __awaiter(this, void 0, void 0, function* () {
         const commentLikeStatus = yield exports.fetchCommentLikeStatus(commentId, userId);
