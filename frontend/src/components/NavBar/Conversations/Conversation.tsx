@@ -14,7 +14,7 @@ export const Conversation: React.FC<ConversationProps> = ({conversationId, onSel
     const dispatch = useDispatch()
     const conversations = useSelector((state: AppState) => state.messages.conversations.entities)
     const conversation = conversations[conversationId]
-    const users = useSelector((state: AppState) => state.entities.users.entities)
+    const users = useSelector((state: AppState) => state.users.entities)
     const interlocutor = users[conversation.interlocutorId]
     const messages = useSelector((state: AppState) => state.messages.entities)
     const lastMessage = conversation.lastMessageId ? messages[conversation.lastMessageId] : undefined

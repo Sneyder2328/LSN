@@ -29,7 +29,7 @@ export const EditProfileModal = () => {
     const dispatch = useDispatch()
     const userId: string = useSelector((state: AppState) => state.auth.userId)!!
     const isUpdatingProfile: boolean = useSelector((state: AppState) => state.auth.isUpdatingProfile) || false
-    const users = useSelector((state: AppState) => state.entities.users.entities)
+    const users = useSelector((state: AppState) => state.users.entities)
     const userProfile = users[userId]!!
     const history = useHistory()
 

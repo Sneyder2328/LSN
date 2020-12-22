@@ -49,7 +49,9 @@ export const Dropdown: React.FC<DropdownProps> & { Item: React.FC<DropdownItemPr
                     paddingTop: '16px',
                     display: 'flex',
                     flexWrap: 'wrap',
-                    minHeight: 'auto'
+                    height: '100%',
+                    alignContent: 'flex-start',
+                    alignItems: 'flex-start'
                 }
             }}>
                 {title && <span className={styles.title}>{title}</span>}

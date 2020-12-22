@@ -25,7 +25,7 @@ const getActionName = (currentUserId: string, profileUserId: string, relationshi
 };
 
 export const useProfileActionName = (currentUserId: string, userProfile?: UserObject) => {
-    const usersMetadata = useSelector((state: AppState) => state.entities.users.metas)
+    const usersMetadata = useSelector((state: AppState) => state.users.metas)
     const [actionName, setActionName] = useState<ActionType>(undefined)
     const userMetadata = usersMetadata[userProfile?.userId || ''];
 

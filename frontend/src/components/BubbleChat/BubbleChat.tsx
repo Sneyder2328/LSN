@@ -70,7 +70,7 @@ export const BubbleChat: React.FC<{ chat: ActiveChat }> = ({ chat }) => {
         }
     }
 
-    const users = useSelector((state: AppState) => state.entities.users.entities)
+    const users = useSelector((state: AppState) => state.users.entities)
     const user = users[chat.userId]
     // if (!user) return null
 

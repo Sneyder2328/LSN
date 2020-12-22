@@ -1,12 +1,13 @@
-import React, {useEffect} from 'react';
-import {useDispatch, useSelector} from "react-redux";
-import {fetchConversations} from "../../../modules/Messages/messagesActions";
-import {AppState} from "../../../modules/rootReducer";
-import {Conversation} from "./Conversation";
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from "react-redux";
+import { fetchConversations } from "../../../modules/Messages/messagesActions";
+import { AppState } from "../../../modules/rootReducer";
+import { Conversation } from "./Conversation";
 import classNames from "classnames";
 import styles from './styles.module.scss'
 import stylesNav from '../styles.module.scss'
-import {Dropdown} from "../../Dropdown/Dropdown";
+import { Dropdown } from "../../Dropdown/Dropdown";
+import { NoContent } from '../NoContent/NoContent';
 
 export const ConversationsList = () => {
     const dispatch = useDispatch()
@@ -16,10 +17,13 @@ export const ConversationsList = () => {
         dispatch(fetchConversations())
     }, [dispatch])
 
-    return (<Dropdown className={styles.list} title={'Conversations'}
-                      trigger={<i className={classNames(stylesNav.icon, "fas fa-inbox")}/>}>
-        {Object.values(conversations).map((conversation) => {
-            return <Conversation key={conversation.conversationId} conversationId={conversation.conversationId}/>
+    const listConversations = Object.values(conversations);
+    const conversationsAreEmpty = listConversations.length === 0;
+    return (<Dropdown className={classNames(styles.list, { [styles.empty]: conversationsAreEmpty })} title={'Conversations'}
+        trigger={<i className={classNames(stylesNav.icon, "fas fa-inbox")} />}>
+        {listConversations.map((conversation) => {
+            return <Conversation key={conversation.conversationId} conversationId={conversation.conversationId} />
         })}
+        <NoContent display={conversationsAreEmpty}/>
     </Dropdown>)
 }

@@ -23,29 +23,20 @@ const {
     fetchFriendsSuccess,
     fetchPhotosSuccess
 } = usersActions
-const {setComments} = commentsActions
-const {setPosts} = postActions
 
-export const fetchProfile = (userIdentifier: string, includePosts: boolean): AppThunk => async (dispatch) => {
-    console.log('fetchProfile', userIdentifier, includePosts)
+export const fetchProfile = (userIdentifier: string): AppThunk => async (dispatch) => {
+    console.log('fetchProfile', userIdentifier)
     dispatch(fetchProfileRequest())
     try {
-        const response = await UserApi.fetchProfile(userIdentifier, includePosts)
+        const response = await UserApi.fetchProfile(userIdentifier)
         const normalizedData = normalize(response.data, profile)
 
-        const posts = normalizedData.entities['posts'] as HashTable<PostObject>
-        const comments = normalizedData.entities['comments'] as HashTable<CommentObject>
         const profileHashTable = normalizedData.entities['profile'] as HashTable<any>
         const profileObj = profileHashTable[normalizedData.result]
-        profileObj.postIds = [...profileObj.posts]
-        delete profileObj.posts
         dispatch(setUsers(normalizedData.entities['users'] as HashTable<UserObject>));
         dispatch(setUser({user: profileObj, meta: {relationship: profileObj.relationship}}))
-        dispatch(setComments(comments))
-        dispatch(setPosts(posts))
         dispatch(fetchProfileSuccess({
-            userId: profileObj.userId,
-            postIds: profileObj.postIds
+            userId: profileObj.userId
         }))
     } catch (err) {
         console.log('fetchProfile err', err);
@@ -55,7 +46,7 @@ export const fetchProfile = (userIdentifier: string, includePosts: boolean): App
 
 export const getUserBasicInfo = (userId: string): AppThunk => async (dispatch) => {
     try {
-        const response = await UserApi.fetchProfile(userId, false);
+        const response = await UserApi.fetchProfile(userId);
         const user = response.data as UserObject;
         dispatch(setUsers({
             [user.userId]: user

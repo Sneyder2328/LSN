@@ -7,7 +7,7 @@ import {UserSuggested} from "./UserSuggested";
 
 export const UsersSuggestions = () => {
     const dispatch = useDispatch()
-    const {suggestions} = useSelector((state: AppState) => state.entities.users)
+    const {suggestions} = useSelector((state: AppState) => state.users)
     useEffect(() => {
         dispatch(fetchUsersSuggestions())
     }, [dispatch])

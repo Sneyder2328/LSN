@@ -7,7 +7,7 @@ import {Link} from "react-router-dom";
 import {userLink} from "../../../api";
 
 export const Friend: React.FC<{ userId: string }> = ({userId}) => {
-    const users = useSelector((state: AppState) => state.entities.users.entities)
+    const users = useSelector((state: AppState) => state.users.entities)
     const user = users[userId]
     if (!user) return null
 

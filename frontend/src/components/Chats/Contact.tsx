@@ -7,7 +7,7 @@ import {messagesActions} from "../../modules/Messages/messagesReducer";
 const {openBubbleChat} = messagesActions
 
 export const Contact: React.FC<{ userId: string }> = ({userId}) => {
-    const users = useSelector((state: AppState) => state.entities.users.entities)
+    const users = useSelector((state: AppState) => state.users.entities)
     const dispatch = useDispatch()
     const user = users[userId]
     if (!user) return null

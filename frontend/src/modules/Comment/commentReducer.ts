@@ -99,11 +99,11 @@ export const commentsReducer = commentsSlice.reducer
 export const commentsActions = commentsSlice.actions
 
 const selectCommentObject = (state: AppState, commentId: string) => {
-    return state.entities.comments.entities[commentId];
+    return state.comments.entities[commentId];
 };
 
 const selectCommentAuthorObject = (state: AppState, commentId: string) => {
-    return state.entities.users.entities[selectCommentObject(state, commentId).userId]
+    return state.users.entities[selectCommentObject(state, commentId).userId]
 };
 
 export const selectComment = () => createSelector([selectCommentObject, selectCommentAuthorObject],

@@ -1,0 +1,17 @@
+@import "src/utils/variables";
+
+.nothingToLoad {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  margin-top: 25px;
+
+  span {
+    color: #5c5c5c;
+    padding:  12px 15px;
+    font-weight: 500;
+    cursor: default;
+    border: 1px solid $interactColor;
+    border-radius: 16px;
+  }
+}

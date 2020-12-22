@@ -136,7 +136,6 @@ export const messagesSlice = createSlice({
             listMessages.forEach(({ messageId, createdAt }) => {
                 if (!msgs.find((msg) => msg.messageId === messageId)) msgs.push({ messageId, createdAt })
             })
-            console.log('listMEssages=', listMessages);
             state.users[action.payload.otherUserId].messagesList = msgs
             state.users[action.payload.otherUserId].offset = msgs[msgs.length - 1].createdAt
         }

@@ -11,7 +11,7 @@ const options = {
     useWebWorker: true
 };
 
-export const LIMIT_POSTS_IN_NEWSFEED = 10;
+export const LIMIT_POSTS_IN_USER_PROFILE = 10;
 export const LIMIT_POSTS_BY_HASHTAG = 10;
 
 export const PostApi = {
@@ -35,7 +35,10 @@ export const PostApi = {
         });
     },
     async getPosts(section: string, offset?: string) {
-        return await transport.get('/posts/', {params: {section, offset, limit: LIMIT_POSTS_IN_NEWSFEED}});
+        return await transport.get('/posts/', {params: {section, offset, limit: LIMIT_POSTS_IN_USER_PROFILE}});
+    },
+    async getPostsByUser(userIdentifier: string, offset?: string): Promise<AxiosResponse<{userId: string; posts: Array<PostObject>}>> {
+        return await transport.get(`/users/${userIdentifier}/posts`, {params: {offset, limit: LIMIT_POSTS_IN_USER_PROFILE}});
     },
     async getPostsByHashtag(hashtag: string, offset?: string) {
         return await transport.get('/posts/', {params: {hashtag, offset, limit: LIMIT_POSTS_BY_HASHTAG}});

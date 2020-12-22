@@ -4,14 +4,14 @@ import {Provider} from 'react-redux';
 import {persistor, store} from "../store";
 import {removeAuthTokenHeaders, setAccessTokenHeaders} from "../utils/setAccessTokenHeaders";
 import {PersistGate} from "redux-persist/integration/react";
-import {PageNotFound} from "../components/shared/PageNotFound";
 import {AuthRoute} from "../components/shared/AuthRoute";
 import {ModalContainer} from "../components/Modals/ModalContainer";
 import {AuthForm} from "./Auth";
 import {NewsFeedPage} from "./NewsFeed/NewsFeed";
-import {UserProfilePage} from "./UserProfile/UserProfile";
+import {UserProfilePage} from "./UserProfilePage/UserProfilePage";
 import {PostPage} from "./PostPage/PostPage";
 import {PhotoDetailPage} from "./PhotoDetailPage/PhotoDetailPage";
+import { NotFoundPage } from './NotFoundPage/PageNotFound';
 
 export const App = () => {
     return (
@@ -24,7 +24,7 @@ export const App = () => {
                         <AuthRoute path='/posts/:postId' component={PostPage}/>
                         <AuthRoute path='/photos/:photoId' component={PhotoDetailPage}/>
                         <AuthRoute path='/users/:userIdentifier' component={UserProfilePage}/>
-                        <Route path='*' component={PageNotFound}/>
+                        <Route path='*' component={NotFoundPage}/>
                     </Switch>
                     <ModalContainer/>
                 </BrowserRouter>

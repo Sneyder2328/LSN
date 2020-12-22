@@ -10,7 +10,7 @@ import {userLink} from "../../api";
 
 export const UserSuggested: React.FC<{ suggestion: UserSuggestion }> = ({suggestion}) => {
     const dispatch = useDispatch()
-    const users = useSelector((state: AppState) => state.entities.users.entities)
+    const users = useSelector((state: AppState) => state.users.entities)
     const user = users[suggestion.userId]
     if (!user) return null
 

@@ -10,7 +10,7 @@ import {Contact} from "./Contact";
 export const Chats = () => {
     const [isOpen, setIsOpen] = useState<Boolean>(true)
     const dispatch = useDispatch()
-    const usersMetadata = useSelector((state: AppState) => state.entities.users.metas)
+    const usersMetadata = useSelector((state: AppState) => state.users.metas)
     const {userId} = useSelector((state: AppState) => state.auth)
     const friends = usersMetadata[userId!]?.friendsIds || []
 

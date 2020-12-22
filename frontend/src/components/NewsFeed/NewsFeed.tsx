@@ -26,13 +26,8 @@ export const NewsFeed = () => {
             rootMargin: "20px",
             threshold: 1.0
         };
-        // initialize IntersectionObserver
-        // and attaching to Load More div
         const observer = new IntersectionObserver(handleObserver, options);
-        if (loader.current) {
-            observer.observe(loader.current)
-        }
-
+        if (loader.current) observer.observe(loader.current)
     }, []);
 
     // here we handle what happens when user scrolls to Load More div
@@ -50,7 +45,6 @@ export const NewsFeed = () => {
             {postsIds?.map((postId: string) => <Post postId={postId} key={postId} />)}
             <div className={styles.loading} ref={loader}>
                 <Spinner name="ball-spin-fade-loader" color="aqua" className={classNames({ 'hide': !isLoadingPosts })} />
-                {/* <span>Loading more posts...</span> */}
             </div>
         </div>
     );

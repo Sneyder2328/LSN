@@ -7,7 +7,7 @@ import {Friend} from "./Friend";
 
 export const Friends: React.FC<{ userId?: string }> = ({userId}) => {
     const dispatch = useDispatch()
-    const usersMetadata = useSelector((state: AppState) => state.entities.users.metas)
+    const usersMetadata = useSelector((state: AppState) => state.users.metas)
 
     useEffect(() => {
         userId && dispatch(fetchFriends(userId))

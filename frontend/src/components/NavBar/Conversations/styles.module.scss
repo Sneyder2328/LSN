@@ -36,7 +36,11 @@
 
 .list {
   width: 320px;
-  height: 70vh;
+  height: 50vh;
   overflow-y: auto;
   margin-top: 4px;
+
+  &.empty {
+    max-height: 150px;
+  }
 }

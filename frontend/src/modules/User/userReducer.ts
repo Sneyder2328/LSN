@@ -23,20 +23,12 @@ export interface UserObject extends Profile {
 
 }
 
-// export interface UserObject extends Profile {
-//     relationship: RelationshipType;
-//     updatingRelationship?: boolean;
-//     isOnline?: boolean;
-//     postsIds?: Array<string>;
-// }
-
 export type PhotoObject = { id: string; url: string };
 
 export interface UserMetadata {
     relationship?: RelationshipType;
     isOnline?: boolean;
     updatingRelationship?: boolean;
-    postsIds?: Array<string>;
     friendsIds?: Array<string>;
     photos?: Array<PhotoObject>;
 }
@@ -44,7 +36,6 @@ export interface UserMetadata {
 const initialState: UsersState = {
     entities: {},
     metas: {},
-    // contacts: [],
     suggestions: []
 };
 
@@ -71,10 +62,9 @@ export const usersSlice = createSlice({
         fetchProfileRequest: (state) => {
 
         },
-        fetchProfileSuccess: (state, action: PayloadAction<{ userId: string; postIds: Array<string> }>) => {
+        fetchProfileSuccess: (state, action: PayloadAction<{ userId: string }>) => {
             state.metas[action.payload.userId] = {
-                ...state.metas[action.payload.userId],
-                postsIds: action.payload.postIds
+                ...state.metas[action.payload.userId]
             }
         },
         fetchProfileError: (state) => {

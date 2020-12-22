@@ -7,7 +7,7 @@ import {ProfilePhoto} from "../ProfilePhoto/ProfilePhoto";
 
 export const DashBoardProfile = () => {
     const userId: string = useSelector((state: AppState) => state.auth.userId!!)
-    const users = useSelector((state: AppState) => state.entities.users.entities)
+    const users = useSelector((state: AppState) => state.users.entities)
     const currentUser = users[userId]
 
     if (!currentUser) return null

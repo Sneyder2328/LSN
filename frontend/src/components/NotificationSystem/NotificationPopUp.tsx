@@ -33,7 +33,6 @@ export const NotificationPopUp: React.FC<{ notificationId: string }> = ({notific
 
 
 const getLinkForNotification = (activityType: "post_commented" | "comment_liked" | "post_liked" | "post_shared" | "friendrequest_incoming" | "friendrequest_accepted", objectId: string) => {
-    console.log('getLinkForNotification', activityType, objectId)
     switch (activityType) {
         case ActivityType.POST_LIKED:
         case ActivityType.POST_COMMENTED:
@@ -48,7 +47,6 @@ const getLinkForNotification = (activityType: "post_commented" | "comment_liked"
 };
 
 export const useNotification = (notificationId: string) => {
-    console.log('useNotification', notificationId)
     const notifications = useSelector((state: AppState) => state.notification.entities)
     const notification = notifications[notificationId]
     const createdAt = useTimeSincePublished(notification.createdAt)
@@ -56,7 +54,6 @@ export const useNotification = (notificationId: string) => {
     const text = notification.title.slice(notification.title.indexOf('</strong>') + 9)
     const link = getLinkForNotification(notification.activityType, notification.activityId)
 
-    console.log('useNotification returning', notificationId, 'notf=', notification)
     return {
         notification, createdAt, fullname, text, link
     }

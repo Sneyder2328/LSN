@@ -1,4 +1,4 @@
-import { PostApi, LIMIT_POSTS_IN_NEWSFEED } from "./postApi";
+import { PostApi, LIMIT_POSTS_IN_USER_PROFILE } from "./postApi";
 import { normalize } from "normalizr";
 import { post } from "../../api/schema";
 import { CommentObject, commentsActions } from "../Comment/commentReducer";
@@ -13,7 +13,7 @@ const { setComments } = commentsActions
 
 const {
     loadPostsRequest, loadPostsSuccess, loadPostsError, interactPostError, interactPostRequest,
-    interactPostSuccess, createPostError, createPostRequest, createPostSuccess
+    interactPostSuccess, createPostError, createPostRequest, createPostSuccess, loadPostsByUserSuccess, loadPostsByUserRequest, loadPostsByUserError
 } = postActions
 
 export const createPost = (postData: PostRequest): AppThunk => async (dispatch) => {
@@ -40,7 +40,7 @@ export const loadPosts = (): AppThunk => async (dispatch, getStore) => {
         dispatch(loadPostsRequest({ section: currentSection }));
         const postIds = getStore().newsFeed[currentSection].postIds;
         const lastPostId = postIds.length > 0 ? postIds[postIds.length - 1] : undefined
-        const offset = lastPostId ? getStore().entities.posts.entities[lastPostId].createdAt : undefined
+        const offset = lastPostId ? getStore().posts.entities[lastPostId].createdAt : undefined
         const response = await PostApi.getPosts(getStore().newsFeed.currentSection, offset);
         const normalizedData = normalize(response.data, [post]);
         dispatch(setUsers(normalizedData.entities['users'] as HashTable<UserObject>));
@@ -64,6 +64,26 @@ export const loadPost = (postId: string): AppThunk => async (dispatch) => {
     } catch (err) {
         console.log('loadPost err', err);
         dispatch(postActions.loadPostError());
+    }
+};
+
+export const loadPostsByUser = (userId: string): AppThunk => async (dispatch, getStore) => {
+    dispatch(loadPostsByUserRequest({userId}))
+    try {
+        const offset = getStore().posts.users[userId].offset
+        const response = await PostApi.getPostsByUser(userId, offset);
+        const normalizedData = normalize(response.data.posts, [post]);
+        dispatch(setUsers(normalizedData.entities['users'] as HashTable<UserObject>));
+        dispatch(setComments(normalizedData.entities['comments'] as HashTable<CommentObject>));
+        console.log('byuser posts', normalizedData);
+        dispatch(loadPostsByUserSuccess({
+            userId: response.data.userId,
+            posts: normalizedData.entities['posts'] as HashTable<PostObject>,
+            postsIds: normalizedData.result
+        }))
+    } catch (err) {
+        console.log('loadPostsByUser err', err);
+        dispatch(loadPostsByUserError({userId}))
     }
 };
 

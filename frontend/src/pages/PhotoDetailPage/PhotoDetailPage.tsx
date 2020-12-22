@@ -18,9 +18,9 @@ export const PhotoDetailPage = () => {
     useEffect(() => {
         photoId && dispatch(loadPostByPhoto(photoId))
     }, [photoId, dispatch])
-    const postsIdsByPhotoId = useSelector((state: AppState) => state.entities.posts.postsIdsByPhotoId)
+    const postsIdsByPhotoId = useSelector((state: AppState) => state.posts.postsIdsByPhotoId)
     const postId = postsIdsByPhotoId[photoId]?.postId
-    const posts = useSelector((state: AppState) => state.entities.posts.entities)
+    const posts = useSelector((state: AppState) => state.posts.entities)
     const post = posts[postId]
     const history = useHistory()
 

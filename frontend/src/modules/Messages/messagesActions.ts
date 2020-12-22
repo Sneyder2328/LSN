@@ -12,7 +12,6 @@ export const fetchMessages = (otherUserId: string): AppThunk => async (dispatch,
     try {
         const currentOffset: string|undefined = getStore().messages.users?.[otherUserId]?.offset
         const response = await MessagesApi.getMessages(otherUserId, currentOffset, MESSAGES_LIMIT)
-        console.log('fetchMessages response=', response.data);
         const messages = normalize(response.data, [message])?.entities?.messages as HashTable<MessageObject>
         dispatch(messagesActions.fetchMessagesSuccess({messages, otherUserId}))
     } catch (err) {

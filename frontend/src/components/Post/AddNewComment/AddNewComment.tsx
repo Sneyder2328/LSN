@@ -13,7 +13,7 @@ export type AddNewCommentProps = {
 }
 export const AddNewComment: React.FC<AddNewCommentProps> = ({ onCommentContentChanged, shouldFocusTextEditor, onSubmitComment }) => {
     const userId = useSelector((appState: AppState) => appState.auth.userId)
-    const users = useSelector((appState: AppState) => appState.entities.users.entities)
+    const users = useSelector((appState: AppState) => appState.users.entities)
     const user = users[userId||'']
 
     return (<div className={styles.newComment}>

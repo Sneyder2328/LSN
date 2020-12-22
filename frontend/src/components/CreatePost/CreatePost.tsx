@@ -15,7 +15,7 @@ import {ProfilePhoto} from "../ProfilePhoto/ProfilePhoto";
 export const CreatePost = () => {
     const dispatch = useDispatch()
     const userId: string = useSelector((state: AppState) => state.auth.userId!!)
-    const users = useSelector((state: AppState) => state.entities.users.entities)
+    const users = useSelector((state: AppState) => state.users.entities)
     const user = users[userId]
     const [text, setText] = useState<string>('');
     const [cleanTextEditor, setCleanTextEditor] = useState<boolean>(false);
