@@ -54,7 +54,6 @@ export const PhotoDetailPage = () => {
     }
     return (
         <div style={{height: '100%'}}>
-            <NavBar/>
             <main className='page-outer'>
                 <div className={styles.pageContainer}>
                     <div className={styles.leftSection}>
@@ -71,8 +70,6 @@ export const PhotoDetailPage = () => {
                     </div>
                 </div>
             </main>
-            <BottomMsgsBar/>
-            <NotificationSystem/>
         </div>
     );
 }

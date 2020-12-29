@@ -13,7 +13,6 @@ type Props = {
 export const ThreeSectionsPage: React.FC<Props> = ({LeftComponents, MainComponents, RightComponents}) => {
     return (
         <div>
-            <NavBar/>
             <main>
                 <div className={styles.pageContainer}>
                     <div className={styles.leftSection}>
@@ -31,8 +30,6 @@ export const ThreeSectionsPage: React.FC<Props> = ({LeftComponents, MainComponen
                     </div>
                 </div>
             </main>
-            <BottomMsgsBar/>
-            <NotificationSystem/>
         </div>
     );
 };

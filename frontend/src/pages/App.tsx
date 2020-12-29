@@ -13,12 +13,17 @@ import { PostPage } from "./PostPage/PostPage";
 import { PhotoDetailPage } from "./PhotoDetailPage/PhotoDetailPage";
 import { TrendsPage } from './TrendsPage/TrendsPage';
 import { NotFoundPage } from './NotFoundPage/PageNotFound';
+import { BottomMsgsBar } from '../components/BottomMessagingBar/BottomMsgsBar';
+import { NotificationSystem } from '../components/NotificationSystem/NotificationSystem';
+import { AuthComponent } from '../components/shared/AuthComponent';
+import { NavBar } from '../components/NavBar/NavBar';
 
 export const App = () => {
     return (
         <Provider store={store}>
             <PersistGate loading={null} persistor={persistor}>
                 <BrowserRouter>
+                    <AuthComponent component={NavBar}/>
                     <Switch>
                         <Route exact path='/login' component={AuthForm} />
                         <AuthRoute exact path='/' component={NewsFeedPage} />
@@ -28,6 +33,8 @@ export const App = () => {
                         <AuthRoute path='/trends/:trend' component={TrendsPage} />
                         <Route path='*' component={NotFoundPage} />
                     </Switch>
+                    <AuthComponent component={BottomMsgsBar}/>
+                    <AuthComponent component={NotificationSystem}/>
                     <ModalContainer />
                 </BrowserRouter>
             </PersistGate>
