@@ -1,17 +1,17 @@
 import React from "react";
 import styles from "./styles.module.scss";
 import classNames from "classnames";
-import {ProfilePhoto} from "../ProfilePhoto/ProfilePhoto";
-import {useDispatch, useSelector} from "react-redux";
-import {AppState} from "../../modules/rootReducer";
-import {useTimeSincePublished} from "../../hooks/updateRelativeTimeHook";
-import {ActivityType} from "../../modules/Notifications/notificationsApi";
-import {postLink, userLink} from "../../api";
-import {Link} from "react-router-dom";
-import {notificationsActions} from "../../modules/Notifications/notificationsReducer";
+import { ProfilePhoto } from "../ProfilePhoto/ProfilePhoto";
+import { useDispatch, useSelector } from "react-redux";
+import { AppState } from "../../modules/rootReducer";
+import { useTimeSincePublished } from "../../hooks/updateRelativeTimeHook";
+import { ActivityType } from "../../modules/Notifications/notificationsApi";
+import { addNotfRefToLink, postLink, userLink } from "../../api";
+import { Link } from "react-router-dom";
+import { notificationsActions } from "../../modules/Notifications/notificationsReducer";
 
-export const NotificationPopUp: React.FC<{ notificationId: string }> = ({notificationId}) => {
-    const {notification, fullname, createdAt, text, link} = useNotification(notificationId)
+export const NotificationPopUp: React.FC<{ notificationId: string }> = ({ notificationId }) => {
+    const { notification, fullname, createdAt, text, link } = useNotification(notificationId)
     const dispatch = useDispatch()
 
     return (<div className={styles.notification}>
@@ -19,10 +19,10 @@ export const NotificationPopUp: React.FC<{ notificationId: string }> = ({notific
             <span className={styles.title}>New Notification</span>
             <i className={classNames(styles.icon, 'fas fa-times')} onClick={() => {
                 dispatch(notificationsActions.hideNotification(notificationId))
-            }}/>
+            }} />
         </div>
         <Link to={link} className={styles.details}>
-            <ProfilePhoto size={'medium'} className={styles.image} url={notification.avatarUrl}/>
+            <ProfilePhoto size={'medium'} className={styles.image} url={notification.avatarUrl} />
             <div className={styles.content}>
                 <span className={styles.text}><strong>{fullname}</strong>{text}</span>
                 <span className={styles.createdAt}>{createdAt}</span>
@@ -52,9 +52,10 @@ export const useNotification = (notificationId: string) => {
     const createdAt = useTimeSincePublished(notification.createdAt)
     const fullname = notification.title.slice(8, notification.title.indexOf('</strong>'))
     const text = notification.title.slice(notification.title.indexOf('</strong>') + 9)
-    const link = getLinkForNotification(notification.activityType, notification.activityId)
+    const link = addNotfRefToLink(getLinkForNotification(notification.activityType, notification.activityId), notificationId)
+    const status = notification.status
 
     return {
-        notification, createdAt, fullname, text, link
+        notification, createdAt, fullname, text, link, status
     }
 }

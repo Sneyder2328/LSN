@@ -1,16 +1,17 @@
 import React from 'react';
-import {BrowserRouter, Route, Switch} from 'react-router-dom';
-import {Provider} from 'react-redux';
-import {persistor, store} from "../store";
-import {removeAuthTokenHeaders, setAccessTokenHeaders} from "../utils/setAccessTokenHeaders";
-import {PersistGate} from "redux-persist/integration/react";
-import {AuthRoute} from "../components/shared/AuthRoute";
-import {ModalContainer} from "../components/Modals/ModalContainer";
-import {AuthForm} from "./Auth";
-import {NewsFeedPage} from "./NewsFeed/NewsFeed";
-import {UserProfilePage} from "./UserProfilePage/UserProfilePage";
-import {PostPage} from "./PostPage/PostPage";
-import {PhotoDetailPage} from "./PhotoDetailPage/PhotoDetailPage";
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { persistor, store } from "../store";
+import { removeAuthTokenHeaders, setAccessTokenHeaders } from "../utils/setAccessTokenHeaders";
+import { PersistGate } from "redux-persist/integration/react";
+import { AuthRoute } from "../components/shared/AuthRoute";
+import { ModalContainer } from "../components/Modals/ModalContainer";
+import { AuthForm } from "./Auth";
+import { NewsFeedPage } from "./NewsFeed/NewsFeed";
+import { UserProfilePage } from "./UserProfilePage/UserProfilePage";
+import { PostPage } from "./PostPage/PostPage";
+import { PhotoDetailPage } from "./PhotoDetailPage/PhotoDetailPage";
+import { TrendsPage } from './TrendsPage/TrendsPage';
 import { NotFoundPage } from './NotFoundPage/PageNotFound';
 
 export const App = () => {
@@ -19,14 +20,15 @@ export const App = () => {
             <PersistGate loading={null} persistor={persistor}>
                 <BrowserRouter>
                     <Switch>
-                        <Route exact path='/login' component={AuthForm}/>
-                        <AuthRoute exact path='/' component={NewsFeedPage}/>
-                        <AuthRoute path='/posts/:postId' component={PostPage}/>
-                        <AuthRoute path='/photos/:photoId' component={PhotoDetailPage}/>
-                        <AuthRoute path='/users/:userIdentifier' component={UserProfilePage}/>
-                        <Route path='*' component={NotFoundPage}/>
+                        <Route exact path='/login' component={AuthForm} />
+                        <AuthRoute exact path='/' component={NewsFeedPage} />
+                        <AuthRoute path='/posts/:postId' component={PostPage} />
+                        <AuthRoute path='/photos/:photoId' component={PhotoDetailPage} />
+                        <AuthRoute path='/users/:userIdentifier' component={UserProfilePage} />
+                        <AuthRoute path='/trends/:trend' component={TrendsPage} />
+                        <Route path='*' component={NotFoundPage} />
                     </Switch>
-                    <ModalContainer/>
+                    <ModalContainer />
                 </BrowserRouter>
             </PersistGate>
         </Provider>

@@ -1,8 +1,9 @@
 import uuid from "uuid";
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router";
 
 export const uniqueValuesArray = (arr1?: Array<string>, arr2?: Array<string>): Array<string> => {
-    const initialArray = arr1? [...arr1] : [];
+    const initialArray = arr1 ? [...arr1] : [];
     arr2?.forEach((item) => {
         if (!initialArray.includes(item)) initialArray.push(item)
     })
@@ -86,4 +87,8 @@ export const uuidv4Regex = /^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-
 
 export const isUUIDV4 = (userIdentifier: string) => {
     return userIdentifier.match(uuidv4Regex);
+}
+
+export const useQuery = () => {
+    return new URLSearchParams(useLocation().search)
 }

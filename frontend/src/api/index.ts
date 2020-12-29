@@ -1,15 +1,17 @@
 import axios from "axios";
-import {getTokens, isTokenExpired, updateAccessToken} from "../utils/tokensManager";
-import {ACCESS_TOKEN, FOURTEEN_MINUTES_IN_MILLIS, REFRESH_TOKEN} from "../utils/constants";
-import {store} from "../store";
-import {authActions} from "../modules/Auth/authReducer";
-import {AuthApi} from "../modules/Auth/authApi";
-import {AppState} from "../modules/rootReducer";
-const {logOutSuccess, refreshAccessTokenSuccess} = authActions
+import { getTokens, isTokenExpired, updateAccessToken } from "../utils/tokensManager";
+import { ACCESS_TOKEN, FOURTEEN_MINUTES_IN_MILLIS, REFRESH_TOKEN } from "../utils/constants";
+import { store } from "../store";
+import { authActions } from "../modules/Auth/authReducer";
+import { AuthApi } from "../modules/Auth/authApi";
+import { AppState } from "../modules/rootReducer";
+const { logOutSuccess, refreshAccessTokenSuccess } = authActions
 
 export const userLink = (userId: string) => `/users/${userId}`;
 export const postLink = (postId: string) => `/posts/${postId}`;
 export const photoLink = (photoId: string) => `/photos/${photoId}`;
+export const trendsLink = (trend: string) => `/trends/${trend}`;
+export const addNotfRefToLink = (link: string, notificationId: string) => `${link}?refNotificationId=${notificationId}`
 
 export const transport = axios.create({
     baseURL: process.env.REACT_APP_BASE_URL,
@@ -49,9 +51,9 @@ transport.interceptors.response.use((response) => response, async function (erro
 });
 
 
-const refreshAccessToken = async (dispatch: Function, getState: () => AppState): Promise<string|undefined> => {
+const refreshAccessToken = async (dispatch: Function, getState: () => AppState): Promise<string | undefined> => {
     try {
-        const {refreshToken} = getState().auth;
+        const { refreshToken } = getState().auth;
         console.log('refreshAccessToken refreshToken=', refreshToken);
         if (refreshToken) {
             const accessToken = await getNewAccessToken(refreshToken)
@@ -72,7 +74,7 @@ const refreshAccessToken = async (dispatch: Function, getState: () => AppState):
 
 async function getNewAccessToken(refreshToken: string): Promise<string | undefined> {
     console.log('getNewAccessToken', refreshToken);
-    const response = await transport.get('/tokens', {headers: {[REFRESH_TOKEN]: refreshToken}});
+    const response = await transport.get('/tokens', { headers: { [REFRESH_TOKEN]: refreshToken } });
     console.log('getNewAccessToken response=', response);
     if (response?.data?.accessTokenIssued === true)
         return Promise.resolve(response.headers[ACCESS_TOKEN] as string)

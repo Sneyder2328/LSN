@@ -8,6 +8,7 @@ import {usersReducer, UsersState} from "./User/userReducer";
 import {postsReducer, PostState} from "./Posts/postReducer";
 import {messagesReducer, MessagesState} from "./Messages/messagesReducer";
 import {notificationsReducer, NotificationsState} from "./Notifications/notificationsReducer";
+import { trendsReducer, TrendsState } from './Trends/trendsReducer';
 
 export interface AppState {
     auth: AuthState;
@@ -19,6 +20,7 @@ export interface AppState {
     messages: MessagesState;
     modal: ModalState;
     notification: NotificationsState;
+    trends: TrendsState;
 }
 
 export const rootReducer = combineReducers({
@@ -30,5 +32,6 @@ export const rootReducer = combineReducers({
     notification: notificationsReducer,
     posts: postsReducer,
     comments: commentsReducer,
-    users: usersReducer
+    users: usersReducer,
+    trends: trendsReducer
 });

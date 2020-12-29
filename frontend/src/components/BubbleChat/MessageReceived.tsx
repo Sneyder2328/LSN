@@ -14,5 +14,6 @@ export const MessageReceived: React.FC<Props> = ({message, interlocutor}) => {
         <ProfilePhoto size={'small3'} url={interlocutor?.profilePhotoUrl}/>
         <span className={styles.text}>{message?.content}</span>
         <i className={classNames("fas fa-ellipsis-v", styles.icon)}/>
+        {/* <span>{message.createdAt}</span> */}
     </div>)
 }

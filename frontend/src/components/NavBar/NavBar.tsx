@@ -36,11 +36,11 @@ export const NavBar = () => {
                 <div className={styles.logoContainer}>
                     <span style={{
                         fontWeight: 600,
-                        width: '48px',
+                        width: '50px',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        height: '46px',
+                        height: '48px',
                         backgroundColor: '#469EFA',
                         borderRadius: '50%',
                         position: 'relative',

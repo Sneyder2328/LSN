@@ -139,3 +139,20 @@
     }
   }
 }
+
+.countIndicator {
+  background-color: rgb(255, 45, 45);
+  width: 20px;
+  height: 20px;
+  left: 26px;
+  top: -5px;
+  border-radius: 10px;
+  position: absolute;
+  color: #fff;
+  border: 0.5px solid #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
