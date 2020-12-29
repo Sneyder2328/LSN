@@ -135,7 +135,6 @@ WHERE userTwoId='${userId}'
         var _b;
         const messages = yield getMessagesByConversation(conversationId, userId, interlocutorId, undefined, 1);
         return {
-            conversationId,
             interlocutorId,
             authorProfile: {
                 userId, username, fullname, description, coverPhotoUrl, profilePhotoUrl

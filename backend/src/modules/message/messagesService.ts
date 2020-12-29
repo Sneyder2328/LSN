@@ -131,9 +131,7 @@ WHERE userTwoId='${userId}'
             username, fullname, description, coverPhotoUrl, profilePhotoUrl, userId,
         }) => {
         const messages = await getMessagesByConversation(conversationId, userId, interlocutorId, undefined, 1)
-
         return {
-            conversationId,
             interlocutorId,
             authorProfile: {
                 userId, username, fullname, description, coverPhotoUrl, profilePhotoUrl
