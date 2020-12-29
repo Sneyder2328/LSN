@@ -1,6 +1,6 @@
 import { transport } from "../../api";
 import { AxiosResponse } from "axios";
-import { ConversationObject, MessageObject } from "./messagesReducer";
+import { MessageObject } from "./messagesReducer";
 
 export const MessagesApi = {
     async getMessages(otherUserId: string, offset: any, limit: number): Promise<AxiosResponse<Array<MessageObject>>> {
@@ -11,7 +11,7 @@ export const MessagesApi = {
             params: { deleteFor }
         });
     },
-    async getConversations(): Promise<AxiosResponse<Array<ConversationObject>>> {
+    async getConversations(): Promise<AxiosResponse<Array<any>>> {
         return await transport.get(`/conversations/`);
     }
 }

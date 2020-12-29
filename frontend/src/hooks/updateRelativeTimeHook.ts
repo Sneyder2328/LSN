@@ -1,5 +1,5 @@
-import {useEffect, useState} from "react";
-import {formatDistanceStrict} from "date-fns";
+import { useEffect, useState } from "react";
+import { formatDistanceStrict } from "date-fns";
 
 /**
  * Hook for updating the relative time of an entity every 60 seconds
@@ -18,6 +18,27 @@ export const useTimeSincePublishedShort = (createdAt: string) => {
         }, 60_000);
         return () => clearInterval(interval);
     }, []);
+
+    return timeSincePublished;
+};
+
+export const useTimeSincePublishedShort2 = (createdAt: string) => {
+    const options = {
+        addSuffix: false
+    }
+    const [timeSincePublished, setTimeSincePublished] = useState<string>("");
+
+    useEffect(() => {
+        const dateEntityCreated = new Date(createdAt).getTime();
+        const updateTime = (dateEntityCreated: number, options: { addSuffix: boolean; }) => {
+            setTimeSincePublished(formatDistanceStrict(new Date(dateEntityCreated), new Date(), options));
+        }
+        updateTime(dateEntityCreated, options)
+        const interval = setInterval(() => {
+            updateTime(dateEntityCreated, options)
+        }, 60_000);
+        return () => clearInterval(interval);
+    }, [createdAt]);
 
     return timeSincePublished;
 };

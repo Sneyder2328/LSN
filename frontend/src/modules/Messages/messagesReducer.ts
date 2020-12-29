@@ -19,7 +19,6 @@ export interface MessageObject {
 export type ActiveChat = { isOpen: boolean; userId: string };
 
 export type ConversationObject = {
-    conversationId: string;
     interlocutorId: string;
     lastMessageId?: string;
 }
@@ -31,20 +30,21 @@ export interface MessagesState {
         offset?: string;
         isLoading: boolean;
         allMessagesLoaded: boolean;
+        lastMessageId?: string;
     }>;// hashtable with a list of messages ids for each user
-    conversations: {
-        isLoading: boolean;
-        entities: HashTable<ConversationObject>;
-    }; // list of conversations of the current user
+    isLoadingConversations: boolean;
+    conversations: HashTable<ConversationObject>;
+    // conversations: {
+    //     isLoading: boolean;
+    //     entities: HashTable<ConversationObject>;
+    // }; // list of conversations of the current user
     activeChats: Array<ActiveChat>; // list of ids of users whose there is an ongoing chat open
 }
 
 const initialState = {
     activeChats: [],
-    conversations: {
-        entities: {},
-        isLoading: false
-    },
+    conversations: {},
+    isLoadingConversations: false,
     entities: {},
     users: {}
 } as MessagesState
@@ -78,34 +78,39 @@ export const messagesSlice = createSlice({
             console.log('sendMessage action=', action);
         },
         newMessageSuccess: (state, action: PayloadAction<{ message: MessageObject; interlocutorId: string }>) => {
+            const {interlocutorId, message} = action.payload
             const newMsgCreated = {
-                messageId: action.payload.message.id,
-                createdAt: action.payload.message.createdAt
+                messageId: message.id,
+                createdAt: message.createdAt
             };
-            state.entities[action.payload.message.id] = action.payload.message
-            if (state.users[action.payload.interlocutorId]) {
-                state.users[action.payload.interlocutorId].messagesList.push(newMsgCreated)
+            state.entities[message.id] = message
+            if (state.users[interlocutorId]) {
+                state.users[interlocutorId].messagesList.push(newMsgCreated)
             } else {
-                state.users[action.payload.interlocutorId] = {
+                state.users[interlocutorId] = {
                     messagesList: [newMsgCreated],
                     allMessagesLoaded: false,
                     isLoading: false
                 }
             }
+            state.conversations[interlocutorId] = {
+                interlocutorId, lastMessageId: message.id
+            }
         },
         fetchConversationsRequest: (state) => {
-            state.conversations.isLoading = true
+            state.isLoadingConversations = true
         },
         fetchConversationsSuccess: (state, action: PayloadAction<{ conversations: HashTable<ConversationObject>; messages?: HashTable<MessageObject> }>) => {
-            state.conversations.isLoading = false
+            state.isLoadingConversations = false
+            const { conversations, messages } = action.payload
             state.entities = {
                 ...state.entities,
-                ...action.payload.messages
+                ...messages
             }
-            state.conversations.entities = action.payload.conversations
+            state.conversations = conversations
         },
         fetchConversationsError: (state) => {
-            state.conversations.isLoading = false
+            state.isLoadingConversations = false
         },
         fetchMessagesRequest: (state, action: PayloadAction<{ otherUserId: string }>) => {
             if (state.users[action.payload.otherUserId]) {

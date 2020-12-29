@@ -7,21 +7,21 @@ import {messagesActions} from "../../../modules/Messages/messagesReducer";
 import {PreviewMessage} from "./PreviewMessage";
 
 type ConversationProps = {
-    conversationId: string;
+    interlocutorId: string;
     onSelected?: () => void;
 };
-export const Conversation: React.FC<ConversationProps> = ({conversationId, onSelected}) => {
+export const Conversation: React.FC<ConversationProps> = ({interlocutorId, onSelected}) => {
     const dispatch = useDispatch()
-    const conversations = useSelector((state: AppState) => state.messages.conversations.entities)
-    const conversation = conversations[conversationId]
     const users = useSelector((state: AppState) => state.users.entities)
-    const interlocutor = users[conversation.interlocutorId]
+    const conversations = useSelector((state: AppState) => state.messages.conversations)
+    const conversation = conversations[interlocutorId]
+    const interlocutor = users[interlocutorId]
     const messages = useSelector((state: AppState) => state.messages.entities)
     const lastMessage = conversation.lastMessageId ? messages[conversation.lastMessageId] : undefined
 
     const handleConversationSelected = () => {
         console.log('handleConversationSelected clicked!')
-        dispatch(messagesActions.openBubbleChat({userId: conversation.interlocutorId}))
+        dispatch(messagesActions.openBubbleChat({userId: interlocutorId}))
         onSelected && onSelected()
     }
     const lastMessageSentByMe = lastMessage?.senderId !== interlocutor.userId

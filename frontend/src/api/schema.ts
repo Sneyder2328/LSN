@@ -22,7 +22,7 @@ export const conversation = new schema.Entity('conversations', {
     authorProfile: user,
     message: message,
 }, {
-    idAttribute: "conversationId",
+    idAttribute: "interlocutorId",
     processStrategy: (entity) => {
         return {
             ...entity,

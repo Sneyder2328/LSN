@@ -38,8 +38,8 @@ export const BubbleChat: React.FC<{ chat: ActiveChat }> = ({ chat }) => {
     useEffect(() => {
         const offset = 70
         const top = messagesEndRef?.current?.getBoundingClientRect().top || 0;
-        const isVisible = top + offset >= 0 && top - offset <= window.innerHeight;
-        if (isVisible) scrollToBottom();
+        const isCloseEnoughToBottom = top + offset >= 0 && top - offset <= window.innerHeight;
+        if (isCloseEnoughToBottom || messages?.length <= 20) scrollToBottom();
     }, [messages])
 
     useEffect(() => {
@@ -54,7 +54,9 @@ export const BubbleChat: React.FC<{ chat: ActiveChat }> = ({ chat }) => {
         console.log('trying to observe', loader.current);
 
         if (loader.current) {
-            observer.observe(loader.current)
+            setTimeout(() => {
+                loader.current && observer.observe(loader.current)
+            }, 3000)
             console.log('observing');
         }
 

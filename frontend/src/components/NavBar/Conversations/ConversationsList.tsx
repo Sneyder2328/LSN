@@ -11,19 +11,18 @@ import { NoContent } from '../NoContent/NoContent';
 
 export const ConversationsList = () => {
     const dispatch = useDispatch()
-    const conversations = useSelector((state: AppState) => state.messages.conversations.entities)
+    const conversations = useSelector((state: AppState) => state.messages.conversations)
+    const conversationsList = Object.keys(conversations)
 
     useEffect(() => {
         dispatch(fetchConversations())
     }, [dispatch])
-
-    const listConversations = Object.values(conversations);
-    const conversationsAreEmpty = listConversations.length === 0;
+    const conversationsAreEmpty = conversationsList.length === 0;
     return (<Dropdown className={classNames(styles.list, { [styles.empty]: conversationsAreEmpty })} title={'Conversations'}
         trigger={<i className={classNames(stylesNav.icon, "fas fa-inbox")} />}>
-        {listConversations.map((conversation) => {
-            return <Conversation key={conversation.conversationId} conversationId={conversation.conversationId} />
+        {conversationsList.map((conversation) => {
+            return <Conversation key={conversation} interlocutorId={conversation} />
         })}
-        <NoContent display={conversationsAreEmpty}/>
+        <NoContent display={conversationsAreEmpty} />
     </Dropdown>)
 }
