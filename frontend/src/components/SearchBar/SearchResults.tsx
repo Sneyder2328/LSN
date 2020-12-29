@@ -9,6 +9,7 @@ import { userLink } from "../../api";
 import classNames from "classnames";
 // @ts-ignore
 import Spinner from 'react-spinkit';
+import { LoadingIndicator } from "../LoadingIndicator/LoadingIndicator";
 
 const Profile: React.FC<{ profile: UserSearch }> = ({ profile }) => {
     return (
@@ -36,7 +37,8 @@ export const SearchResults: React.FC<Props> = ({ query }) => {
                 people.map((profile) => <Profile key={profile.userId} profile={profile} />)
             }
             <div className={classNames(styles.loading, {'hide': !isSearching || people.length !== 0})}>
-                <Spinner name="ball-spin-fade-loader" color="aqua" className={classNames(styles.iconLoading)} />
+                {/* <Spinner name="ball-spin-fade-loader" color="aqua" className={classNames(styles.iconLoading)} /> */}
+                <LoadingIndicator/>
             </div>
         </div>
     );
