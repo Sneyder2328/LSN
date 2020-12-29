@@ -337,7 +337,7 @@ function getTrendsForTheLastNDays(n) {
         return yield database_1.sequelize.query(`
 SELECT name
 FROM Hashtag H
-         JOIN Hashtag_POST HP ON H.id = HP.hashtagId
+         JOIN Hashtag_Post HP ON H.id = HP.hashtagId
          JOIN Post P ON P.id = HP.postId
 WHERE P.createdAt >= DATE_SUB(CURRENT_DATE(), INTERVAL ${n} DAY)
 GROUP BY name
