@@ -23,6 +23,35 @@ VALUES ('${id}', '${recipientId}', '${senderId}', '${activityType}', '${activity
     });
 }
 exports.saveNotification = saveNotification;
+exports.updateNotfStatus = (userId, notificationId, status) => __awaiter(void 0, void 0, void 0, function* () {
+    yield database_1.sequelize.query(`UPDATE Notification
+    SET status='${status}'
+    WHERE id = '${notificationId}' AND recipientId='${userId}'`);
+    return true;
+});
+/*
+above gives:
+[
+    {
+        "affectedRows": 1,
+        "insertId": 0,
+        "warningStatus": 0
+    },
+    null
+]
+*/
+exports.ackIncomingNotifications = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    yield database_1.sequelize.query(`UPDATE Notification
+    SET status='ack'
+    WHERE recipientId='${userId}' AND status='sent'`);
+    return true;
+});
+exports.markAllNotfsAsRead = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    yield database_1.sequelize.query(`UPDATE Notification
+    SET status='read'
+    WHERE recipientId='${userId}' AND status!='read'`);
+    return true;
+});
 exports.generateNotification = (objectId, recipientId, senderId, activityType, activityId) => {
     console.log('generateNotification', recipientId, senderId, activityType);
     if (recipientId === senderId)
@@ -57,6 +86,17 @@ ORDER BY createdAt DESC
             id, senderId, activityType, activityId, objectId, status, createdAt, title, avatarUrl
         };
     })));
+});
+exports.getUnseenNotfsCount = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
+    return (_b = (_a = (yield database_1.sequelize.query(`
+    SELECT COUNT(*) as unseenNotfsCount
+    FROM Notification
+    WHERE recipientId = '${userId}'
+      AND status = 'sent'`, {
+        // @ts-ignore
+        type: database_1.sequelize.QueryTypes.SELECT
+    }))) === null || _a === void 0 ? void 0 : _a[0]) === null || _b === void 0 ? void 0 : _b['unseenNotfsCount'];
 });
 exports.generateTitleForNotif = (activityType, senderName, objectId) => __awaiter(void 0, void 0, void 0, function* () {
     const name = `<strong>${senderName}</strong>`;

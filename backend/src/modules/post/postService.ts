@@ -271,19 +271,57 @@ async function findPostLikesInfoByPk(postId: string): Promise<LikesInfo> {
 }
 
 export async function getTrendingHashtags() {
-    const hashtags: any = await sequelize.query(`
-SELECT COUNT(*) as count, name
+    let hashtags: any
+    for (let interval = 1; interval < 40; interval *= 2) {
+        hashtags = await getTrendsForTheLastNDays(interval)
+        if (hashtags?.length >= 6) {
+            return hashtags
+        }
+    }
+    return hashtags
+}
+
+async function getTrendsForTheLastNDays(n: number): Promise<Array<any>> {
+    // @ts-ignore
+    return await sequelize.query(`
+SELECT name
 FROM Hashtag H
          JOIN Hashtag_POST HP ON H.id = HP.hashtagId
          JOIN Post P ON P.id = HP.postId
-WHERE P.createdAt >= CURRENT_DATE()
+WHERE P.createdAt >= DATE_SUB(CURRENT_DATE(), INTERVAL ${n} DAY)
 GROUP BY name
 ORDER BY COUNT(*) DESC
 LIMIT 7;`, {
         // @ts-ignore
         type: sequelize.QueryTypes.SELECT
+    })// @ts-ignore
+        .map(({ name }) => name);
+}
+
+export async function getPostsByTrend(userId: string, trend: string) {
+    const posts = await sequelize.query(`
+    SELECT P.id,
+    P.userId,
+    likesCount,
+    commentsCount,
+    P.createdAt,
+    text,
+    dislikesCount,
+    Pr.userId          as 'author.userId',
+    Pr.username        as 'author.username',
+    Pr.fullname        as 'author.fullname',
+    Pr.coverPhotoUrl   as 'author.coverPhotoUrl',
+    Pr.profilePhotoUrl as 'author.profilePhotoUrl',
+    Pr.description     as 'author.description'
+FROM Post P
+      JOIN Profile Pr ON P.userId = Pr.userId
+      JOIN Hashtag_Post HP on P.id = HP.postId
+      JOIN Hashtag H on HP.hashtagId = H.id
+WHERE H.name = '${trend}'`, {
+        // @ts-ignore
+        type: sequelize.QueryTypes.SELECT
     })
-    return hashtags
+    return await processPosts(posts, userId)
 }
 
 export async function getHashtag(hashtag: string) {

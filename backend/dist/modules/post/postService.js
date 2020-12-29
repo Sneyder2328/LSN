@@ -318,23 +318,65 @@ function findPostLikesInfoByPk(postId) {
     });
 }
 function getTrendingHashtags() {
+    var _a;
     return __awaiter(this, void 0, void 0, function* () {
-        const hashtags = yield database_1.sequelize.query(`
-SELECT COUNT(*) as count, name
+        let hashtags;
+        for (let interval = 1; interval < 40; interval *= 2) {
+            hashtags = yield getTrendsForTheLastNDays(interval);
+            if (((_a = hashtags) === null || _a === void 0 ? void 0 : _a.length) >= 6) {
+                return hashtags;
+            }
+        }
+        return hashtags;
+    });
+}
+exports.getTrendingHashtags = getTrendingHashtags;
+function getTrendsForTheLastNDays(n) {
+    return __awaiter(this, void 0, void 0, function* () {
+        // @ts-ignore
+        return yield database_1.sequelize.query(`
+SELECT name
 FROM Hashtag H
          JOIN Hashtag_POST HP ON H.id = HP.hashtagId
          JOIN Post P ON P.id = HP.postId
-WHERE P.createdAt >= CURRENT_DATE()
+WHERE P.createdAt >= DATE_SUB(CURRENT_DATE(), INTERVAL ${n} DAY)
 GROUP BY name
 ORDER BY COUNT(*) DESC
 LIMIT 7;`, {
             // @ts-ignore
             type: database_1.sequelize.QueryTypes.SELECT
-        });
-        return hashtags;
+        }) // @ts-ignore
+            .map(({ name }) => name);
     });
 }
-exports.getTrendingHashtags = getTrendingHashtags;
+function getPostsByTrend(userId, trend) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const posts = yield database_1.sequelize.query(`
+    SELECT P.id,
+    P.userId,
+    likesCount,
+    commentsCount,
+    P.createdAt,
+    text,
+    dislikesCount,
+    Pr.userId          as 'author.userId',
+    Pr.username        as 'author.username',
+    Pr.fullname        as 'author.fullname',
+    Pr.coverPhotoUrl   as 'author.coverPhotoUrl',
+    Pr.profilePhotoUrl as 'author.profilePhotoUrl',
+    Pr.description     as 'author.description'
+FROM Post P
+      JOIN Profile Pr ON P.userId = Pr.userId
+      JOIN Hashtag_Post HP on P.id = HP.postId
+      JOIN Hashtag H on HP.hashtagId = H.id
+WHERE H.name = '${trend}'`, {
+            // @ts-ignore
+            type: database_1.sequelize.QueryTypes.SELECT
+        });
+        return yield processPosts(posts, userId);
+    });
+}
+exports.getPostsByTrend = getPostsByTrend;
 function getHashtag(hashtag) {
     var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {

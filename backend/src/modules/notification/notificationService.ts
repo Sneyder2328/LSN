@@ -1,14 +1,46 @@
-import {CREATE_NOTIFICATION, NotificationObject, notificationsEmitter} from "./notificationsEmitter";
-import {sequelize} from "../../database/database";
-import {genUUID} from "../../utils/utils";
-import {getPostPreview} from "../post/postService";
-import {getCommentPreview} from "../comment/commentService";
-import {getProfileByUserId} from "../user/userService";
+import { CREATE_NOTIFICATION, NotificationObject, notificationsEmitter } from "./notificationsEmitter";
+import { sequelize } from "../../database/database";
+import { genUUID } from "../../utils/utils";
+import { getPostPreview } from "../post/postService";
+import { getCommentPreview } from "../comment/commentService";
+import { getProfileByUserId } from "../user/userService";
 
-export async function saveNotification({activityType, activityId, objectId, recipientId, senderId, id}: NotificationObject) {
+export async function saveNotification({ activityType, activityId, objectId, recipientId, senderId, id }: NotificationObject) {
     return sequelize.query(`
 INSERT INTO Notification(id, recipientId, senderId, activityType, activityId, objectId, status)
 VALUES ('${id}', '${recipientId}', '${senderId}', '${activityType}', '${activityId}','${objectId}', 'sent')`)
+}
+
+export const updateNotfStatus = async (userId: string, notificationId: string, status: string) => {
+    await sequelize.query(`UPDATE Notification
+    SET status='${status}'
+    WHERE id = '${notificationId}' AND recipientId='${userId}'`)
+    return true
+}
+/*
+above gives:
+[
+    {
+        "affectedRows": 1,
+        "insertId": 0,
+        "warningStatus": 0
+    },
+    null
+]
+*/
+
+export const ackIncomingNotifications = async (userId: string) => {
+    await sequelize.query(`UPDATE Notification
+    SET status='ack'
+    WHERE recipientId='${userId}' AND status='sent'`)
+    return true
+}
+
+export const markAllNotfsAsRead = async (userId: string) => {
+    await sequelize.query(`UPDATE Notification
+    SET status='read'
+    WHERE recipientId='${userId}' AND status!='read'`)
+    return true
 }
 
 export const generateNotification = (objectId, recipientId, senderId, activityType, activityId) => {
@@ -37,7 +69,7 @@ ORDER BY createdAt DESC
         // @ts-ignore
         type: sequelize.QueryTypes.SELECT
     })
-    return Promise.all(notifications.map(async ({id, senderId, activityType, activityId, objectId, status, createdAt}) => {
+    return Promise.all(notifications.map(async ({ id, senderId, activityType, activityId, objectId, status, createdAt }) => {
         const senderProfile = await getProfileByUserId(senderId, userId, false)
         const avatarUrl = senderProfile.profilePhotoUrl
         const title = await generateTitleForNotif(activityType, senderProfile.fullname, objectId)
@@ -46,6 +78,20 @@ ORDER BY createdAt DESC
         }
     }))
 }
+
+export const getUnseenNotfsCount = async (userId: string) => {
+    return (await sequelize.query(`
+    SELECT COUNT(*) as unseenNotfsCount
+    FROM Notification
+    WHERE recipientId = '${userId}'
+      AND status = 'sent'`, {
+        // @ts-ignore
+        type: sequelize.QueryTypes.SELECT
+    }))?.[0]?.['unseenNotfsCount']
+}
+
+
+
 
 export const generateTitleForNotif = async (activityType: string, senderName: string, objectId: string): Promise<string> => {
     const name = `<strong>${senderName}</strong>`

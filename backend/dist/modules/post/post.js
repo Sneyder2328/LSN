@@ -102,4 +102,8 @@ router.get(`/trending/`, authenticate_1.default, handleErrorAsync_1.handleErrorA
     const hashtags = yield postService_1.getTrendingHashtags();
     res.json(hashtags);
 })));
+router.get(`/trending/:trend`, authenticate_1.default, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const posts = yield postService_1.getPostsByTrend(req.userId, req.params.trend);
+    res.json(posts);
+})));
 exports.default = router;

@@ -4,7 +4,7 @@ import {
     dislikePost,
     getPost,
     getPostFromPhoto,
-    getPostsByHashtag, getPostsBySection, getPostsByUser, getTrendingHashtags,
+    getPostsByHashtag, getPostsBySection, getPostsByTrend, getPostsByUser, getTrendingHashtags,
     likePost,
     removeLikeOrDislikeFromPost
 } from "./postService";
@@ -82,7 +82,7 @@ router.get('/users/:userIdentifier/posts/', authenticate,
         const userIdentifier: string = req.params.userIdentifier;
         const userId = isUUIDV4(userIdentifier) ? userIdentifier : await getUserIdFromUsername(userIdentifier)
         const posts = await getPostsByUser(userId, req.userId, req.query.limit, req.query.offset)
-        res.status(httpCodes.OK).send({userId, posts});
+        res.status(httpCodes.OK).send({ userId, posts });
     }));
 
 router.get('/posts/:postId', authenticate, getPostValidationRules, validate,
@@ -126,6 +126,12 @@ router.get(`/trending/`, authenticate,
     handleErrorAsync(async (req, res) => {
         const hashtags = await getTrendingHashtags()
         res.json(hashtags)
+    }))
+
+router.get(`/trending/:trend`, authenticate,
+    handleErrorAsync(async (req, res) => {
+        const posts = await getPostsByTrend(req.userId, req.params.trend)
+        res.json(posts)
     }))
 
 export default router;

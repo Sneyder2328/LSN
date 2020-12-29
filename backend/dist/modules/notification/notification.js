@@ -19,7 +19,28 @@ const httpResponseCodes_1 = __importDefault(require("../../utils/constants/httpR
 const notificationService_1 = require("./notificationService");
 const router = express_1.Router();
 exports.notificationsRouter = router;
+/**
+ * Get incoming notifications by current user
+ */
 router.get('/notifications/', authenticate_1.default, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const notifications = yield notificationService_1.getNotifications(req.userId);
-    res.status(httpResponseCodes_1.default.OK).send(notifications);
+    const unseenCount = yield notificationService_1.getUnseenNotfsCount(req.userId);
+    res.status(httpResponseCodes_1.default.OK).send({ notifications, unseenCount });
+})));
+/**
+ * Update status for incoming notification to current user by its id
+ * status: 'ack'|'read'|'sent'
+ */
+router.put(`/notifications/:notificationId`, authenticate_1.default, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const updated = yield notificationService_1.updateNotfStatus(req.userId, req.params.notificationId, req.body.status);
+    res.status(httpResponseCodes_1.default.OK).send(updated);
+})));
+/**
+ * Mark incoming notifications to current user as either acknowledged or read
+ * status: 'ack'|'read'
+ */
+router.put(`/notifications/`, authenticate_1.default, handleErrorAsync_1.handleErrorAsync((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const status = req.body.status;
+    const updated = status === 'ack' ? yield notificationService_1.ackIncomingNotifications(req.userId) : yield notificationService_1.markAllNotfsAsRead(req.userId);
+    res.status(httpResponseCodes_1.default.OK).send(updated);
 })));
