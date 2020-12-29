@@ -28,7 +28,7 @@ type Props = {
 };
 
 export const SearchResults: React.FC<Props> = ({ query }) => {
-    const {isSearching, queries, users} = useSelector((state: AppState)=>state.search)
+    const { isSearching, queries, users } = useSelector((state: AppState) => state.search)
     const people: Array<UserSearch> = queries[query] ? queries[query].map((userId: string) => users[userId]) : []
 
     return (
@@ -36,9 +36,9 @@ export const SearchResults: React.FC<Props> = ({ query }) => {
             {
                 people.map((profile) => <Profile key={profile.userId} profile={profile} />)
             }
-            <div className={classNames(styles.loading, {'hide': !isSearching || people.length !== 0})}>
-                {/* <Spinner name="ball-spin-fade-loader" color="aqua" className={classNames(styles.iconLoading)} /> */}
-                <LoadingIndicator/>
+            <div className={classNames(styles.loading, { 'hide': query.length <= 2 })}>
+                {isSearching && people.length === 0 && <LoadingIndicator />}
+                {!isSearching && people.length === 0 && <span>Results not found for: {query}</span>}
             </div>
         </div>
     );
