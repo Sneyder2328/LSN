@@ -3,19 +3,6 @@
 @import url('https://fonts.googleapis.com/css?family=Oswald&display=swap');
 @import "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css";
 
-//html, body {
-//  height: 100%;
-//}
-//
-//body {
-//  background-color: rgba(0, 0, 0, 0);
-//  min-width: 100%;
-//}
-
-#signUpForm {
-
-}
-
 #background {
   position: absolute;
   top: 0;
@@ -25,7 +12,7 @@
   min-width: 100%;
   min-height: 100%;
   background-size: cover;
-  z-index: -100;
+  // z-index: -100;
 }
 
 #background:before {
@@ -51,6 +38,7 @@
 
   display: block;
   float: right;
+  position: relative;
   background-color: var(--authBackColor);
   width: 55vw;
   max-width: 640px;
@@ -61,8 +49,11 @@
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
-}
+  }
 
+  .buttons-container {
+    position: relative;
+  }
 
   button {
     width: 50%;
