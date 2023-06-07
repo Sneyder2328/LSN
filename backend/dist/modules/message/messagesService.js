@@ -143,3 +143,14 @@ WHERE userTwoId='${userId}'
         };
     })))).filter(({ message }) => message).sort((conv1, conv2) => conv2.message.createdAt - conv1.message.createdAt) || [];
 });
+exports.getUnseenConversationsCount = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    var _c, _d;
+    return (_d = (_c = (yield database_1.sequelize.query(`
+    SELECT COUNT(*) as unseenNotfsCount
+    FROM Notification
+    WHERE recipientId = '${userId}'
+      AND status = 'sent'`, {
+        // @ts-ignore
+        type: database_1.sequelize.QueryTypes.SELECT
+    }))) === null || _c === void 0 ? void 0 : _c[0]) === null || _d === void 0 ? void 0 : _d['unseenNotfsCount'];
+});

@@ -7,6 +7,7 @@ const sequelize_1 = require("sequelize");
 const index_1 = __importDefault(require("./models/index"));
 const config_1 = __importDefault(require("../config/config"));
 const associations_1 = __importDefault(require("./associations"));
+console.log("config=", config_1.default);
 // @ts-ignore
 exports.sequelize = new sequelize_1.Sequelize(config_1.default.orm.database, config_1.default.orm.user, config_1.default.orm.password, {
     host: config_1.default.orm.host,

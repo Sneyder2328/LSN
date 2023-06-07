@@ -58,6 +58,7 @@ function signUpUser({ username, fullname, password, typeLogin, email, descriptio
 exports.signUpUser = signUpUser;
 function logInUser({ username, password }) {
     return __awaiter(this, void 0, void 0, function* () {
+        console.log(" logInUser weon =", username, password);
         // @ts-ignore
         const user = yield User.findOne({ where: { username } });
         if (!user)

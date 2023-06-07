@@ -3,6 +3,7 @@ import models0 from "./models/index";
 import config from "../config/config";
 import associateModels from "./associations";
 
+console.log("config=", config)
 // @ts-ignore
 export const sequelize = new Sequelize(config.orm.database!, config.orm.user!, config.orm.password, {
     host: config.orm.host,

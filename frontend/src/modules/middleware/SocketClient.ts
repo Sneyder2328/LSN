@@ -5,7 +5,8 @@ export class SocketClient {
 
     connect(refreshToken: string) {
         this.socket = io.connect(
-            process.env.NODE_ENV === 'development' ? `http://localhost:3030/` : `https://lasocialnetwork.herokuapp.com/`
+            `https://lasocialnetwork.herokuapp.com/`
+            // process.env.NODE_ENV === 'development' ? `http://localhost:3030/` : `https://lasocialnetwork.herokuapp.com/`
             , {
                 transports: ['websocket'],
                 // rejectUnauthorized: false,

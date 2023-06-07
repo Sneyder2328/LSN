@@ -52,5 +52,5 @@ const config: configType = {
     },
     jwtSecret: process.env.JWT_SECRET || ""
 };
-
+console.log(" exportando weon config=", config)
 export default config;

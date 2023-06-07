@@ -47,7 +47,7 @@ export const getIdFromUserValidationRules = [
         .withMessage("username provided is not alphanumeric")
 ]
 
-export const updateProfileValidationRules = [
+export const  updateProfileValidationRules = [
     param('userId').trim().escape().custom((value: string) => value.match(config.regex.uuidV4))
         .withMessage("userId provided is not uuidV4"),
     body('username').trim().escape()

@@ -2,7 +2,7 @@ import {Dropdown, DropdownProps} from "./Dropdown";
 import {Meta, Story} from "@storybook/react";
 import React from "react";
 import {Button} from "../Button/Button";
-import styles from "../../pages/UserProfile/styles.module.scss";
+import styles from "../../pages/UserProfilePage/ProfileInfo/styles.module.scss";
 
 export default {
     title: 'Dropdown',

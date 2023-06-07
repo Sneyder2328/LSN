@@ -41,6 +41,8 @@ export async function signUpUser({ username, fullname, password, typeLogin, emai
 }
 
 export async function logInUser({ username, password }) {
+  
+    console.log(" logInUser weon =", username, password)
     // @ts-ignore
     const user = await User.findOne({ where: { username } });
     if (!user) throw new AuthError(error.USERNAME, error.message.INCORRECT_USERNAME);

@@ -140,3 +140,14 @@ WHERE userTwoId='${userId}'
         }
     }))).filter(({ message }) => message).sort((conv1, conv2) => conv2.message.createdAt - conv1.message.createdAt) || []
 }
+
+export const getUnseenConversationsCount = async (userId: string) => {
+    return (await sequelize.query(`
+    SELECT COUNT(*) as unseenNotfsCount
+    FROM Notification
+    WHERE recipientId = '${userId}'
+      AND status = 'sent'`, {
+        // @ts-ignore
+        type: sequelize.QueryTypes.SELECT
+    }))?.[0]?.['unseenNotfsCount']
+}
